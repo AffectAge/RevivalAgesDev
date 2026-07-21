@@ -1,0 +1,11 @@
+{
+  "replace": false,
+  "values": [
+    "revivalages:crude_drying_rack",
+    "revivalages:drying_rack",
+    "revivalages:chopping_block",
+    "revivalages:barrel",
+    "revivalages:tanning_rack",
+    "revivalages:campfire"
+  ]
+}

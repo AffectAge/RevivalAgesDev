@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "revivalages:block/crude_drying_rack",
+      "y": 180
+    },
+    "facing=east": {
+      "model": "revivalages:block/crude_drying_rack",
+      "y": 270
+    },
+    "facing=south": {
+      "model": "revivalages:block/crude_drying_rack"
+    },
+    "facing=west": {
+      "model": "revivalages:block/crude_drying_rack",
+      "y": 90
+    }
+  }
+}

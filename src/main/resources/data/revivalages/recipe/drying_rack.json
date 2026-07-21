@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": {
+      "item": "revivalages:crude_drying_rack"
+    },
+    "F": {
+      "item": "minecraft:string"
+    },
+    "L": {
+      "item": "minecraft:ladder"
+    },
+    "S": {
+      "tag": "c:rods/wooden"
+    }
+  },
+  "pattern": [
+    "SFS",
+    "FLF",
+    "SCS"
+  ],
+  "result": {
+    "count": 1,
+    "id": "revivalages:drying_rack"
+  }
+}

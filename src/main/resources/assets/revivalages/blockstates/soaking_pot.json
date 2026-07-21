@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "facing=north": { "model": "revivalages:block/soaking_pot" },
+    "facing=east": { "model": "revivalages:block/soaking_pot", "y": 90 },
+    "facing=south": { "model": "revivalages:block/soaking_pot", "y": 180 },
+    "facing=west": { "model": "revivalages:block/soaking_pot", "y": 270 }
+  }
+}

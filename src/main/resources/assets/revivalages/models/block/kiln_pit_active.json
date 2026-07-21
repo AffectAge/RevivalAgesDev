@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "up": "revivalages:block/kiln_active_top",
+    "down": "revivalages:block/kiln_active_bottom",
+    "north": "revivalages:block/kiln_active_end",
+    "south": "revivalages:block/kiln_active_end",
+    "west": "revivalages:block/kiln_active_side",
+    "east": "revivalages:block/kiln_active_side",
+    "particle": "revivalages:block/thatch"
+  }
+}

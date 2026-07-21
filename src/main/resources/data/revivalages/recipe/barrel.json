@@ -1,0 +1,5 @@
+{
+  "type": "minecraft:crafting_shaped", "category": "misc",
+  "pattern": ["P P", "P P", "PPP"], "key": { "P": { "tag": "minecraft:planks" } },
+  "result": { "id": "revivalages:barrel", "count": 1 }
+}

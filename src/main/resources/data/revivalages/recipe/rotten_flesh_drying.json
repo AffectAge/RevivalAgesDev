@@ -1,0 +1,11 @@
+{
+  "type": "revivalages:crude_drying",
+  "drying_time": 12000,
+  "ingredient": {
+    "item": "minecraft:rotten_flesh"
+  },
+  "result": {
+    "count": 1,
+    "id": "minecraft:leather"
+  }
+}

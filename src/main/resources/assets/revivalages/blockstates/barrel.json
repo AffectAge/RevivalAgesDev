@@ -1,0 +1,6 @@
+{
+  "variants": {
+    "sealed=false": { "model": "revivalages:block/barrel" },
+    "sealed=true": { "model": "revivalages:block/barrel_sealed" }
+  }
+}

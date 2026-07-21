@@ -1,0 +1,5 @@
+{
+  "type": "revivalages:pit_kiln", "ingredient": { "item": "revivalages:unfired_brick" },
+  "result": { "id": "minecraft:brick", "count": 1 }, "burn_time": 12000,
+  "failure_chance": 0.1, "failure_results": [{ "id": "minecraft:clay_ball", "count": 1 }]
+}

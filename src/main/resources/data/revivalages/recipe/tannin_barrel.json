@@ -1,0 +1,7 @@
+{
+  "type": "revivalages:barrel",
+  "items": [{ "tag": "revivalages:barrel_leaves" }, { "tag": "revivalages:barrel_leaves" }, { "tag": "revivalages:barrel_leaves" }, { "tag": "revivalages:barrel_leaves" }],
+  "input_fluid": { "id": "minecraft:water", "amount": 1000 },
+  "result_fluid": { "id": "revivalages:tannin", "amount": 1000 },
+  "processing_time": 12000
+}

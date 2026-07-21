@@ -1,0 +1,5 @@
+{
+  "type": "revivalages:crude_drying", "drying_time": 1200,
+  "ingredient": { "item": "minecraft:wheat" },
+  "result": { "id": "revivalages:straw", "count": 2 }
+}

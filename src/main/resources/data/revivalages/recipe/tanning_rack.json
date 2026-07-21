@@ -1,0 +1,6 @@
+{
+  "type": "minecraft:crafting_shaped", "category": "misc",
+  "pattern": ["SRS", "SRS", "S S"],
+  "key": { "S": { "tag": "c:rods/wooden" }, "R": { "item": "minecraft:string" } },
+  "result": { "id": "revivalages:tanning_rack", "count": 1 }
+}

@@ -1,0 +1,4 @@
+{
+  "parent": "revivalages:block/chopping_block_core",
+  "textures": { "core-side": "revivalages:block/chopping_block_core_side_damaged_b", "core-end": "revivalages:block/chopping_block_core_top_damaged_b", "particle": "revivalages:block/chopping_block_core_side_damaged_b" }
+}

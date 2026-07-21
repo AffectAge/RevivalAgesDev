@@ -1,0 +1,9 @@
+{
+  "variants": {
+    "stage=empty": { "model": "revivalages:block/kiln_pit_empty" },
+    "stage=thatch": { "model": "revivalages:block/kiln_pit_thatch" },
+    "stage=wood": { "model": "revivalages:block/kiln_pit_thatch" },
+    "stage=active": { "model": "revivalages:block/kiln_pit_active" },
+    "stage=complete": { "model": "revivalages:block/kiln_pit_empty" }
+  }
+}

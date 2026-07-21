@@ -1,0 +1,18 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "biomesoplenty"
+    }
+  ],
+  "type": "revivalages:chopping",
+  "ingredient": {
+    "tag": "biomesoplenty:dead_logs"
+  },
+  "result": {
+    "id": "biomesoplenty:dead_planks",
+    "count": 1
+  },
+  "chops": [6, 5, 4, 3],
+  "quantities": [2, 3, 4, 5]
+}

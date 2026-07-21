@@ -1,0 +1,36 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "rolls": 1,
+      "conditions": [
+        { "condition": "minecraft:survives_explosion" },
+        { "condition": "minecraft:block_state_property", "block": "revivalages:barrel", "properties": { "sealed": "false" } }
+      ],
+      "entries": [{ "type": "minecraft:item", "name": "revivalages:barrel" }]
+    },
+    {
+      "rolls": 1,
+      "conditions": [
+        { "condition": "minecraft:survives_explosion" },
+        { "condition": "minecraft:block_state_property", "block": "revivalages:barrel", "properties": { "sealed": "true" } }
+      ],
+      "entries": [{
+        "type": "minecraft:item",
+        "name": "revivalages:barrel",
+        "functions": [
+          {
+            "function": "minecraft:copy_components",
+            "source": "block_entity",
+            "include": ["minecraft:container", "revivalages:stored_fluid"]
+          },
+          {
+            "function": "minecraft:copy_state",
+            "block": "revivalages:barrel",
+            "properties": ["sealed"]
+          }
+        ]
+      }]
+    }
+  ]
+}

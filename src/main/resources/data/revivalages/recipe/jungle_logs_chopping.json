@@ -1,0 +1,1 @@
+{ "type": "revivalages:chopping", "ingredient": { "tag": "minecraft:jungle_logs" }, "result": { "id": "minecraft:jungle_planks", "count": 1 }, "chops": [6,5,4,3], "quantities": [2,3,4,5] }

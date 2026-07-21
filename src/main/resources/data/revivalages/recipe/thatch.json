@@ -1,0 +1,5 @@
+{
+  "type": "minecraft:crafting_shaped", "category": "building",
+  "pattern": ["SS", "SS"], "key": { "S": { "item": "revivalages:straw" } },
+  "result": { "id": "revivalages:thatch", "count": 1 }
+}

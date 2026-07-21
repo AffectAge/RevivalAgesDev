@@ -1,0 +1,10 @@
+{
+  "multipart": [
+    { "when": { "damage": "0" }, "apply": [{ "model": "revivalages:block/chopping_block_0" }, { "model": "revivalages:block/chopping_block_bark_a" }] },
+    { "when": { "damage": "1" }, "apply": [{ "model": "revivalages:block/chopping_block_1" }, { "model": "revivalages:block/chopping_block_bark_b" }] },
+    { "when": { "damage": "2" }, "apply": [{ "model": "revivalages:block/chopping_block_2" }, { "model": "revivalages:block/chopping_block_bark_c" }] },
+    { "when": { "damage": "3" }, "apply": [{ "model": "revivalages:block/chopping_block_3" }, { "model": "revivalages:block/chopping_block_bark_d" }] },
+    { "when": { "damage": "4" }, "apply": [{ "model": "revivalages:block/chopping_block_4" }, { "model": "revivalages:block/chopping_block_bark_e" }] },
+    { "when": { "damage": "5" }, "apply": [{ "model": "revivalages:block/chopping_block_5" }, { "model": "revivalages:block/chopping_block_bark_f" }] }
+  ]
+}

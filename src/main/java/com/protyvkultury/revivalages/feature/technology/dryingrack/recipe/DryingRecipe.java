@@ -1,0 +1,75 @@
+package com.protyvkultury.revivalages.feature.technology.dryingrack.recipe;
+
+import java.util.Objects;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.NonNullList;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.SingleRecipeInput;
+import net.minecraft.world.level.Level;
+
+public final class DryingRecipe implements Recipe<SingleRecipeInput> {
+
+    private final Ingredient ingredient;
+    private final ItemStack result;
+    private final int dryingTime;
+    private final RecipeType<DryingRecipe> type;
+
+    public DryingRecipe(Ingredient ingredient, ItemStack result, int dryingTime, RecipeType<DryingRecipe> type) {
+        this.ingredient = Objects.requireNonNull(ingredient);
+        this.result = Objects.requireNonNull(result).copy();
+        this.dryingTime = Math.max(1, dryingTime);
+        this.type = Objects.requireNonNull(type);
+    }
+
+    public Ingredient ingredient() {
+        return ingredient;
+    }
+
+    public int dryingTime() {
+        return dryingTime;
+    }
+
+    @Override
+    public boolean matches(SingleRecipeInput input, Level level) {
+        return ingredient.test(input.item());
+    }
+
+    @Override
+    public ItemStack assemble(SingleRecipeInput input, HolderLookup.Provider registries) {
+        return result.copy();
+    }
+
+    @Override
+    public boolean canCraftInDimensions(int width, int height) {
+        return true;
+    }
+
+    @Override
+    public ItemStack getResultItem(HolderLookup.Provider registries) {
+        return result.copy();
+    }
+
+    @Override
+    public NonNullList<Ingredient> getIngredients() {
+        return NonNullList.of(ingredient);
+    }
+
+    @Override
+    public RecipeSerializer<?> getSerializer() {
+        return type == com.protyvkultury.revivalages.feature.technology.dryingrack.DryingRackFeature
+                .CRUDE_DRYING_RECIPE_TYPE.get()
+                ? com.protyvkultury.revivalages.feature.technology.dryingrack.DryingRackFeature
+                        .CRUDE_DRYING_RECIPE_SERIALIZER.get()
+                : com.protyvkultury.revivalages.feature.technology.dryingrack.DryingRackFeature
+                        .DRYING_RECIPE_SERIALIZER.get();
+    }
+
+    @Override
+    public RecipeType<?> getType() {
+        return type;
+    }
+}

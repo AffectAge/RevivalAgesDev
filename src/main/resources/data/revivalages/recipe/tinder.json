@@ -1,0 +1,5 @@
+{
+  "type": "minecraft:crafting_shapeless", "category": "misc",
+  "ingredients": [{ "item": "revivalages:straw" }, { "tag": "c:rods/wooden" }],
+  "result": { "id": "revivalages:tinder", "count": 2 }
+}

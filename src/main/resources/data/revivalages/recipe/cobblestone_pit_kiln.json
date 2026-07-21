@@ -1,0 +1,4 @@
+{
+  "type": "revivalages:pit_kiln", "ingredient": { "item": "minecraft:cobblestone" },
+  "result": { "id": "minecraft:stone", "count": 1 }, "burn_time": 16000
+}

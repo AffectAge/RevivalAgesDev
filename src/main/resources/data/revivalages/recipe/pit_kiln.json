@@ -1,0 +1,6 @@
+{
+  "type": "minecraft:crafting_shaped", "category": "misc",
+  "pattern": ["D D", "DFD", "DDD"],
+  "key": { "D": { "item": "minecraft:dirt" }, "F": { "item": "minecraft:flint" } },
+  "result": { "id": "revivalages:pit_kiln", "count": 1 }
+}
