@@ -42,6 +42,13 @@ tasks.named('processResources', ProcessResources).configure {
 
 repositories {
     maven {
+        name = "BlameJared"
+        url = "https://maven.blamejared.com"
+        content {
+            includeGroup "mezz.jei"
+        }
+    }
+    maven {
         name = "Modrinth"
         url = "https://api.modrinth.com/maven"
         content {
@@ -155,9 +162,14 @@ dependencies {
     // Optional season APIs used behind isolated adapters. Neither mod is bundled or required at runtime.
     compileOnly "curse.maven:serene-seasons-291874:6182596"
     compileOnly "curse.maven:ecliptic-seasons-1118306:8253023"
-    // Optional Jade probe API. The full mod is only enabled for explicit local compatibility tests.
+    // Optional recipe-viewer and probe APIs. Full mods are enabled only for explicit local compatibility tests.
+    compileOnly "mezz.jei:jei-${minecraft_version}-common-api:${jei_version}"
+    compileOnly "mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}"
+    compileOnly "maven.modrinth:${emi_project_id}:${emi_version_id}"
     compileOnly "maven.modrinth:${jade_project_id}:${jade_version_id}"
     if (providers.gradleProperty("dryingRackIntegrationsRuntime").orElse("false").get().toBoolean()) {
+        localRuntime "mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}"
+        localRuntime "maven.modrinth:${emi_project_id}:${emi_version_id}"
         localRuntime "maven.modrinth:${jade_project_id}:${jade_version_id}"
     }
     testImplementation platform("org.junit:junit-bom:5.11.4")

@@ -59,6 +59,7 @@ public final class CampfireBlockEntity extends BlockEntity {
     public static void serverTick(Level level, BlockPos pos, BlockState state, CampfireBlockEntity campfire) {
         if (level.getGameTime() % 20L == 0L) {
             campfire.resolveRecipe();
+            campfire.refreshLightLevel();
         }
         if (!campfire.lit) {
             return;
@@ -380,11 +381,37 @@ public final class CampfireBlockEntity extends BlockEntity {
         BlockState updated = state
                 .setValue(CampfireBlock.LIT, lit)
                 .setValue(CampfireBlock.FUEL, fuelLevel())
-                .setValue(CampfireBlock.ASH, ash);
+                .setValue(CampfireBlock.ASH, ash)
+                .setValue(CampfireBlock.LIGHT, configuredLightLevel());
         if (updated != state) {
             level.setBlock(worldPosition, updated, Block.UPDATE_CLIENTS);
         }
         sync();
+    }
+
+    private void refreshLightLevel() {
+        if (level == null || level.isClientSide) {
+            return;
+        }
+        BlockState state = getBlockState();
+        int light = configuredLightLevel();
+        if (state.getValue(CampfireBlock.LIGHT) != light) {
+            level.setBlock(
+                    worldPosition,
+                    state.setValue(CampfireBlock.LIGHT, light),
+                    Block.UPDATE_CLIENTS
+            );
+        }
+    }
+
+    private int configuredLightLevel() {
+        if (!lit) {
+            return 0;
+        }
+        int minimum = PrimitiveTechnologyConfig.CAMPFIRE_MINIMUM_LIGHT.get();
+        int maximum = PrimitiveTechnologyConfig.CAMPFIRE_MAXIMUM_LIGHT.get();
+        double fuelRatio = fuelLevel() / 8.0D;
+        return Math.clamp((int) Math.round(minimum + (maximum - minimum) * fuelRatio), 0, 15);
     }
 
     private void sync() {

@@ -3,14 +3,16 @@
 ## Pyrotech
 
 The Drying Rack, Barrel, Chopping Block, Pit Kiln, Soaking Pot, Tanning Rack,
-thatch, primitive material item textures, and model geometry were adapted from
-Pyrotech by codetaylor. The source project is available at
+thatch, primitive material item, and functional recipe-viewer textures and model
+geometry were adapted from Pyrotech by codetaylor. This includes the slot
+backgrounds, progress arrows, flame indicators, and fluid gauges used by the
+JEI/EMI presentation layer. The source project is available at
 <https://github.com/codetaylor/pyrotech>.
 
 Pyrotech is licensed under the Apache License 2.0. A copy is included at
 `licenses/Pyrotech-LICENSE.txt`. The assets were renamed, their resource paths
-were updated, and their blockstate and renderer definitions were adapted for
-Minecraft 1.21.1 and NeoForge.
+were updated, and their blockstate, renderer, and recipe-viewer definitions were
+adapted for Minecraft 1.21.1, NeoForge, JEI, and EMI.
 
 ## Athenaeum
 

@@ -117,9 +117,10 @@ state and define migration/default behavior before changing a serialized format.
 
 Primitive technology is a coordinated feature family below `feature/technology`.
 Each machine owns its block, block entity, and recipe type, while shared materials,
-configuration, rendering helpers, tags, and synchronized read models live in
-`feature/technology/primitive`. The optional Jade adapter depends only on those
-read models. Probe APIs never enter the machine packages.
+configuration, rendering helpers, tags, and loader-neutral recipe views live in
+`feature/technology/primitive`. Optional Jade, JEI, and EMI adapters depend on
+those synchronized states and recipe views. Viewer and probe APIs never enter the
+machine packages.
 
 ## Adding a feature
 

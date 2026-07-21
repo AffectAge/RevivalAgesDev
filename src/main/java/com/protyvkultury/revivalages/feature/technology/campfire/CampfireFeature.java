@@ -51,12 +51,7 @@ public final class CampfireFeature implements FeatureModule {
                     .strength(0.6F)
                     .sound(SoundType.WOOD)
                     .noOcclusion()
-                    .lightLevel(state -> state.getValue(CampfireBlock.LIT)
-                            ? Math.clamp((int) Math.round(PrimitiveTechnologyConfig.CAMPFIRE_MINIMUM_LIGHT.get()
-                            + (PrimitiveTechnologyConfig.CAMPFIRE_MAXIMUM_LIGHT.get()
-                            - PrimitiveTechnologyConfig.CAMPFIRE_MINIMUM_LIGHT.get())
-                            * (state.getValue(CampfireBlock.FUEL) / 8.0D)), 0, 15)
-                            : 0)
+                    .lightLevel(state -> state.getValue(CampfireBlock.LIGHT))
     );
     public static final DeferredItem<TinderItem> TINDER = ITEMS.registerItem(
             "tinder",

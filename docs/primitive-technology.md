@@ -89,14 +89,16 @@ Reloading recipes changes future matching without migrating world saves. Active
 machines resolve their recipe from current server data and synchronize only the
 state required for rendering and overlays.
 
-## Jade integration
+## Display integrations
 
 Jade displays progress, inputs and predicted outputs, fuel, ash, block damage,
 wood chips, Pit Kiln stage/structure/logs, Barrel seal/fluid/result, Soaking Pot
-heat requirement, and Tanning Rack sky/day/rain conditions. Jade is optional and
-client-only; a dedicated server and the base mod load without it. JEI, EMI, and
-The One Probe are intentionally not included in the accepted primitive-device
-scope.
+heat requirement, and Tanning Rack sky/day/rain conditions. JEI and EMI use the
+same loader-neutral recipe catalog and the Apache-2.0 functional UI textures
+adapted from Pyrotech. Categories include item and fluid inputs, outputs, duration,
+failure outcomes, and required environmental conditions. All three integrations
+are optional and client-only; a dedicated server and the base mod load without
+them. The One Probe alone is intentionally excluded from the accepted scope.
 
 KubeJS can add or replace these codec-backed recipes through normal custom recipe
 JSON. Biomes O' Plenty logs receive optional, load-conditioned Chopping recipes;

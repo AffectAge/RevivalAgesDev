@@ -52,6 +52,7 @@ public final class CampfireBlock extends BaseEntityBlock {
     public static final BooleanProperty LIT = BooleanProperty.create("lit");
     public static final IntegerProperty FUEL = IntegerProperty.create("fuel", 0, 8);
     public static final IntegerProperty ASH = IntegerProperty.create("ash", 0, 8);
+    public static final IntegerProperty LIGHT = IntegerProperty.create("light", 0, 15);
     private static final VoxelShape LOG_SHAPE = box(0, 0, 0, 16, 6, 16);
     private static final VoxelShape TINDER_SHAPE = box(4, 0, 4, 12, 5, 12);
 
@@ -60,7 +61,8 @@ public final class CampfireBlock extends BaseEntityBlock {
         registerDefaultState(stateDefinition.any()
                 .setValue(LIT, false)
                 .setValue(FUEL, 0)
-                .setValue(ASH, 0));
+                .setValue(ASH, 0)
+                .setValue(LIGHT, 0));
     }
 
     @Override
@@ -70,7 +72,7 @@ public final class CampfireBlock extends BaseEntityBlock {
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<net.minecraft.world.level.block.Block, BlockState> builder) {
-        builder.add(LIT, FUEL, ASH);
+        builder.add(LIT, FUEL, ASH, LIGHT);
     }
 
     @Override

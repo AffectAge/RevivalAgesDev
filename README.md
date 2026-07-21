@@ -57,7 +57,7 @@ to a JDK 21 installation and open a new terminal before trying again.
 
 On Windows, use `gradlew.bat` instead of `./gradlew`.
 
-To test the optional Jade integration locally, launch with
+To test the optional Jade, JEI, and EMI integrations locally, launch with
 `-PdryingRackIntegrationsRuntime=true`. Add `-PquickPlayWorld=<world-folder>` to
 open a development world directly.
 
