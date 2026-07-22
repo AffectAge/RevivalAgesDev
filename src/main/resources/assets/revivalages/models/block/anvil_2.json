@@ -1,0 +1,4 @@
+{
+  "parent": "revivalages:block/anvil_0",
+  "textures": { "top": "revivalages:block/anvil_granite_damaged_b" }
+}

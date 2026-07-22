@@ -1,0 +1,26 @@
+{
+  "sawmill_idle": {
+    "subtitle": "subtitles.revivalages.sawmill",
+    "sounds": [
+      "revivalages:sawmill/sawmill-idle"
+    ]
+  },
+  "sawmill_active": {
+    "subtitle": "subtitles.revivalages.sawmill",
+    "sounds": [
+      "revivalages:sawmill/sawmill-active"
+    ]
+  },
+  "sawmill_active_short_a": {
+    "subtitle": "subtitles.revivalages.sawmill",
+    "sounds": [
+      "revivalages:sawmill/sawmill-active-short-a"
+    ]
+  },
+  "sawmill_active_short_b": {
+    "subtitle": "subtitles.revivalages.sawmill",
+    "sounds": [
+      "revivalages:sawmill/sawmill-active-short-b"
+    ]
+  }
+}

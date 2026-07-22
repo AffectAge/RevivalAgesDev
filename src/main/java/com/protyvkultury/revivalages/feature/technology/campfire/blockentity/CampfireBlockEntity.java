@@ -131,7 +131,14 @@ public final class CampfireBlockEntity extends BlockEntity {
     }
 
     public static void clientTick(Level level, BlockPos pos, BlockState state, CampfireBlockEntity campfire) {
-        if (!state.getValue(CampfireBlock.LIT) || level.getGameTime() % PARTICLE_INTERVAL != 0L) {
+        if (!state.getValue(CampfireBlock.LIT)) {
+            return;
+        }
+        if (level.random.nextInt(10) == 0) {
+            level.playLocalSound(pos, SoundEvents.FURNACE_FIRE_CRACKLE, SoundSource.BLOCKS,
+                    1.0F, 1.0F, false);
+        }
+        if (level.getGameTime() % PARTICLE_INTERVAL != 0L) {
             return;
         }
         level.addParticle(ParticleTypes.CAMPFIRE_COSY_SMOKE,
@@ -146,10 +153,6 @@ public final class CampfireBlockEntity extends BlockEntity {
             level.addParticle(ParticleTypes.LARGE_SMOKE,
                     pos.getX() + 0.5D, pos.getY() + 0.55D, pos.getZ() + 0.5D,
                     0.0D, 0.03D, 0.0D);
-        }
-        if (level.random.nextInt(10) == 0) {
-            level.playLocalSound(pos, SoundEvents.FIRE_AMBIENT, SoundSource.BLOCKS,
-                    0.5F, 0.8F + level.random.nextFloat() * 0.4F, false);
         }
         if (level.random.nextInt(3) == 0) {
             level.addParticle(ParticleTypes.FLAME,

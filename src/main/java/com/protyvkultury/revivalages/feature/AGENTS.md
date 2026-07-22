@@ -46,9 +46,17 @@ boundary demonstrated by Pyrotech.
   insertion and extraction priority, teardown drops, particles and sounds,
   synchronized progress, blocking conditions, failure outcomes, and automation.
   Do not close a porting task after only its recipe completes successfully.
-- For Campfire, Chopping Block, Pit Kiln, Barrel, Soaking Pot, Tanning Rack, and
-  Drying Rack, provide Jade state/progress/modifiers plus JEI and EMI recipes from
-  one loader-neutral recipe view. The One Probe is intentionally outside the
-  accepted scope for this device family.
+- A primitive mechanism's sound audit must trace both Pyrotech and Athenaeum.
+  Implement custom and vanilla sounds at their original lifecycle points,
+  including shared extraction feedback, work/idle loops, completion, breakage,
+  fuel, ignition, extinguishing, and material placement/removal where applicable.
+  Preserve configured enable/volume controls and reference randomization instead
+  of replacing them with mechanism-local approximations.
+- For Campfire, Chopping Block, Pit Kiln, Barrel, Soaking Pot, Tanning Rack,
+  Drying Rack, Stone Sawmill, Stone Oven, Stone Kiln, Stone Crucible, and Anvil,
+  provide Jade state/progress/modifiers plus JEI and EMI recipes from one
+  loader-neutral recipe view. The One Probe is intentionally outside the accepted
+  scope for this device family. This exclusion does not remove or narrow any
+  other optional integration requirement.
 - Progression checks should query a progression contract or tag/data rule. Do not
   scatter age/tier conditionals throughout blocks and items.

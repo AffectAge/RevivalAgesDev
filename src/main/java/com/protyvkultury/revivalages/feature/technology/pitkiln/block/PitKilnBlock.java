@@ -111,6 +111,7 @@ public final class PitKilnBlock extends BaseEntityBlock {
                 if (!player.hasInfiniteMaterials()) {
                     stack.shrink(1);
                 }
+                level.playSound(null, pos, SoundEvents.GRASS_PLACE, SoundSource.BLOCKS, 1.0F, 1.0F);
             }
             return ItemInteractionResult.sidedSuccess(level.isClientSide);
         }
@@ -121,7 +122,7 @@ public final class PitKilnBlock extends BaseEntityBlock {
             }
             if (!level.isClientSide) {
                 kiln.addLog(stack, player.hasInfiniteMaterials());
-                level.playSound(null, pos, SoundEvents.WOOD_PLACE, SoundSource.BLOCKS, 0.8F, 1.0F);
+                level.playSound(null, pos, SoundEvents.WOOD_PLACE, SoundSource.BLOCKS, 1.0F, 1.0F);
             }
             return ItemInteractionResult.sidedSuccess(level.isClientSide);
         }

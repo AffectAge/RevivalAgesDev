@@ -1,0 +1,6 @@
+{
+  "type": "revivalages:stone_crucible",
+  "ingredient": { "item": "minecraft:packed_ice" },
+  "result": { "id": "minecraft:water", "amount": 2000 },
+  "processing_time": 4800
+}

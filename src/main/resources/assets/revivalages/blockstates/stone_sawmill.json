@@ -1,0 +1,12 @@
+{
+  "multipart": [
+    { "when": { "half": "lower", "facing": "north" }, "apply": { "model": "revivalages:block/stone_sawmill" } },
+    { "when": { "half": "lower", "facing": "east" }, "apply": { "model": "revivalages:block/stone_sawmill", "y": 90 } },
+    { "when": { "half": "lower", "facing": "south" }, "apply": { "model": "revivalages:block/stone_sawmill", "y": 180 } },
+    { "when": { "half": "lower", "facing": "west" }, "apply": { "model": "revivalages:block/stone_sawmill", "y": 270 } },
+    { "when": { "half": "lower", "lit": "true", "facing": "north" }, "apply": { "model": "revivalages:block/stone_machine_lit" } },
+    { "when": { "half": "lower", "lit": "true", "facing": "east" }, "apply": { "model": "revivalages:block/stone_machine_lit", "y": 90 } },
+    { "when": { "half": "lower", "lit": "true", "facing": "south" }, "apply": { "model": "revivalages:block/stone_machine_lit", "y": 180 } },
+    { "when": { "half": "lower", "lit": "true", "facing": "west" }, "apply": { "model": "revivalages:block/stone_machine_lit", "y": 270 } }
+  ]
+}

@@ -27,7 +27,7 @@ final class DryingEmiRecipe implements EmiRecipe {
         this.category = category;
         this.id =
                 RevivalAges.id(
-            "/emi/" + categoryPath + "/" + view.id().getNamespace() + "/" + view.id().getPath());
+            "emi/" + categoryPath + "/" + view.id().getNamespace() + "/" + view.id().getPath());
         this.view = view;
         this.input = EmiIngredient.of(view.displayIngredient());
         this.output = EmiStack.of(

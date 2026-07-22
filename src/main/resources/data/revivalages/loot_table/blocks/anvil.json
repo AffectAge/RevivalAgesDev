@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:block",
+  "pools": [{
+    "rolls": 1,
+    "entries": [{ "type": "minecraft:item", "name": "revivalages:anvil" }]
+  }],
+  "random_sequence": "revivalages:blocks/anvil"
+}

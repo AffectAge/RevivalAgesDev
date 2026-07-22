@@ -1,0 +1,7 @@
+{
+  "type": "revivalages:anvil",
+  "ingredient": { "item": "minecraft:coal_block" },
+  "result": { "id": "minecraft:coal", "count": 9 },
+  "hits": 8,
+  "tool": "pickaxe"
+}

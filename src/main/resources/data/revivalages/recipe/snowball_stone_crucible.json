@@ -1,0 +1,6 @@
+{
+  "type": "revivalages:stone_crucible",
+  "ingredient": { "item": "minecraft:snowball" },
+  "result": { "id": "minecraft:water", "amount": 125 },
+  "processing_time": 300
+}

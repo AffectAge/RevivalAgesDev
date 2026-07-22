@@ -62,6 +62,30 @@ public final class PrimitiveTechnologyConfig {
     public static final ModConfigSpec.DoubleValue TANNING_RACK_DURATION_MULTIPLIER;
     public static final ModConfigSpec.IntValue TANNING_RACK_RAIN_RUIN_TICKS;
 
+    public static final ModConfigSpec.IntValue STONE_MACHINE_INPUT_LIMIT;
+    public static final ModConfigSpec.IntValue STONE_MACHINE_FUEL_LIMIT;
+    public static final ModConfigSpec.DoubleValue STONE_MACHINE_FUEL_MULTIPLIER;
+    public static final ModConfigSpec.DoubleValue STONE_MACHINE_AIRFLOW_MULTIPLIER;
+    public static final ModConfigSpec.DoubleValue STONE_MACHINE_AIRFLOW_DRAG;
+    public static final ModConfigSpec.BooleanValue STONE_MACHINE_KEEP_HEAT;
+    public static final ModConfigSpec.DoubleValue STONE_SAWMILL_BLADE_DAMAGE;
+    public static final ModConfigSpec.BooleanValue STONE_SAWMILL_DAMAGE_BLADES;
+    public static final ModConfigSpec.DoubleValue STONE_SAWMILL_WOOD_CHIP_CHANCE;
+    public static final ModConfigSpec.BooleanValue STONE_SAWMILL_IDLE_SOUND_ENABLED;
+    public static final ModConfigSpec.DoubleValue STONE_SAWMILL_IDLE_SOUND_VOLUME;
+    public static final ModConfigSpec.BooleanValue STONE_SAWMILL_COMPLETE_SOUND_ENABLED;
+    public static final ModConfigSpec.DoubleValue STONE_SAWMILL_COMPLETE_SOUND_VOLUME;
+    public static final ModConfigSpec.IntValue STONE_OVEN_COOK_TICKS;
+    public static final ModConfigSpec.DoubleValue STONE_OVEN_DRYING_DURATION_MULTIPLIER;
+    public static final ModConfigSpec.DoubleValue STONE_KILN_PIT_DURATION_MULTIPLIER;
+    public static final ModConfigSpec.DoubleValue STONE_KILN_PIT_FAILURE_MULTIPLIER;
+    public static final ModConfigSpec.IntValue STONE_CRUCIBLE_CAPACITY;
+    public static final ModConfigSpec.IntValue ANVIL_HITS_PER_DAMAGE_STAGE;
+    public static final ModConfigSpec.DoubleValue ANVIL_EXHAUSTION_PER_HIT;
+    public static final ModConfigSpec.DoubleValue ANVIL_EXHAUSTION_PER_CRAFT;
+    public static final ModConfigSpec.IntValue ANVIL_MINIMUM_HUNGER;
+    public static final ModConfigSpec.BooleanValue ANVIL_USE_TOOL_DURABILITY;
+
     public static final ModConfigSpec.BooleanValue CAMPFIRE_EFFECTS_ENABLED;
     public static final ModConfigSpec.IntValue CAMPFIRE_EFFECT_START_TIME;
     public static final ModConfigSpec.IntValue CAMPFIRE_EFFECT_STOP_TIME;
@@ -146,6 +170,48 @@ public final class PrimitiveTechnologyConfig {
         builder.push("tanningRack");
         TANNING_RACK_DURATION_MULTIPLIER = nonNegative(builder, "durationMultiplier", 1.0D);
         TANNING_RACK_RAIN_RUIN_TICKS = builder.defineInRange("rainRuinTicks", 2 * 60 * 20, -1, Integer.MAX_VALUE);
+        builder.pop();
+
+        builder.push("stoneMachines");
+        STONE_MACHINE_INPUT_LIMIT = builder.defineInRange("inputLimit", 8, 1, 64);
+        STONE_MACHINE_FUEL_LIMIT = builder.defineInRange("fuelLimit", 16, 1, 64);
+        STONE_MACHINE_FUEL_MULTIPLIER = nonNegative(builder, "fuelBurnTimeMultiplier", 1.0D);
+        STONE_MACHINE_AIRFLOW_MULTIPLIER = nonNegative(builder, "airflowMultiplier", 1.0D);
+        STONE_MACHINE_AIRFLOW_DRAG = builder.defineInRange("airflowDrag", 0.02D, 0.0D, 1.0D);
+        STONE_MACHINE_KEEP_HEAT = builder.comment(
+                        "When true, a lit machine stays active briefly after input or fuel becomes unavailable.")
+                .define("keepHeat", false);
+
+        builder.push("sawmill");
+        STONE_SAWMILL_BLADE_DAMAGE = nonNegative(builder, "activeBladeEntityDamage", 3.0D);
+        STONE_SAWMILL_DAMAGE_BLADES = builder.define("damageBlades", true);
+        STONE_SAWMILL_WOOD_CHIP_CHANCE = chance(builder, "woodChipChance", 0.25D);
+        STONE_SAWMILL_IDLE_SOUND_ENABLED = builder.define("idleSoundEnabled", true);
+        STONE_SAWMILL_IDLE_SOUND_VOLUME = nonNegative(builder, "idleSoundVolume", 0.5D);
+        STONE_SAWMILL_COMPLETE_SOUND_ENABLED = builder.define("recipeCompleteSoundEnabled", true);
+        STONE_SAWMILL_COMPLETE_SOUND_VOLUME = nonNegative(builder, "recipeCompleteSoundVolume", 0.75D);
+        builder.pop();
+
+        builder.push("oven");
+        STONE_OVEN_COOK_TICKS = positive(builder, "foodCookTicks", 2 * 60 * 20);
+        STONE_OVEN_DRYING_DURATION_MULTIPLIER = nonNegative(builder, "dryingDurationMultiplier", 0.25D);
+        builder.pop();
+
+        builder.push("kiln");
+        STONE_KILN_PIT_DURATION_MULTIPLIER = nonNegative(builder, "pitKilnDurationMultiplier", 0.5D);
+        STONE_KILN_PIT_FAILURE_MULTIPLIER = nonNegative(builder, "pitKilnFailureMultiplier", 0.25D);
+        builder.pop();
+
+        builder.push("crucible");
+        STONE_CRUCIBLE_CAPACITY = positive(builder, "capacity", 4000);
+        builder.pop(2);
+
+        builder.push("anvil");
+        ANVIL_HITS_PER_DAMAGE_STAGE = positive(builder, "hitsPerDamageStage", 64);
+        ANVIL_EXHAUSTION_PER_HIT = nonNegative(builder, "exhaustionPerHit", 0.5D);
+        ANVIL_EXHAUSTION_PER_CRAFT = nonNegative(builder, "exhaustionPerCraft", 0.0D);
+        ANVIL_MINIMUM_HUNGER = builder.defineInRange("minimumHunger", 3, 0, 20);
+        ANVIL_USE_TOOL_DURABILITY = builder.define("useToolDurability", true);
         builder.pop();
 
         builder.push("campfireEffects");

@@ -24,6 +24,12 @@ This subtree contains source resources that humans intentionally maintain.
   of shipped resources unless the build explicitly excludes them.
 - Define every referenced sound in `sounds.json`, use lowercase sound IDs, and
   document the license/source outside the shipped asset.
+- When a reference mechanism has functional audio, import every licensed custom
+  sound it requires and register it under the Revival Ages namespace. Preserve
+  the original triggers, categories, volume, pitch, random variants, cadence,
+  subtitles, and configuration; also reproduce required vanilla sound events
+  when no custom file exists. Record source paths, renamed paths, license, and
+  adaptations in `THIRD_PARTY_NOTICES.md`.
 - Pyrotech-derived primitive recipe categories must reuse or adapt the licensed
   functional backgrounds, slots, arrows, flame indicators, and fluid gauges when
   they improve recipe readability. JEI and EMI must use the same visual semantics

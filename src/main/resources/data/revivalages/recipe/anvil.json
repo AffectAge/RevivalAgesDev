@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": ["G", "S"],
+  "key": {
+    "G": { "item": "minecraft:polished_granite" },
+    "S": { "item": "minecraft:stone_slab" }
+  },
+  "result": { "id": "revivalages:anvil", "count": 1 }
+}

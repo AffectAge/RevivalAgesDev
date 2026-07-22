@@ -30,6 +30,12 @@ are ported into Revival Ages' shared NeoForge core and used by the mechanisms.
 7. Place tanned hide on a Tanning Rack under open daytime sky. Darkness pauses
    work, blocked sky resets it, and prolonged rain can produce the configured
    failure result.
+8. Advance into the stone machine tier. The four two-block machines share the
+   same lower fuel chamber, upper process chamber, directional interaction rules,
+   synchronized process state, airflow input, and output-blocking behavior.
+9. Use the in-world Anvil with a tagged hammer or pickaxe. Each recipe specifies
+   the tool family and hit count; work consumes hunger and tool durability and
+   eventually damages the granite anvil itself.
 
 ## Campfire
 
@@ -60,6 +66,47 @@ and Tanning Rack duration/rain failure. Raw-hide drop chance and maximum count a
 also configurable. Values are server-owned and are not saved
 inside recipes.
 
+The same server file configures stone-machine fuel limits and multiplier,
+airflow acceleration and drag, retained heat, Sawmill blade damage and chip
+chance, Oven duration, inherited Kiln duration/failure scaling, Crucible tank
+capacity, and Anvil hit, exhaustion, hunger, and durability costs. Reloaded
+server configuration affects future ticks and crafts without rewriting recipes or
+world saves.
+
+## Stone machines and Anvil
+
+The Stone Sawmill accepts a Chopping Block recipe input in its upper half and a
+stone, flint, or bone saw blade. Stone blades produce one normal result in 12
+seconds and four possible wood chips; flint and bone blades produce two results
+in 8 seconds and two possible chips. The chip chance and active-blade contact
+damage are configured. The requested content scope adds the three blades only;
+board, stick, tarred-board, and later-tier material recipes are intentionally not
+added.
+
+The Stone Oven inherits Drying Rack recipes at the configured duration multiplier
+and food-producing vanilla smelting recipes. The Stone Kiln inherits Pit Kiln
+recipes at the configured duration and failure multipliers and adds
+gravel-to-cobblestone and sand-to-glass. The Stone Crucible accepts only the
+water-producing ice and snow recipes supplied by Revival Ages; it fills its
+internal tank and supports normal NeoForge fluid containers.
+
+Fuel is inserted into a machine's lower half. Inputs, blades, fluids, and outputs
+are handled through the upper half. Flint and steel or a fire charge ignites a
+loaded machine, and a water bucket extinguishes it. Empty-hand interaction
+extracts the relevant stored stack. Breaking either half tears down the complete
+machine while dropping lower-half contents exactly once. Active machines expose
+flame/smoke particles and sounds, and all stored state survives save/reload.
+The Stone Sawmill uses Pyrotech's licensed idle and long/short work recordings.
+Its idle and recipe-completion sounds can be enabled independently and their
+volumes changed in the server configuration without changing recipes or saves.
+Stone fire-based machines retain the reference furnace-crackle ambience.
+
+The Revival Ages `anvil` is a separate granite working block and does not replace
+Minecraft's vanilla anvil. Place one recipe input, then strike it with the
+recipe's hammer or pickaxe until the configured work completes. Insufficient
+hunger blocks the action with feedback. Progress persists across reloads. Damage
+advances through four visible stages; final breakage preserves the workpiece.
+
 Drying Rack environment and seasonal balance remains in
 `config/revivalages-server.toml`. Every seasonal coefficient is configurable;
 `enabled=false` forces a zero seasonal bonus. Ecliptic Seasons takes precedence
@@ -84,6 +131,12 @@ stacks use `{"id":"namespace:fluid","amount":1000}`.
   `requires_campfire`, and `processing_time`.
 - `revivalages:tanning_rack`: `ingredient`, `result`, optional `rain_failure`, and
   `processing_time`.
+- `revivalages:stone_kiln`: `ingredient`, `result`, `processing_time`, optional
+  `failure_chance` and `failure_results`.
+- `revivalages:stone_crucible`: `ingredient`, fluid `result`, and
+  `processing_time`.
+- `revivalages:anvil`: `ingredient`, `result`, `hits`, and `tool` (`hammer` or
+  `pickaxe`).
 
 Reloading recipes changes future matching without migrating world saves. Active
 machines resolve their recipe from current server data and synchronize only the
@@ -93,12 +146,15 @@ state required for rendering and overlays.
 
 Jade displays progress, inputs and predicted outputs, fuel, ash, block damage,
 wood chips, Pit Kiln stage/structure/logs, Barrel seal/fluid/result, Soaking Pot
-heat requirement, and Tanning Rack sky/day/rain conditions. JEI and EMI use the
+heat requirement, Tanning Rack sky/day/rain conditions, stone-machine airflow,
+fuel, blade, tank and output-blocking state, and Anvil hits and damage. JEI and EMI use the
 same loader-neutral recipe catalog and the Apache-2.0 functional UI textures
 adapted from Pyrotech. Categories include item and fluid inputs, outputs, duration,
 failure outcomes, and required environmental conditions. All three integrations
 are optional and client-only; a dedicated server and the base mod load without
-them. The One Probe alone is intentionally excluded from the accepted scope.
+them. The One Probe alone is intentionally excluded from the accepted scope for
+this complete primitive-device family. This exception does not remove JEI, EMI,
+or any other previously accepted optional integration.
 
 KubeJS can add or replace these codec-backed recipes through normal custom recipe
 JSON. Biomes O' Plenty logs receive optional, load-conditioned Chopping recipes;
@@ -107,6 +163,14 @@ primitive-machine behavior.
 Progressive Stages can gate recipe availability at the pack layer without being a
 hard dependency. Every integration must remain removable without registry or save
 corruption.
+
+For Stone Sawmill, Stone Oven, Stone Kiln, Stone Crucible, and Anvil, KubeJS is
+applicable through their codec-backed recipe inputs, JEI/EMI are applicable as
+recipe viewers, Jade is applicable for synchronized machine inspection, and
+Progressive Stages is applicable at the recipe/progression layer. Curios, Biomes
+O' Plenty, Serene Seasons, and Ecliptic Seasons are currently not applicable
+because these mechanisms have no wearable, biome-sensitive, or seasonal rule.
+The One Probe remains explicitly excluded for this family.
 
 ## Athenaeum porting rule
 

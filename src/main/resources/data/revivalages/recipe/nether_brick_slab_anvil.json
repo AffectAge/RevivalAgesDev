@@ -1,0 +1,7 @@
+{
+  "type": "revivalages:anvil",
+  "ingredient": { "item": "minecraft:nether_bricks" },
+  "result": { "id": "minecraft:nether_brick_slab", "count": 2 },
+  "hits": 8,
+  "tool": "pickaxe"
+}

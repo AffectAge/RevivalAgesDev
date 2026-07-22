@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": ["RRR", "RSR", "RRR"],
+  "key": {
+    "R": { "item": "minecraft:cobblestone" },
+    "S": { "item": "minecraft:polished_andesite" }
+  },
+  "result": { "id": "revivalages:stone_saw_blade", "count": 1 }
+}

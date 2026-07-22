@@ -1,0 +1,8 @@
+{
+  "type": "revivalages:stone_kiln",
+  "ingredient": { "item": "minecraft:gravel" },
+  "result": { "id": "minecraft:cobblestone", "count": 1 },
+  "processing_time": 8400,
+  "failure_chance": 0.05,
+  "failure_results": [{ "id": "revivalages:pit_ash", "count": 1 }]
+}

@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:block",
+  "pools": [{
+    "rolls": 1,
+    "entries": [{ "type": "minecraft:item", "name": "revivalages:stone_kiln" }],
+    "conditions": [{
+      "condition": "minecraft:block_state_property",
+      "block": "revivalages:stone_kiln",
+      "properties": { "half": "lower" }
+    }]
+  }],
+  "random_sequence": "revivalages:blocks/stone_kiln"
+}

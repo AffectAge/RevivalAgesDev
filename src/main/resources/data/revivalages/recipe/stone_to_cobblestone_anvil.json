@@ -1,0 +1,7 @@
+{
+  "type": "revivalages:anvil",
+  "ingredient": { "item": "minecraft:stone" },
+  "result": { "id": "minecraft:cobblestone", "count": 1 },
+  "hits": 8,
+  "tool": "hammer"
+}

@@ -132,7 +132,8 @@ public final class ChoppingBlockEntity extends BlockEntity {
                     0.05D
             );
         }
-        level.playSound(null, worldPosition, SoundEvents.WOOD_PLACE, SoundSource.BLOCKS, 0.8F, 0.9F + level.random.nextFloat() * 0.2F);
+        level.playSound(null, worldPosition, SoundEvents.WOOD_PLACE, SoundSource.BLOCKS, 0.75F,
+                (float) (1.0D + level.random.nextGaussian() * 0.4D));
 
         if (PrimitiveTechnologyConfig.CHOPPING_USES_DURABILITY.get() && durabilityUntilDamage <= 0) {
             durabilityUntilDamage = PrimitiveTechnologyConfig.CHOPPING_CHOPS_PER_DAMAGE.get();

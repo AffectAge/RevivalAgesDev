@@ -84,7 +84,7 @@ public final class ChoppingBlock extends BaseEntityBlock {
                 if (!player.hasInfiniteMaterials()) {
                     stack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(hand));
                 }
-                level.playSound(null, pos, SoundEvents.SAND_BREAK, SoundSource.BLOCKS, 0.8F, 1.0F);
+                level.playSound(null, pos, SoundEvents.SAND_BREAK, SoundSource.BLOCKS, 1.0F, 1.0F);
             }
             return ItemInteractionResult.sidedSuccess(level.isClientSide);
         }
@@ -107,7 +107,8 @@ public final class ChoppingBlock extends BaseEntityBlock {
         if (chopping.canInsert(stack)) {
             return ItemStackInteraction.insert(level, true, () -> {
                 chopping.insert(stack, player.hasInfiniteMaterials());
-                level.playSound(null, pos, SoundEvents.WOOD_PLACE, SoundSource.BLOCKS, 0.7F, 1.0F);
+                level.playSound(null, pos, SoundEvents.WOOD_PLACE, SoundSource.BLOCKS, 0.5F,
+                        (float) (1.0D + level.random.nextGaussian() * 0.4D));
             });
         }
         return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;

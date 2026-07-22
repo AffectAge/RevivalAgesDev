@@ -7,6 +7,8 @@ import com.protyvkultury.revivalages.feature.technology.choppingblock.block.Chop
 import com.protyvkultury.revivalages.feature.technology.pitkiln.block.PitKilnBlock;
 import com.protyvkultury.revivalages.feature.technology.soakingpot.block.SoakingPotBlock;
 import com.protyvkultury.revivalages.feature.technology.tanningrack.block.TanningRackBlock;
+import com.protyvkultury.revivalages.feature.technology.stonemachine.block.StoneMachineBlock;
+import com.protyvkultury.revivalages.feature.technology.anvil.block.AnvilBlock;
 import snownee.jade.api.IWailaClientRegistration;
 import snownee.jade.api.IWailaPlugin;
 import snownee.jade.api.WailaPlugin;
@@ -23,5 +25,7 @@ public final class RevivalAgesJadePlugin implements IWailaPlugin {
         registration.registerBlockComponent(PrimitiveDeviceComponentProvider.INSTANCE, BarrelBlock.class);
         registration.registerBlockComponent(PrimitiveDeviceComponentProvider.INSTANCE, SoakingPotBlock.class);
         registration.registerBlockComponent(PrimitiveDeviceComponentProvider.INSTANCE, TanningRackBlock.class);
+        registration.registerBlockComponent(StoneMachineComponentProvider.INSTANCE, StoneMachineBlock.class);
+        registration.registerBlockComponent(AnvilComponentProvider.INSTANCE, AnvilBlock.class);
     }
 }

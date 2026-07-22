@@ -12,6 +12,9 @@ import com.protyvkultury.revivalages.feature.technology.primitive.view.Primitive
 import com.protyvkultury.revivalages.feature.technology.primitive.view.PrimitiveRecipeView;
 import com.protyvkultury.revivalages.feature.technology.soakingpot.SoakingPotFeature;
 import com.protyvkultury.revivalages.feature.technology.tanningrack.TanningRackFeature;
+import com.protyvkultury.revivalages.feature.technology.anvil.AnvilFeature;
+import com.protyvkultury.revivalages.feature.technology.stonemachine.StoneMachineFeature;
+import com.protyvkultury.revivalages.feature.technology.stonemachine.view.StoneTechnologyRecipeCatalog;
 import dev.emi.emi.api.EmiEntrypoint;
 import dev.emi.emi.api.EmiPlugin;
 import dev.emi.emi.api.EmiRegistry;
@@ -53,6 +56,16 @@ public final class RevivalAgesEmiPlugin implements EmiPlugin {
     public static final EmiRecipeCategory TANNING_RACK =
             RevivalAgesEmiPlugin.category(
                     "tanning_rack", (ItemLike) TanningRackFeature.TANNING_RACK_ITEM.get());
+    public static final EmiRecipeCategory STONE_SAWMILL =
+            RevivalAgesEmiPlugin.category("stone_sawmill", StoneMachineFeature.STONE_SAWMILL_ITEM.get());
+    public static final EmiRecipeCategory STONE_OVEN =
+            RevivalAgesEmiPlugin.category("stone_oven", StoneMachineFeature.STONE_OVEN_ITEM.get());
+    public static final EmiRecipeCategory STONE_KILN =
+            RevivalAgesEmiPlugin.category("stone_kiln", StoneMachineFeature.STONE_KILN_ITEM.get());
+    public static final EmiRecipeCategory STONE_CRUCIBLE =
+            RevivalAgesEmiPlugin.category("stone_crucible", StoneMachineFeature.STONE_CRUCIBLE_ITEM.get());
+    public static final EmiRecipeCategory ANVIL =
+            RevivalAgesEmiPlugin.category("anvil", AnvilFeature.ANVIL_ITEM.get());
 
     private static EmiRecipeCategory category(String id, ItemLike icon) {
         return new EmiRecipeCategory(RevivalAges.id(id), (EmiRenderable) EmiStack.of((ItemLike) icon));
@@ -67,6 +80,11 @@ public final class RevivalAgesEmiPlugin implements EmiPlugin {
         registry.addCategory(BARREL);
         registry.addCategory(SOAKING_POT);
         registry.addCategory(TANNING_RACK);
+        registry.addCategory(STONE_SAWMILL);
+        registry.addCategory(STONE_OVEN);
+        registry.addCategory(STONE_KILN);
+        registry.addCategory(STONE_CRUCIBLE);
+        registry.addCategory(ANVIL);
         registry.addWorkstation(
                 CRUDE_DRYING,
                 (EmiIngredient)
@@ -100,6 +118,11 @@ public final class RevivalAgesEmiPlugin implements EmiPlugin {
                 TANNING_RACK,
                 (EmiIngredient)
                         EmiStack.of((ItemLike) ((ItemLike) TanningRackFeature.TANNING_RACK_ITEM.get())));
+        registry.addWorkstation(STONE_SAWMILL, EmiStack.of(StoneMachineFeature.STONE_SAWMILL_ITEM.get()));
+        registry.addWorkstation(STONE_OVEN, EmiStack.of(StoneMachineFeature.STONE_OVEN_ITEM.get()));
+        registry.addWorkstation(STONE_KILN, EmiStack.of(StoneMachineFeature.STONE_KILN_ITEM.get()));
+        registry.addWorkstation(STONE_CRUCIBLE, EmiStack.of(StoneMachineFeature.STONE_CRUCIBLE_ITEM.get()));
+        registry.addWorkstation(ANVIL, EmiStack.of(AnvilFeature.ANVIL_ITEM.get()));
         DryingRecipeCatalog.crude(registry.getRecipeManager())
                 .forEach(
                         view ->
@@ -165,5 +188,15 @@ public final class RevivalAgesEmiPlugin implements EmiPlugin {
                                                         TANNING_RACK,
                                                         PrimitiveEmiRecipe.Layout.TANNING_RACK,
                                                         (PrimitiveRecipeView) view)));
+        StoneTechnologyRecipeCatalog.sawmill(manager).forEach(view -> registry.addRecipe(
+                new PrimitiveEmiRecipe(STONE_SAWMILL, PrimitiveEmiRecipe.Layout.STONE_SAWMILL, view)));
+        StoneTechnologyRecipeCatalog.oven(Minecraft.getInstance().level).forEach(view -> registry.addRecipe(
+                new PrimitiveEmiRecipe(STONE_OVEN, PrimitiveEmiRecipe.Layout.STONE_OVEN, view)));
+        StoneTechnologyRecipeCatalog.kiln(Minecraft.getInstance().level).forEach(view -> registry.addRecipe(
+                new PrimitiveEmiRecipe(STONE_KILN, PrimitiveEmiRecipe.Layout.STONE_KILN, view)));
+        StoneTechnologyRecipeCatalog.crucible(Minecraft.getInstance().level).forEach(view -> registry.addRecipe(
+                new PrimitiveEmiRecipe(STONE_CRUCIBLE, PrimitiveEmiRecipe.Layout.STONE_CRUCIBLE, view)));
+        StoneTechnologyRecipeCatalog.anvil(manager).forEach(view -> registry.addRecipe(
+                new PrimitiveEmiRecipe(ANVIL, PrimitiveEmiRecipe.Layout.ANVIL, view)));
     }
 }

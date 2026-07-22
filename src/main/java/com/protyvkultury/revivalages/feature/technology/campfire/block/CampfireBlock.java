@@ -139,6 +139,7 @@ public final class CampfireBlock extends BaseEntityBlock {
                 if (!player.hasInfiniteMaterials()) {
                     stack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(hand));
                 }
+                level.playSound(null, pos, SoundEvents.SAND_BREAK, SoundSource.BLOCKS, 1.0F, 1.0F);
             }
             return ItemInteractionResult.sidedSuccess(level.isClientSide);
         }
@@ -148,7 +149,7 @@ public final class CampfireBlock extends BaseEntityBlock {
             }
             if (!level.isClientSide) {
                 campfire.addLog(stack, player.hasInfiniteMaterials());
-                level.playSound(null, pos, SoundEvents.WOOD_PLACE, SoundSource.BLOCKS, 0.8F, 1.0F);
+                level.playSound(null, pos, SoundEvents.WOOD_PLACE, SoundSource.BLOCKS, 1.0F, 1.0F);
             }
             return ItemInteractionResult.sidedSuccess(level.isClientSide);
         }

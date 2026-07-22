@@ -1,5 +1,6 @@
 package com.protyvkultury.revivalages.feature.technology.barrel.blockentity;
 
+import com.protyvkultury.revivalages.core.interaction.ItemStackInteraction;
 import com.protyvkultury.revivalages.feature.technology.barrel.BarrelFeature;
 import com.protyvkultury.revivalages.feature.technology.barrel.block.BarrelBlock;
 import com.protyvkultury.revivalages.feature.technology.barrel.recipe.BarrelRecipe;
@@ -166,6 +167,7 @@ public final class BarrelBlockEntity extends BlockEntity {
         if (!player.addItem(lid)) {
             Block.popResource(level, worldPosition.above(), lid);
         }
+        ItemStackInteraction.playExtractionSound(level, worldPosition);
         elapsedTicks = 0;
         totalTicks = 0;
         level.setBlock(worldPosition, getBlockState().setValue(BarrelBlock.SEALED, false), Block.UPDATE_ALL);
@@ -248,7 +250,7 @@ public final class BarrelBlockEntity extends BlockEntity {
         dropContents();
         BlockState fluidState = resource.getFluid().defaultFluidState().createLegacyBlock();
         level.setBlock(worldPosition, fluidState.isAir() ? Blocks.AIR.defaultBlockState() : fluidState, Block.UPDATE_ALL);
-        level.playSound(null, worldPosition, SoundEvents.ITEM_BREAK, SoundSource.BLOCKS, 1.0F, 1.0F);
+        level.playSound(null, worldPosition, SoundEvents.ITEM_BREAK, SoundSource.PLAYERS, 1.0F, 1.0F);
     }
 
     public void dropContents() {

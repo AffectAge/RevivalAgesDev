@@ -3,6 +3,8 @@ package com.protyvkultury.revivalages.feature.technology.campfire.item;
 import com.protyvkultury.revivalages.feature.technology.campfire.CampfireFeature;
 import com.protyvkultury.revivalages.feature.technology.campfire.blockentity.CampfireBlockEntity;
 import net.minecraft.core.BlockPos;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.context.UseOnContext;
@@ -29,6 +31,13 @@ public final class TinderItem extends Item {
             if (level.getBlockEntity(placePos) instanceof CampfireBlockEntity campfire) {
                 campfire.setHasTinder(true);
             }
+            level.playSound(
+                    null,
+                    placePos,
+                    SoundEvents.GRASS_PLACE,
+                    SoundSource.PLAYERS,
+                    1.0F,
+                    (float) (1.0D + level.random.nextGaussian() * 0.4D));
             if (context.getPlayer() == null || !context.getPlayer().hasInfiniteMaterials()) {
                 context.getItemInHand().shrink(1);
             }

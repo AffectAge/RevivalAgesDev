@@ -1,5 +1,6 @@
 package com.protyvkultury.revivalages.feature.technology.pitkiln.blockentity;
 
+import com.protyvkultury.revivalages.core.interaction.ItemStackInteraction;
 import com.protyvkultury.revivalages.core.machine.BurnableStructureTracker;
 import com.protyvkultury.revivalages.feature.technology.pitkiln.PitKilnFeature;
 import com.protyvkultury.revivalages.feature.technology.pitkiln.block.PitKilnBlock;
@@ -408,12 +409,17 @@ public final class PitKilnBlockEntity extends BlockEntity {
         if (level == null) {
             return;
         }
+        boolean extracted = false;
         for (int slot = FIRST_OUTPUT_SLOT; slot <= LAST_OUTPUT_SLOT; slot++) {
             ItemStack stack = items.get(slot);
+            extracted |= !stack.isEmpty();
             if (!stack.isEmpty() && !player.addItem(stack)) {
                 Block.popResource(level, worldPosition.above(), stack);
             }
             items.set(slot, ItemStack.EMPTY);
+        }
+        if (extracted) {
+            ItemStackInteraction.playExtractionSound(level, worldPosition);
         }
         activeRecipe = null;
         elapsedTicks = 0;

@@ -1,0 +1,7 @@
+{
+  "type": "revivalages:anvil",
+  "ingredient": { "item": "minecraft:iron_block" },
+  "result": { "id": "minecraft:iron_ingot", "count": 9 },
+  "hits": 8,
+  "tool": "pickaxe"
+}

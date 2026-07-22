@@ -1,4 +1,11 @@
 {
   "replace": false,
-  "values": ["revivalages:soaking_pot"]
+  "values": [
+    "revivalages:soaking_pot",
+    "revivalages:stone_sawmill",
+    "revivalages:stone_oven",
+    "revivalages:stone_kiln",
+    "revivalages:stone_crucible",
+    "revivalages:anvil"
+  ]
 }

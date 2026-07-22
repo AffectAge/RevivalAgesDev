@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": ["RRR", "RSR", "RRR"],
+  "key": {
+    "R": { "item": "minecraft:bone" },
+    "S": { "item": "minecraft:polished_andesite" }
+  },
+  "result": { "id": "revivalages:bone_saw_blade", "count": 1 }
+}

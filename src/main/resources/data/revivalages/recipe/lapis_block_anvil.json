@@ -1,0 +1,7 @@
+{
+  "type": "revivalages:anvil",
+  "ingredient": { "item": "minecraft:lapis_block" },
+  "result": { "id": "minecraft:lapis_lazuli", "count": 9 },
+  "hits": 8,
+  "tool": "hammer"
+}

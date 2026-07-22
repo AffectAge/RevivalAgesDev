@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:block",
+  "pools": [{
+    "rolls": 1,
+    "entries": [{ "type": "minecraft:item", "name": "revivalages:stone_crucible" }],
+    "conditions": [{
+      "condition": "minecraft:block_state_property",
+      "block": "revivalages:stone_crucible",
+      "properties": { "half": "lower" }
+    }]
+  }],
+  "random_sequence": "revivalages:blocks/stone_crucible"
+}

@@ -12,6 +12,9 @@ import com.protyvkultury.revivalages.feature.technology.primitive.view.Primitive
 import com.protyvkultury.revivalages.feature.technology.primitive.view.PrimitiveRecipeView;
 import com.protyvkultury.revivalages.feature.technology.soakingpot.SoakingPotFeature;
 import com.protyvkultury.revivalages.feature.technology.tanningrack.TanningRackFeature;
+import com.protyvkultury.revivalages.feature.technology.anvil.AnvilFeature;
+import com.protyvkultury.revivalages.feature.technology.stonemachine.StoneMachineFeature;
+import com.protyvkultury.revivalages.feature.technology.stonemachine.view.StoneTechnologyRecipeCatalog;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.recipe.RecipeType;
@@ -45,6 +48,16 @@ public final class RevivalAgesJeiPlugin implements IModPlugin {
             RevivalAgesJeiPlugin.primitive("soaking_pot");
     public static final RecipeType<PrimitiveRecipeView> TANNING_RACK =
             RevivalAgesJeiPlugin.primitive("tanning_rack");
+    public static final RecipeType<PrimitiveRecipeView> STONE_SAWMILL =
+            RevivalAgesJeiPlugin.primitive("stone_sawmill");
+    public static final RecipeType<PrimitiveRecipeView> STONE_OVEN =
+            RevivalAgesJeiPlugin.primitive("stone_oven");
+    public static final RecipeType<PrimitiveRecipeView> STONE_KILN =
+            RevivalAgesJeiPlugin.primitive("stone_kiln");
+    public static final RecipeType<PrimitiveRecipeView> STONE_CRUCIBLE =
+            RevivalAgesJeiPlugin.primitive("stone_crucible");
+    public static final RecipeType<PrimitiveRecipeView> ANVIL =
+            RevivalAgesJeiPlugin.primitive("anvil");
 
     private static RecipeType<PrimitiveRecipeView> primitive(String path) {
         return RecipeType.create((String) "revivalages", (String) path, PrimitiveRecipeView.class);
@@ -102,7 +115,32 @@ public final class RevivalAgesJeiPlugin implements IModPlugin {
                             TANNING_RACK,
                             PrimitiveJeiCategory.Layout.TANNING_RACK,
                             "jei.revivalages.category.tanning_rack",
-                            (Item) TanningRackFeature.TANNING_RACK_ITEM.get())
+                            (Item) TanningRackFeature.TANNING_RACK_ITEM.get()),
+                    new PrimitiveJeiCategory(
+                            registration.getJeiHelpers().getGuiHelper(), STONE_SAWMILL,
+                            PrimitiveJeiCategory.Layout.STONE_SAWMILL,
+                            "jei.revivalages.category.stone_sawmill",
+                            (Item) StoneMachineFeature.STONE_SAWMILL_ITEM.get()),
+                    new PrimitiveJeiCategory(
+                            registration.getJeiHelpers().getGuiHelper(), STONE_OVEN,
+                            PrimitiveJeiCategory.Layout.STONE_OVEN,
+                            "jei.revivalages.category.stone_oven",
+                            (Item) StoneMachineFeature.STONE_OVEN_ITEM.get()),
+                    new PrimitiveJeiCategory(
+                            registration.getJeiHelpers().getGuiHelper(), STONE_KILN,
+                            PrimitiveJeiCategory.Layout.STONE_KILN,
+                            "jei.revivalages.category.stone_kiln",
+                            (Item) StoneMachineFeature.STONE_KILN_ITEM.get()),
+                    new PrimitiveJeiCategory(
+                            registration.getJeiHelpers().getGuiHelper(), STONE_CRUCIBLE,
+                            PrimitiveJeiCategory.Layout.STONE_CRUCIBLE,
+                            "jei.revivalages.category.stone_crucible",
+                            (Item) StoneMachineFeature.STONE_CRUCIBLE_ITEM.get()),
+                    new PrimitiveJeiCategory(
+                            registration.getJeiHelpers().getGuiHelper(), ANVIL,
+                            PrimitiveJeiCategory.Layout.ANVIL,
+                            "jei.revivalages.category.anvil",
+                            (Item) AnvilFeature.ANVIL_ITEM.get())
                 });
     }
 
@@ -122,6 +160,12 @@ public final class RevivalAgesJeiPlugin implements IModPlugin {
         registration.addRecipes(BARREL, PrimitiveRecipeCatalog.barrel(recipeManager));
         registration.addRecipes(SOAKING_POT, PrimitiveRecipeCatalog.soakingPot(recipeManager));
         registration.addRecipes(TANNING_RACK, PrimitiveRecipeCatalog.tanningRack(recipeManager));
+        registration.addRecipes(STONE_SAWMILL, StoneTechnologyRecipeCatalog.sawmill(recipeManager));
+        registration.addRecipes(STONE_OVEN, StoneTechnologyRecipeCatalog.oven(Minecraft.getInstance().level));
+        registration.addRecipes(STONE_KILN, StoneTechnologyRecipeCatalog.kiln(Minecraft.getInstance().level));
+        registration.addRecipes(STONE_CRUCIBLE,
+                StoneTechnologyRecipeCatalog.crucible(Minecraft.getInstance().level));
+        registration.addRecipes(ANVIL, StoneTechnologyRecipeCatalog.anvil(recipeManager));
     }
 
     public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
@@ -142,5 +186,14 @@ public final class RevivalAgesJeiPlugin implements IModPlugin {
                 (ItemLike) SoakingPotFeature.SOAKING_POT_ITEM.get(), new RecipeType[] {SOAKING_POT});
         registration.addRecipeCatalyst(
                 (ItemLike) TanningRackFeature.TANNING_RACK_ITEM.get(), new RecipeType[] {TANNING_RACK});
+        registration.addRecipeCatalyst(
+                (ItemLike) StoneMachineFeature.STONE_SAWMILL_ITEM.get(), new RecipeType[] {STONE_SAWMILL});
+        registration.addRecipeCatalyst(
+                (ItemLike) StoneMachineFeature.STONE_OVEN_ITEM.get(), new RecipeType[] {STONE_OVEN});
+        registration.addRecipeCatalyst(
+                (ItemLike) StoneMachineFeature.STONE_KILN_ITEM.get(), new RecipeType[] {STONE_KILN});
+        registration.addRecipeCatalyst(
+                (ItemLike) StoneMachineFeature.STONE_CRUCIBLE_ITEM.get(), new RecipeType[] {STONE_CRUCIBLE});
+        registration.addRecipeCatalyst((ItemLike) AnvilFeature.ANVIL_ITEM.get(), new RecipeType[] {ANVIL});
     }
 }

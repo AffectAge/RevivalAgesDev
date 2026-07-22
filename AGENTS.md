@@ -112,6 +112,13 @@ newer Minecraft branch; APIs and data formats may differ.
 - Treat small presentation and interaction details as required behavior when they
   communicate machine state or prevent item loss. A registered block and working
   recipe are not sufficient evidence of parity.
+- For every reference-derived mechanism, audit the complete sound contract in
+  Pyrotech and Athenaeum: custom audio files and registered events, vanilla sound
+  events, trigger conditions, source category, volume, pitch, random selection,
+  loop/cadence, and related configuration. When licensing permits, port every
+  functional original sound and record its provenance. The absence of a custom
+  `.ogg` does not permit omitting vanilla interaction or state sounds. Sound
+  parity is required before the mechanism may be called complete.
 - Verify direction-dependent behavior in every horizontal orientation and exercise
   both successful and invalid recipes. Document intentional differences from the
   reference instead of silently omitting behavior.
@@ -121,10 +128,16 @@ newer Minecraft branch; APIs and data formats may differ.
   meaningful reference feedback with arbitrary generic widgets. Record the source,
   license, renamed path, and adaptations in the third-party notices. Decorative
   assets are optional unless they convey state or materially aid recipe reading.
-- For the Pyrotech-inspired primitive device family, Jade is the required probe
+- For the Pyrotech-inspired primitive device family (Drying Rack, Campfire,
+  Chopping Block, Pit Kiln, Barrel, Soaking Pot, Tanning Rack, Stone Sawmill,
+  Stone Oven, Stone Kiln, Stone Crucible, and Anvil), Jade is the required probe
   integration and JEI/EMI are the required recipe viewers. Do not add The One
   Probe to this family unless its scope is explicitly reopened. Jade must expose
   progress and every active modifier or blocking condition, not merely inventory.
+- Before adding or changing any of these mechanisms, compare the complete
+  observable behavior with both Pyrotech and the Athenaeum implementation on
+  which it relies. Port required reusable contracts into Revival Ages' shared
+  core first; do not substitute a mechanism-local manual approximation.
 
 ## Required verification
 

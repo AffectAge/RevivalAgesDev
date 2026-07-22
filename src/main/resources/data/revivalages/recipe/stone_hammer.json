@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [" SS", " TS", "T  "],
+  "key": {
+    "S": { "item": "minecraft:stone_bricks" },
+    "T": { "item": "minecraft:stick" }
+  },
+  "result": { "id": "revivalages:stone_hammer", "count": 1 }
+}

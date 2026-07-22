@@ -267,7 +267,7 @@ public final class SoakingPotBlockEntity extends BlockEntity {
         }
         BlockState fluidState = resource.getFluid().defaultFluidState().createLegacyBlock();
         level.setBlock(worldPosition, fluidState.isAir() ? Blocks.AIR.defaultBlockState() : fluidState, Block.UPDATE_ALL);
-        level.playSound(null, worldPosition, SoundEvents.ITEM_BREAK, SoundSource.BLOCKS, 1.0F, 1.0F);
+        level.playSound(null, worldPosition, SoundEvents.ITEM_BREAK, SoundSource.PLAYERS, 1.0F, 1.0F);
     }
 
     public void dropContents() {

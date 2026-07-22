@@ -2,6 +2,8 @@ package com.protyvkultury.revivalages.core.interaction;
 
 import java.util.function.Supplier;
 import net.minecraft.core.BlockPos;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -41,8 +43,23 @@ public final class ItemStackInteraction {
         }
         if (!level.isClientSide) {
             giveOrDrop(level, pos, player, serverExtraction.get());
+            playExtractionSound(level, pos);
         }
         return InteractionResult.sidedSuccess(level.isClientSide);
+    }
+
+    /**
+     * Preserves Athenaeum's shared audible feedback for a player taking a
+     * visible stack from an interaction handler.
+     */
+    public static void playExtractionSound(Level level, BlockPos pos) {
+        level.playSound(
+                null,
+                pos,
+                SoundEvents.ITEM_PICKUP,
+                SoundSource.BLOCKS,
+                0.25F,
+                (float) (1.0D + level.random.nextGaussian() * 0.4D));
     }
 
     public static void giveOrDrop(Level level, BlockPos pos, Player player, ItemStack stack) {

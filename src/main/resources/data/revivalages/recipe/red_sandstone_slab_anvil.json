@@ -1,0 +1,7 @@
+{
+  "type": "revivalages:anvil",
+  "ingredient": { "item": "minecraft:red_sandstone" },
+  "result": { "id": "minecraft:red_sandstone_slab", "count": 2 },
+  "hits": 8,
+  "tool": "pickaxe"
+}

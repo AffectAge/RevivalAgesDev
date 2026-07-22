@@ -9,6 +9,8 @@ import com.protyvkultury.revivalages.feature.technology.barrel.BarrelFeature;
 import com.protyvkultury.revivalages.feature.technology.soakingpot.SoakingPotFeature;
 import com.protyvkultury.revivalages.feature.technology.tanningrack.TanningRackFeature;
 import com.protyvkultury.revivalages.feature.technology.dryingrack.DryingRackFeature;
+import com.protyvkultury.revivalages.feature.technology.stonemachine.StoneMachineFeature;
+import com.protyvkultury.revivalages.feature.technology.anvil.AnvilFeature;
 import java.util.List;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
@@ -24,7 +26,9 @@ public final class ModFeatures {
             new BarrelFeature(),
             new SoakingPotFeature(),
             new TanningRackFeature(),
-            new DryingRackFeature()
+            new DryingRackFeature(),
+            new StoneMachineFeature(),
+            new AnvilFeature()
     );
 
     private ModFeatures() {

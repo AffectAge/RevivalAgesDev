@@ -3,7 +3,8 @@
 Revival Ages is a NeoForge mod for Minecraft 1.21.1 by Protyv_Kultury. This
 repository contains an architecture-first implementation of Pyrotech-inspired
 primitive technology: Drying Racks, Campfire, Chopping Block, Pit Kiln, Barrel,
-Soaking Pot, and Tanning Rack.
+Soaking Pot, Tanning Rack, Stone Sawmill, Stone Oven, Stone Kiln, Stone Crucible,
+and an in-world Anvil.
 
 The project keeps Pyrotech's strongest architectural idea—small gameplay modules
 with local registration, configuration, recipes, and integrations—while using

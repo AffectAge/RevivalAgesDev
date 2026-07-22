@@ -32,7 +32,7 @@ final class PrimitiveEmiRecipe implements EmiRecipe {
         this.view = view;
         this.id =
                 RevivalAges.id(
-            "/emi/" + layout.texture + "/" + view.id().getNamespace() + "/" + view.id().getPath());
+            "emi/" + layout.texture + "/" + view.id().getNamespace() + "/" + view.id().getPath());
         this.inputs = new ArrayList<EmiIngredient>();
         view.itemInputs()
                 .forEach(ingredient -> this.inputs.add(EmiIngredient.of((Ingredient) ingredient)));
@@ -90,26 +90,40 @@ final class PrimitiveEmiRecipe implements EmiRecipe {
                 true,
                 false,
                 false);
-        switch (this.layout.ordinal()) {
-            case 0:
+        if (this.layout.hasFlame) {
+            widgets.addAnimatedTexture(
+                    texture,
+                    this.layout.flameX,
+                    this.layout.flameY,
+                    14,
+                    14,
+                    this.layout.flameU,
+                    this.layout.flameV,
+                    3000,
+                    false,
+                    true,
+                    false);
+        }
+        switch (this.layout) {
+            case CAMPFIRE, STONE_OVEN:
                 {
                     this.addItemInputs(widgets, new int[][] {{0, 0}});
                     this.addItemOutputs(widgets, new int[][] {{60, 10}});
                     break;
                 }
-            case 1:
+            case CHOPPING, ANVIL:
                 {
                     this.addItemInputs(widgets, new int[][] {{0, 17}});
                     this.addItemOutputs(widgets, new int[][] {{60, 18}});
                     break;
                 }
-            case 2:
+            case PIT_KILN:
                 {
                     this.addItemInputs(widgets, new int[][] {{0, 22}});
                     this.addItemOutputs(widgets, new int[][] {{60, 18}, {83, 22}});
                     break;
                 }
-            case 3:
+            case BARREL:
                 {
                     this.addItemInputs(widgets, new int[][] {{0, 0}, {19, 0}, {0, 19}, {19, 19}});
                     widgets.addTank(
@@ -130,7 +144,7 @@ final class PrimitiveEmiRecipe implements EmiRecipe {
                             .recipeContext((EmiRecipe) this);
                     break;
                 }
-            case 4:
+            case SOAKING_POT:
                 {
                     this.addItemInputs(widgets, new int[][] {{0, 0}});
                     widgets.addTank(
@@ -143,11 +157,33 @@ final class PrimitiveEmiRecipe implements EmiRecipe {
                     this.addItemOutputs(widgets, new int[][] {{60, 19}});
                     break;
                 }
-            case 5:
+            case TANNING_RACK:
                 {
                     this.addItemInputs(widgets, new int[][] {{0, 3}});
                     this.addItemOutputs(widgets, new int[][] {{60, 4}, {83, 4}});
+                    break;
                 }
+            case STONE_SAWMILL:
+                this.addItemInputs(widgets, new int[][] {{0, 0}, {0, 19}});
+                this.addItemOutputs(widgets, new int[][] {{60, 16}, {83, 20}});
+                break;
+            case STONE_KILN:
+                this.addItemInputs(widgets, new int[][] {{0, 0}});
+                this.addItemOutputs(widgets, new int[][] {{60, 10}, {83, 14}});
+                break;
+            case STONE_CRUCIBLE:
+                this.addItemInputs(widgets, new int[][] {{0, 0}});
+                if (!this.outputs.isEmpty()) {
+                    widgets.addTank(
+                                    this.outputs.getFirst(),
+                                    61,
+                                    11,
+                                    16,
+                                    16,
+                                    this.view.fluidOutput().getAmount())
+                            .recipeContext(this);
+                }
+                break;
         }
         Component detail = this.view.detail();
         if (detail.getString().isEmpty() && this.view.processingTime() > 0) {
@@ -193,12 +229,17 @@ final class PrimitiveEmiRecipe implements EmiRecipe {
     }
 
     static enum Layout {
-        CAMPFIRE("campfire", 82, 33, 82, 14, 24, 10),
-        CHOPPING("chopping", 82, 40, 82, 0, 24, 18),
-        PIT_KILN("pit_kiln", 101, 54, 101, 14, 24, 18),
-        BARREL("barrel", 97, 51, 101, 0, 42, 19),
-        SOAKING_POT("soaking_pot", 82, 56, 82, 0, 24, 19),
-        TANNING_RACK("tanning_rack", 101, 26, 82, 0, 24, 4);
+        CAMPFIRE("campfire", 82, 33, 82, 14, 24, 10, true, 82, 0, 1, 19),
+        CHOPPING("chopping", 82, 40, 82, 0, 24, 18, false, 0, 0, 0, 0),
+        PIT_KILN("pit_kiln", 101, 54, 101, 14, 24, 18, true, 101, 0, 1, 27),
+        BARREL("barrel", 97, 51, 101, 0, 42, 19, false, 0, 0, 0, 0),
+        SOAKING_POT("soaking_pot", 82, 56, 82, 0, 24, 19, false, 0, 0, 0, 0),
+        TANNING_RACK("tanning_rack", 101, 26, 82, 0, 24, 4, false, 0, 0, 0, 0),
+        STONE_SAWMILL("stone_sawmill", 101, 38, 101, 0, 24, 16, false, 0, 0, 0, 0),
+        STONE_OVEN("stone_oven", 82, 33, 82, 14, 24, 10, true, 82, 0, 1, 19),
+        STONE_KILN("stone_kiln", 101, 46, 101, 14, 24, 10, true, 101, 0, 1, 19),
+        STONE_CRUCIBLE("stone_crucible", 82, 33, 82, 14, 24, 10, true, 82, 0, 1, 19),
+        ANVIL("anvil", 82, 40, 82, 0, 24, 18, false, 0, 0, 0, 0);
 
         final String texture;
         final int width;
@@ -207,6 +248,11 @@ final class PrimitiveEmiRecipe implements EmiRecipe {
         final int arrowV;
         final int arrowX;
         final int arrowY;
+        final boolean hasFlame;
+        final int flameU;
+        final int flameV;
+        final int flameX;
+        final int flameY;
 
         private Layout(
                 String texture,
@@ -215,7 +261,12 @@ final class PrimitiveEmiRecipe implements EmiRecipe {
                 int arrowU,
                 int arrowV,
                 int arrowX,
-                int arrowY) {
+                int arrowY,
+                boolean hasFlame,
+                int flameU,
+                int flameV,
+                int flameX,
+                int flameY) {
             this.texture = texture;
             this.width = width;
             this.backgroundHeight = backgroundHeight;
@@ -223,6 +274,11 @@ final class PrimitiveEmiRecipe implements EmiRecipe {
             this.arrowV = arrowV;
             this.arrowX = arrowX;
             this.arrowY = arrowY;
+            this.hasFlame = hasFlame;
+            this.flameU = flameU;
+            this.flameV = flameV;
+            this.flameX = flameX;
+            this.flameY = flameY;
         }
     }
 }
