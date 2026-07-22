@@ -8,6 +8,8 @@ import com.protyvkultury.revivalages.feature.technology.choppingblock.ChoppingBl
 import com.protyvkultury.revivalages.feature.technology.choppingblock.recipe.ChoppingRecipe;
 import com.protyvkultury.revivalages.feature.technology.pitkiln.PitKilnFeature;
 import com.protyvkultury.revivalages.feature.technology.pitkiln.recipe.PitKilnRecipe;
+import com.protyvkultury.revivalages.feature.technology.pitburn.PitBurnFeature;
+import com.protyvkultury.revivalages.feature.technology.pitburn.recipe.PitBurnRecipe;
 import com.protyvkultury.revivalages.feature.technology.soakingpot.SoakingPotFeature;
 import com.protyvkultury.revivalages.feature.technology.soakingpot.recipe.SoakingPotRecipe;
 import com.protyvkultury.revivalages.feature.technology.tanningrack.TanningRackFeature;
@@ -103,6 +105,29 @@ public final class PrimitiveRecipeCatalog {
                                             String.format(Locale.ROOT, "%.0f%%", recipe.failureChance() * 100.0F)),
                                     holder);
                         })
+                .toList();
+    }
+
+    public static List<PrimitiveRecipeView> pitBurn(RecipeManager manager) {
+        return manager.getAllRecipesFor(PitBurnFeature.RECIPE_TYPE.get()).stream()
+                .map(holder -> {
+                    PitBurnRecipe recipe = holder.value();
+                    List<ItemStack> outputs = new ArrayList<>();
+                    outputs.add(recipe.result());
+                    outputs.addAll(recipe.failureResults());
+                    return new PrimitiveRecipeView(
+                            holder.id(),
+                            List.of(recipe.ingredient()),
+                            FluidStack.EMPTY,
+                            outputs,
+                            FluidStack.EMPTY,
+                            recipe.burnTime(),
+                            Component.translatable(
+                                    "gui.revivalages.recipe.pit_burn_detail",
+                                    recipe.stages(),
+                                    String.format(Locale.ROOT, "%.0f%%", recipe.failureChance() * 100.0F)),
+                            holder);
+                })
                 .toList();
     }
 

@@ -8,6 +8,7 @@ import com.protyvkultury.revivalages.feature.technology.dryingrack.DryingRackFea
 import com.protyvkultury.revivalages.feature.technology.dryingrack.view.DryingRecipeCatalog;
 import com.protyvkultury.revivalages.feature.technology.dryingrack.view.DryingRecipeView;
 import com.protyvkultury.revivalages.feature.technology.pitkiln.PitKilnFeature;
+import com.protyvkultury.revivalages.feature.technology.pitburn.PitBurnFeature;
 import com.protyvkultury.revivalages.feature.technology.primitive.view.PrimitiveRecipeCatalog;
 import com.protyvkultury.revivalages.feature.technology.primitive.view.PrimitiveRecipeView;
 import com.protyvkultury.revivalages.feature.technology.soakingpot.SoakingPotFeature;
@@ -48,6 +49,8 @@ public final class RevivalAgesEmiPlugin implements EmiPlugin {
                     "chopping", (ItemLike) ChoppingBlockFeature.CHOPPING_BLOCK_ITEM.get());
     public static final EmiRecipeCategory PIT_KILN =
             RevivalAgesEmiPlugin.category("pit_kiln", (ItemLike) PitKilnFeature.PIT_KILN_ITEM.get());
+    public static final EmiRecipeCategory PIT_BURN =
+            RevivalAgesEmiPlugin.category("pit_burn", (ItemLike) PitBurnFeature.LOG_PILE_ITEM.get());
     public static final EmiRecipeCategory BARREL =
             RevivalAgesEmiPlugin.category("barrel", (ItemLike) BarrelFeature.BARREL_ITEM.get());
     public static final EmiRecipeCategory SOAKING_POT =
@@ -77,6 +80,7 @@ public final class RevivalAgesEmiPlugin implements EmiPlugin {
         registry.addCategory(CAMPFIRE);
         registry.addCategory(CHOPPING);
         registry.addCategory(PIT_KILN);
+        registry.addCategory(PIT_BURN);
         registry.addCategory(BARREL);
         registry.addCategory(SOAKING_POT);
         registry.addCategory(TANNING_RACK);
@@ -107,6 +111,7 @@ public final class RevivalAgesEmiPlugin implements EmiPlugin {
         registry.addWorkstation(
                 PIT_KILN,
                 (EmiIngredient) EmiStack.of((ItemLike) ((ItemLike) PitKilnFeature.PIT_KILN_ITEM.get())));
+        registry.addWorkstation(PIT_BURN, EmiStack.of(PitBurnFeature.LOG_PILE_ITEM.get()));
         registry.addWorkstation(
                 BARREL,
                 (EmiIngredient) EmiStack.of((ItemLike) ((ItemLike) BarrelFeature.BARREL_ITEM.get())));
@@ -188,6 +193,9 @@ public final class RevivalAgesEmiPlugin implements EmiPlugin {
                                                         TANNING_RACK,
                                                         PrimitiveEmiRecipe.Layout.TANNING_RACK,
                                                         (PrimitiveRecipeView) view)));
+        PrimitiveRecipeCatalog.pitBurn(manager)
+                .forEach(view -> registry.addRecipe(
+                        new PrimitiveEmiRecipe(PIT_BURN, PrimitiveEmiRecipe.Layout.PIT_KILN, view)));
         StoneTechnologyRecipeCatalog.sawmill(manager).forEach(view -> registry.addRecipe(
                 new PrimitiveEmiRecipe(STONE_SAWMILL, PrimitiveEmiRecipe.Layout.STONE_SAWMILL, view)));
         StoneTechnologyRecipeCatalog.oven(Minecraft.getInstance().level).forEach(view -> registry.addRecipe(

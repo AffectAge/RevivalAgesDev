@@ -1,0 +1,12 @@
+{
+  "type": "revivalages:add_features_with_blacklist",
+  "blacklist": [
+    "#minecraft:is_nether",
+    "#minecraft:is_end"
+  ],
+  "features": "revivalages:gravel_rock",
+  "step": "top_layer_modification",
+  "whitelist": [
+    "#minecraft:is_overworld"
+  ]
+}

@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
+    "revivalages:log_pile",
     "revivalages:crude_drying_rack",
     "revivalages:drying_rack",
     "revivalages:chopping_block",

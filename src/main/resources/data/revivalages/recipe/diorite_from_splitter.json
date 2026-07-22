@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "revivalages:diorite_splitter"
+    },
+    {
+      "item": "revivalages:diorite_splitter"
+    },
+    {
+      "item": "revivalages:diorite_splitter"
+    },
+    {
+      "item": "revivalages:diorite_splitter"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "minecraft:diorite"
+  }
+}

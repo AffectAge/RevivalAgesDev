@@ -1,0 +1,11 @@
+{
+  "loader": "neoforge:fluid_container",
+  "fluid": "minecraft:empty",
+  "flip_gas": true,
+  "cover_is_mask": false,
+  "textures": {
+    "base": "revivalages:item/clay_bucket_base",
+    "fluid": "revivalages:item/clay_bucket_base",
+    "cover": "revivalages:item/clay_bucket_cover"
+  }
+}

@@ -58,5 +58,18 @@ boundary demonstrated by Pyrotech.
   loader-neutral recipe view. The One Probe is intentionally outside the accepted
   scope for this device family. This exclusion does not remove or narrow any
   other optional integration requirement.
+- Pit Burn and Wood Torch follow the same Jade-only probe rule; do not add The
+  One Probe. Pit Burn recipes also use the shared JEI/EMI read model. Igniters and
+  portable buckets do not need a block probe, but their crafting and firing
+  recipes must remain discoverable through normal recipe viewers.
+- Register public content normally and rely on the central registry-driven,
+  progression-ordered Revival Ages creative tab. Add established content to its
+  one centralized progression list; do not maintain a second list in a feature.
+  Its registry-ID fallback must continue to expose unlisted public items.
+- Surface rocks and sticks follow This Rocks! 1.8.0 parity rules. Audit variants,
+  waterlogging, support loss, replacement, shapes, creative cycling, loot,
+  splitter recipes, models, rotations, biome filtering, generation density, and
+  sounds as one lifecycle. Reuse feature-level shared code rather than cloning
+  behavior for each material.
 - Progression checks should query a progression contract or tag/data rule. Do not
   scatter age/tier conditionals throughout blocks and items.

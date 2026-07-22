@@ -52,6 +52,13 @@ When repository code, old tutorials, and NeoForge 1.21.1 documentation disagree,
 follow the official 1.21.1 documentation. Do not silently upgrade examples from a
 newer Minecraft branch; APIs and data formats may differ.
 
+This Rocks! 1.8.0 for Minecraft 1.21.1 is the behavioral and visual reference for
+Revival Ages surface rocks and sticks. Treat it like the Pyrotech reference: audit
+the complete lifecycle instead of copying only registration code, but reimplement
+obsolete or incompatible details with supported NeoForge APIs. It is an MIT-
+licensed reference, not a runtime dependency. Preserve its attribution and license
+when adapting code, JSON, models, or other resources.
+
 ## Architecture
 
 - Keep `RevivalAges` a thin composition root. It may create/register modules but
@@ -130,10 +137,28 @@ newer Minecraft branch; APIs and data formats may differ.
   assets are optional unless they convey state or materially aid recipe reading.
 - For the Pyrotech-inspired primitive device family (Drying Rack, Campfire,
   Chopping Block, Pit Kiln, Barrel, Soaking Pot, Tanning Rack, Stone Sawmill,
-  Stone Oven, Stone Kiln, Stone Crucible, and Anvil), Jade is the required probe
+  Stone Oven, Stone Kiln, Stone Crucible, Anvil, Pit Burn, and Wood Torch), Jade is the required probe
   integration and JEI/EMI are the required recipe viewers. Do not add The One
   Probe to this family unless its scope is explicitly reopened. Jade must expose
   progress and every active modifier or blocking condition, not merely inventory.
+- Flint and Tinder, Wood Torch, Pit Burn, and primitive bucket ports must include
+  the complete Pyrotech and Athenaeum interaction lifecycle: held-use timing,
+  ignition targets, enclosure flood fill and grace failure, staged output storage,
+  torch lit/unlit/doused persistence, universal fluid capability, vessel wear,
+  hot-fluid damage, milk handling, particles, vanilla sound triggers, and drops.
+  Do not replace these contracts with decorative blocks or fluid-specific item
+  lists.
+- The Revival Ages creative tab is registry-driven and progression-ordered like
+  Pyrotech's tab. Every new public registered item must appear automatically. Add
+  known content to the centralized progression order; retain deterministic
+  registry-ID fallback ordering so an omitted entry remains visible. Internal
+  state blocks must not receive artificial BlockItems merely to expose them.
+- For This Rocks!-derived surface deposits, parity includes every visual variant
+  and weighted random state, placement and support rules, waterlogging, collision
+  and selection shapes, creative variation cycling, drops, splitter recombination,
+  biome allow/deny logic, worldgen density, model rotations, translations, and all
+  functional vanilla or custom sounds. Do not copy obvious dead data or reference
+  bugs; document every intentional correction and preserve the intended behavior.
 - Before adding or changing any of these mechanisms, compare the complete
   observable behavior with both Pyrotech and the Athenaeum implementation on
   which it relies. Port required reusable contracts into Revival Ages' shared

@@ -11,6 +11,10 @@ import com.protyvkultury.revivalages.feature.technology.pitkiln.blockentity.PitK
 import com.protyvkultury.revivalages.feature.technology.primitive.config.PrimitiveTechnologyConfig;
 import com.protyvkultury.revivalages.feature.technology.soakingpot.blockentity.SoakingPotBlockEntity;
 import com.protyvkultury.revivalages.feature.technology.tanningrack.blockentity.TanningRackBlockEntity;
+import com.protyvkultury.revivalages.feature.technology.pitburn.PitBurnFeature;
+import com.protyvkultury.revivalages.feature.technology.pitburn.blockentity.PitBurnBlockEntity;
+import com.protyvkultury.revivalages.feature.technology.ignition.block.WoodTorchBlock;
+import com.protyvkultury.revivalages.feature.technology.ignition.blockentity.WoodTorchBlockEntity;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -40,6 +44,8 @@ public enum PrimitiveDeviceComponentProvider implements IBlockComponentProvider 
             case BarrelBlockEntity barrel -> appendBarrel(tooltip, accessor, barrel);
             case SoakingPotBlockEntity pot -> appendSoakingPot(tooltip, accessor, pot);
             case TanningRackBlockEntity rack -> appendTanningRack(tooltip, accessor, rack);
+            case PitBurnBlockEntity burn -> appendPitBurn(tooltip, accessor, burn);
+            case WoodTorchBlockEntity torch -> appendWoodTorch(tooltip, accessor, torch);
             default -> {
             }
         }
@@ -131,6 +137,29 @@ public enum PrimitiveDeviceComponentProvider implements IBlockComponentProvider 
         appendItemProgress(tooltip, rack.input(), rack.recipeOutput(), rack.progress());
         if (!rack.output().isEmpty()) {
             tooltip.add(Component.translatable("jade.revivalages.primitive.ready_item", rack.output().getHoverName()));
+        }
+    }
+
+    private static void appendPitBurn(ITooltip tooltip, BlockAccessor accessor, PitBurnBlockEntity burn) {
+        if (accessor.getBlockState().is(PitBurnFeature.ASH_PILE.get())) {
+            tooltip.add(Component.translatable("jade.revivalages.pit_burn.ash"));
+            return;
+        }
+        boolean valid = burn.isStructureValid();
+        tooltip.add(Component.translatable("jade.revivalages.pit_burn.structure." + (valid ? "valid" : "invalid")));
+        if (!valid && burn.invalidStructureTicks() > 0) {
+            tooltip.add(Component.translatable("jade.revivalages.pit_burn.invalid_grace",
+                    burn.invalidStructureTicks(), burn.maximumInvalidStructureTicks()));
+        }
+        tooltip.add(Component.translatable("jade.revivalages.pit_burn.stages", burn.completedStages(), burn.stages()));
+        appendItemProgress(tooltip, new ItemStack(PitBurnFeature.LOG_PILE_ITEM.get()), burn.recipeOutput(), burn.progress());
+    }
+
+    private static void appendWoodTorch(ITooltip tooltip, BlockAccessor accessor, WoodTorchBlockEntity torch) {
+        String state = accessor.getBlockState().getValue(WoodTorchBlock.STATE).getSerializedName();
+        tooltip.add(Component.translatable("jade.revivalages.wood_torch.state." + state));
+        if (torch.remainingTicks() >= 0 && state.equals("lit")) {
+            tooltip.add(Component.translatable("jade.revivalages.wood_torch.remaining", formatSeconds(torch.remainingTicks())));
         }
     }
 

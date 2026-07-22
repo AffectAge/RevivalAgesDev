@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": ["S", "I"],
+  "key": {
+    "S": { "item": "revivalages:straw" },
+    "I": { "item": "minecraft:stick" }
+  },
+  "result": { "id": "revivalages:wood_torch", "count": 2 }
+}

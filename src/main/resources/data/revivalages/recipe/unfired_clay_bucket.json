@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "tools",
+  "pattern": ["# #", " # "],
+  "key": {
+    "#": { "item": "minecraft:clay_ball" }
+  },
+  "result": { "id": "revivalages:unfired_clay_bucket", "count": 1 }
+}

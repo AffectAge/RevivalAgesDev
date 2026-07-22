@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": ["###", "###", "###"],
+  "key": {
+    "#": { "tag": "minecraft:logs" }
+  },
+  "result": { "id": "revivalages:log_pile", "count": 1 }
+}

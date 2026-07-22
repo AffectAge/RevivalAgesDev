@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "tools",
+  "ingredients": [
+    { "item": "minecraft:flint" },
+    { "item": "revivalages:tinder" }
+  ],
+  "result": { "id": "revivalages:flint_and_tinder", "count": 1 }
+}

@@ -1,0 +1,10 @@
+{
+  "type": "revivalages:pit_kiln",
+  "ingredient": { "item": "revivalages:unfired_clay_bucket" },
+  "result": { "id": "revivalages:clay_bucket", "count": 1 },
+  "burn_time": 1200,
+  "failure_chance": 0.1,
+  "failure_results": [
+    { "id": "revivalages:pit_ash", "count": 1 }
+  ]
+}

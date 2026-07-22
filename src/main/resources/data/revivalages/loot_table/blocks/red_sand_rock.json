@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "revivalages:red_sandstone_splitter"
+        }
+      ],
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "revivalages:blocks/red_sand_rock"
+}

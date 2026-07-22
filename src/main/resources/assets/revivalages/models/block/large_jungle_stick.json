@@ -1,0 +1,7 @@
+{
+	"parent": "revivalages:block/large_oak_stick",
+	"textures": {
+		"0": "block/jungle_log",
+		"particle": "block/jungle_log"
+	}
+}

@@ -34,6 +34,20 @@ This subtree contains source resources that humans intentionally maintain.
   functional backgrounds, slots, arrows, flame indicators, and fluid gauges when
   they improve recipe readability. JEI and EMI must use the same visual semantics
   and recipe facts. Record every imported asset in `THIRD_PARTY_NOTICES.md`.
+- When a Pyrotech bucket is adapted to NeoForge's dynamic fluid-container model,
+  preserve its base and cover layers, use the original base alpha as the fluid
+  mask when the source model does so, register fluid tinting, and verify empty,
+  water, lava, milk, and mod-fluid variants in the inventory.
+- The central Revival Ages creative tab enumerates registered mod items in a
+  centralized gameplay-progression order with deterministic registry-ID fallback.
+  Resource work for new public content must include its item model and English
+  name, but must not add BlockItems or models for internal machine-state blocks
+  solely to make those states visible in the tab.
+- This Rocks!-derived surface deposits must ship every referenced blockstate,
+  rotated variant model, item model, loot table, splitter recipe, configured and
+  placed feature, and biome modifier. Preserve MIT attribution in
+  `THIRD_PARTY_NOTICES.md`; use Revival Ages namespaces and fix documented dead or
+  erroneous source data instead of preserving it accidentally.
 
 ## Data
 

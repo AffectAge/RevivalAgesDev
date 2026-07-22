@@ -1,0 +1,11 @@
+{
+  "type": "revivalages:add_features_with_blacklist",
+  "blacklist": [],
+  "features": "revivalages:sand_rock",
+  "step": "top_layer_modification",
+  "whitelist": [
+    "#minecraft:is_beach",
+    "#c:is_sandy",
+    "#minecraft:is_badlands"
+  ]
+}

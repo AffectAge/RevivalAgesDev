@@ -86,6 +86,28 @@ public final class PrimitiveTechnologyConfig {
     public static final ModConfigSpec.IntValue ANVIL_MINIMUM_HUNGER;
     public static final ModConfigSpec.BooleanValue ANVIL_USE_TOOL_DURABILITY;
 
+    public static final ModConfigSpec.IntValue PIT_BURN_MAX_BLOCKS;
+    public static final ModConfigSpec.DoubleValue PIT_BURN_DURATION_MULTIPLIER;
+    public static final ModConfigSpec.IntValue PIT_BURN_STRUCTURE_CHECK_INTERVAL;
+    public static final ModConfigSpec.IntValue PIT_BURN_INVALID_GRACE_TICKS;
+    public static final ModConfigSpec.IntValue FLINT_AND_TINDER_USE_TICKS;
+    public static final ModConfigSpec.IntValue FLINT_AND_TINDER_MAX_USES;
+    public static final ModConfigSpec.IntValue FLINT_AND_TINDER_COOLDOWN_TICKS;
+    public static final ModConfigSpec.BooleanValue WOOD_TORCH_BURNS_UP;
+    public static final ModConfigSpec.BooleanValue WOOD_TORCH_RAIN_EXTINGUISHES;
+    public static final ModConfigSpec.IntValue WOOD_TORCH_DURATION;
+    public static final ModConfigSpec.IntValue WOOD_TORCH_DURATION_VARIANCE;
+    public static final ModConfigSpec.IntValue WOOD_TORCH_FIRE_DAMAGE;
+    public static final ModConfigSpec.IntValue WOOD_TORCH_LIGHT;
+    public static final ModConfigSpec.IntValue WOODEN_BUCKET_MAX_USES;
+    public static final ModConfigSpec.IntValue WOODEN_BUCKET_HOT_DAMAGE_PER_SECOND;
+    public static final ModConfigSpec.IntValue WOODEN_BUCKET_FULL_DAMAGE_PER_SECOND;
+    public static final ModConfigSpec.DoubleValue WOODEN_BUCKET_PLAYER_DAMAGE_PER_SECOND;
+    public static final ModConfigSpec.IntValue CLAY_BUCKET_MAX_USES;
+    public static final ModConfigSpec.IntValue CLAY_BUCKET_HOT_DAMAGE_PER_SECOND;
+    public static final ModConfigSpec.DoubleValue CLAY_BUCKET_PLAYER_DAMAGE_PER_SECOND;
+    public static final ModConfigSpec.BooleanValue PRIMITIVE_BUCKET_DROP_FLUID_ON_BREAK;
+
     public static final ModConfigSpec.BooleanValue CAMPFIRE_EFFECTS_ENABLED;
     public static final ModConfigSpec.IntValue CAMPFIRE_EFFECT_START_TIME;
     public static final ModConfigSpec.IntValue CAMPFIRE_EFFECT_STOP_TIME;
@@ -212,6 +234,36 @@ public final class PrimitiveTechnologyConfig {
         ANVIL_EXHAUSTION_PER_CRAFT = nonNegative(builder, "exhaustionPerCraft", 0.0D);
         ANVIL_MINIMUM_HUNGER = builder.defineInRange("minimumHunger", 3, 0, 20);
         ANVIL_USE_TOOL_DURABILITY = builder.define("useToolDurability", true);
+        builder.pop();
+
+        builder.push("pitBurn");
+        PIT_BURN_MAX_BLOCKS = builder.defineInRange("maximumConnectedPiles", 27, 1, 256);
+        PIT_BURN_DURATION_MULTIPLIER = nonNegative(builder, "durationMultiplier", 1.0D);
+        PIT_BURN_STRUCTURE_CHECK_INTERVAL = positive(builder, "structureCheckInterval", 20);
+        PIT_BURN_INVALID_GRACE_TICKS = positive(builder, "invalidStructureGraceTicks", 100);
+        builder.pop();
+
+        builder.push("ignition");
+        FLINT_AND_TINDER_USE_TICKS = positive(builder, "flintAndTinderUseTicks", 4 * 20);
+        FLINT_AND_TINDER_MAX_USES = positive(builder, "flintAndTinderMaxUses", 8);
+        FLINT_AND_TINDER_COOLDOWN_TICKS = nonNegativeInt(builder, "flintAndTinderCooldownTicks", 20);
+        WOOD_TORCH_BURNS_UP = builder.define("woodTorchBurnsUp", true);
+        WOOD_TORCH_RAIN_EXTINGUISHES = builder.define("woodTorchRainExtinguishes", true);
+        WOOD_TORCH_DURATION = nonNegativeInt(builder, "woodTorchDuration", 14 * 60 * 20);
+        WOOD_TORCH_DURATION_VARIANCE = nonNegativeInt(builder, "woodTorchDurationVariance", 4 * 60 * 20);
+        WOOD_TORCH_FIRE_DAMAGE = nonNegativeInt(builder, "woodTorchFireDamage", 1);
+        WOOD_TORCH_LIGHT = builder.defineInRange("woodTorchLight", 9, 0, 15);
+        builder.pop();
+
+        builder.push("primitiveBuckets");
+        WOODEN_BUCKET_MAX_USES = positive(builder, "woodenBucketMaxUses", 8);
+        WOODEN_BUCKET_HOT_DAMAGE_PER_SECOND = nonNegativeInt(builder, "woodenBucketHotWearPerSecond", 8);
+        WOODEN_BUCKET_FULL_DAMAGE_PER_SECOND = nonNegativeInt(builder, "woodenBucketFullWearPerSecond", 1);
+        WOODEN_BUCKET_PLAYER_DAMAGE_PER_SECOND = nonNegative(builder, "woodenBucketHotPlayerDamagePerSecond", 2.0D);
+        CLAY_BUCKET_MAX_USES = positive(builder, "clayBucketMaxUses", 12);
+        CLAY_BUCKET_HOT_DAMAGE_PER_SECOND = nonNegativeInt(builder, "clayBucketHotWearPerSecond", 4);
+        CLAY_BUCKET_PLAYER_DAMAGE_PER_SECOND = nonNegative(builder, "clayBucketHotPlayerDamagePerSecond", 2.0D);
+        PRIMITIVE_BUCKET_DROP_FLUID_ON_BREAK = builder.define("dropFluidSourceWhenBroken", true);
         builder.pop();
 
         builder.push("campfireEffects");

@@ -4,7 +4,11 @@ Revival Ages is a NeoForge mod for Minecraft 1.21.1 by Protyv_Kultury. This
 repository contains an architecture-first implementation of Pyrotech-inspired
 primitive technology: Drying Racks, Campfire, Chopping Block, Pit Kiln, Barrel,
 Soaking Pot, Tanning Rack, Stone Sawmill, Stone Oven, Stone Kiln, Stone Crucible,
-and an in-world Anvil.
+an in-world Anvil, Pit Burn, Flint and Tinder, Wood Torch, and reusable wooden
+and clay buckets. A dedicated Revival Ages creative tab lists every registered
+mod item automatically in gameplay-progression order. The world also gains
+This Rocks!-inspired surface rocks and fallen sticks, including material variants
+and recoverable stone splitters.
 
 The project keeps Pyrotech's strongest architectural idea—small gameplay modules
 with local registration, configuration, recipes, and integrations—while using
@@ -60,7 +64,10 @@ On Windows, use `gradlew.bat` instead of `./gradlew`.
 
 To test the optional Jade, JEI, and EMI integrations locally, launch with
 `-PdryingRackIntegrationsRuntime=true`. Add `-PquickPlayWorld=<world-folder>` to
-open a development world directly.
+open a development world directly. A dedicated server can use an isolated test
+directory, for example
+`./gradlew runServer -PserverGameDirectory=build/run-server-test`; this is useful
+for verifying that client-only optional mods are truly absent.
 
 ## Architecture at a glance
 
@@ -78,12 +85,15 @@ open a development world directly.
 Read [AGENTS.md](AGENTS.md) before changing the project and
 [docs/architecture.md](docs/architecture.md) before adding a new feature.
 Primitive processing behavior, recipes, and configuration are documented in
-[docs/primitive-technology.md](docs/primitive-technology.md).
+[docs/primitive-technology.md](docs/primitive-technology.md). Surface rocks,
+sticks, drops, world generation, and compatibility are documented in
+[docs/surface-deposits.md](docs/surface-deposits.md).
 
 ## License
 
 The project metadata currently uses `All Rights Reserved`. Pyrotech-derived
 functional assets and Athenaeum-derived internal behavior are redistributed or
-adapted under Apache-2.0; see
+adapted under Apache-2.0, while This Rocks!-derived surface-deposit code and
+resources are adapted under MIT; see
 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) and
 the license copies in [`licenses`](licenses).

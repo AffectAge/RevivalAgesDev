@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "revivalages:red_sandstone_splitter"
+    },
+    {
+      "item": "revivalages:red_sandstone_splitter"
+    },
+    {
+      "item": "revivalages:red_sandstone_splitter"
+    },
+    {
+      "item": "revivalages:red_sandstone_splitter"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "minecraft:red_sandstone"
+  }
+}

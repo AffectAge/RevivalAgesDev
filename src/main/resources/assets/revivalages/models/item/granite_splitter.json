@@ -1,0 +1,7 @@
+{
+	"parent": "revivalages:item/cobblestone_splitter",
+	"textures": {
+		"0": "block/granite",
+		"particle": "block/granite"
+	}
+}

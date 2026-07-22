@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=up,state=unlit": { "model": "revivalages:block/wood_torch_unlit" },
+    "facing=up,state=lit": { "model": "revivalages:block/wood_torch_lit" },
+    "facing=up,state=doused": { "model": "revivalages:block/wood_torch_doused" },
+    "facing=east,state=unlit": { "model": "revivalages:block/wood_wall_torch_unlit" },
+    "facing=east,state=lit": { "model": "revivalages:block/wood_wall_torch_lit" },
+    "facing=east,state=doused": { "model": "revivalages:block/wood_wall_torch_doused" },
+    "facing=north,state=unlit": { "model": "revivalages:block/wood_wall_torch_unlit", "y": 270 },
+    "facing=north,state=lit": { "model": "revivalages:block/wood_wall_torch_lit", "y": 270 },
+    "facing=north,state=doused": { "model": "revivalages:block/wood_wall_torch_doused", "y": 270 },
+    "facing=south,state=unlit": { "model": "revivalages:block/wood_wall_torch_unlit", "y": 90 },
+    "facing=south,state=lit": { "model": "revivalages:block/wood_wall_torch_lit", "y": 90 },
+    "facing=south,state=doused": { "model": "revivalages:block/wood_wall_torch_doused", "y": 90 },
+    "facing=west,state=unlit": { "model": "revivalages:block/wood_wall_torch_unlit", "y": 180 },
+    "facing=west,state=lit": { "model": "revivalages:block/wood_wall_torch_lit", "y": 180 },
+    "facing=west,state=doused": { "model": "revivalages:block/wood_wall_torch_doused", "y": 180 }
+  }
+}

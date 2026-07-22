@@ -1,0 +1,9 @@
+{
+  "type": "revivalages:add_features_with_blacklist",
+  "blacklist": [],
+  "features": "revivalages:bamboo_stick",
+  "step": "top_layer_modification",
+  "whitelist": [
+    "#minecraft:is_jungle"
+  ]
+}

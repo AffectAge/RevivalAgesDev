@@ -1,0 +1,22 @@
+{
+    "variants": {
+		"variation=small": [
+			{"model": "revivalages:block/small_dark_oak_stick"},
+			{"model": "revivalages:block/small_dark_oak_stick", "y": 90},
+			{"model": "revivalages:block/small_dark_oak_stick", "y": 180},
+			{"model": "revivalages:block/small_dark_oak_stick", "y": 270}
+		],
+		"variation=medium": [
+			{"model": "revivalages:block/medium_dark_oak_stick"},
+			{"model": "revivalages:block/medium_dark_oak_stick", "y": 90},
+			{"model": "revivalages:block/medium_dark_oak_stick", "y": 180},
+			{"model": "revivalages:block/medium_dark_oak_stick", "y": 270}
+		],
+		"variation=large": [
+			{"model": "revivalages:block/large_dark_oak_stick"},
+			{"model": "revivalages:block/large_dark_oak_stick", "y": 90},
+			{"model": "revivalages:block/large_dark_oak_stick", "y": 180},
+			{"model": "revivalages:block/large_dark_oak_stick", "y": 270}
+		]
+    }
+}

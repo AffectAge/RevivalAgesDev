@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "revivalages:granite_splitter"
+    },
+    {
+      "item": "revivalages:granite_splitter"
+    },
+    {
+      "item": "revivalages:granite_splitter"
+    },
+    {
+      "item": "revivalages:granite_splitter"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "minecraft:granite"
+  }
+}

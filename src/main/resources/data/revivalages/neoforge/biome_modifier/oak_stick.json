@@ -1,0 +1,11 @@
+{
+  "type": "revivalages:add_features_with_blacklist",
+  "blacklist": [],
+  "features": "revivalages:oak_stick",
+  "step": "top_layer_modification",
+  "whitelist": [
+    "#minecraft:is_forest",
+    "#c:is_plains",
+    "#c:is_swamp"
+  ]
+}

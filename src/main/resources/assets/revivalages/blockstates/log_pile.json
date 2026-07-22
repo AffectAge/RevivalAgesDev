@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "axis=x": { "model": "revivalages:block/log_pile", "x": 90, "y": 90 },
+    "axis=y": { "model": "revivalages:block/log_pile" },
+    "axis=z": { "model": "revivalages:block/log_pile", "x": 90 }
+  }
+}

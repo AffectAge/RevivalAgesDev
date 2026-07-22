@@ -1,0 +1,28 @@
+{
+    "variants": {
+		"variation=tiny": [
+			{"model": "revivalages:block/tiny_andesite_rock"},
+			{"model": "revivalages:block/tiny_andesite_rock", "y": 90},
+			{"model": "revivalages:block/tiny_andesite_rock", "y": 180},
+			{"model": "revivalages:block/tiny_andesite_rock", "y": 270}
+		],
+		"variation=small": [
+			{"model": "revivalages:block/small_andesite_rock"},
+			{"model": "revivalages:block/small_andesite_rock", "y": 90},
+			{"model": "revivalages:block/small_andesite_rock", "y": 180},
+			{"model": "revivalages:block/small_andesite_rock", "y": 270}
+		],
+		"variation=medium": [
+			{"model": "revivalages:block/medium_andesite_rock"},
+			{"model": "revivalages:block/medium_andesite_rock", "y": 90},
+			{"model": "revivalages:block/medium_andesite_rock", "y": 180},
+			{"model": "revivalages:block/medium_andesite_rock", "y": 270}
+		],
+		"variation=large": [
+			{"model": "revivalages:block/large_andesite_rock"},
+			{"model": "revivalages:block/large_andesite_rock", "y": 90},
+			{"model": "revivalages:block/large_andesite_rock", "y": 180},
+			{"model": "revivalages:block/large_andesite_rock", "y": 270}
+		]
+    }
+}

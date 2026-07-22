@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "revivalages:soul_soil_splitter"
+    },
+    {
+      "item": "revivalages:soul_soil_splitter"
+    },
+    {
+      "item": "revivalages:soul_soil_splitter"
+    },
+    {
+      "item": "revivalages:soul_soil_splitter"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "minecraft:soul_soil"
+  }
+}

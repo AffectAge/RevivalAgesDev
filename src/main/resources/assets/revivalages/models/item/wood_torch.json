@@ -1,0 +1,4 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": { "layer0": "revivalages:block/wood_torch_unlit" }
+}

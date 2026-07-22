@@ -11,6 +11,11 @@ import com.protyvkultury.revivalages.feature.technology.tanningrack.TanningRackF
 import com.protyvkultury.revivalages.feature.technology.dryingrack.DryingRackFeature;
 import com.protyvkultury.revivalages.feature.technology.stonemachine.StoneMachineFeature;
 import com.protyvkultury.revivalages.feature.technology.anvil.AnvilFeature;
+import com.protyvkultury.revivalages.feature.technology.bucket.PrimitiveBucketFeature;
+import com.protyvkultury.revivalages.feature.technology.ignition.IgnitionFeature;
+import com.protyvkultury.revivalages.feature.technology.pitburn.PitBurnFeature;
+import com.protyvkultury.revivalages.feature.creative.CreativeTabFeature;
+import com.protyvkultury.revivalages.feature.worldgen.surfacedeposit.SurfaceDepositFeature;
 import java.util.List;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
@@ -20,6 +25,7 @@ public final class ModFeatures {
     private static final List<FeatureModule> FEATURES = List.of(
             new CoreFeature(),
             new PrimitiveMaterialsFeature(),
+            new SurfaceDepositFeature(),
             new CampfireFeature(),
             new ChoppingBlockFeature(),
             new PitKilnFeature(),
@@ -28,7 +34,11 @@ public final class ModFeatures {
             new TanningRackFeature(),
             new DryingRackFeature(),
             new StoneMachineFeature(),
-            new AnvilFeature()
+            new AnvilFeature(),
+            new PitBurnFeature(),
+            new IgnitionFeature(),
+            new PrimitiveBucketFeature(),
+            new CreativeTabFeature()
     );
 
     private ModFeatures() {

@@ -1,0 +1,13 @@
+{
+  "type": "revivalages:pit_burn",
+  "ingredient": { "item": "revivalages:log_pile" },
+  "result": { "id": "minecraft:charcoal", "count": 1 },
+  "stages": 10,
+  "burn_time": 9600,
+  "failure_chance": 0.33,
+  "failure_results": [
+    { "id": "revivalages:pit_ash", "count": 1 },
+    { "id": "revivalages:pit_ash", "count": 2 },
+    { "id": "revivalages:pit_ash", "count": 4 }
+  ]
+}

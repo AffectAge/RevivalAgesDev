@@ -38,6 +38,9 @@ tasks.named('processResources', ProcessResources).configure {
     from('licenses/Athenaeum-LICENSE.txt') {
         into 'META-INF/licenses'
     }
+    from('licenses/ThisRocks-LICENSE.txt') {
+        into 'META-INF/licenses'
+    }
 }
 
 repositories {
@@ -102,6 +105,9 @@ neoForge {
 
         server {
             server()
+            if (providers.gradleProperty("serverGameDirectory").isPresent()) {
+                gameDirectory = project.file(providers.gradleProperty("serverGameDirectory").get())
+            }
             programArgument '--nogui'
             systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
         }

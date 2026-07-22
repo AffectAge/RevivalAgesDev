@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "revivalages:end_stone_splitter"
+    },
+    {
+      "item": "revivalages:end_stone_splitter"
+    },
+    {
+      "item": "revivalages:end_stone_splitter"
+    },
+    {
+      "item": "revivalages:end_stone_splitter"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "minecraft:end_stone"
+  }
+}

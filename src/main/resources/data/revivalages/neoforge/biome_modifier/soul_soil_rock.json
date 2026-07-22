@@ -1,0 +1,9 @@
+{
+  "type": "revivalages:add_features_with_blacklist",
+  "blacklist": [],
+  "features": "revivalages:soul_soil_rock",
+  "step": "top_layer_modification",
+  "whitelist": [
+    "#minecraft:is_nether"
+  ]
+}

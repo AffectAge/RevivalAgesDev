@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "revivalages:netherrack_splitter"
+    },
+    {
+      "item": "revivalages:netherrack_splitter"
+    },
+    {
+      "item": "revivalages:netherrack_splitter"
+    },
+    {
+      "item": "revivalages:netherrack_splitter"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "minecraft:netherrack"
+  }
+}

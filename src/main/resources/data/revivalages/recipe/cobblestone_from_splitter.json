@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "revivalages:cobblestone_splitter"
+    },
+    {
+      "item": "revivalages:cobblestone_splitter"
+    },
+    {
+      "item": "revivalages:cobblestone_splitter"
+    },
+    {
+      "item": "revivalages:cobblestone_splitter"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "minecraft:cobblestone"
+  }
+}

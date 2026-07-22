@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "tools",
+  "pattern": ["# #", " # "],
+  "key": {
+    "#": { "tag": "minecraft:planks" }
+  },
+  "result": { "id": "revivalages:wooden_bucket", "count": 1 }
+}

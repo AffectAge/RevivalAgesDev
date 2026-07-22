@@ -36,6 +36,37 @@ are ported into Revival Ages' shared NeoForge core and used by the mechanisms.
 9. Use the in-world Anvil with a tagged hammer or pickaxe. Each recipe specifies
    the tool family and hit count; work consumes hunger and tool durability and
    eventually damages the granite anvil itself.
+10. Compress nine logs into a Log Pile, completely enclose one or more connected
+    piles with solid nonflammable blocks, and ignite them. Each pile becomes an
+    Active Pile, produces one staged Pit Burn result at a time, and ends as an Ash
+    Pile whose stored contents drop when broken. A damaged enclosure receives the
+    configured recovery window before the active pile burns away.
+
+## Ignition, torches, and primitive buckets
+
+Flint and Tinder is a four-second held-use igniter by default. Smoke at the hit
+point communicates the ongoing action; completion can light Campfires, loaded Pit
+Kilns, Log Piles, Wood Torches, or a valid adjacent fire position. Its uses, use
+time, and cooldown are server-configurable and its durability display reads the
+same synchronized component that gameplay consumes.
+
+Wood Torches place unlit on a floor or any horizontal wall. They can be lit,
+doused with a water bucket or by rain, relit after drying conditions permit, and
+burn out after a configured duration with configured random variance. Lit torches
+emit light, flame and smoke, damage colliding entities, and drop either a stick or
+straw when broken; an unlit torch drops itself. All three visible states use the
+functional Pyrotech textures.
+
+Wooden and clay buckets expose NeoForge's standard item fluid capability and hold
+1,000 mB of any compatible fluid, including fluids from other mods. They interact
+with world sources and machine tanks, render the contained fluid dynamically,
+and retain remaining uses as item data. Filled wooden buckets wear over time;
+hot fluids accelerate wear and damage their holder. Clay buckets tolerate normal
+fluids indefinitely but hot fluids still wear the vessel and hurt its holder.
+When a vessel breaks, its source fluid is placed at the holder when possible.
+Both bucket types can milk cows and the resulting milk can be drunk. Clay buckets
+are first crafted unfired and then fired by the Pit Kiln or inherited Stone Kiln
+recipe.
 
 ## Campfire
 
@@ -65,6 +96,13 @@ rain behavior, Barrel capacity/rain/hot fluids, Soaking Pot batch and duration,
 and Tanning Rack duration/rain failure. Raw-hide drop chance and maximum count are
 also configurable. Values are server-owned and are not saved
 inside recipes.
+
+The same file configures Pit Burn cluster size, duration, enclosure validation
+interval and failure grace; Flint and Tinder uses, use duration and cooldown;
+Wood Torch light, rain, lifetime, variance and collision damage; and primitive
+bucket uses, passive wear, hot-fluid wear, holder damage, and source placement on
+break. These controls are read at runtime and are not persisted as fixed balance
+values in world data.
 
 The same server file configures stone-machine fuel limits and multiplier,
 airflow acceleration and drag, retained heat, Sawmill blade damage and chip
@@ -125,6 +163,9 @@ stacks use `{"id":"namespace:fluid","amount":1000}`.
   `quantities`.
 - `revivalages:pit_kiln`: `ingredient`, `result`, `burn_time`, optional
   `failure_chance` and `failure_results`.
+- `revivalages:pit_burn`: `ingredient`, `result`, `stages`, `burn_time`, optional
+  `failure_chance` and `failure_results`. The ingredient is the pile block item
+  consumed by the state transition, normally `revivalages:log_pile`.
 - `revivalages:barrel`: one to four `items`, `input_fluid`, `result_fluid`, and
   `processing_time`.
 - `revivalages:soaking_pot`: `ingredient`, `input_fluid`, `result`, optional
@@ -156,6 +197,13 @@ them. The One Probe alone is intentionally excluded from the accepted scope for
 this complete primitive-device family. This exception does not remove JEI, EMI,
 or any other previously accepted optional integration.
 
+Pit Burn adds its staged success/failure recipe to the same JEI/EMI catalog. Jade
+shows enclosure validity, grace countdown, completed stages, progress, and the
+predicted result for Active Piles; Ash Piles explain how to collect their stored
+contents. Jade also reports the Wood Torch state and remaining burn time. Flint
+and Tinder and primitive buckets are items rather than inspectable world devices,
+so Jade is not applicable to them.
+
 KubeJS can add or replace these codec-backed recipes through normal custom recipe
 JSON. Biomes O' Plenty logs receive optional, load-conditioned Chopping recipes;
 seasonal integrations apply to Drying Racks only. Curios has no direct
@@ -171,6 +219,14 @@ Progressive Stages is applicable at the recipe/progression layer. Curios, Biomes
 O' Plenty, Serene Seasons, and Ecliptic Seasons are currently not applicable
 because these mechanisms have no wearable, biome-sensitive, or seasonal rule.
 The One Probe remains explicitly excluded for this family.
+
+For Pit Burn, KubeJS is applicable through codec-backed recipe JSON, JEI/EMI are
+applicable for recipes, Jade is applicable to active and completed pile state,
+and Progressive Stages can gate the recipe or items at pack level. Curios,
+Biomes O' Plenty, Serene Seasons, and Ecliptic Seasons have no direct surface in
+this mechanism. Flint and Tinder and Wood Torch use vanilla crafting recipes;
+primitive buckets intentionally use the generic NeoForge fluid capability so
+fluid-owning mods work without pairwise adapters. The One Probe remains excluded.
 
 ## Athenaeum porting rule
 

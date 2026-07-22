@@ -1,0 +1,43 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:alternatives",
+          "children": [
+            {
+              "type": "minecraft:item",
+              "name": "revivalages:wood_torch",
+              "conditions": [
+                {
+                  "condition": "minecraft:block_state_property",
+                  "block": "revivalages:wood_torch",
+                  "properties": { "state": "unlit" }
+                }
+              ]
+            },
+            {
+              "type": "minecraft:alternatives",
+              "children": [
+                {
+                  "type": "minecraft:item",
+                  "name": "minecraft:stick",
+                  "conditions": [
+                    { "condition": "minecraft:random_chance", "chance": 0.5 }
+                  ]
+                },
+                { "type": "minecraft:item", "name": "revivalages:straw" }
+              ]
+            }
+          ]
+        }
+      ],
+      "conditions": [
+        { "condition": "minecraft:survives_explosion" }
+      ]
+    }
+  ],
+  "random_sequence": "revivalages:blocks/wood_torch"
+}

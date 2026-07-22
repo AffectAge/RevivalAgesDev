@@ -8,6 +8,7 @@ import com.protyvkultury.revivalages.feature.technology.dryingrack.DryingRackFea
 import com.protyvkultury.revivalages.feature.technology.dryingrack.view.DryingRecipeCatalog;
 import com.protyvkultury.revivalages.feature.technology.dryingrack.view.DryingRecipeView;
 import com.protyvkultury.revivalages.feature.technology.pitkiln.PitKilnFeature;
+import com.protyvkultury.revivalages.feature.technology.pitburn.PitBurnFeature;
 import com.protyvkultury.revivalages.feature.technology.primitive.view.PrimitiveRecipeCatalog;
 import com.protyvkultury.revivalages.feature.technology.primitive.view.PrimitiveRecipeView;
 import com.protyvkultury.revivalages.feature.technology.soakingpot.SoakingPotFeature;
@@ -42,6 +43,8 @@ public final class RevivalAgesJeiPlugin implements IModPlugin {
             RevivalAgesJeiPlugin.primitive("chopping");
     public static final RecipeType<PrimitiveRecipeView> PIT_KILN =
             RevivalAgesJeiPlugin.primitive("pit_kiln");
+    public static final RecipeType<PrimitiveRecipeView> PIT_BURN =
+            RevivalAgesJeiPlugin.primitive("pit_burn");
     public static final RecipeType<PrimitiveRecipeView> BARREL =
             RevivalAgesJeiPlugin.primitive("barrel");
     public static final RecipeType<PrimitiveRecipeView> SOAKING_POT =
@@ -98,6 +101,12 @@ public final class RevivalAgesJeiPlugin implements IModPlugin {
                             PrimitiveJeiCategory.Layout.PIT_KILN,
                             "jei.revivalages.category.pit_kiln",
                             (Item) PitKilnFeature.PIT_KILN_ITEM.get()),
+                    new PrimitiveJeiCategory(
+                            registration.getJeiHelpers().getGuiHelper(),
+                            PIT_BURN,
+                            PrimitiveJeiCategory.Layout.PIT_KILN,
+                            "jei.revivalages.category.pit_burn",
+                            (Item) PitBurnFeature.LOG_PILE_ITEM.get()),
                     new PrimitiveJeiCategory(
                             registration.getJeiHelpers().getGuiHelper(),
                             BARREL,
@@ -157,6 +166,7 @@ public final class RevivalAgesJeiPlugin implements IModPlugin {
                 PrimitiveRecipeCatalog.campfire(recipeManager, (HolderLookup.Provider) registries));
         registration.addRecipes(CHOPPING, PrimitiveRecipeCatalog.chopping(recipeManager));
         registration.addRecipes(PIT_KILN, PrimitiveRecipeCatalog.pitKiln(recipeManager));
+        registration.addRecipes(PIT_BURN, PrimitiveRecipeCatalog.pitBurn(recipeManager));
         registration.addRecipes(BARREL, PrimitiveRecipeCatalog.barrel(recipeManager));
         registration.addRecipes(SOAKING_POT, PrimitiveRecipeCatalog.soakingPot(recipeManager));
         registration.addRecipes(TANNING_RACK, PrimitiveRecipeCatalog.tanningRack(recipeManager));
@@ -180,6 +190,8 @@ public final class RevivalAgesJeiPlugin implements IModPlugin {
                 (ItemLike) ChoppingBlockFeature.CHOPPING_BLOCK_ITEM.get(), new RecipeType[] {CHOPPING});
         registration.addRecipeCatalyst(
                 (ItemLike) PitKilnFeature.PIT_KILN_ITEM.get(), new RecipeType[] {PIT_KILN});
+        registration.addRecipeCatalyst(
+                (ItemLike) PitBurnFeature.LOG_PILE_ITEM.get(), new RecipeType[] {PIT_BURN});
         registration.addRecipeCatalyst(
                 (ItemLike) BarrelFeature.BARREL_ITEM.get(), new RecipeType[] {BARREL});
         registration.addRecipeCatalyst(
