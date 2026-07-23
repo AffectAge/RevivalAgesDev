@@ -2,7 +2,7 @@
 
 Revival Ages is a NeoForge mod for Minecraft 1.21.1 by Protyv_Kultury. This
 repository contains an architecture-first implementation of primitive
-technology: Drying Racks, Campfire, Chopping Block, Pit Kiln, Barrel,
+technology: Construction Frame assembly, Drying Racks, Campfire, Chopping Block, Pit Kiln, Barrel,
 Soaking Pot, Tanning Rack, Stone Sawmill, Stone Oven, Stone Kiln, Stone Crucible,
 an in-world Anvil, Pit Burn, Flint and Tinder, Wood Torch, and reusable wooden
 and clay buckets. A dedicated Revival Ages creative tab lists every registered
@@ -91,11 +91,14 @@ sticks, drops, world generation, and compatibility are documented in
 [docs/surface-deposits.md](docs/surface-deposits.md). The centrally maintained
 list of optional mods and integration applicability criteria is in
 [docs/optional-integrations.md](docs/optional-integrations.md).
+Construction Frame behavior, recipe data, configuration, and viewer integration
+are documented in [docs/construction-frame.md](docs/construction-frame.md).
 
 ## License
 
-The project metadata currently uses `All Rights Reserved`. Some third-party
-functional assets, internal behavior, and surface-deposit resources are
-redistributed or adapted under their respective licenses; see
+Revival Ages is licensed under the GNU General Public License version 3. Binary
+releases are accompanied by a sources JAR and corresponding-source ZIP. Some
+third-party functional assets, internal behavior, and resources are redistributed
+or adapted under compatible licenses; see
 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) and the license copies in
 [`licenses`](licenses).

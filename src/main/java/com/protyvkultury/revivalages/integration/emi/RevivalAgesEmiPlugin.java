@@ -18,6 +18,8 @@ import com.protyvkultury.revivalages.feature.technology.stonemachine.StoneMachin
 import com.protyvkultury.revivalages.feature.technology.stonemachine.view.StoneTechnologyRecipeCatalog;
 import com.protyvkultury.revivalages.feature.technology.animalpower.AnimalPowerFeature;
 import com.protyvkultury.revivalages.feature.technology.animalpower.view.AnimalPowerRecipeCatalog;
+import com.protyvkultury.revivalages.feature.technology.constructionframe.ConstructionFrameFeature;
+import com.protyvkultury.revivalages.feature.technology.constructionframe.view.FrameAssemblyRecipeCatalog;
 import dev.emi.emi.api.EmiEntrypoint;
 import dev.emi.emi.api.EmiPlugin;
 import dev.emi.emi.api.EmiRegistry;
@@ -75,6 +77,11 @@ public final class RevivalAgesEmiPlugin implements EmiPlugin {
             RevivalAgesEmiPlugin.category("grinding", AnimalPowerFeature.HORSE_GRINDSTONE_ITEM.get());
     public static final EmiRecipeCategory PRESSING =
             RevivalAgesEmiPlugin.category("pressing", AnimalPowerFeature.HORSE_PRESS_ITEM.get());
+    public static final EmiRecipeCategory FRAME_ASSEMBLY =
+            RevivalAgesEmiPlugin.category(
+                    "frame_assembly",
+                    ConstructionFrameFeature.CONSTRUCTION_FRAME_ITEM.get()
+            );
 
     private static EmiRecipeCategory category(String id, ItemLike icon) {
         return new EmiRecipeCategory(RevivalAges.id(id), (EmiRenderable) EmiStack.of((ItemLike) icon));
@@ -97,6 +104,7 @@ public final class RevivalAgesEmiPlugin implements EmiPlugin {
         registry.addCategory(ANVIL);
         registry.addCategory(GRINDING);
         registry.addCategory(PRESSING);
+        registry.addCategory(FRAME_ASSEMBLY);
         registry.addWorkstation(
                 CRUDE_DRYING,
                 (EmiIngredient)
@@ -140,6 +148,10 @@ public final class RevivalAgesEmiPlugin implements EmiPlugin {
         registry.addWorkstation(GRINDING, EmiStack.of(AnimalPowerFeature.HORSE_GRINDSTONE_ITEM.get()));
         registry.addWorkstation(CHOPPING, EmiStack.of(AnimalPowerFeature.HORSE_CHOPPING_BLOCK_ITEM.get()));
         registry.addWorkstation(PRESSING, EmiStack.of(AnimalPowerFeature.HORSE_PRESS_ITEM.get()));
+        registry.addWorkstation(
+                FRAME_ASSEMBLY,
+                EmiStack.of(ConstructionFrameFeature.CONSTRUCTION_FRAME_ITEM.get())
+        );
         DryingRecipeCatalog.crude(registry.getRecipeManager())
                 .forEach(
                         view ->
@@ -222,5 +234,7 @@ public final class RevivalAgesEmiPlugin implements EmiPlugin {
                 new PrimitiveEmiRecipe(GRINDING, PrimitiveEmiRecipe.Layout.GRINDING, view)));
         AnimalPowerRecipeCatalog.pressing(manager).forEach(view -> registry.addRecipe(
                 new PrimitiveEmiRecipe(PRESSING, PrimitiveEmiRecipe.Layout.PRESSING, view)));
+        FrameAssemblyRecipeCatalog.recipes(manager).forEach(view -> registry.addRecipe(
+                new FrameAssemblyEmiRecipe(FRAME_ASSEMBLY, view)));
     }
 }

@@ -1,0 +1,29 @@
+{
+  "neoforge:conditions": [
+    {
+      "enabled": false,
+      "type": "revivalages:construction_frame_enabled"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "SRS",
+    " P "
+  ],
+  "key": {
+    "R": {
+      "item": "minecraft:stone_slab"
+    },
+    "P": {
+      "tag": "minecraft:planks"
+    },
+    "S": {
+      "tag": "c:rods/wooden"
+    }
+  },
+  "result": {
+    "count": 1,
+    "id": "minecraft:grindstone"
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "neoforge:conditions": [
+    {
+      "enabled": true,
+      "type": "revivalages:construction_frame_enabled"
+    }
+  ],
+  "type": "revivalages:frame_assembly",
+  "key": {
+    "C": {
+      "tag": "c:storage_blocks/iron"
+    },
+    "P": {
+      "tag": "minecraft:planks"
+    }
+  },
+  "pattern": {
+    "bottom": [
+      "CPC",
+      "PPP",
+      "CPC"
+    ],
+    "middle": [
+      "CPC",
+      "PPP",
+      "CPC"
+    ],
+    "top": [
+      "CCC",
+      "CCC",
+      "CCC"
+    ]
+  },
+  "result": {
+    "count": 1,
+    "id": "minecraft:smithing_table"
+  },
+  "tool": {
+    "tag": "revivalages:hammers"
+  }
+}

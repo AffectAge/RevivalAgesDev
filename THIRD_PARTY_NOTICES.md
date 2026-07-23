@@ -1,5 +1,34 @@
 # Third-Party Notices
 
+## YTech
+
+Construction Frame interaction semantics, the 3x3x3 recipe format, four-way
+rotation matching, functional block-model geometry, rope texture, twelve vanilla
+assembly patterns, and the isometric/layered JEI and EMI presentation were
+adapted from YTech by yanny7. The source used is the Minecraft 1.21.1 branch at
+<https://github.com/yanny7/YTech>.
+
+YTech is licensed under the GNU General Public License version 3. A copy is
+included at `licenses/FrameAssembly-GPLv3.txt`. Revival Ages is distributed
+under the same license. The implementation was modified for Revival Ages' feature
+architecture and transactional NeoForge placement lifecycle, and it avoids the
+source implementation's Objenesis-backed mutable virtual level.
+
+The original Java paths
+`configuration/block/CraftingWorkspaceBlock.java`,
+`configuration/block_entity/CraftingWorkspaceBlockEntity.java`,
+`configuration/recipe/WorkspaceCraftingRecipe.java`,
+`configuration/renderer/CraftingWorkspaceRenderer.java`, and the corresponding
+JEI/EMI compatibility classes were adapted into the renamed
+`feature/technology/constructionframe` and `integration/jei`/`integration/emi`
+paths. The generated block model
+`models/block/crafting_workspace.json` is shipped as
+`models/block/construction_frame.json`; `textures/block/horizontal_rope.png` is
+shipped as `textures/block/construction_rope.png`; and only the functional
+40x30 button region of `textures/gui/emi.png` is shipped as
+`textures/gui/frame_assembly_controls.png`. The unused workspace GUI image was
+not copied.
+
 ## HorsePower
 
 The interaction flow, worker waypoint lifecycle, work-area contract, processing

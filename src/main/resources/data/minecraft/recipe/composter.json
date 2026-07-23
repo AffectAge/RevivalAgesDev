@@ -1,0 +1,38 @@
+{
+  "neoforge:conditions": [
+    {
+      "enabled": true,
+      "type": "revivalages:construction_frame_enabled"
+    }
+  ],
+  "type": "revivalages:frame_assembly",
+  "key": {
+    "L": {
+      "tag": "minecraft:planks"
+    }
+  },
+  "pattern": {
+    "bottom": [
+      "LLL",
+      "LLL",
+      "LLL"
+    ],
+    "middle": [
+      "LLL",
+      "L L",
+      "LLL"
+    ],
+    "top": [
+      "LLL",
+      "L L",
+      "LLL"
+    ]
+  },
+  "result": {
+    "count": 1,
+    "id": "minecraft:composter"
+  },
+  "tool": {
+    "tag": "revivalages:hammers"
+  }
+}

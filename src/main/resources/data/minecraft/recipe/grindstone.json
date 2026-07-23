@@ -1,0 +1,41 @@
+{
+  "neoforge:conditions": [
+    {
+      "enabled": true,
+      "type": "revivalages:construction_frame_enabled"
+    }
+  ],
+  "type": "revivalages:frame_assembly",
+  "key": {
+    "L": {
+      "tag": "minecraft:logs"
+    },
+    "S": {
+      "item": "minecraft:smooth_stone"
+    }
+  },
+  "pattern": {
+    "bottom": [
+      " L ",
+      "SSS",
+      " L "
+    ],
+    "middle": [
+      " L ",
+      "SSS",
+      " L "
+    ],
+    "top": [
+      "   ",
+      "SSS",
+      "   "
+    ]
+  },
+  "result": {
+    "count": 1,
+    "id": "minecraft:grindstone"
+  },
+  "tool": {
+    "tag": "revivalages:hammers"
+  }
+}

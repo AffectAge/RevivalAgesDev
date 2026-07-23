@@ -1,11 +1,30 @@
 {
+  "neoforge:conditions": [
+    {
+      "enabled": false,
+      "type": "revivalages:construction_frame_enabled"
+    }
+  ],
   "type": "minecraft:crafting_shaped",
   "category": "misc",
-  "pattern": ["LSL", "###", "###"],
+  "pattern": [
+    "LSL",
+    "###",
+    "###"
+  ],
   "key": {
-    "L": { "item": "minecraft:lead" },
-    "S": { "tag": "c:rods/wooden" },
-    "#": { "tag": "c:stones" }
+    "L": {
+      "item": "minecraft:lead"
+    },
+    "S": {
+      "tag": "c:rods/wooden"
+    },
+    "#": {
+      "tag": "c:stones"
+    }
   },
-  "result": { "id": "revivalages:horse_grindstone", "count": 1 }
+  "result": {
+    "id": "revivalages:horse_grindstone",
+    "count": 1
+  }
 }

@@ -1,0 +1,41 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "revivalages:construction_frame_enabled",
+      "enabled": true
+    }
+  ],
+  "type": "revivalages:frame_assembly",
+  "key": {
+    "G": {
+      "item": "minecraft:polished_granite"
+    },
+    "S": {
+      "item": "minecraft:stone_slab"
+    }
+  },
+  "pattern": {
+    "bottom": [
+      "SSS",
+      "SSS",
+      "SSS"
+    ],
+    "middle": [
+      " G ",
+      " G ",
+      " G "
+    ],
+    "top": [
+      "GGG",
+      "GGG",
+      "GGG"
+    ]
+  },
+  "tool": {
+    "tag": "revivalages:hammers"
+  },
+  "result": {
+    "id": "revivalages:anvil",
+    "count": 1
+  }
+}

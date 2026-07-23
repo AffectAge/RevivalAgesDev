@@ -1,0 +1,41 @@
+{
+  "neoforge:conditions": [
+    {
+      "enabled": true,
+      "type": "revivalages:construction_frame_enabled"
+    }
+  ],
+  "type": "revivalages:frame_assembly",
+  "key": {
+    "P": {
+      "tag": "minecraft:planks"
+    },
+    "S": {
+      "tag": "c:strings"
+    }
+  },
+  "pattern": {
+    "bottom": [
+      "P P",
+      "   ",
+      "P P"
+    ],
+    "middle": [
+      "PPP",
+      "PPP",
+      "PPP"
+    ],
+    "top": [
+      "PPP",
+      "SSS",
+      "SSS"
+    ]
+  },
+  "result": {
+    "count": 1,
+    "id": "minecraft:loom"
+  },
+  "tool": {
+    "tag": "revivalages:hammers"
+  }
+}

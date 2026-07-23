@@ -1,0 +1,52 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "revivalages:construction_frame_enabled",
+      "enabled": true
+    }
+  ],
+  "type": "revivalages:frame_assembly",
+  "key": {
+    "L": {
+      "item": "minecraft:lead"
+    },
+    "R": {
+      "tag": "c:rods/wooden"
+    },
+    "F": {
+      "item": "minecraft:flint"
+    },
+    "W": {
+      "tag": "minecraft:logs"
+    }
+  },
+  "pattern": {
+    "bottom": [
+      "RRR",
+      "RWR",
+      "RRR"
+    ],
+    "middle": [
+      "RFR",
+      "R R",
+      "RFR"
+    ],
+    "top": [
+      "L L",
+      " R ",
+      "L L"
+    ]
+  },
+  "tool": {
+    "tag": "revivalages:chopping_axes"
+  },
+  "result": {
+    "id": "revivalages:horse_chopping_block",
+    "count": 1
+  },
+  "wood_variant_source": {
+    "x": 1,
+    "z": 1,
+    "y": 0
+  }
+}

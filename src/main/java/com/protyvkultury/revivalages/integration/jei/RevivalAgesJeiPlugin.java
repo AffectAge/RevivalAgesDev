@@ -18,6 +18,9 @@ import com.protyvkultury.revivalages.feature.technology.stonemachine.StoneMachin
 import com.protyvkultury.revivalages.feature.technology.stonemachine.view.StoneTechnologyRecipeCatalog;
 import com.protyvkultury.revivalages.feature.technology.animalpower.AnimalPowerFeature;
 import com.protyvkultury.revivalages.feature.technology.animalpower.view.AnimalPowerRecipeCatalog;
+import com.protyvkultury.revivalages.feature.technology.constructionframe.ConstructionFrameFeature;
+import com.protyvkultury.revivalages.feature.technology.constructionframe.view.FrameAssemblyRecipeCatalog;
+import com.protyvkultury.revivalages.feature.technology.constructionframe.view.FrameAssemblyRecipeView;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.recipe.RecipeType;
@@ -67,6 +70,8 @@ public final class RevivalAgesJeiPlugin implements IModPlugin {
             RevivalAgesJeiPlugin.primitive("grinding");
     public static final RecipeType<PrimitiveRecipeView> PRESSING =
             RevivalAgesJeiPlugin.primitive("pressing");
+    public static final RecipeType<FrameAssemblyRecipeView> FRAME_ASSEMBLY =
+            RecipeType.create("revivalages", "frame_assembly", FrameAssemblyRecipeView.class);
 
     private static RecipeType<PrimitiveRecipeView> primitive(String path) {
         return RecipeType.create((String) "revivalages", (String) path, PrimitiveRecipeView.class);
@@ -165,7 +170,8 @@ public final class RevivalAgesJeiPlugin implements IModPlugin {
                             registration.getJeiHelpers().getGuiHelper(), PRESSING,
                             PrimitiveJeiCategory.Layout.PRESSING,
                             "jei.revivalages.category.pressing",
-                            (Item) AnimalPowerFeature.HORSE_PRESS_ITEM.get())
+                            (Item) AnimalPowerFeature.HORSE_PRESS_ITEM.get()),
+                    new FrameAssemblyJeiCategory(registration.getJeiHelpers(), FRAME_ASSEMBLY)
                 });
     }
 
@@ -194,6 +200,7 @@ public final class RevivalAgesJeiPlugin implements IModPlugin {
         registration.addRecipes(ANVIL, StoneTechnologyRecipeCatalog.anvil(recipeManager));
         registration.addRecipes(GRINDING, AnimalPowerRecipeCatalog.grinding(recipeManager));
         registration.addRecipes(PRESSING, AnimalPowerRecipeCatalog.pressing(recipeManager));
+        registration.addRecipes(FRAME_ASSEMBLY, FrameAssemblyRecipeCatalog.recipes(recipeManager));
     }
 
     public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
@@ -233,5 +240,8 @@ public final class RevivalAgesJeiPlugin implements IModPlugin {
                 (ItemLike) AnimalPowerFeature.HORSE_CHOPPING_BLOCK_ITEM.get(), new RecipeType[] {CHOPPING});
         registration.addRecipeCatalyst(
                 (ItemLike) AnimalPowerFeature.HORSE_PRESS_ITEM.get(), new RecipeType[] {PRESSING});
+        registration.addRecipeCatalyst(
+                (ItemLike) ConstructionFrameFeature.CONSTRUCTION_FRAME_ITEM.get(),
+                new RecipeType[] {FRAME_ASSEMBLY});
     }
 }

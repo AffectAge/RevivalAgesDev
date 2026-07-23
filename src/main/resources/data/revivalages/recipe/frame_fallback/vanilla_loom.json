@@ -1,0 +1,26 @@
+{
+  "neoforge:conditions": [
+    {
+      "enabled": false,
+      "type": "revivalages:construction_frame_enabled"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "SS",
+    "PP"
+  ],
+  "key": {
+    "P": {
+      "tag": "minecraft:planks"
+    },
+    "S": {
+      "item": "minecraft:string"
+    }
+  },
+  "result": {
+    "count": 1,
+    "id": "minecraft:loom"
+  }
+}

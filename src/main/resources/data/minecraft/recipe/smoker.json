@@ -1,0 +1,44 @@
+{
+  "neoforge:conditions": [
+    {
+      "enabled": true,
+      "type": "revivalages:construction_frame_enabled"
+    }
+  ],
+  "type": "revivalages:frame_assembly",
+  "key": {
+    "A": {
+      "item": "minecraft:campfire"
+    },
+    "C": {
+      "tag": "c:cobblestones/normal"
+    },
+    "L": {
+      "tag": "minecraft:logs"
+    }
+  },
+  "pattern": {
+    "bottom": [
+      "LCL",
+      "CCC",
+      "LCL"
+    ],
+    "middle": [
+      "LCL",
+      "CAC",
+      "L L"
+    ],
+    "top": [
+      "LCL",
+      "C C",
+      "LCL"
+    ]
+  },
+  "result": {
+    "count": 1,
+    "id": "minecraft:smoker"
+  },
+  "tool": {
+    "tag": "revivalages:hammers"
+  }
+}

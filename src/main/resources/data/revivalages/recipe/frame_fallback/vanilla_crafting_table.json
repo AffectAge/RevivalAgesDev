@@ -1,0 +1,23 @@
+{
+  "neoforge:conditions": [
+    {
+      "enabled": false,
+      "type": "revivalages:construction_frame_enabled"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PP",
+    "PP"
+  ],
+  "key": {
+    "P": {
+      "tag": "minecraft:planks"
+    }
+  },
+  "result": {
+    "count": 1,
+    "id": "minecraft:crafting_table"
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "neoforge:conditions": [
+    {
+      "enabled": true,
+      "type": "revivalages:construction_frame_enabled"
+    }
+  ],
+  "type": "revivalages:frame_assembly",
+  "key": {
+    "L": {
+      "item": "minecraft:leather"
+    },
+    "P": {
+      "tag": "minecraft:planks"
+    }
+  },
+  "pattern": {
+    "bottom": [
+      "PPP",
+      "PPP",
+      "PPP"
+    ],
+    "middle": [
+      "PPP",
+      "PPP",
+      "PPP"
+    ],
+    "top": [
+      "   ",
+      " L ",
+      "   "
+    ]
+  },
+  "result": {
+    "count": 1,
+    "id": "minecraft:crafting_table"
+  },
+  "tool": {
+    "tag": "revivalages:hammers"
+  }
+}

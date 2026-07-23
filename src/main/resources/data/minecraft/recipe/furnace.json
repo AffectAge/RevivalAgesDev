@@ -1,0 +1,41 @@
+{
+  "neoforge:conditions": [
+    {
+      "enabled": true,
+      "type": "revivalages:construction_frame_enabled"
+    }
+  ],
+  "type": "revivalages:frame_assembly",
+  "key": {
+    "A": {
+      "item": "minecraft:campfire"
+    },
+    "C": {
+      "tag": "c:cobblestones/normal"
+    }
+  },
+  "pattern": {
+    "bottom": [
+      "CCC",
+      "CCC",
+      "CCC"
+    ],
+    "middle": [
+      "CCC",
+      "CAC",
+      "C C"
+    ],
+    "top": [
+      "CCC",
+      "CCC",
+      "CCC"
+    ]
+  },
+  "result": {
+    "count": 1,
+    "id": "minecraft:furnace"
+  },
+  "tool": {
+    "tag": "revivalages:hammers"
+  }
+}

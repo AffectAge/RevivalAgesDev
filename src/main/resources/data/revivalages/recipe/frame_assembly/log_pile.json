@@ -1,0 +1,38 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "revivalages:construction_frame_enabled",
+      "enabled": true
+    }
+  ],
+  "type": "revivalages:frame_assembly",
+  "key": {
+    "L": {
+      "tag": "minecraft:logs"
+    }
+  },
+  "pattern": {
+    "bottom": [
+      "LLL",
+      "LLL",
+      "LLL"
+    ],
+    "middle": [
+      "LLL",
+      "LLL",
+      "LLL"
+    ],
+    "top": [
+      "LLL",
+      "LLL",
+      "LLL"
+    ]
+  },
+  "tool": {
+    "tag": "revivalages:chopping_axes"
+  },
+  "result": {
+    "id": "revivalages:log_pile",
+    "count": 1
+  }
+}

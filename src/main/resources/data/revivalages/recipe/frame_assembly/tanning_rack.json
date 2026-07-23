@@ -1,0 +1,41 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "revivalages:construction_frame_enabled",
+      "enabled": true
+    }
+  ],
+  "type": "revivalages:frame_assembly",
+  "key": {
+    "R": {
+      "tag": "c:rods/wooden"
+    },
+    "S": {
+      "item": "minecraft:string"
+    }
+  },
+  "pattern": {
+    "bottom": [
+      "R R",
+      "   ",
+      "R R"
+    ],
+    "middle": [
+      "RSR",
+      "S S",
+      "RSR"
+    ],
+    "top": [
+      "RSR",
+      "S S",
+      "RSR"
+    ]
+  },
+  "tool": {
+    "tag": "revivalages:chopping_axes"
+  },
+  "result": {
+    "id": "revivalages:tanning_rack",
+    "count": 1
+  }
+}

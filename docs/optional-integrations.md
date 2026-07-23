@@ -52,3 +52,4 @@ from the compatible 1.21.1 release when implementing an adapter.
 ## Feature assessments
 
 - [Animal Power](animal-power.md#optional-integration-assessment)
+- [Construction Frame](construction-frame.md#optional-integration-assessment)

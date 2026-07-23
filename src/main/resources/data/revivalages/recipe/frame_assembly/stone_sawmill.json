@@ -1,0 +1,44 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "revivalages:construction_frame_enabled",
+      "enabled": true
+    }
+  ],
+  "type": "revivalages:frame_assembly",
+  "key": {
+    "S": {
+      "item": "minecraft:stone_slab"
+    },
+    "B": {
+      "item": "minecraft:stone_bricks"
+    },
+    "C": {
+      "item": "revivalages:chopping_block"
+    }
+  },
+  "pattern": {
+    "bottom": [
+      "BBB",
+      "BBB",
+      "BBB"
+    ],
+    "middle": [
+      "BBB",
+      "BCB",
+      "B B"
+    ],
+    "top": [
+      "BBB",
+      " S ",
+      "BBB"
+    ]
+  },
+  "tool": {
+    "tag": "revivalages:hammers"
+  },
+  "result": {
+    "id": "revivalages:stone_sawmill",
+    "count": 1
+  }
+}

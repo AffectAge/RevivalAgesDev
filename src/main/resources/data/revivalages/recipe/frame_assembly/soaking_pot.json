@@ -1,0 +1,38 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "revivalages:construction_frame_enabled",
+      "enabled": true
+    }
+  ],
+  "type": "revivalages:frame_assembly",
+  "key": {
+    "B": {
+      "item": "minecraft:brick"
+    }
+  },
+  "pattern": {
+    "bottom": [
+      "BBB",
+      "BBB",
+      "BBB"
+    ],
+    "middle": [
+      "BBB",
+      "B B",
+      "BBB"
+    ],
+    "top": [
+      "BBB",
+      "B B",
+      "BBB"
+    ]
+  },
+  "tool": {
+    "tag": "revivalages:hammers"
+  },
+  "result": {
+    "id": "revivalages:soaking_pot",
+    "count": 1
+  }
+}

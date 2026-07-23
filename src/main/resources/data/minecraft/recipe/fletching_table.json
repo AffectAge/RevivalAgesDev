@@ -1,0 +1,41 @@
+{
+  "neoforge:conditions": [
+    {
+      "enabled": true,
+      "type": "revivalages:construction_frame_enabled"
+    }
+  ],
+  "type": "revivalages:frame_assembly",
+  "key": {
+    "P": {
+      "tag": "minecraft:planks"
+    },
+    "T": {
+      "item": "minecraft:target"
+    }
+  },
+  "pattern": {
+    "bottom": [
+      "PPP",
+      "PPP",
+      "PPP"
+    ],
+    "middle": [
+      "PTP",
+      "PPP",
+      "PTP"
+    ],
+    "top": [
+      "PPP",
+      "PPP",
+      "PPP"
+    ]
+  },
+  "result": {
+    "count": 1,
+    "id": "minecraft:fletching_table"
+  },
+  "tool": {
+    "tag": "revivalages:hammers"
+  }
+}

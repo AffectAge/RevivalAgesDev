@@ -1,0 +1,44 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "revivalages:construction_frame_enabled",
+      "enabled": true
+    }
+  ],
+  "type": "revivalages:frame_assembly",
+  "key": {
+    "L": {
+      "item": "minecraft:lead"
+    },
+    "R": {
+      "tag": "c:stones"
+    },
+    "S": {
+      "tag": "c:rods/wooden"
+    }
+  },
+  "pattern": {
+    "bottom": [
+      "RRR",
+      "RRR",
+      "RRR"
+    ],
+    "middle": [
+      "RRR",
+      "RSR",
+      "RRR"
+    ],
+    "top": [
+      "L L",
+      " S ",
+      " R "
+    ]
+  },
+  "tool": {
+    "tag": "revivalages:hammers"
+  },
+  "result": {
+    "id": "revivalages:horse_grindstone",
+    "count": 1
+  }
+}

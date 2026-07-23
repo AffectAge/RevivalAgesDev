@@ -1,0 +1,47 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "revivalages:construction_frame_enabled",
+      "enabled": true
+    }
+  ],
+  "type": "revivalages:frame_assembly",
+  "key": {
+    "L": {
+      "item": "minecraft:lead"
+    },
+    "R": {
+      "tag": "c:rods/wooden"
+    },
+    "B": {
+      "tag": "minecraft:wooden_pressure_plates"
+    },
+    "P": {
+      "tag": "minecraft:planks"
+    }
+  },
+  "pattern": {
+    "bottom": [
+      "PPP",
+      "PPP",
+      "PPP"
+    ],
+    "middle": [
+      "P P",
+      "PBP",
+      "P P"
+    ],
+    "top": [
+      "L L",
+      " R ",
+      "L L"
+    ]
+  },
+  "tool": {
+    "tag": "revivalages:hammers"
+  },
+  "result": {
+    "id": "revivalages:horse_press",
+    "count": 1
+  }
+}

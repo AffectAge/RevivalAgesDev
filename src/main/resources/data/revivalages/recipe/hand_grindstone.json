@@ -1,10 +1,27 @@
 {
+  "neoforge:conditions": [
+    {
+      "enabled": false,
+      "type": "revivalages:construction_frame_enabled"
+    }
+  ],
   "type": "minecraft:crafting_shaped",
   "category": "misc",
-  "pattern": ["  S", "###", "###"],
+  "pattern": [
+    "  S",
+    "###",
+    "###"
+  ],
   "key": {
-    "S": { "tag": "c:rods/wooden" },
-    "#": { "tag": "c:stones" }
+    "S": {
+      "tag": "c:rods/wooden"
+    },
+    "#": {
+      "tag": "c:stones"
+    }
   },
-  "result": { "id": "revivalages:hand_grindstone", "count": 1 }
+  "result": {
+    "id": "revivalages:hand_grindstone",
+    "count": 1
+  }
 }

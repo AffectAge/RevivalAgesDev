@@ -1,12 +1,33 @@
 {
+  "neoforge:conditions": [
+    {
+      "enabled": false,
+      "type": "revivalages:construction_frame_enabled"
+    }
+  ],
   "type": "minecraft:crafting_shaped",
   "category": "misc",
-  "pattern": ["LSL", "#P#", "###"],
+  "pattern": [
+    "LSL",
+    "#P#",
+    "###"
+  ],
   "key": {
-    "L": { "item": "minecraft:lead" },
-    "S": { "tag": "c:rods/wooden" },
-    "#": { "tag": "minecraft:planks" },
-    "P": { "tag": "minecraft:wooden_pressure_plates" }
+    "L": {
+      "item": "minecraft:lead"
+    },
+    "S": {
+      "tag": "c:rods/wooden"
+    },
+    "#": {
+      "tag": "minecraft:planks"
+    },
+    "P": {
+      "tag": "minecraft:wooden_pressure_plates"
+    }
   },
-  "result": { "id": "revivalages:horse_press", "count": 1 }
+  "result": {
+    "id": "revivalages:horse_press",
+    "count": 1
+  }
 }

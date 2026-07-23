@@ -14,6 +14,7 @@ import com.protyvkultury.revivalages.feature.technology.pitburn.block.AshPileBlo
 import com.protyvkultury.revivalages.feature.technology.ignition.block.WoodTorchBlock;
 import com.protyvkultury.revivalages.feature.technology.animalpower.block.AnimalMachineBlock;
 import com.protyvkultury.revivalages.feature.technology.animalpower.block.HandGrindstoneBlock;
+import com.protyvkultury.revivalages.feature.technology.constructionframe.block.ConstructionFrameBlock;
 import snownee.jade.api.IWailaClientRegistration;
 import snownee.jade.api.IWailaPlugin;
 import snownee.jade.api.WailaPlugin;
@@ -37,5 +38,9 @@ public final class RevivalAgesJadePlugin implements IWailaPlugin {
         registration.registerBlockComponent(PrimitiveDeviceComponentProvider.INSTANCE, WoodTorchBlock.class);
         registration.registerBlockComponent(AnimalPowerComponentProvider.INSTANCE, HandGrindstoneBlock.class);
         registration.registerBlockComponent(AnimalPowerComponentProvider.INSTANCE, AnimalMachineBlock.class);
+        registration.registerBlockComponent(
+                ConstructionFrameComponentProvider.INSTANCE,
+                ConstructionFrameBlock.class
+        );
     }
 }

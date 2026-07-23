@@ -1,0 +1,26 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "revivalages:construction_frame_enabled",
+      "enabled": true
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "SS",
+    "RR"
+  ],
+  "key": {
+    "S": {
+      "item": "minecraft:string"
+    },
+    "R": {
+      "tag": "c:rods/wooden"
+    }
+  },
+  "result": {
+    "id": "revivalages:construction_frame",
+    "count": 1
+  }
+}

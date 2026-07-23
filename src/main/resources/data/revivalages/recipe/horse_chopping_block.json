@@ -1,4 +1,10 @@
 {
+  "neoforge:conditions": [
+    {
+      "enabled": false,
+      "type": "revivalages:construction_frame_enabled"
+    }
+  ],
   "type": "revivalages:wood_variant_chopping_block",
   "category": "misc"
 }

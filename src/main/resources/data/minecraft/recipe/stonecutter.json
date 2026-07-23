@@ -1,0 +1,44 @@
+{
+  "neoforge:conditions": [
+    {
+      "enabled": true,
+      "type": "revivalages:construction_frame_enabled"
+    }
+  ],
+  "type": "revivalages:frame_assembly",
+  "key": {
+    "L": {
+      "tag": "minecraft:logs"
+    },
+    "P": {
+      "item": "minecraft:smooth_stone"
+    },
+    "S": {
+      "tag": "revivalages:saw_blades"
+    }
+  },
+  "pattern": {
+    "bottom": [
+      "LPL",
+      "PPP",
+      "LPL"
+    ],
+    "middle": [
+      "LPL",
+      "PPP",
+      "LPL"
+    ],
+    "top": [
+      "   ",
+      " S ",
+      "   "
+    ]
+  },
+  "result": {
+    "count": 1,
+    "id": "minecraft:stonecutter"
+  },
+  "tool": {
+    "tag": "revivalages:hammers"
+  }
+}

@@ -1,5 +1,23 @@
 {
-  "type": "minecraft:crafting_shaped", "category": "misc",
-  "pattern": ["LL", "LL"], "key": { "L": { "tag": "minecraft:logs" } },
-  "result": { "id": "revivalages:chopping_block", "count": 1 }
+  "neoforge:conditions": [
+    {
+      "enabled": false,
+      "type": "revivalages:construction_frame_enabled"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "LL",
+    "LL"
+  ],
+  "key": {
+    "L": {
+      "tag": "minecraft:logs"
+    }
+  },
+  "result": {
+    "id": "revivalages:chopping_block",
+    "count": 1
+  }
 }

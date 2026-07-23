@@ -1,0 +1,41 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "revivalages:construction_frame_enabled",
+      "enabled": true
+    }
+  ],
+  "type": "revivalages:frame_assembly",
+  "key": {
+    "R": {
+      "tag": "c:rods/wooden"
+    },
+    "S": {
+      "item": "minecraft:string"
+    }
+  },
+  "pattern": {
+    "bottom": [
+      "R R",
+      "   ",
+      "R R"
+    ],
+    "middle": [
+      "R R",
+      "S S",
+      "R R"
+    ],
+    "top": [
+      "SSS",
+      "SSS",
+      "SSS"
+    ]
+  },
+  "tool": {
+    "tag": "revivalages:chopping_axes"
+  },
+  "result": {
+    "id": "revivalages:crude_drying_rack",
+    "count": 1
+  }
+}

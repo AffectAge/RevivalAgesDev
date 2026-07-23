@@ -1,5 +1,24 @@
 {
-  "type": "minecraft:crafting_shaped", "category": "misc",
-  "pattern": ["P P", "P P", "PPP"], "key": { "P": { "tag": "minecraft:planks" } },
-  "result": { "id": "revivalages:barrel", "count": 1 }
+  "neoforge:conditions": [
+    {
+      "enabled": false,
+      "type": "revivalages:construction_frame_enabled"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "P P",
+    "P P",
+    "PPP"
+  ],
+  "key": {
+    "P": {
+      "tag": "minecraft:planks"
+    }
+  },
+  "result": {
+    "id": "revivalages:barrel",
+    "count": 1
+  }
 }

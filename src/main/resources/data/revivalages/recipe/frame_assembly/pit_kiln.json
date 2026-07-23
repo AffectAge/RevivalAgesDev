@@ -1,0 +1,41 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "revivalages:construction_frame_enabled",
+      "enabled": true
+    }
+  ],
+  "type": "revivalages:frame_assembly",
+  "key": {
+    "D": {
+      "item": "minecraft:dirt"
+    },
+    "F": {
+      "item": "minecraft:flint"
+    }
+  },
+  "pattern": {
+    "bottom": [
+      "DDD",
+      "DDD",
+      "DDD"
+    ],
+    "middle": [
+      "DDD",
+      "DFD",
+      "D D"
+    ],
+    "top": [
+      "DDD",
+      "D D",
+      "DDD"
+    ]
+  },
+  "tool": {
+    "tag": "revivalages:hammers"
+  },
+  "result": {
+    "id": "revivalages:pit_kiln",
+    "count": 1
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "neoforge:conditions": [
+    {
+      "enabled": false,
+      "type": "revivalages:construction_frame_enabled"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PP",
+    "BB",
+    "BB"
+  ],
+  "key": {
+    "P": {
+      "item": "minecraft:paper"
+    },
+    "B": {
+      "tag": "minecraft:planks"
+    }
+  },
+  "result": {
+    "count": 1,
+    "id": "minecraft:cartography_table"
+  }
+}

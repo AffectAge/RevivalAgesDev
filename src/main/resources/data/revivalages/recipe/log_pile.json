@@ -1,9 +1,24 @@
 {
+  "neoforge:conditions": [
+    {
+      "enabled": false,
+      "type": "revivalages:construction_frame_enabled"
+    }
+  ],
   "type": "minecraft:crafting_shaped",
   "category": "building",
-  "pattern": ["###", "###", "###"],
+  "pattern": [
+    "###",
+    "###",
+    "###"
+  ],
   "key": {
-    "#": { "tag": "minecraft:logs" }
+    "#": {
+      "tag": "minecraft:logs"
+    }
   },
-  "result": { "id": "revivalages:log_pile", "count": 1 }
+  "result": {
+    "id": "revivalages:log_pile",
+    "count": 1
+  }
 }

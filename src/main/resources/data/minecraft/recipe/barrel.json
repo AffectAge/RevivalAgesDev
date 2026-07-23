@@ -1,0 +1,41 @@
+{
+  "neoforge:conditions": [
+    {
+      "enabled": true,
+      "type": "revivalages:construction_frame_enabled"
+    }
+  ],
+  "type": "revivalages:frame_assembly",
+  "key": {
+    "P": {
+      "tag": "minecraft:planks"
+    },
+    "S": {
+      "tag": "minecraft:wooden_slabs"
+    }
+  },
+  "pattern": {
+    "bottom": [
+      "PPP",
+      "PPP",
+      "PPP"
+    ],
+    "middle": [
+      "PPP",
+      "P P",
+      "PPP"
+    ],
+    "top": [
+      "SSS",
+      "SSS",
+      "SSS"
+    ]
+  },
+  "result": {
+    "count": 1,
+    "id": "minecraft:barrel"
+  },
+  "tool": {
+    "tag": "revivalages:hammers"
+  }
+}
