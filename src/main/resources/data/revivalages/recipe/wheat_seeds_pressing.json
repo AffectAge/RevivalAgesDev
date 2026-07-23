@@ -1,0 +1,6 @@
+{
+  "type": "revivalages:pressing",
+  "ingredient": { "item": "minecraft:wheat_seeds" },
+  "input_count": 12,
+  "result": { "id": "minecraft:dirt", "count": 1 }
+}

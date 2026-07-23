@@ -78,18 +78,20 @@ final class PrimitiveEmiRecipe implements EmiRecipe {
     public void addWidgets(WidgetHolder widgets) {
         ResourceLocation texture = RevivalAges.id("textures/gui/" + this.layout.texture + ".png");
         widgets.addTexture(texture, 0, 0, this.layout.width, this.layout.backgroundHeight, 0, 0);
-        widgets.addAnimatedTexture(
-                texture,
-                this.layout.arrowX,
-                this.layout.arrowY,
-                24,
-                17,
-                this.layout.arrowU,
-                this.layout.arrowV,
-                Math.max(1000, this.view.processingTime() * 50),
-                true,
-                false,
-                false);
+        if (!this.layout.usesEmbeddedArrow) {
+            widgets.addAnimatedTexture(
+                    texture,
+                    this.layout.arrowX,
+                    this.layout.arrowY,
+                    24,
+                    17,
+                    this.layout.arrowU,
+                    this.layout.arrowV,
+                    Math.max(1000, this.view.processingTime() * 50),
+                    true,
+                    false,
+                    false);
+        }
         if (this.layout.hasFlame) {
             widgets.addAnimatedTexture(
                     texture,
@@ -114,9 +116,27 @@ final class PrimitiveEmiRecipe implements EmiRecipe {
             case CHOPPING, ANVIL:
                 {
                     this.addItemInputs(widgets, new int[][] {{0, 17}});
-                    this.addItemOutputs(widgets, new int[][] {{60, 18}});
+                    this.addItemOutputs(widgets, new int[][] {{60, 18}, {83, 18}});
                     break;
                 }
+            case GRINDING:
+                this.addItemInputs(widgets, new int[][] {{34, 27}});
+                this.addItemOutputs(widgets, new int[][] {{90, 27}, {90, 50}});
+                break;
+            case PRESSING:
+                this.addItemInputs(widgets, new int[][] {{34, 32}});
+                this.addItemOutputs(widgets, new int[][] {{90, 32}});
+                if (!this.view.fluidOutput().isEmpty()) {
+                    widgets.addTank(
+                                    this.outputs.getFirst(),
+                                    95,
+                                    23,
+                                    16,
+                                    27,
+                                    this.view.fluidOutput().getAmount())
+                            .recipeContext(this);
+                }
+                break;
             case PIT_KILN:
                 {
                     this.addItemInputs(widgets, new int[][] {{0, 22}});
@@ -239,7 +259,9 @@ final class PrimitiveEmiRecipe implements EmiRecipe {
         STONE_OVEN("stone_oven", 82, 33, 82, 14, 24, 10, true, 82, 0, 1, 19),
         STONE_KILN("stone_kiln", 101, 46, 101, 14, 24, 10, true, 101, 0, 1, 19),
         STONE_CRUCIBLE("stone_crucible", 82, 33, 82, 14, 24, 10, true, 82, 0, 1, 19),
-        ANVIL("anvil", 82, 40, 82, 0, 24, 18, false, 0, 0, 0, 0);
+        ANVIL("anvil", 82, 40, 82, 0, 24, 18, false, 0, 0, 0, 0),
+        GRINDING("animal_power_grinding", 146, 85, 0, 0, 0, 0, false, 0, 0, 0, 0, true),
+        PRESSING("animal_power_pressing", 146, 74, 0, 0, 0, 0, false, 0, 0, 0, 0, true);
 
         final String texture;
         final int width;
@@ -253,6 +275,7 @@ final class PrimitiveEmiRecipe implements EmiRecipe {
         final int flameV;
         final int flameX;
         final int flameY;
+        final boolean usesEmbeddedArrow;
 
         private Layout(
                 String texture,
@@ -267,6 +290,37 @@ final class PrimitiveEmiRecipe implements EmiRecipe {
                 int flameV,
                 int flameX,
                 int flameY) {
+            this(
+                    texture,
+                    width,
+                    backgroundHeight,
+                    arrowU,
+                    arrowV,
+                    arrowX,
+                    arrowY,
+                    hasFlame,
+                    flameU,
+                    flameV,
+                    flameX,
+                    flameY,
+                    false
+            );
+        }
+
+        private Layout(
+                String texture,
+                int width,
+                int backgroundHeight,
+                int arrowU,
+                int arrowV,
+                int arrowX,
+                int arrowY,
+                boolean hasFlame,
+                int flameU,
+                int flameV,
+                int flameX,
+                int flameY,
+                boolean usesEmbeddedArrow) {
             this.texture = texture;
             this.width = width;
             this.backgroundHeight = backgroundHeight;
@@ -279,6 +333,7 @@ final class PrimitiveEmiRecipe implements EmiRecipe {
             this.flameV = flameV;
             this.flameX = flameX;
             this.flameY = flameY;
+            this.usesEmbeddedArrow = usesEmbeddedArrow;
         }
     }
 }

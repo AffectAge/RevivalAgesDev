@@ -48,3 +48,7 @@ from the compatible 1.21.1 release when implementing an adapter.
   client display adapter, also test a dedicated server without the client mod.
 - Maintain supported version, dependency coordinates, side, test status, and
   known limitations in the relevant mechanic documentation.
+
+## Feature assessments
+
+- [Animal Power](animal-power.md#optional-integration-assessment)

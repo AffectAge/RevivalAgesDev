@@ -51,9 +51,10 @@ These rules apply to all production Java source under `src/main/java`.
   attached to the mod event bus during construction.
 - Store registry references as the strongest appropriate deferred holder type.
   Never instantiate registry singleton types outside their registration supplier.
-- Gate feature-owned registry creation only on validated startup content toggles
-  loaded before deferred registers are constructed. Never use reloadable,
-  world-specific, or late runtime state to change the registry set.
+- Registry creation is unconditional and independent of configuration, optional
+  integrations, and runtime state. Attach every feature-owned deferred register
+  unconditionally and use server-authoritative configuration and data conditions
+  only to disable acquisition, presentation, and gameplay behavior.
 - Use the mod event bus for registration/lifecycle events and
   `NeoForge.EVENT_BUS` for gameplay events. Register each listener exactly once.
 - Keep the main `@Mod` class free of gameplay logic.

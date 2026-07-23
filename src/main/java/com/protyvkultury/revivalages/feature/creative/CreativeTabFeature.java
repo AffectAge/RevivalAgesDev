@@ -37,9 +37,10 @@ public final class CreativeTabFeature implements FeatureModule {
             "bone_saw_blade", "wood_torch", "wooden_bucket", "unfired_clay_bucket", "clay_bucket",
             "tannin_bucket", "barrel_lid",
             // Primitive workstations.
-            "crude_drying_rack", "drying_rack", "chopping_block", "pit_kiln", "log_pile", "barrel",
-            "soaking_pot", "tanning_rack",
+            "hand_grindstone", "crude_drying_rack", "drying_rack", "chopping_block", "pit_kiln", "log_pile",
+            "barrel", "soaking_pot", "tanning_rack",
             // Stone-age workstations.
+            "horse_grindstone", "horse_chopping_block", "horse_press",
             "stone_sawmill", "stone_oven", "stone_kiln", "stone_crucible", "anvil"
     );
     private static final Map<String, Integer> PROGRESSION_INDEX = createProgressionIndex();

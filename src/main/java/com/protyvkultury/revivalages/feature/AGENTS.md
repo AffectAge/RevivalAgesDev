@@ -26,12 +26,14 @@ architecture.
 - Cross-feature access to another feature's `internal`, registry implementation,
   block entity fields, or event handlers is prohibited.
 - Give every feature family and every independently usable public machine or
-  content unit a startup configuration toggle. Read these toggles before module
-  construction and omit every registry, data, networking, creative-tab, and
-  integration contribution owned exclusively by disabled content.
-- Keep shared prerequisites registered only when at least one enabled feature
-  needs them. Validate toggle dependencies explicitly and fail startup with a
-  useful diagnostic when a selected combination cannot be supported.
+  content unit a server configuration toggle that defaults to enabled.
+- Feature modules always attach all of their deferred registers, payload
+  registrations, and stable prerequisites. Never conditionally register content
+  from a toggle. Apply disabled state to creative-tab visibility, recipes, loot,
+  worldgen, integrations, automation, and server-authoritative gameplay behavior.
+- Validate dependencies between enabled behaviors explicitly. Disabled placed
+  content remains loadable and inert, preserves state, reports that it is
+  disabled when used, and never deletes stored items or fluids.
 - A new feature must include its resource/datagen plan and tests in the same
   change. A Java-only content feature is incomplete.
 - Every new or changed feature must assess the complete catalog in
@@ -66,7 +68,8 @@ architecture.
 - Register public content normally and rely on the central registry-driven,
   progression-ordered Revival Ages creative tab. Add established content to its
   one centralized progression list; do not maintain a second list in a feature.
-  Its registry-ID fallback must continue to expose unlisted public items.
+  Its registry-ID fallback must continue to expose unlisted enabled public items
+  while content disabled by server configuration remains hidden.
 - Surface rocks and sticks follow the designated reference's parity rules. Audit
   variants, waterlogging, support loss, replacement, shapes, creative cycling,
   loot, splitter recipes, models, rotations, biome filtering, generation density,

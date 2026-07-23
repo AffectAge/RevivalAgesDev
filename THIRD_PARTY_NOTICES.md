@@ -1,5 +1,30 @@
 # Third-Party Notices
 
+## HorsePower
+
+The interaction flow, worker waypoint lifecycle, work-area contract, processing
+rules, configuration defaults, and functional model structure for the Hand
+Grindstone, Animal-Powered Grindstone, Animal-Powered Chopping Block, and
+Animal-Powered Press were adapted from HorsePower by GoryMoon. The source used
+for the adaptation is the local HorsePower 2.6.4 source tree for Minecraft
+1.12.2.
+
+HorsePower is licensed under the GNU Lesser General Public License version 3 or
+later. A copy is included at `licenses/HorsePower-LICENSE.txt`. The implementation
+was rewritten for Minecraft 1.21.1 and NeoForge, uses the Revival Ages namespace,
+and intentionally corrects the asymmetric work-area edge check. No HorsePower
+runtime dependency or original namespace is used by gameplay code or resources.
+
+The adapted block model geometry is shipped under
+`assets/revivalages/models/block/hand_grindstone*.json` and
+`assets/revivalages/models/block/horse_*.json`. The original grinding-content
+texture and functional recipe-viewer backgrounds are shipped under the renamed
+paths `textures/block/grinding_contents.png`,
+`textures/gui/animal_power_grinding.png`, and
+`textures/gui/animal_power_pressing.png`. Model parents, vanilla texture names,
+resource locations, blockstate composition, and renderer transforms were adapted
+for Minecraft 1.21.1.
+
 ## Pyrotech
 
 The Drying Rack, Barrel, Chopping Block, Pit Kiln, Soaking Pot, Tanning Rack,

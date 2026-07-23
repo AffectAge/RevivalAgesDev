@@ -97,23 +97,25 @@ license and attribution.
   Revival Ages configuration instead of being fixed in Java. This includes
   timings, capacities, ranges, damage, durability, chances, multipliers, limits,
   environmental modifiers, automation policy, and feature-specific balance.
-- Every independently usable content feature or machine must have a startup
-  content toggle. Content disabled at startup must not register its blocks, items,
-  block entities, menus, recipes, loot, world generation, creative-tab entries,
-  payloads, or optional integrations. For example, disabling the Stone Sawmill
-  must leave no Stone Sawmill content in the game.
-- Content toggles must be loaded before deferred registers and feature modules are
-  constructed. They are restart-required and must match between the server and
-  every connecting client. Reject a mismatched client with a clear diagnostic
-  instead of allowing registry or network divergence.
+- Every independently usable content feature or machine must have a server
+  configuration toggle that defaults to enabled. Content toggles may require a
+  restart, but must never change the registry set.
+- Register every public block, item, block entity, menu, recipe type, serializer,
+  payload type, and other registry object unconditionally. Disabled content must
+  be hidden from creative tabs and normal acquisition, contribute no enabled
+  crafting or processing recipes, loot, world generation, or optional-integration
+  displays, and perform no gameplay behavior.
+- Existing disabled blocks and items must load and preserve all serialized state.
+  Placed machines remain inert, return a clear server-authoritative disabled
+  message when used, and can be retained or removed without item loss. Disabling
+  content must not create missing mappings or corrupt existing worlds.
 - Group toggles may disable a complete feature family, but each public machine or
   independent content unit must also be individually controllable. Dependencies
   between toggles must be explicit, validated, and reported; never silently
   re-enable disabled content.
-- Disabling previously registered content can make an existing world incompatible.
-  Document the risk, warn before world load where supported, and verify both fresh
-  worlds and the intended migration behavior. Never leave unresolved recipes,
-  tags, loot, worldgen references, or creative-tab entries.
+- Apply content toggles through server-authoritative behavior checks and supported
+  data load conditions or provider filtering. Never leave unresolved recipes,
+  tags, loot, worldgen references, creative-tab entries, or integration entries.
 
 ## Repository hygiene
 
@@ -182,11 +184,12 @@ license and attribution.
   Do not replace these contracts with decorative blocks or fluid-specific item
   lists.
 - The Revival Ages creative tab is registry-driven and progression-ordered like
-  the designated reference's tab. Every new public registered item must appear
-  automatically. Add
+  the designated reference's tab. Every new enabled public registered item must
+  appear automatically. Add
   known content to the centralized progression order; retain deterministic
-  registry-ID fallback ordering so an omitted entry remains visible. Internal
-  state blocks must not receive artificial BlockItems merely to expose them.
+  registry-ID fallback ordering so an omitted enabled entry remains visible.
+  Disabled content must remain hidden. Internal state blocks must not receive
+  artificial BlockItems merely to expose them.
 - For reference-derived surface deposits, parity includes every visual variant
   and weighted random state, placement and support rules, waterlogging, collision
   and selection shapes, creative variation cycling, drops, splitter recombination,
@@ -216,10 +219,11 @@ set before declaring work complete:
 7. For every affected optional integration, test both with the mod present and
    absent. For client display integrations, also verify a dedicated server without
    the client-only companion installed.
-8. For every affected content toggle, test both enabled and disabled startup
-   configurations. Verify matching client/server registries, a clear mismatch
-   rejection, absence of all disabled content and data, and the documented
-   existing-world migration behavior.
+8. For every affected content toggle, test both enabled and disabled
+   configurations. Verify that registry IDs remain present and identical, enabled
+   behavior works, disabled content is inert and unavailable through normal
+   acquisition or data, serialized state is preserved, and existing worlds load
+   without missing mappings or item loss.
 
 On Windows use `gradlew.bat`. Never accept a warning, missing model, missing
 translation, registry error, data-pack error, or dedicated-server classloading

@@ -27,6 +27,9 @@ from the compatible 1.21.1 release; do not infer them from package hints.
 ## Consistency
 
 - Jade must present synchronized feature facts from loader-neutral read models.
+- An installed adapter must not expose content disabled by Revival Ages server
+  configuration. Filter viewer, probe, and compatibility output without removing
+  or conditionally registering the underlying Revival Ages registry objects.
 - EMI and JEI use separate viewer adapters and may have independent category,
   widget, tooltip, and layout classes. Both adapters must enumerate the same
   gameplay recipe types from Minecraft's `RecipeManager`; recipe codecs and

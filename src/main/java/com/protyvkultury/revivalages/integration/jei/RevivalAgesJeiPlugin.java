@@ -16,6 +16,8 @@ import com.protyvkultury.revivalages.feature.technology.tanningrack.TanningRackF
 import com.protyvkultury.revivalages.feature.technology.anvil.AnvilFeature;
 import com.protyvkultury.revivalages.feature.technology.stonemachine.StoneMachineFeature;
 import com.protyvkultury.revivalages.feature.technology.stonemachine.view.StoneTechnologyRecipeCatalog;
+import com.protyvkultury.revivalages.feature.technology.animalpower.AnimalPowerFeature;
+import com.protyvkultury.revivalages.feature.technology.animalpower.view.AnimalPowerRecipeCatalog;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.recipe.RecipeType;
@@ -61,6 +63,10 @@ public final class RevivalAgesJeiPlugin implements IModPlugin {
             RevivalAgesJeiPlugin.primitive("stone_crucible");
     public static final RecipeType<PrimitiveRecipeView> ANVIL =
             RevivalAgesJeiPlugin.primitive("anvil");
+    public static final RecipeType<PrimitiveRecipeView> GRINDING =
+            RevivalAgesJeiPlugin.primitive("grinding");
+    public static final RecipeType<PrimitiveRecipeView> PRESSING =
+            RevivalAgesJeiPlugin.primitive("pressing");
 
     private static RecipeType<PrimitiveRecipeView> primitive(String path) {
         return RecipeType.create((String) "revivalages", (String) path, PrimitiveRecipeView.class);
@@ -149,7 +155,17 @@ public final class RevivalAgesJeiPlugin implements IModPlugin {
                             registration.getJeiHelpers().getGuiHelper(), ANVIL,
                             PrimitiveJeiCategory.Layout.ANVIL,
                             "jei.revivalages.category.anvil",
-                            (Item) AnvilFeature.ANVIL_ITEM.get())
+                            (Item) AnvilFeature.ANVIL_ITEM.get()),
+                    new PrimitiveJeiCategory(
+                            registration.getJeiHelpers().getGuiHelper(), GRINDING,
+                            PrimitiveJeiCategory.Layout.GRINDING,
+                            "jei.revivalages.category.grinding",
+                            (Item) AnimalPowerFeature.HORSE_GRINDSTONE_ITEM.get()),
+                    new PrimitiveJeiCategory(
+                            registration.getJeiHelpers().getGuiHelper(), PRESSING,
+                            PrimitiveJeiCategory.Layout.PRESSING,
+                            "jei.revivalages.category.pressing",
+                            (Item) AnimalPowerFeature.HORSE_PRESS_ITEM.get())
                 });
     }
 
@@ -176,6 +192,8 @@ public final class RevivalAgesJeiPlugin implements IModPlugin {
         registration.addRecipes(STONE_CRUCIBLE,
                 StoneTechnologyRecipeCatalog.crucible(Minecraft.getInstance().level));
         registration.addRecipes(ANVIL, StoneTechnologyRecipeCatalog.anvil(recipeManager));
+        registration.addRecipes(GRINDING, AnimalPowerRecipeCatalog.grinding(recipeManager));
+        registration.addRecipes(PRESSING, AnimalPowerRecipeCatalog.pressing(recipeManager));
     }
 
     public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
@@ -207,5 +225,13 @@ public final class RevivalAgesJeiPlugin implements IModPlugin {
         registration.addRecipeCatalyst(
                 (ItemLike) StoneMachineFeature.STONE_CRUCIBLE_ITEM.get(), new RecipeType[] {STONE_CRUCIBLE});
         registration.addRecipeCatalyst((ItemLike) AnvilFeature.ANVIL_ITEM.get(), new RecipeType[] {ANVIL});
+        registration.addRecipeCatalyst(
+                (ItemLike) AnimalPowerFeature.HAND_GRINDSTONE_ITEM.get(), new RecipeType[] {GRINDING});
+        registration.addRecipeCatalyst(
+                (ItemLike) AnimalPowerFeature.HORSE_GRINDSTONE_ITEM.get(), new RecipeType[] {GRINDING});
+        registration.addRecipeCatalyst(
+                (ItemLike) AnimalPowerFeature.HORSE_CHOPPING_BLOCK_ITEM.get(), new RecipeType[] {CHOPPING});
+        registration.addRecipeCatalyst(
+                (ItemLike) AnimalPowerFeature.HORSE_PRESS_ITEM.get(), new RecipeType[] {PRESSING});
     }
 }

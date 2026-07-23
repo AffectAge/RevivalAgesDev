@@ -43,8 +43,9 @@ final class PrimitiveJeiCategory implements IRecipeCategory<PrimitiveRecipeView>
         this.icon = helper.createDrawableItemStack(new ItemStack((ItemLike) iconItem));
         ResourceLocation texture = RevivalAges.id("textures/gui/" + layout.texture + ".png");
         this.background = helper.createDrawable(texture, 0, 0, layout.width, layout.backgroundHeight);
-        this.arrow =
-                helper.createAnimatedDrawable(
+        this.arrow = layout.usesEmbeddedArrow
+                ? null
+                : helper.createAnimatedDrawable(
                         helper.createDrawable(
                                 texture, layout.arrowU, layout.arrowV, layout.arrowWidth, layout.arrowHeight),
                         200,
@@ -91,9 +92,19 @@ final class PrimitiveJeiCategory implements IRecipeCategory<PrimitiveRecipeView>
             case CHOPPING, ANVIL:
                 {
                     PrimitiveJeiCategory.addItemInputs(builder, recipe, new int[][] {{0, 17}});
-                    PrimitiveJeiCategory.addItemOutputs(builder, recipe, new int[][] {{60, 18}});
+                    PrimitiveJeiCategory.addItemOutputs(builder, recipe, new int[][] {{60, 18}, {83, 18}});
                     break;
                 }
+            case GRINDING:
+                PrimitiveJeiCategory.addItemInputs(builder, recipe, new int[][] {{34, 27}});
+                PrimitiveJeiCategory.addItemOutputs(builder, recipe, new int[][] {{90, 27}, {90, 50}});
+                break;
+            case PRESSING:
+                PrimitiveJeiCategory.addItemInputs(builder, recipe, new int[][] {{34, 32}});
+                PrimitiveJeiCategory.addItemOutputs(builder, recipe, new int[][] {{90, 32}});
+                PrimitiveJeiCategory.addFluid(
+                        builder, RecipeIngredientRole.OUTPUT, recipe.fluidOutput(), 95, 23, 16, 27);
+                break;
             case PIT_KILN:
                 {
                     PrimitiveJeiCategory.addItemInputs(builder, recipe, new int[][] {{0, 22}});
@@ -185,7 +196,9 @@ final class PrimitiveJeiCategory implements IRecipeCategory<PrimitiveRecipeView>
         if (this.flame != null) {
             this.flame.draw(graphics, this.layout.flameX, this.layout.flameY);
         }
-        this.arrow.draw(graphics, this.layout.arrowX, this.layout.arrowY);
+        if (this.arrow != null) {
+            this.arrow.draw(graphics, this.layout.arrowX, this.layout.arrowY);
+        }
         Component detail = recipe.detail();
         if (detail.getString().isEmpty() && recipe.processingTime() > 0) {
             detail =
@@ -223,7 +236,9 @@ final class PrimitiveJeiCategory implements IRecipeCategory<PrimitiveRecipeView>
         STONE_OVEN("stone_oven", 82, 33, 82, 14, 24, 17, 24, 10, true, 82, 0, 1, 19),
         STONE_KILN("stone_kiln", 101, 46, 101, 14, 24, 17, 24, 10, true, 101, 0, 1, 19),
         STONE_CRUCIBLE("stone_crucible", 82, 33, 82, 14, 24, 17, 24, 10, true, 82, 0, 1, 19),
-        ANVIL("anvil", 82, 40, 82, 0, 24, 17, 24, 18, false, 0, 0, 0, 0);
+        ANVIL("anvil", 82, 40, 82, 0, 24, 17, 24, 18, false, 0, 0, 0, 0),
+        GRINDING("animal_power_grinding", 146, 85, 0, 0, 0, 0, 0, 0, false, 0, 0, 0, 0, true),
+        PRESSING("animal_power_pressing", 146, 74, 0, 0, 0, 0, 0, 0, false, 0, 0, 0, 0, true);
 
         final String texture;
         final int width;
@@ -239,6 +254,7 @@ final class PrimitiveJeiCategory implements IRecipeCategory<PrimitiveRecipeView>
         final int flameV;
         final int flameX;
         final int flameY;
+        final boolean usesEmbeddedArrow;
 
         private Layout(
                 String texture,
@@ -255,6 +271,41 @@ final class PrimitiveJeiCategory implements IRecipeCategory<PrimitiveRecipeView>
                 int flameV,
                 int flameX,
                 int flameY) {
+            this(
+                    texture,
+                    width,
+                    backgroundHeight,
+                    arrowU,
+                    arrowV,
+                    arrowWidth,
+                    arrowHeight,
+                    arrowX,
+                    arrowY,
+                    hasFlame,
+                    flameU,
+                    flameV,
+                    flameX,
+                    flameY,
+                    false
+            );
+        }
+
+        private Layout(
+                String texture,
+                int width,
+                int backgroundHeight,
+                int arrowU,
+                int arrowV,
+                int arrowWidth,
+                int arrowHeight,
+                int arrowX,
+                int arrowY,
+                boolean hasFlame,
+                int flameU,
+                int flameV,
+                int flameX,
+                int flameY,
+                boolean usesEmbeddedArrow) {
             this.texture = texture;
             this.width = width;
             this.backgroundHeight = backgroundHeight;
@@ -269,6 +320,7 @@ final class PrimitiveJeiCategory implements IRecipeCategory<PrimitiveRecipeView>
             this.flameV = flameV;
             this.flameX = flameX;
             this.flameY = flameY;
+            this.usesEmbeddedArrow = usesEmbeddedArrow;
         }
     }
 }

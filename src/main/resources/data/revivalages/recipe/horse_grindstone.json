@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": ["LSL", "###", "###"],
+  "key": {
+    "L": { "item": "minecraft:lead" },
+    "S": { "tag": "c:rods/wooden" },
+    "#": { "tag": "c:stones" }
+  },
+  "result": { "id": "revivalages:horse_grindstone", "count": 1 }
+}

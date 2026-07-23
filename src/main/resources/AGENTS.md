@@ -39,11 +39,12 @@ This subtree contains source resources that humans intentionally maintain.
   base alpha as the fluid mask when the source model does so, register fluid
   tinting, and verify empty, water, lava, milk, and mod-fluid variants in the
   inventory.
-- The central Revival Ages creative tab enumerates registered mod items in a
-  centralized gameplay-progression order with deterministic registry-ID fallback.
-  Resource work for new public content must include its item model and English
-  name, but must not add BlockItems or models for internal machine-state blocks
-  solely to make those states visible in the tab.
+- The central Revival Ages creative tab enumerates enabled registered mod items
+  in a centralized gameplay-progression order with deterministic registry-ID
+  fallback. Disabled content remains registered but hidden. Resource work for new
+  public content must include its item model and English name, but must not add
+  BlockItems or models for internal machine-state blocks solely to make those
+  states visible in the tab.
 - Reference-derived surface deposits must ship every referenced blockstate,
   rotated variant model, item model, loot table, splitter recipe, configured and
   placed feature, and biome modifier. Preserve every attribution required by the
@@ -65,6 +66,11 @@ This subtree contains source resources that humans intentionally maintain.
   documented extension mechanism requires it. Prefer Revival Ages-owned data,
   common tags, data maps, and explicit adapters.
 - Gameplay recipes and reloadable rules must remain server-authoritative.
+- Keep registry-backed content resources available so existing worlds can load
+  after a feature is disabled. Suppress disabled recipes, loot, worldgen, and
+  other normal acquisition paths through supported load conditions or
+  server-authoritative filtering; never treat missing registry entries as the
+  disabled state.
 - JSON must be strict, UTF-8, deterministic, and free of comments or trailing
   commas. Resource locations must be namespaced.
 - Do not replace Minecraft namespace data unless the feature explicitly requires

@@ -41,6 +41,9 @@ tasks.named('processResources', ProcessResources).configure {
     from('licenses/ThisRocks-LICENSE.txt') {
         into 'META-INF/licenses'
     }
+    from('licenses/HorsePower-LICENSE.txt') {
+        into 'META-INF/licenses'
+    }
 }
 
 repositories {

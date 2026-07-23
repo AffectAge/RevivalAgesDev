@@ -11,4 +11,5 @@
   boundary or use a GameTest when the platform behavior is essential.
 - A bug fix includes a regression test when the failure is practical to reproduce.
 - Configuration tests cover defaults, bounds, invalid values, dependency
-  validation, and the enabled/disabled state of every content toggle.
+  validation, and enabled/disabled behavior for every content toggle. They must
+  also prove that toggle values never alter registry identity.

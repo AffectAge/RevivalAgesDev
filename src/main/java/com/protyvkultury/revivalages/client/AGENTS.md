@@ -7,6 +7,10 @@ This subtree is the physical-client boundary.
 - Register screens, renderers, model layers, color handlers, key mappings, and
   client payload handlers only from client-scoped mod events or a dist-specific
   entry point.
+- Register client support for every registry-backed content type independently of
+  content-toggle values so saved content remains renderable. Synchronized server
+  state may hide disabled content from discovery surfaces and present its inert
+  status, but must not change client registry identity.
 - Rendering reads synchronized state; it never owns gameplay truth or mutates
   server state.
 - Input handlers send minimal intent to the server and implement local prediction

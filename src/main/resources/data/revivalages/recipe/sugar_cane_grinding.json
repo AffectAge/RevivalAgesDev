@@ -1,0 +1,8 @@
+{
+  "type": "revivalages:grinding",
+  "ingredient": { "item": "minecraft:sugar_cane" },
+  "input_count": 1,
+  "result": { "id": "minecraft:sugar", "count": 1 },
+  "work_points": 12,
+  "machines": ["hand", "animal"]
+}
