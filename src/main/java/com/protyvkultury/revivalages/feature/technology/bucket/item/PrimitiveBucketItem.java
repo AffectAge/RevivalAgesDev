@@ -31,7 +31,7 @@ import net.neoforged.neoforge.fluids.SimpleFluidContent;
 import net.neoforged.neoforge.common.NeoForgeMod;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
-/** Reusable universal bucket with Pyrotech-style material wear and heat damage. */
+/** Reusable universal bucket with material wear and heat damage. */
 public final class PrimitiveBucketItem extends Item {
 
     public enum Material {

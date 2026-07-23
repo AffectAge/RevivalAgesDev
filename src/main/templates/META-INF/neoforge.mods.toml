@@ -39,7 +39,7 @@ displayName="${mod_name}" #mandatory
 #logoFile="revivalages.png" #optional
 
 # A text field displayed in the mod UI
-credits="Architecture inspired by Pyrotech's feature-oriented module boundaries." #optional
+credits="Designed and developed by Protyv_Kultury." #optional
 
 # The authors of the mod, displayed in the mod UI (optional)
 authors="Protyv_Kultury"

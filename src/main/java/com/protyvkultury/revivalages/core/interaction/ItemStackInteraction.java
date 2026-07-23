@@ -12,8 +12,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 
 /**
- * NeoForge port of the click semantics supplied by Athenaeum's
- * {@code InteractionItemStack}: held items insert or operate, while an empty
+ * Shared NeoForge implementation of item-stack click semantics: held items
+ * insert or operate, while an empty
  * hand extracts the visible stack.
  */
 public final class ItemStackInteraction {
@@ -49,8 +49,8 @@ public final class ItemStackInteraction {
     }
 
     /**
-     * Preserves Athenaeum's shared audible feedback for a player taking a
-     * visible stack from an interaction handler.
+     * Preserves the shared audible feedback for a player taking a visible stack
+     * from an interaction handler.
      */
     public static void playExtractionSound(Level level, BlockPos pos) {
         level.playSound(

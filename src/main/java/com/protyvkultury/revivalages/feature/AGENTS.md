@@ -1,14 +1,17 @@
 # Feature Module Rules
 
-This directory contains vertical gameplay slices, following the useful modular
-boundary demonstrated by Pyrotech.
+This directory contains vertical gameplay slices. A reference mod named in a task
+may demonstrate a useful boundary, but Revival Ages owns the resulting
+architecture.
 
-- Pyrotech feature behavior must be evaluated together with the Athenaeum code it
-  delegates to or inherits from. Trace the complete Pyrotech-to-Athenaeum call
-  path for interactions, transforms, rendering, inventories, block bases,
-  networking, synchronization, and utility callbacks before implementing a port.
-  Reproduce the combined behavior with NeoForge 1.21.1 APIs; never add Athenaeum
-  as a Revival Ages dependency or copy its obsolete Forge 1.12 mechanisms.
+- Reference-derived feature behavior must be evaluated together with all code in
+  the designated reference mod's dependency chain that it delegates to or
+  inherits from. Trace the complete call path for interactions, transforms,
+  rendering, inventories, block bases, configuration, networking,
+  synchronization, and utility callbacks before implementing a port. Reproduce
+  the combined behavior with NeoForge 1.21.1 APIs; never add a reference mod or
+  library as a Revival Ages runtime dependency unless the task explicitly
+  requires it, and never copy obsolete platform mechanisms.
 
 - Each first-level feature has one entry point implementing `FeatureModule`.
 - The entry point only wires deferred registers, configs, payloads, and listeners.
@@ -22,22 +25,20 @@ boundary demonstrated by Pyrotech.
   it.
 - Cross-feature access to another feature's `internal`, registry implementation,
   block entity fields, or event handlers is prohibited.
-- Do not conditionally register an entire feature. Registry identity must remain
-  stable; disable behavior through config/data and keep save compatibility.
+- Give every feature family and every independently usable public machine or
+  content unit a startup configuration toggle. Read these toggles before module
+  construction and omit every registry, data, networking, creative-tab, and
+  integration contribution owned exclusively by disabled content.
+- Keep shared prerequisites registered only when at least one enabled feature
+  needs them. Validate toggle dependencies explicitly and fail startup with a
+  useful diagnostic when a selected combination cannot be supported.
 - A new feature must include its resource/datagen plan and tests in the same
   change. A Java-only content feature is incomplete.
-- Every new or changed feature must complete the following optional-integration
-  assessment and implement all applicable adapters:
-  - KubeJS for scripts, recipes, registries, or configurable gameplay hooks.
-  - Jade and The One Probe for block/entity inspection and machine state.
-  - EMI and JEI for recipe categories, catalysts, transfer, and usage displays.
-  - Curios for wearable or accessory-like items.
-  - Progressive Stages for gated recipes, content, or progression milestones.
-  - Biomes O' Plenty for biome-sensitive content and world generation.
-  - Serene Seasons and Ecliptic Seasons for crops, temperature, weather, climate,
-    or season-sensitive behavior.
-- Mark an integration `not applicable` only when the feature has no corresponding
-  domain surface. Convenience is not a reason to skip an applicable integration.
+- Every new or changed feature must assess the complete catalog in
+  `docs/optional-integrations.md` and implement all applicable adapters. That
+  document owns the list and applicability criteria; do not duplicate them here.
+- Record `applicable`, `not applicable`, or `blocked` outcomes in the feature
+  documentation according to the catalog rules.
 - Viewer/probe integrations must consume the feature's public read model. Script,
   equipment, progression, biome, and season integrations must consume explicit
   feature contracts rather than internal fields.
@@ -46,7 +47,8 @@ boundary demonstrated by Pyrotech.
   insertion and extraction priority, teardown drops, particles and sounds,
   synchronized progress, blocking conditions, failure outcomes, and automation.
   Do not close a porting task after only its recipe completes successfully.
-- A primitive mechanism's sound audit must trace both Pyrotech and Athenaeum.
+- A primitive mechanism's sound audit must trace the designated reference mod and
+  its complete dependency chain.
   Implement custom and vanilla sounds at their original lifecycle points,
   including shared extraction feedback, work/idle loops, completion, breakage,
   fuel, ignition, extinguishing, and material placement/removal where applicable.
@@ -54,22 +56,21 @@ boundary demonstrated by Pyrotech.
   of replacing them with mechanism-local approximations.
 - For Campfire, Chopping Block, Pit Kiln, Barrel, Soaking Pot, Tanning Rack,
   Drying Rack, Stone Sawmill, Stone Oven, Stone Kiln, Stone Crucible, and Anvil,
-  provide Jade state/progress/modifiers plus JEI and EMI recipes from one
-  loader-neutral recipe view. The One Probe is intentionally outside the accepted
-  scope for this device family. This exclusion does not remove or narrow any
-  other optional integration requirement.
-- Pit Burn and Wood Torch follow the same Jade-only probe rule; do not add The
-  One Probe. Pit Burn recipes also use the shared JEI/EMI read model. Igniters and
+  provide Jade state/progress/modifiers plus JEI and EMI recipes. Each viewer may
+  have its own presentation adapter, but both must enumerate the same gameplay
+  recipe types through `RecipeManager` and reuse feature-owned query semantics.
+- Pit Burn and Wood Torch use Jade for probe output. Pit Burn recipes also use
+  the shared JEI/EMI read model. Igniters and
   portable buckets do not need a block probe, but their crafting and firing
   recipes must remain discoverable through normal recipe viewers.
 - Register public content normally and rely on the central registry-driven,
   progression-ordered Revival Ages creative tab. Add established content to its
   one centralized progression list; do not maintain a second list in a feature.
   Its registry-ID fallback must continue to expose unlisted public items.
-- Surface rocks and sticks follow This Rocks! 1.8.0 parity rules. Audit variants,
-  waterlogging, support loss, replacement, shapes, creative cycling, loot,
-  splitter recipes, models, rotations, biome filtering, generation density, and
-  sounds as one lifecycle. Reuse feature-level shared code rather than cloning
-  behavior for each material.
+- Surface rocks and sticks follow the designated reference's parity rules. Audit
+  variants, waterlogging, support loss, replacement, shapes, creative cycling,
+  loot, splitter recipes, models, rotations, biome filtering, generation density,
+  and sounds as one lifecycle. Reuse feature-level shared code rather than
+  cloning behavior for each material.
 - Progression checks should query a progression contract or tag/data rule. Do not
   scatter age/tier conditionals throughout blocks and items.

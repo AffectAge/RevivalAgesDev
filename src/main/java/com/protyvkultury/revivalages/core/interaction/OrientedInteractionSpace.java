@@ -2,7 +2,7 @@ package com.protyvkultury.revivalages.core.interaction;
 
 import net.minecraft.core.Direction;
 
-/** Coordinate conversion used by Athenaeum-style horizontally oriented interactions. */
+/** Coordinate conversion used by horizontally oriented in-world interactions. */
 public final class OrientedInteractionSpace {
 
     private OrientedInteractionSpace() {

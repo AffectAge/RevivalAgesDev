@@ -1,7 +1,7 @@
 # Surface Deposit Rules
 
-This feature adapts the rocks, sticks, splitters, and supporting world generation
-from This Rocks! 1.8.0 (MIT) to Revival Ages on NeoForge 1.21.1.
+This feature adapts rocks, sticks, splitters, and supporting world generation
+from the designated reference mod to Revival Ages on NeoForge 1.21.1.
 
 - Treat the reference as a complete behavior contract: preserve weighted visual
   variants, creative-player cycling, waterlogging, sturdy-floor survival,
@@ -24,6 +24,8 @@ from This Rocks! 1.8.0 (MIT) to Revival Ages on NeoForge 1.21.1.
 - Assess all integrations required by the repository. Normal shapeless recipes
   should remain automatically discoverable in JEI and EMI; do not create a custom
   category without distinct recipe semantics. Static deposits need no custom Jade
-  or The One Probe payload unless meaningful dynamic state is added.
-- Adapted code and resources must retain This Rocks! attribution and the bundled
-  MIT license. This Rocks! must never become a runtime dependency.
+  payload unless meaningful dynamic state is added.
+- Adapt code and resources only when the designated reference's license permits
+  it. Retain every required attribution and bundled license, record the source in
+  `THIRD_PARTY_NOTICES.md`, and never make the reference a runtime dependency
+  unless the task explicitly requires and justifies it.

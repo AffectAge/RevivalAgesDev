@@ -7,9 +7,9 @@ split into cohesive gameplay features. This keeps registration and cross-feature
 coordination simple while preventing a single global collection of blocks, event
 handlers, recipes, and machine logic from becoming the architecture.
 
-## What is retained from Pyrotech
+## Feature-oriented architecture
 
-Pyrotech separates core behavior, technology tiers, storage, tools, world
+The project separates core behavior, technology tiers, storage, tools, world
 generation, and optional integrations into modules. Each module keeps related
 initializers, configuration, recipes, blocks, items, tiles, client code, and
 plugins close together. Revival Ages retains these principles:
@@ -21,21 +21,23 @@ plugins close together. Revival Ages retains these principles:
 - progression mechanics expressed as cohesive systems instead of unrelated
   registry objects.
 
-Pyrotech targets Forge 1.12, so its implementation mechanisms are not reusable.
+Legacy reference implementations may target obsolete platforms, so their
+implementation mechanisms are not reusable.
 Sided proxies, `FMLPreInitializationEvent`, `RegistryEvent`, numeric metadata,
 `TileEntity`, old capabilities, and old packet patterns must not enter this code.
 
-Pyrotech's observable behavior is produced jointly by Pyrotech and its required
-Athenaeum library. Reference analysis therefore follows inheritance and delegation
-across both repositories. Athenaeum supplies important block bases, interaction
-dispatch, item rendering, transform order, inventory wrappers, synchronization,
-and utility callbacks that may not be visible at a Pyrotech call site. Revival
-Ages ports the resulting behavior to current NeoForge contracts; it does not take
-a runtime dependency on Athenaeum. Required contracts are implemented once under
+A reference's observable behavior may be produced jointly by the primary mod and
+its required libraries. Reference analysis therefore follows inheritance and
+delegation across the complete dependency chain. Libraries may supply important
+block bases, interaction dispatch, item rendering, transform order, inventory
+wrappers, synchronization, and utility callbacks that are not visible at the
+primary call site. Revival Ages ports the resulting behavior to current NeoForge
+contracts without taking runtime dependencies on reference implementations.
+Required contracts are implemented once under
 `com.protyvkultury.revivalages.core` and reused by every affected feature; local
-feature approximations are prohibited. For example, Pyrotech interaction items are
-rendered after the interaction transform with no additional item display-context
-transform, which must be preserved deliberately in the modern renderer.
+feature approximations are prohibited. Rendered interaction items preserve the
+reference's transform order, including whether an additional item display-context
+transform is applied.
 
 ## NeoForge 1.21.1 adaptation
 
@@ -117,14 +119,24 @@ state and define migration/default behavior before changing a serialized format.
 
 Primitive technology is a coordinated feature family below `feature/technology`.
 Each machine owns its block, block entity, and recipe type, while shared materials,
-configuration, rendering helpers, tags, and loader-neutral recipe views live in
+configuration, rendering helpers, tags, and shared recipe-query semantics live in
 `feature/technology/primitive`. Optional Jade, JEI, and EMI adapters depend on
-those synchronized states and recipe views. Viewer and probe APIs never enter the
-machine packages.
+those synchronized states and gameplay recipe types. JEI and EMI keep separate
+presentation adapters while enumerating the same recipes from `RecipeManager`;
+viewer and probe APIs never enter the machine packages.
 
 ## Adding a feature
 
 Use [module-template.md](module-template.md) as the checklist. Add the feature to
-`ModFeatures` only after its entry point exists. If a feature is optional for
-gameplay, keep its registry entries stable and gate behavior/data instead of
-conditionally registering objects.
+`ModFeatures` only after its entry point exists. Every feature family and every
+independent public machine or content unit has a startup configuration toggle.
+Load these toggles before constructing feature modules. Disabled content must
+contribute no exclusive registry entries, recipes, loot, world generation,
+creative-tab entries, payloads, or optional integrations.
+
+Startup content configuration is restart-required and must match between the
+server and clients. Shared prerequisites remain registered only when an enabled
+feature needs them. Validate toggle dependencies and reject unsupported or
+mismatched configurations explicitly. Because removing registered content can
+make existing saves incompatible, document and test the migration behavior for
+every toggle.

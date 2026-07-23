@@ -1,7 +1,7 @@
 # Drying Rack
 
-The Drying Rack feature is a server-authoritative, no-menu processing feature
-inspired by Pyrotech. A Crude Drying Rack has one wall-mounted slot. A normal
+The Drying Rack is a server-authoritative, no-menu processing feature. A Crude
+Drying Rack has one wall-mounted slot. A normal
 Drying Rack has four independent slots, inherits crude recipes, processes at a
 1.35 default multiplier, and can act as a ladder when vertically stacked.
 
@@ -58,15 +58,17 @@ Otherwise Serene Seasons is used. Exactly one configured bonus is applied:
 | JEI | Implemented | 19.39.0.369 | Client | Present/absent launches verified. Categories, catalysts, duration, and inheritance. |
 | Curios | Not applicable | N/A | N/A | Placed racks expose no wearable/equipment behavior. |
 
-JEI and EMI consume the same canonical recipe catalog. Normal-rack recipes
-override matching crude alternatives; all remaining crude alternatives are
-shown as inherited without duplicating recipe JSON. Jade, JEI, and EMI remain
-optional: their API classes are isolated under `integration`, compiled without
-being bundled, and never loaded when the corresponding mod is absent.
+JEI and EMI use separate presentation adapters but enumerate the same Drying Rack
+recipe types from `RecipeManager`. Normal-rack recipes override matching crude
+alternatives through shared feature-owned query logic; all remaining crude
+alternatives are shown as inherited without duplicating recipe JSON or viewer-side
+matching rules. Jade, JEI, and EMI remain optional: their API classes are isolated
+under `integration`, compiled without being bundled, and never loaded when the
+corresponding mod is absent.
 
-Both recipe viewers use the original Pyrotech Drying Rack slot background and
-animated progress-arrow artwork, adapted to the modern viewer APIs. Its Apache
-2.0 attribution is recorded in `THIRD_PARTY_NOTICES.md`.
+Both recipe viewers use licensed slot-background and animated progress-arrow
+artwork adapted to the modern viewer APIs. Its attribution is recorded in
+`THIRD_PARTY_NOTICES.md`.
 
 Development coordinates are `mezz.jei:jei-1.21.1-*-api:19.39.0.369`,
 `maven.modrinth:fRiHVvU7:5sIPA1To` for EMI, and
@@ -81,5 +83,5 @@ gradlew.bat runClient -PdryingRackIntegrationsRuntime=true
 
 ## Third-party assets
 
-The rack models and crude rack texture are adapted from Pyrotech under
-Apache-2.0. See the repository-level third-party notices and bundled license.
+The rack models and crude rack texture are adapted from licensed third-party
+assets. See the repository-level third-party notices and bundled licenses.

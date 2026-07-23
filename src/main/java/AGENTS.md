@@ -51,7 +51,9 @@ These rules apply to all production Java source under `src/main/java`.
   attached to the mod event bus during construction.
 - Store registry references as the strongest appropriate deferred holder type.
   Never instantiate registry singleton types outside their registration supplier.
-- Never gate registry creation on configuration or optional runtime state.
+- Gate feature-owned registry creation only on validated startup content toggles
+  loaded before deferred registers are constructed. Never use reloadable,
+  world-specific, or late runtime state to change the registry set.
 - Use the mod event bus for registration/lifecycle events and
   `NeoForge.EVENT_BUS` for gameplay events. Register each listener exactly once.
 - Keep the main `@Mod` class free of gameplay logic.
@@ -101,21 +103,19 @@ These rules apply to all production Java source under `src/main/java`.
   suitable convention exists.
 - Optional integrations stay under `integration` and must not cause classloading
   of absent mod APIs.
-- The required optional-integration review list is: KubeJS, Jade, The One Probe,
-  EMI, JEI, Curios, Progressive Stages, Biomes O' Plenty, Serene Seasons, and
-  Ecliptic Seasons. Implement an adapter whenever the feature exposes information,
-  recipes, equipment, progression, biomes, climate, or seasons relevant to one of
-  these mods.
+- Use `docs/optional-integrations.md` as the single source of truth for the
+  required optional-integration review list and applicability criteria. Do not
+  duplicate the global list in code instructions or feature templates.
 - Detect optional mods through NeoForge loading APIs or supported integration
   events. Do not use broad exception catching, reflection-based class probing, or
   unconditional static references to optional API classes.
 - Put optional API dependencies on the narrowest correct Gradle configuration.
   Client display APIs must not leak into common/server signatures. Never bundle an
   optional mod or publish it as a required transitive dependency by accident.
-- Keep common domain data independent from a viewer/probe API. Jade and The One
-  Probe adapters translate synchronized state; EMI and JEI adapters translate the
-  same canonical recipe definitions. One integration must not become the source
-  of truth for another.
+- Keep common domain data independent from a viewer/probe API. Jade adapters
+  translate synchronized state; EMI and JEI adapters translate the same canonical
+  recipe definitions. One integration must not become the source of truth for
+  another.
 - KubeJS hooks must expose bounded, validated domain operations and stable IDs;
   they must not grant arbitrary access to feature internals or bypass server-side
   progression validation.

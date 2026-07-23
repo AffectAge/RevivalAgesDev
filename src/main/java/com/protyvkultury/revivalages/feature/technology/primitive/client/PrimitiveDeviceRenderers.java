@@ -121,7 +121,7 @@ public final class PrimitiveDeviceRenderers {
                     continue;
                 }
                 pose.pushPose();
-                // Pyrotech parity: three adjacent one-third-width logs spanning the pit.
+                // Reference parity: three adjacent one-third-width logs spanning the pit.
                 double oneThird = 1.0D / 3.0D;
                 double oneSixth = 1.0D / 6.0D;
                 pose.translate(index * oneThird + oneSixth, 2.0D * oneThird + oneSixth, 0.5D);

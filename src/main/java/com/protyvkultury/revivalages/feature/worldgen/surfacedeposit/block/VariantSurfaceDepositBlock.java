@@ -25,7 +25,7 @@ import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.BlockHitResult;
 
-/** Shared 1.21.1 adaptation of This Rocks' variant cycling and support lifecycle. */
+/** Shared 1.21.1 implementation of variant cycling and the support lifecycle. */
 abstract class VariantSurfaceDepositBlock<T extends Enum<T> & StringRepresentable>
         extends Block implements SimpleWaterloggedBlock {
 

@@ -22,13 +22,15 @@
   equipment behavior. Reassess this only if that domain surface changes.
 - Item-handler automation remains disabled by default and must not change manual
   interaction behavior.
-- Pyrotech-derived visual assets require the bundled Apache-2.0 license and an
-  entry in `THIRD_PARTY_NOTICES.md`.
-- Drying Rack viewer work must inspect Pyrotech's functional JEI artwork. Preserve
-  or deliberately adapt its slot background, progress arrow, timing feedback, and
-  other state-bearing UI elements for JEI and EMI when they remain useful. Keep
-  both viewers visually consistent, isolate their APIs, and update attribution for
-  every copied or adapted asset. Pure decoration is not a parity requirement.
+- Visual assets derived from the designated reference require a compatible source
+  license, every license file required for redistribution, and an entry in
+  `THIRD_PARTY_NOTICES.md`.
+- Drying Rack viewer work must inspect the designated reference's functional
+  recipe-viewer artwork. Preserve or deliberately adapt its slot background,
+  progress arrow, timing feedback, and other state-bearing UI elements for JEI
+  and EMI when they remain useful. Keep both viewers visually consistent, isolate
+  their APIs, and update attribution for every copied or adapted asset. Pure
+  decoration is not a parity requirement.
 - Parity reviews for this feature must include removal with occupied and empty
   hands, drops on break/support loss, slot selection, item transforms in all four
   horizontal directions, normal-rack top transforms, active-only progress

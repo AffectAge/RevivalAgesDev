@@ -24,7 +24,7 @@ import net.minecraft.world.level.block.BaseFireBlock;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 
-/** Slow, low-durability igniter matching Pyrotech's held-use interaction. */
+/** Slow, low-durability igniter with a held-use interaction. */
 public final class FlintAndTinderItem extends Item {
 
     public FlintAndTinderItem(Properties properties) {

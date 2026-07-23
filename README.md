@@ -1,22 +1,23 @@
 # Revival Ages
 
 Revival Ages is a NeoForge mod for Minecraft 1.21.1 by Protyv_Kultury. This
-repository contains an architecture-first implementation of Pyrotech-inspired
-primitive technology: Drying Racks, Campfire, Chopping Block, Pit Kiln, Barrel,
+repository contains an architecture-first implementation of primitive
+technology: Drying Racks, Campfire, Chopping Block, Pit Kiln, Barrel,
 Soaking Pot, Tanning Rack, Stone Sawmill, Stone Oven, Stone Kiln, Stone Crucible,
 an in-world Anvil, Pit Burn, Flint and Tinder, Wood Torch, and reusable wooden
 and clay buckets. A dedicated Revival Ages creative tab lists every registered
 mod item automatically in gameplay-progression order. The world also gains
-This Rocks!-inspired surface rocks and fallen sticks, including material variants
+surface rocks and fallen sticks, including material variants
 and recoverable stone splitters.
 
-The project keeps Pyrotech's strongest architectural idea—small gameplay modules
-with local registration, configuration, recipes, and integrations—while using
-modern NeoForge 1.21.1 APIs. The main mod class is deliberately thin; feature
+The project uses small gameplay modules with local registration, configuration,
+recipes, and integrations while targeting modern NeoForge 1.21.1 APIs. The main
+mod class is deliberately thin; feature
 packages own their implementation, client-only code is isolated, and gameplay
-content is designed to be data-driven. Pyrotech and its Athenaeum dependency are
-reviewed together; required library behavior is ported to an internal NeoForge
-layer instead of being approximated independently in each mechanism.
+content is designed to be data-driven. Reference implementations and their
+dependency chains are reviewed together; required library behavior is ported to
+an internal NeoForge layer instead of being approximated independently in each
+mechanism.
 
 ## Requirements
 
@@ -72,7 +73,7 @@ for verifying that client-only optional mods are truly absent.
 ## Architecture at a glance
 
 - `com.protyvkultury.revivalages.RevivalAges` is composition only.
-- `core` contains shared NeoForge ports of cross-feature Athenaeum contracts.
+- `core` contains shared NeoForge implementations of cross-feature contracts.
 - `feature` contains vertically sliced gameplay modules.
 - `api` contains intentionally public extension contracts, not implementation.
 - `client` is the physical-client boundary.
@@ -87,13 +88,14 @@ Read [AGENTS.md](AGENTS.md) before changing the project and
 Primitive processing behavior, recipes, and configuration are documented in
 [docs/primitive-technology.md](docs/primitive-technology.md). Surface rocks,
 sticks, drops, world generation, and compatibility are documented in
-[docs/surface-deposits.md](docs/surface-deposits.md).
+[docs/surface-deposits.md](docs/surface-deposits.md). The centrally maintained
+list of optional mods and integration applicability criteria is in
+[docs/optional-integrations.md](docs/optional-integrations.md).
 
 ## License
 
-The project metadata currently uses `All Rights Reserved`. Pyrotech-derived
-functional assets and Athenaeum-derived internal behavior are redistributed or
-adapted under Apache-2.0, while This Rocks!-derived surface-deposit code and
-resources are adapted under MIT; see
-[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) and
-the license copies in [`licenses`](licenses).
+The project metadata currently uses `All Rights Reserved`. Some third-party
+functional assets, internal behavior, and surface-deposit resources are
+redistributed or adapted under their respective licenses; see
+[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) and the license copies in
+[`licenses`](licenses).

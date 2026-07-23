@@ -1,11 +1,11 @@
 # Primitive Technology
 
-This document describes the Pyrotech-inspired primitive processing chain in
-Revival Ages. The implementation uses NeoForge 1.21.1 APIs and data formats; the
-reference mod supplies gameplay and presentation guidance, not obsolete Forge
-1.12 code. Pyrotech and Athenaeum are treated as one reference implementation:
-required Athenaeum interactions, transforms, handlers, and lifecycle contracts
-are ported into Revival Ages' shared NeoForge core and used by the mechanisms.
+This document describes the primitive processing chain in Revival Ages. The
+implementation uses NeoForge 1.21.1 APIs and data formats; designated reference
+mods supply gameplay and presentation guidance, not obsolete platform code. Each
+reference and its dependency chain are treated as one implementation: required
+interactions, transforms, handlers, and lifecycle contracts are ported into
+Revival Ages' shared NeoForge core and used by the mechanisms.
 
 ## Progression chain
 
@@ -55,7 +55,7 @@ doused with a water bucket or by rain, relit after drying conditions permit, and
 burn out after a configured duration with configured random variance. Lit torches
 emit light, flame and smoke, damage colliding entities, and drop either a stick or
 straw when broken; an unlit torch drops itself. All three visible states use the
-functional Pyrotech textures.
+functional licensed textures described in the third-party notices.
 
 Wooden and clay buckets expose NeoForge's standard item fluid capability and hold
 1,000 mB of any compatible fluid, including fluids from other mods. They interact
@@ -134,7 +134,7 @@ loaded machine, and a water bucket extinguishes it. Empty-hand interaction
 extracts the relevant stored stack. Breaking either half tears down the complete
 machine while dropping lower-half contents exactly once. Active machines expose
 flame/smoke particles and sounds, and all stored state survives save/reload.
-The Stone Sawmill uses Pyrotech's licensed idle and long/short work recordings.
+The Stone Sawmill uses licensed idle and long/short work recordings.
 Its idle and recipe-completion sounds can be enabled independently and their
 volumes changed in the server configuration without changing recipes or saves.
 Stone fire-based machines retain the reference furnace-crackle ambience.
@@ -188,14 +188,13 @@ state required for rendering and overlays.
 Jade displays progress, inputs and predicted outputs, fuel, ash, block damage,
 wood chips, Pit Kiln stage/structure/logs, Barrel seal/fluid/result, Soaking Pot
 heat requirement, Tanning Rack sky/day/rain conditions, stone-machine airflow,
-fuel, blade, tank and output-blocking state, and Anvil hits and damage. JEI and EMI use the
-same loader-neutral recipe catalog and the Apache-2.0 functional UI textures
-adapted from Pyrotech. Categories include item and fluid inputs, outputs, duration,
+fuel, blade, tank and output-blocking state, and Anvil hits and damage. JEI and
+EMI use separate presentation adapters, enumerate the same gameplay recipe types
+from `RecipeManager`, and use licensed functional UI textures. Categories include
+item and fluid inputs, outputs, duration,
 failure outcomes, and required environmental conditions. All three integrations
 are optional and client-only; a dedicated server and the base mod load without
-them. The One Probe alone is intentionally excluded from the accepted scope for
-this complete primitive-device family. This exception does not remove JEI, EMI,
-or any other previously accepted optional integration.
+them.
 
 Pit Burn adds its staged success/failure recipe to the same JEI/EMI catalog. Jade
 shows enclosure validity, grace countdown, completed stages, progress, and the
@@ -218,7 +217,6 @@ recipe viewers, Jade is applicable for synchronized machine inspection, and
 Progressive Stages is applicable at the recipe/progression layer. Curios, Biomes
 O' Plenty, Serene Seasons, and Ecliptic Seasons are currently not applicable
 because these mechanisms have no wearable, biome-sensitive, or seasonal rule.
-The One Probe remains explicitly excluded for this family.
 
 For Pit Burn, KubeJS is applicable through codec-backed recipe JSON, JEI/EMI are
 applicable for recipes, Jade is applicable to active and completed pile state,
@@ -226,12 +224,12 @@ and Progressive Stages can gate the recipe or items at pack level. Curios,
 Biomes O' Plenty, Serene Seasons, and Ecliptic Seasons have no direct surface in
 this mechanism. Flint and Tinder and Wood Torch use vanilla crafting recipes;
 primitive buckets intentionally use the generic NeoForge fluid capability so
-fluid-owning mods work without pairwise adapters. The One Probe remains excluded.
+fluid-owning mods work without pairwise adapters.
 
-## Athenaeum porting rule
+## Reference porting rule
 
-Future Pyrotech-derived features must trace both the Pyrotech call site and every
-relevant Athenaeum superclass, interaction, renderer, transform, inventory
+Future reference-derived features must trace both the primary call site and every
+relevant dependency-chain superclass, interaction, renderer, transform, inventory
 wrapper, observer, persistence field, and synchronization callback. Required
 behavior belongs in the shared Revival Ages core and must be reused by each
 feature; one-off approximations inside individual blocks are not accepted.

@@ -1,9 +1,9 @@
 # Surface Deposits
 
-Revival Ages adapts the complete rock-and-stick subset of This Rocks! 1.8.0 for
-Minecraft 1.21.1. This Rocks! is a design and resource reference only; players do
-not need it installed. The port uses Revival Ages registration and shared block
-lifecycle code while preserving the reference's observable behavior.
+Revival Ages provides a complete rock-and-stick surface-deposit system for
+Minecraft 1.21.1. The implementation uses Revival Ages registration and shared
+block lifecycle code while preserving its designated reference's observable
+behavior without requiring that reference at runtime.
 
 ## Content and behavior
 
@@ -52,7 +52,7 @@ them:
 
 - KubeJS: no dedicated adapter. Recipes and worldgen are normal reloadable data,
   so scripts and datapacks can replace them through their standard mechanisms.
-- Jade and The One Probe: no custom payload. Deposits have no progress, inventory,
+- Jade: no custom payload. Deposits have no progress, inventory,
   modifiers, or other dynamic state beyond the visible model variant.
 - JEI and EMI: supported through vanilla shapeless recipe discovery; no distinct
   recipe semantics justify a custom category.
@@ -64,5 +64,5 @@ them:
 - Serene Seasons and Ecliptic Seasons: not applicable because generation and
   deposit behavior are not season-sensitive.
 
-Source and license details are in `THIRD_PARTY_NOTICES.md` and
-`licenses/ThisRocks-LICENSE.txt`.
+Source and license details are in `THIRD_PARTY_NOTICES.md` and the `licenses`
+directory.

@@ -22,7 +22,7 @@ public final class PrimitiveRenderHelper {
     private PrimitiveRenderHelper() {
     }
 
-    /** Applies Athenaeum's horizontal interaction-space transform around the block center. */
+    /** Applies the horizontal interaction-space transform around the block center. */
     public static void rotateInteractionSpace(PoseStack poseStack, Direction facing) {
         poseStack.translate(0.5D, 0.0D, 0.5D);
         poseStack.mulPose(Axis.YP.rotationDegrees(-facing.toYRot()));
@@ -44,7 +44,7 @@ public final class PrimitiveRenderHelper {
         }
         renderer.renderStatic(
                 stack,
-                // Pyrotech's interaction renderer applies the machine transform directly
+                // The designated reference applies the machine transform directly
                 // and renders the baked item model with TransformType.NONE. Using FIXED
                 // here applies a second item-display transform, shrinking logs and turning
                 // flat hides almost edge-on.

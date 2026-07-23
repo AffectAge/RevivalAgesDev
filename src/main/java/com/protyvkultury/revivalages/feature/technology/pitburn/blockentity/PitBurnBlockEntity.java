@@ -25,7 +25,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
-/** Athenaeum-style timed burn state shared by the active and ash pile blocks. */
+/** Timed burn state shared by the active and ash pile blocks. */
 public final class PitBurnBlockEntity extends BlockEntity {
 
     private final NonNullList<ItemStack> outputs = NonNullList.withSize(27, ItemStack.EMPTY);

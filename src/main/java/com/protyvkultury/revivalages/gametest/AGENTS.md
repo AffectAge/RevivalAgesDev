@@ -10,3 +10,6 @@
 - Reset or contain state so tests are order-independent and repeatable.
 - Prefer an empty structure for logic that does not need a prepared scene.
 - Pure algorithms and codecs belong in fast unit tests instead.
+- For configurable content, test an enabled launch and a disabled launch. The
+  disabled case must prove that the feature's blocks, items, recipes, creative-tab
+  entries, payloads, and worldgen contributions are absent.

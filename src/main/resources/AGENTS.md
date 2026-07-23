@@ -30,24 +30,25 @@ This subtree contains source resources that humans intentionally maintain.
   subtitles, and configuration; also reproduce required vanilla sound events
   when no custom file exists. Record source paths, renamed paths, license, and
   adaptations in `THIRD_PARTY_NOTICES.md`.
-- Pyrotech-derived primitive recipe categories must reuse or adapt the licensed
+- Reference-derived primitive recipe categories must reuse or adapt licensed
   functional backgrounds, slots, arrows, flame indicators, and fluid gauges when
   they improve recipe readability. JEI and EMI must use the same visual semantics
   and recipe facts. Record every imported asset in `THIRD_PARTY_NOTICES.md`.
-- When a Pyrotech bucket is adapted to NeoForge's dynamic fluid-container model,
-  preserve its base and cover layers, use the original base alpha as the fluid
-  mask when the source model does so, register fluid tinting, and verify empty,
-  water, lava, milk, and mod-fluid variants in the inventory.
+- When a reference-derived bucket is adapted to NeoForge's dynamic
+  fluid-container model, preserve its base and cover layers, use the original
+  base alpha as the fluid mask when the source model does so, register fluid
+  tinting, and verify empty, water, lava, milk, and mod-fluid variants in the
+  inventory.
 - The central Revival Ages creative tab enumerates registered mod items in a
   centralized gameplay-progression order with deterministic registry-ID fallback.
   Resource work for new public content must include its item model and English
   name, but must not add BlockItems or models for internal machine-state blocks
   solely to make those states visible in the tab.
-- This Rocks!-derived surface deposits must ship every referenced blockstate,
+- Reference-derived surface deposits must ship every referenced blockstate,
   rotated variant model, item model, loot table, splitter recipe, configured and
-  placed feature, and biome modifier. Preserve MIT attribution in
-  `THIRD_PARTY_NOTICES.md`; use Revival Ages namespaces and fix documented dead or
-  erroneous source data instead of preserving it accidentally.
+  placed feature, and biome modifier. Preserve every attribution required by the
+  source license in `THIRD_PARTY_NOTICES.md`; use Revival Ages namespaces and fix
+  documented dead or erroneous source data instead of preserving it accidentally.
 
 ## Data
 
@@ -56,10 +57,10 @@ This subtree contains source resources that humans intentionally maintain.
   provider.
 - Use tags rather than enumerating compatible content in recipes or Java code.
   Use the `c` namespace for established common material tags.
-- Optional-integration data for KubeJS, Jade, The One Probe, EMI, JEI, Curios,
-  ProgressiveStages, Biomes O' Plenty, Serene Seasons, or Ecliptic Seasons must
-  load safely when the target mod is absent. Use supported NeoForge load conditions
-  or the target API's documented data mechanism where applicable.
+- Optional-integration data for every applicable entry in
+  `docs/optional-integrations.md` must load safely when the target mod is absent.
+  Use supported NeoForge load conditions or the target API's documented data
+  mechanism where applicable.
 - Do not override resources in an optional mod's namespace unless that mod's
   documented extension mechanism requires it. Prefer Revival Ages-owned data,
   common tags, data maps, and explicit adapters.

@@ -10,3 +10,5 @@
 - Do not mock large parts of Minecraft. Move pure rules behind a small domain
   boundary or use a GameTest when the platform behavior is essential.
 - A bug fix includes a regression test when the failure is practical to reproduce.
+- Configuration tests cover defaults, bounds, invalid values, dependency
+  validation, and the enabled/disabled state of every content toggle.

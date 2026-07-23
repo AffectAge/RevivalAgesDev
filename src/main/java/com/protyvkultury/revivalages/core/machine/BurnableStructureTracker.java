@@ -4,7 +4,7 @@ import java.util.function.BooleanSupplier;
 import net.minecraft.nbt.CompoundTag;
 
 /**
- * Port of Athenaeum/Pyrotech's burnable structure validation lifecycle.
+ * Shared implementation of the designated reference's structure validation lifecycle.
  * Healthy structures are checked periodically; an invalid structure receives a
  * bounded grace period before failure and can recover during that period.
  */
