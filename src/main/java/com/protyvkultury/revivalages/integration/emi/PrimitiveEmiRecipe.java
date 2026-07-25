@@ -32,7 +32,7 @@ final class PrimitiveEmiRecipe implements EmiRecipe {
         this.view = view;
         this.id =
                 RevivalAges.id(
-            "emi/" + layout.texture + "/" + view.id().getNamespace() + "/" + view.id().getPath());
+            "/emi/" + layout.texture + "/" + view.id().getNamespace() + "/" + view.id().getPath());
         this.inputs = new ArrayList<EmiIngredient>();
         view.itemInputs()
                 .forEach(ingredient -> this.inputs.add(EmiIngredient.of((Ingredient) ingredient)));

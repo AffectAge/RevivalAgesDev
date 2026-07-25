@@ -22,5 +22,53 @@
     "sounds": [
       "revivalages:sawmill/sawmill-active-short-b"
     ]
+  },
+  "collapse_warning": {
+    "subtitle": "subtitles.revivalages.collapse_warning",
+    "sounds": [
+      "revivalages:structural/collapse_fake_1",
+      "revivalages:structural/collapse_fake_2"
+    ]
+  },
+  "collapse_start": {
+    "subtitle": "subtitles.revivalages.collapse_start",
+    "sounds": [
+      "revivalages:structural/collapse_1",
+      "revivalages:structural/collapse_2",
+      "revivalages:structural/collapse_3",
+      "revivalages:structural/collapse_4"
+    ]
+  },
+  "collapse_impact": {
+    "subtitle": "subtitles.revivalages.collapse_impact",
+    "sounds": [
+      "revivalages:structural/collapse_impact_1",
+      "revivalages:structural/collapse_impact_2"
+    ]
+  },
+  "landslide_impact": {
+    "subtitle": "subtitles.revivalages.landslide_impact",
+    "sounds": [
+      "revivalages:structural/landslide_1",
+      "revivalages:structural/landslide_2"
+    ]
+  },
+  "knapping_stone": {
+    "subtitle": "subtitles.revivalages.knapping_stone",
+    "sounds": [
+      "revivalages:knapping/stone"
+    ]
+  },
+  "knapping_clay": {
+    "subtitle": "subtitles.revivalages.knapping_clay",
+    "sounds": [
+      "revivalages:knapping/clay"
+    ]
+  },
+  "knapping_leather": {
+    "subtitle": "subtitles.revivalages.knapping_leather",
+    "sounds": [
+      "revivalages:knapping/leather"
+    ]
   }
 }

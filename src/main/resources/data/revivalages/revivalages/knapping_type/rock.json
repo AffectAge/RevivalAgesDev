@@ -1,0 +1,22 @@
+{
+  "input": {
+    "type": "neoforge:compound",
+    "ingredients": [
+      {
+        "item": "revivalages:rock"
+      },
+      {
+        "item": "minecraft:flint"
+      }
+    ],
+    "count": 2
+  },
+  "amount_to_consume": 1,
+  "click_sound": "revivalages:knapping_stone",
+  "consume_after_complete": false,
+  "has_off_texture": false,
+  "spawns_particles": true,
+  "viewer_icon": {
+    "id": "revivalages:rock"
+  }
+}

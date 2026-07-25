@@ -21,6 +21,9 @@ import com.protyvkultury.revivalages.feature.technology.animalpower.view.AnimalP
 import com.protyvkultury.revivalages.feature.technology.constructionframe.ConstructionFrameFeature;
 import com.protyvkultury.revivalages.feature.technology.constructionframe.view.FrameAssemblyRecipeCatalog;
 import com.protyvkultury.revivalages.feature.technology.constructionframe.view.FrameAssemblyRecipeView;
+import com.protyvkultury.revivalages.feature.technology.knapping.view.KnappingRecipeCatalog;
+import com.protyvkultury.revivalages.feature.technology.knapping.view.KnappingRecipeView;
+import com.protyvkultury.revivalages.feature.worldgen.surfacedeposit.SurfaceDepositFeature;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.recipe.RecipeType;
@@ -72,6 +75,14 @@ public final class RevivalAgesJeiPlugin implements IModPlugin {
             RevivalAgesJeiPlugin.primitive("pressing");
     public static final RecipeType<FrameAssemblyRecipeView> FRAME_ASSEMBLY =
             RecipeType.create("revivalages", "frame_assembly", FrameAssemblyRecipeView.class);
+    public static final RecipeType<KnappingRecipeView> ROCK_KNAPPING =
+            RecipeType.create("revivalages", "rock_knapping", KnappingRecipeView.class);
+    public static final RecipeType<KnappingRecipeView> CLAY_KNAPPING =
+            RecipeType.create("revivalages", "clay_knapping", KnappingRecipeView.class);
+    public static final RecipeType<KnappingRecipeView> LEATHER_KNAPPING =
+            RecipeType.create("revivalages", "leather_knapping", KnappingRecipeView.class);
+    public static final RecipeType<KnappingRecipeView> HORN_KNAPPING =
+            RecipeType.create("revivalages", "horn_knapping", KnappingRecipeView.class);
 
     private static RecipeType<PrimitiveRecipeView> primitive(String path) {
         return RecipeType.create((String) "revivalages", (String) path, PrimitiveRecipeView.class);
@@ -171,7 +182,27 @@ public final class RevivalAgesJeiPlugin implements IModPlugin {
                             PrimitiveJeiCategory.Layout.PRESSING,
                             "jei.revivalages.category.pressing",
                             (Item) AnimalPowerFeature.HORSE_PRESS_ITEM.get()),
-                    new FrameAssemblyJeiCategory(registration.getJeiHelpers(), FRAME_ASSEMBLY)
+                    new FrameAssemblyJeiCategory(registration.getJeiHelpers(), FRAME_ASSEMBLY),
+                    new KnappingJeiCategory(
+                            registration.getJeiHelpers().getGuiHelper(),
+                            ROCK_KNAPPING,
+                            SurfaceDepositFeature.ROCK.get()
+                    ),
+                    new KnappingJeiCategory(
+                            registration.getJeiHelpers().getGuiHelper(),
+                            CLAY_KNAPPING,
+                            net.minecraft.world.item.Items.CLAY_BALL
+                    ),
+                    new KnappingJeiCategory(
+                            registration.getJeiHelpers().getGuiHelper(),
+                            LEATHER_KNAPPING,
+                            net.minecraft.world.item.Items.LEATHER
+                    ),
+                    new KnappingJeiCategory(
+                            registration.getJeiHelpers().getGuiHelper(),
+                            HORN_KNAPPING,
+                            net.minecraft.world.item.Items.GOAT_HORN
+                    )
                 });
     }
 
@@ -201,6 +232,25 @@ public final class RevivalAgesJeiPlugin implements IModPlugin {
         registration.addRecipes(GRINDING, AnimalPowerRecipeCatalog.grinding(recipeManager));
         registration.addRecipes(PRESSING, AnimalPowerRecipeCatalog.pressing(recipeManager));
         registration.addRecipes(FRAME_ASSEMBLY, FrameAssemblyRecipeCatalog.recipes(recipeManager));
+        java.util.List<KnappingRecipeView> knapping =
+                KnappingRecipeCatalog.recipes(recipeManager, registries);
+        registration.addRecipes(
+                ROCK_KNAPPING,
+                knapping.stream().filter(view -> !java.util.Set.of("clay", "leather", "horn")
+                        .contains(view.type().getPath())).toList()
+        );
+        registration.addRecipes(
+                CLAY_KNAPPING,
+                knapping.stream().filter(view -> view.type().getPath().equals("clay")).toList()
+        );
+        registration.addRecipes(
+                LEATHER_KNAPPING,
+                knapping.stream().filter(view -> view.type().getPath().equals("leather")).toList()
+        );
+        registration.addRecipes(
+                HORN_KNAPPING,
+                knapping.stream().filter(view -> view.type().getPath().equals("horn")).toList()
+        );
     }
 
     public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {

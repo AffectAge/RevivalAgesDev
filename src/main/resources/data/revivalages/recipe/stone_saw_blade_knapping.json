@@ -1,0 +1,22 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "revivalages:knapping_enabled",
+      "enabled": true
+    }
+  ],
+  "type": "revivalages:knapping",
+  "knapping_type": "revivalages:rock",
+  "pattern": [
+    "XXXXX",
+    " XXX ",
+    "XXXXX"
+  ],
+  "default_on": false,
+  "ingredient": {
+    "item": "revivalages:rock"
+  },
+  "result": {
+    "id": "revivalages:stone_saw_blade"
+  }
+}

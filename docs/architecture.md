@@ -68,6 +68,7 @@ com.protyvkultury.revivalages
 |   |-- progression/          age/progression rules and unlocks
 |   |-- survival/             survival interactions
 |   |-- technology/           processing and machines
+|   |-- world/                persistent world simulation and structural rules
 |   `-- worldgen/             feature-owned world generation
 |-- gametest/                 in-game integration tests
 |-- integration/              optional-mod adapters
@@ -98,9 +99,9 @@ its deferred registers and listeners to the supplied mod event bus. Runtime even
 handlers subscribe to `NeoForge.EVENT_BUS` only when they need game events. Avoid
 scanning or global static initialization merely to make a class load.
 
-Registrations are always available and deterministic. Configuration changes may
-control behavior, but must not conditionally omit registry entries because registry
-sets must agree between server, client, saves, and data packs.
+Registrations are always available and deterministic. Configuration changes
+control acquisition, visibility, and behavior, but never omit registry entries
+because registry sets must agree between server, client, saves, and data packs.
 
 ## Data ownership
 
@@ -129,14 +130,12 @@ viewer and probe APIs never enter the machine packages.
 
 Use [module-template.md](module-template.md) as the checklist. Add the feature to
 `ModFeatures` only after its entry point exists. Every feature family and every
-independent public machine or content unit has a startup configuration toggle.
-Load these toggles before constructing feature modules. Disabled content must
-contribute no exclusive registry entries, recipes, loot, world generation,
-creative-tab entries, payloads, or optional integrations.
+independently usable content unit has an enable setting. A disabled feature keeps
+all registry identities and saved state loadable while suppressing normal
+acquisition, creative visibility, world generation, recipe-viewer categories,
+and server-authoritative behavior.
 
-Startup content configuration is restart-required and must match between the
-server and clients. Shared prerequisites remain registered only when an enabled
-feature needs them. Validate toggle dependencies and reject unsupported or
-mismatched configurations explicitly. Because removing registered content can
-make existing saves incompatible, document and test the migration behavior for
-every toggle.
+Settings that alter recipe availability or discovery surfaces are
+restart-required and must be evaluated on the server. Validate dependencies
+between enabled behaviors explicitly. Document and test both enabled and inert
+saved-content behavior for every toggle.

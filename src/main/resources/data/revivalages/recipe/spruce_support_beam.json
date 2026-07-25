@@ -1,0 +1,1 @@
+{"neoforge:conditions":[{"type":"revivalages:structural_enabled","scope":"support_beams","enabled":true}],"type":"revivalages:support_beam","pattern":["LSL"],"key":{"L":{"item":"minecraft:spruce_log"},"S":{"tag":"revivalages:saw_blades"}},"result":{"id":"revivalages:spruce_support_beam","count":8}}

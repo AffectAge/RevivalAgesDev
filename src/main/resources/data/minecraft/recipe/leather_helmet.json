@@ -1,0 +1,13 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "revivalages:knapping_enabled",
+      "enabled": false
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "combat",
+  "pattern": ["XXX", "X X"],
+  "key": {"X": {"item": "minecraft:leather"}},
+  "result": {"id": "minecraft:leather_helmet"}
+}

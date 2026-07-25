@@ -1,0 +1,21 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "revivalages:knapping_enabled",
+      "enabled": true
+    }
+  ],
+  "type": "revivalages:knapping",
+  "knapping_type": "revivalages:rock",
+  "pattern": [
+    "XXX",
+    "XXX",
+    " X ",
+    " X ",
+    " X "
+  ],
+  "default_on": false,
+  "result": {
+    "id": "revivalages:stone_hammer"
+  }
+}

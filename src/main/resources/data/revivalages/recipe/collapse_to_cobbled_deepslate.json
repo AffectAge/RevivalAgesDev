@@ -1,0 +1,14 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "revivalages:structural_enabled",
+      "scope": "collapses",
+      "enabled": true
+    }
+  ],
+  "type": "revivalages:collapse",
+  "ingredient": "#revivalages:collapses_to_cobbled_deepslate",
+  "result": {
+    "Name": "minecraft:cobbled_deepslate"
+  }
+}

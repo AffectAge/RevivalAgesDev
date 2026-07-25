@@ -1,0 +1,58 @@
+{
+  "values": {
+    "revivalages:oak_support_beam_horizontal": {
+      "ingredient": {},
+      "support_up": 2,
+      "support_down": 2,
+      "support_horizontal": 4
+    },
+    "revivalages:spruce_support_beam_horizontal": {
+      "ingredient": {},
+      "support_up": 2,
+      "support_down": 2,
+      "support_horizontal": 4
+    },
+    "revivalages:birch_support_beam_horizontal": {
+      "ingredient": {},
+      "support_up": 2,
+      "support_down": 2,
+      "support_horizontal": 4
+    },
+    "revivalages:jungle_support_beam_horizontal": {
+      "ingredient": {},
+      "support_up": 2,
+      "support_down": 2,
+      "support_horizontal": 4
+    },
+    "revivalages:acacia_support_beam_horizontal": {
+      "ingredient": {},
+      "support_up": 2,
+      "support_down": 2,
+      "support_horizontal": 4
+    },
+    "revivalages:dark_oak_support_beam_horizontal": {
+      "ingredient": {},
+      "support_up": 2,
+      "support_down": 2,
+      "support_horizontal": 4
+    },
+    "revivalages:mangrove_support_beam_horizontal": {
+      "ingredient": {},
+      "support_up": 2,
+      "support_down": 2,
+      "support_horizontal": 4
+    },
+    "revivalages:cherry_support_beam_horizontal": {
+      "ingredient": {},
+      "support_up": 2,
+      "support_down": 2,
+      "support_horizontal": 4
+    },
+    "revivalages:bamboo_support_beam_horizontal": {
+      "ingredient": {},
+      "support_up": 2,
+      "support_down": 2,
+      "support_horizontal": 4
+    }
+  }
+}

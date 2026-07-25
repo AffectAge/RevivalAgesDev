@@ -1,0 +1,19 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "revivalages:knapping_enabled",
+      "enabled": true
+    }
+  ],
+  "type": "revivalages:knapping",
+  "knapping_type": "revivalages:leather",
+  "pattern": [
+    "XXXXX",
+    "X   X",
+    "X   X"
+  ],
+  "default_on": false,
+  "result": {
+    "id": "minecraft:leather_helmet"
+  }
+}

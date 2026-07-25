@@ -15,6 +15,7 @@ import com.protyvkultury.revivalages.feature.technology.ignition.block.WoodTorch
 import com.protyvkultury.revivalages.feature.technology.animalpower.block.AnimalMachineBlock;
 import com.protyvkultury.revivalages.feature.technology.animalpower.block.HandGrindstoneBlock;
 import com.protyvkultury.revivalages.feature.technology.constructionframe.block.ConstructionFrameBlock;
+import net.minecraft.world.level.block.Block;
 import snownee.jade.api.IWailaClientRegistration;
 import snownee.jade.api.IWailaPlugin;
 import snownee.jade.api.WailaPlugin;
@@ -42,5 +43,6 @@ public final class RevivalAgesJadePlugin implements IWailaPlugin {
                 ConstructionFrameComponentProvider.INSTANCE,
                 ConstructionFrameBlock.class
         );
+        registration.registerBlockComponent(StructuralIntegrityComponentProvider.INSTANCE, Block.class);
     }
 }

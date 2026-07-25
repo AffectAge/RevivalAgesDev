@@ -5,6 +5,8 @@ import dev.latvian.mods.kubejs.plugin.KubeJSPlugin;
 import dev.latvian.mods.kubejs.recipe.RecipeKey;
 import dev.latvian.mods.kubejs.recipe.RecipeScriptContext;
 import dev.latvian.mods.kubejs.recipe.component.CharacterComponent;
+import dev.latvian.mods.kubejs.recipe.component.BlockStateComponent;
+import dev.latvian.mods.kubejs.recipe.component.BooleanComponent;
 import dev.latvian.mods.kubejs.recipe.component.ComponentRole;
 import dev.latvian.mods.kubejs.recipe.component.ComponentValueMap;
 import dev.latvian.mods.kubejs.recipe.component.IngredientComponent;
@@ -21,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.block.state.BlockState;
 
 /** Optional typed recipe schema that still delegates final validity to the gameplay codec. */
 public final class ConstructionFrameKubeJsPlugin implements KubeJSPlugin {
@@ -69,9 +72,31 @@ public final class ConstructionFrameKubeJsPlugin implements KubeJSPlugin {
                     )));
                 }
             });
+    private static final RecipeKey<String> KNAPPING_TYPE =
+            StringComponent.ID.key("knapping_type", ComponentRole.OTHER);
+    private static final RecipeKey<List<String>> KNAPPING_PATTERN =
+            StringComponent.STRING.instance().asList().key("pattern", ComponentRole.OTHER);
+    private static final RecipeKey<Boolean> DEFAULT_ON =
+            BooleanComponent.BOOLEAN.key("default_on", ComponentRole.OTHER);
+    private static final RecipeKey<Ingredient> REFINEMENT =
+            IngredientComponent.OPTIONAL_INGREDIENT.key("ingredient", ComponentRole.INPUT);
+    private static final RecipeSchema KNAPPING_SCHEMA =
+            new RecipeSchema(KNAPPING_TYPE, KNAPPING_PATTERN, DEFAULT_ON, REFINEMENT, RESULT)
+                    .constructor(RESULT, KNAPPING_TYPE, KNAPPING_PATTERN, DEFAULT_ON)
+                    .constructor(RESULT, KNAPPING_TYPE, KNAPPING_PATTERN, DEFAULT_ON, REFINEMENT);
+    private static final RecipeKey<List<String>> BLOCK_INGREDIENT =
+            StringComponent.STRING.instance().asList().key("ingredient", ComponentRole.INPUT);
+    private static final RecipeKey<BlockState> BLOCK_RESULT =
+            BlockStateComponent.BLOCK.key("result", ComponentRole.OUTPUT);
+    private static final RecipeSchema BLOCK_TRANSFORMATION_SCHEMA =
+            new RecipeSchema(BLOCK_INGREDIENT, BLOCK_RESULT)
+                    .constructor(BLOCK_RESULT, BLOCK_INGREDIENT);
 
     @Override
     public void registerRecipeSchemas(RecipeSchemaRegistry registry) {
         registry.register(RevivalAges.id("frame_assembly"), SCHEMA);
+        registry.register(RevivalAges.id("knapping"), KNAPPING_SCHEMA);
+        registry.register(RevivalAges.id("collapse"), BLOCK_TRANSFORMATION_SCHEMA);
+        registry.register(RevivalAges.id("landslide"), BLOCK_TRANSFORMATION_SCHEMA);
     }
 }

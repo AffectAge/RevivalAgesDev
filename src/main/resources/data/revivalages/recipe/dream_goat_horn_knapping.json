@@ -1,0 +1,1 @@
+{"neoforge:conditions":[{"type":"revivalages:knapping_enabled","enabled":true}],"type":"revivalages:knapping","knapping_type":"revivalages:horn","pattern":["XXXXX","X  XX","X  XX","X X X","XXXXX"],"default_on":true,"result":{"id":"minecraft:goat_horn","components":{"minecraft:instrument":"minecraft:dream_goat_horn"}}}

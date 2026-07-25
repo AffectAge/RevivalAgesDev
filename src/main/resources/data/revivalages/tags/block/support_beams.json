@@ -1,0 +1,23 @@
+{
+  "replace": false,
+  "values": [
+    "revivalages:oak_support_beam",
+    "revivalages:oak_support_beam_horizontal",
+    "revivalages:spruce_support_beam",
+    "revivalages:spruce_support_beam_horizontal",
+    "revivalages:birch_support_beam",
+    "revivalages:birch_support_beam_horizontal",
+    "revivalages:jungle_support_beam",
+    "revivalages:jungle_support_beam_horizontal",
+    "revivalages:acacia_support_beam",
+    "revivalages:acacia_support_beam_horizontal",
+    "revivalages:dark_oak_support_beam",
+    "revivalages:dark_oak_support_beam_horizontal",
+    "revivalages:mangrove_support_beam",
+    "revivalages:mangrove_support_beam_horizontal",
+    "revivalages:cherry_support_beam",
+    "revivalages:cherry_support_beam_horizontal",
+    "revivalages:bamboo_support_beam",
+    "revivalages:bamboo_support_beam_horizontal"
+  ]
+}

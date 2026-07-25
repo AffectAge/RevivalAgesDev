@@ -1,0 +1,21 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "revivalages:knapping_enabled",
+      "enabled": true
+    }
+  ],
+  "type": "revivalages:knapping",
+  "knapping_type": "revivalages:clay",
+  "pattern": [
+    "X   X",
+    "X   X",
+    "X   X",
+    "X   X",
+    " XXX "
+  ],
+  "default_on": false,
+  "result": {
+    "id": "revivalages:unfired_clay_bucket"
+  }
+}

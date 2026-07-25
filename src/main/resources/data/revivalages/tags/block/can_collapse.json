@@ -1,0 +1,8 @@
+{
+  "replace": false,
+  "values": [
+    "#revivalages:can_start_collapse",
+    "minecraft:cobblestone",
+    "minecraft:cobbled_deepslate"
+  ]
+}

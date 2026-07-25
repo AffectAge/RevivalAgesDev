@@ -1,0 +1,14 @@
+{
+  "input": {
+    "item": "minecraft:clay_ball",
+    "count": 5
+  },
+  "amount_to_consume": 5,
+  "click_sound": "revivalages:knapping_clay",
+  "consume_after_complete": true,
+  "has_off_texture": true,
+  "spawns_particles": false,
+  "viewer_icon": {
+    "id": "minecraft:clay_ball"
+  }
+}

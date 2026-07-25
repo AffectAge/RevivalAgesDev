@@ -15,9 +15,11 @@ import com.protyvkultury.revivalages.feature.technology.stonemachine.StoneMachin
 import com.protyvkultury.revivalages.feature.technology.anvil.AnvilFeature;
 import com.protyvkultury.revivalages.feature.technology.bucket.PrimitiveBucketFeature;
 import com.protyvkultury.revivalages.feature.technology.ignition.IgnitionFeature;
+import com.protyvkultury.revivalages.feature.technology.knapping.KnappingFeature;
 import com.protyvkultury.revivalages.feature.technology.pitburn.PitBurnFeature;
 import com.protyvkultury.revivalages.feature.creative.CreativeTabFeature;
 import com.protyvkultury.revivalages.feature.worldgen.surfacedeposit.SurfaceDepositFeature;
+import com.protyvkultury.revivalages.feature.world.structuralintegrity.StructuralIntegrityFeature;
 import java.util.List;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
@@ -27,8 +29,10 @@ public final class ModFeatures {
     private static final List<FeatureModule> FEATURES = List.of(
             new CoreFeature(),
             new PrimitiveMaterialsFeature(),
+            new KnappingFeature(),
             new ConstructionFrameFeature(),
             new AnimalPowerFeature(),
+            new StructuralIntegrityFeature(),
             new SurfaceDepositFeature(),
             new CampfireFeature(),
             new ChoppingBlockFeature(),

@@ -1,0 +1,1 @@
+{"type":"minecraft:block","pools":[{"rolls":1,"entries":[{"type":"minecraft:item","name":"revivalages:spruce_support_beam"}],"conditions":[{"condition":"minecraft:survives_explosion"}]}]}

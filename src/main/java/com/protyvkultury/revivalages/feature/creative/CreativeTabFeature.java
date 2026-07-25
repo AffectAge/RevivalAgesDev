@@ -4,6 +4,7 @@ import com.protyvkultury.revivalages.RevivalAges;
 import com.protyvkultury.revivalages.feature.FeatureModule;
 import com.protyvkultury.revivalages.feature.technology.ignition.IgnitionFeature;
 import com.protyvkultury.revivalages.feature.technology.constructionframe.ConstructionFrameFeature;
+import com.protyvkultury.revivalages.feature.world.structuralintegrity.StructuralIntegrityFeature;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -37,6 +38,9 @@ public final class CreativeTabFeature implements FeatureModule {
             "tinder", "flint_and_tinder", "stone_hammer", "stone_saw_blade", "flint_saw_blade",
             "bone_saw_blade", "wood_torch", "wooden_bucket", "unfired_clay_bucket", "clay_bucket",
             "tannin_bucket", "barrel_lid",
+            "oak_support_beam", "spruce_support_beam", "birch_support_beam", "jungle_support_beam",
+            "acacia_support_beam", "dark_oak_support_beam", "mangrove_support_beam",
+            "cherry_support_beam", "bamboo_support_beam",
             // Primitive workstations.
             "construction_frame", "hand_grindstone", "crude_drying_rack", "drying_rack", "chopping_block", "pit_kiln", "log_pile",
             "barrel", "soaking_pot", "tanning_rack",
@@ -57,6 +61,7 @@ public final class CreativeTabFeature implements FeatureModule {
                     .displayItems((parameters, output) -> BuiltInRegistries.ITEM.entrySet().stream()
                             .filter(entry -> entry.getKey().location().getNamespace().equals(RevivalAges.MOD_ID))
                             .filter(entry -> ConstructionFrameFeature.visible(entry.getValue()))
+                            .filter(entry -> StructuralIntegrityFeature.visible(entry.getValue()))
                             .sorted(Comparator
                                     .comparingInt(CreativeTabFeature::progressionIndex)
                                     .thenComparing(entry -> entry.getKey().location().toString()))

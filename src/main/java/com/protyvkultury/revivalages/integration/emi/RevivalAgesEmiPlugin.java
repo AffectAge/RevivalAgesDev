@@ -20,6 +20,8 @@ import com.protyvkultury.revivalages.feature.technology.animalpower.AnimalPowerF
 import com.protyvkultury.revivalages.feature.technology.animalpower.view.AnimalPowerRecipeCatalog;
 import com.protyvkultury.revivalages.feature.technology.constructionframe.ConstructionFrameFeature;
 import com.protyvkultury.revivalages.feature.technology.constructionframe.view.FrameAssemblyRecipeCatalog;
+import com.protyvkultury.revivalages.feature.technology.knapping.view.KnappingRecipeCatalog;
+import com.protyvkultury.revivalages.feature.worldgen.surfacedeposit.SurfaceDepositFeature;
 import dev.emi.emi.api.EmiEntrypoint;
 import dev.emi.emi.api.EmiPlugin;
 import dev.emi.emi.api.EmiRegistry;
@@ -82,6 +84,14 @@ public final class RevivalAgesEmiPlugin implements EmiPlugin {
                     "frame_assembly",
                     ConstructionFrameFeature.CONSTRUCTION_FRAME_ITEM.get()
             );
+    public static final EmiRecipeCategory ROCK_KNAPPING =
+            RevivalAgesEmiPlugin.category("rock_knapping", SurfaceDepositFeature.ROCK.get());
+    public static final EmiRecipeCategory CLAY_KNAPPING =
+            RevivalAgesEmiPlugin.category("clay_knapping", net.minecraft.world.item.Items.CLAY_BALL);
+    public static final EmiRecipeCategory LEATHER_KNAPPING =
+            RevivalAgesEmiPlugin.category("leather_knapping", net.minecraft.world.item.Items.LEATHER);
+    public static final EmiRecipeCategory HORN_KNAPPING =
+            RevivalAgesEmiPlugin.category("horn_knapping", net.minecraft.world.item.Items.GOAT_HORN);
 
     private static EmiRecipeCategory category(String id, ItemLike icon) {
         return new EmiRecipeCategory(RevivalAges.id(id), (EmiRenderable) EmiStack.of((ItemLike) icon));
@@ -105,6 +115,10 @@ public final class RevivalAgesEmiPlugin implements EmiPlugin {
         registry.addCategory(GRINDING);
         registry.addCategory(PRESSING);
         registry.addCategory(FRAME_ASSEMBLY);
+        registry.addCategory(ROCK_KNAPPING);
+        registry.addCategory(CLAY_KNAPPING);
+        registry.addCategory(LEATHER_KNAPPING);
+        registry.addCategory(HORN_KNAPPING);
         registry.addWorkstation(
                 CRUDE_DRYING,
                 (EmiIngredient)
@@ -236,5 +250,14 @@ public final class RevivalAgesEmiPlugin implements EmiPlugin {
                 new PrimitiveEmiRecipe(PRESSING, PrimitiveEmiRecipe.Layout.PRESSING, view)));
         FrameAssemblyRecipeCatalog.recipes(manager).forEach(view -> registry.addRecipe(
                 new FrameAssemblyEmiRecipe(FRAME_ASSEMBLY, view)));
+        KnappingRecipeCatalog.recipes(manager, registries).forEach(view -> {
+            EmiRecipeCategory category = switch (view.type().getPath()) {
+                case "clay" -> CLAY_KNAPPING;
+                case "leather" -> LEATHER_KNAPPING;
+                case "horn" -> HORN_KNAPPING;
+                default -> ROCK_KNAPPING;
+            };
+            registry.addRecipe(new KnappingEmiRecipe(category, view));
+        });
     }
 }

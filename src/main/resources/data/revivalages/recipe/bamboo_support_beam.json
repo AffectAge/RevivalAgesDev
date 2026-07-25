@@ -1,0 +1,1 @@
+{"neoforge:conditions":[{"type":"revivalages:structural_enabled","scope":"support_beams","enabled":true}],"type":"revivalages:support_beam","pattern":["LSL"],"key":{"L":{"item":"minecraft:bamboo_block"},"S":{"tag":"revivalages:saw_blades"}},"result":{"id":"revivalages:bamboo_support_beam","count":8}}

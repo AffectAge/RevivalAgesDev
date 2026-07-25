@@ -1,5 +1,48 @@
 # Third-Party Notices
 
+## TerraFirmaCraft
+
+Support Beam geometry and placement behavior, support-range data, Collapse and
+Landslide propagation rules, Knapping type and pattern data, the 5x5 interaction
+flow, recipe-viewer presentation semantics, and functional audio/GUI behavior
+were adapted from TerraFirmaCraft for Minecraft 1.21.x. The source used is the
+official `1.21.x` branch at
+<https://github.com/TerraFirmaCraft/TerraFirmaCraft>.
+
+TerraFirmaCraft is licensed under the European Union Public Licence version 1.2.
+A copy is included at `licenses/Structural-Knapping-EUPL-1.2.txt`. Under the
+EUPL 1.2 compatibility appendix, the combined derivative is distributed under
+Revival Ages' GNU General Public License version 3 terms while the adapted
+material retains this notice and the EUPL source licence.
+
+The original Java paths
+`util/data/Support.java`, `util/tracker/Collapse.java`,
+`common/recipes/CollapseRecipe.java`, `common/recipes/LandslideRecipe.java`,
+`util/data/KnappingType.java`, `util/data/KnappingPattern.java`,
+`common/recipes/KnappingRecipe.java`, `common/container/KnappingContainer.java`,
+`compat/jei/category/KnappingRecipeCategory.java`, and
+`compat/emi/recipe/EmiKnappingRecipe.java` were adapted into
+`feature/world/structuralintegrity`,
+`feature/technology/knapping`, and the corresponding optional-integration
+packages. Generated tag, support, knapping-type, and recipe JSON was adapted
+under the `data/revivalages` namespace. Functional visual behavior from
+`assets/tfc/textures/gui/knapping.png`,
+`assets/tfc/textures/gui/knapping/clay_ball*.png`,
+`assets/tfc/textures/gui/knapping/leather.png`, and
+`assets/tfc/textures/gui/knapping/goat_horn*.png` is shipped under
+`assets/revivalages/textures/gui/knapping_screen.png` and
+`assets/revivalages/textures/gui/knapping/`. Rock cells use Revival Ages and
+vanilla material textures.
+
+The thirteen functional source recordings
+`sounds/random/rock_slide_long_{1..4}.ogg`,
+`sounds/random/rock_slide_long_fake_{1..2}.ogg`,
+`sounds/random/rock_slide_short_{1..2}.ogg`,
+`sounds/random/dirt_slide_short_{1..2}.ogg`, and
+`sounds/item/knapping/{stone,clay,leather}.ogg` are shipped under the renamed
+`assets/revivalages/sounds/structural/` and
+`assets/revivalages/sounds/knapping/` paths.
+
 ## YTech
 
 Construction Frame interaction semantics, the 3x3x3 recipe format, four-way

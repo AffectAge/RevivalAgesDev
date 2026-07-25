@@ -1,4 +1,10 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "revivalages:knapping_enabled",
+      "enabled": false
+    }
+  ],
   "type": "minecraft:crafting_shaped",
   "pattern": ["RRR", "RSR", "RRR"],
   "key": {
