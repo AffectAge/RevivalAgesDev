@@ -1,6 +1,7 @@
 {
   "content_keys": [
     "revivalages:item_size",
+    "revivalages:carried_weight",
     "revivalages:surface_deposits",
     "revivalages:surface_rocks",
     "revivalages:surface_sticks",

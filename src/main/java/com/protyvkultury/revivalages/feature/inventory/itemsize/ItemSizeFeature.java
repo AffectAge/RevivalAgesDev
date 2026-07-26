@@ -89,6 +89,7 @@ public final class ItemSizeFeature implements FeatureModule {
         ItemStack carried = event.getCarriedItem();
         ItemStack stackedOn = event.getStackedOnItem();
         if (stackedOn.is(Items.BUNDLE) && !carried.isEmpty() && !SizeApi.canInsert(stackedOn, carried)) {
+            ItemSizeRejectionFeedback.notifyPlayer(event.getPlayer(), carried);
             event.setCanceled(true);
             return;
         }
@@ -96,6 +97,7 @@ public final class ItemSizeFeature implements FeatureModule {
                 && event.getClickAction() == ClickAction.SECONDARY
                 && !stackedOn.isEmpty()
                 && !SizeApi.canInsert(carried, stackedOn)) {
+            ItemSizeRejectionFeedback.notifyPlayer(event.getPlayer(), stackedOn);
             event.setCanceled(true);
         }
     }

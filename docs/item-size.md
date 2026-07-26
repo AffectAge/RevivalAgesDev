@@ -73,6 +73,10 @@ stacked-on-item insertion gestures and preserve existing contents. The Pit Kiln
 applies the effective capacity only to new insertion; reload does not eject an
 input or interrupt an active firing.
 
+Rejected player insertion attempts show an action-bar explanation and play a
+short, low-pitched sound. Feedback is server-authoritative and rate-limited per
+player; slot eligibility queries and automation do not emit it.
+
 Barrels, Soaking Pots, and machine processing slots intentionally remain
 recipe-driven.
 
@@ -85,6 +89,11 @@ The server configuration exposes:
 - `itemSize.pitKiln.batchableMaximumSize`;
 - `itemSize.pitKiln.batchSize`;
 - `itemSize.pitKiln.oversizedBatchSize`;
+- `itemSize.rejectionFeedback.actionbarEnabled`;
+- `itemSize.rejectionFeedback.soundEnabled`;
+- `itemSize.rejectionFeedback.cooldownTicks`;
+- `itemSize.rejectionFeedback.soundVolume`;
+- `itemSize.rejectionFeedback.soundPitch`;
 - `itemSize.containerOverrides`.
 
 Override entries use `block|namespace:id=size` or `item|namespace:id=size`.

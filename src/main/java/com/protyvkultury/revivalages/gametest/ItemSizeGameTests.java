@@ -3,6 +3,7 @@ package com.protyvkultury.revivalages.gametest;
 import com.protyvkultury.revivalages.RevivalAges;
 import com.protyvkultury.revivalages.api.size.Size;
 import com.protyvkultury.revivalages.api.size.SizeApi;
+import com.protyvkultury.revivalages.feature.inventory.itemsize.ItemSizeConfig;
 import com.protyvkultury.revivalages.feature.inventory.itemsize.ItemSizeSettings;
 import com.protyvkultury.revivalages.feature.technology.pitkiln.PitKilnFeature;
 import com.protyvkultury.revivalages.feature.technology.pitkiln.blockentity.PitKilnBlockEntity;
@@ -19,6 +20,7 @@ import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.SlotAccess;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ClickAction;
+import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.level.block.Blocks;
@@ -67,6 +69,15 @@ public final class ItemSizeGameTests {
                 "invalid override target was accepted");
         helper.assertFalse(ItemSizeSettings.isValidOverride("block|minecraft:chest=oversized"),
                 "invalid override size was accepted");
+        helper.assertValueEqual(
+                ItemSizeConfig.REJECTION_COOLDOWN_TICKS.getDefault(),
+                20,
+                "rejection feedback cooldown default"
+        );
+        helper.assertTrue(ItemSizeConfig.REJECTION_ACTIONBAR_ENABLED.getDefault(),
+                "action-bar rejection feedback is disabled by default");
+        helper.assertTrue(ItemSizeConfig.REJECTION_SOUND_ENABLED.getDefault(),
+                "sound rejection feedback is disabled by default");
         helper.succeed();
     }
 
@@ -216,6 +227,12 @@ public final class ItemSizeGameTests {
                 block.getName().getString() + " menu accepted a very large item");
         helper.assertTrue(menu.getSlot(0).mayPlace(new ItemStack(Items.BOWL)),
                 block.getName().getString() + " menu rejected a small item");
+        menu.setCarried(new ItemStack(Items.OAK_LOG));
+        menu.clicked(0, 0, ClickType.PICKUP, player);
+        helper.assertTrue(menu.getCarried().is(Items.OAK_LOG),
+                block.getName().getString() + " consumed a rejected click input");
+        helper.assertTrue(chest.getItem(0).isEmpty(),
+                block.getName().getString() + " inserted a rejected click input");
         player.discard();
 
         var handler = helper.getLevel().getCapability(Capabilities.ItemHandler.BLOCK, position, Direction.UP);

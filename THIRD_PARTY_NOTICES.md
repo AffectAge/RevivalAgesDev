@@ -1,5 +1,30 @@
 # Third-Party Notices
 
+## Inventory Weight
+
+Carried-item formulas, inventory aggregation, armor-pocket capacity, overload
+penalties, portable-container weighting, command semantics, and functional HUD
+presentation were adapted from Inventory Weight for Minecraft 1.21. The source
+used is the local `inventory-weight-1.21` source tree.
+
+Inventory Weight is dedicated to the public domain under Creative Commons CC0
+1.0 Universal. A copy is included at
+`licenses/CarriedWeight-CC0-1.0.txt`.
+
+The original Java paths under `com.github.saishok.inventoryweight`, including
+the weight manager, item/block calculators, pocket handling, player tick logic,
+commands, tooltip rendering, HUD rendering, and optional equipment integration,
+were rewritten into `api/weight`,
+`feature/inventory/carriedweight`, and the isolated optional-integration
+packages. Unsafe registry-name heuristics and platform-specific hooks were not
+carried over.
+
+The original CC0 HUD files `empty.png`, `filled_1.png` through
+`filled_12.png`, `overload.png`, `strength.png`, and the overload effect icon are
+shipped under the renamed
+`assets/revivalages/textures/gui/carried_weight/` and
+`assets/revivalages/textures/mob_effect/overloaded.png` paths.
+
 ## TerraFirmaCraft
 
 Support Beam geometry and placement behavior, support-range data, Collapse and

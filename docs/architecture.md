@@ -125,6 +125,15 @@ configuration, synchronization, tooltip, and vanilla adapters under
 classification source; a container enforces a policy only through an explicit
 adapter or `SizeApi` call.
 
+Carried Weight is an independent player-inventory concern. Its public provider
+contracts and read API live under `api/weight`; formulas, authoritative
+recalculation, transient penalties, configuration, HUD, and tooltips live under
+`feature/inventory/carriedweight`. Fixed item weights and pockets are
+synchronized data maps. Derived current weight is an entity attachment that is
+recomputed rather than persisted, while permanent capacity bonuses use the
+standard persistent player attribute. Optional equipment-slot sources remain
+isolated under `integration`.
+
 Primitive technology is a coordinated feature family below `feature/technology`.
 Each machine owns its block, block entity, and recipe type, while shared materials,
 configuration, rendering helpers, tags, and shared recipe-query semantics live in

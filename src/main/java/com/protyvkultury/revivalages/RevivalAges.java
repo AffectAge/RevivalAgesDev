@@ -5,6 +5,7 @@ import com.protyvkultury.revivalages.data.RevivalAgesDataGenerators;
 import com.protyvkultury.revivalages.feature.ModFeatures;
 import com.protyvkultury.revivalages.feature.technology.dryingrack.environment.DryingRackSeasonService;
 import com.protyvkultury.revivalages.integration.DryingRackSeasonIntegrations;
+import com.protyvkultury.revivalages.integration.CarriedWeightIntegrations;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
@@ -21,6 +22,7 @@ public final class RevivalAges {
         modBus.addListener(RevivalAgesDataGenerators::gatherData);
         ModFeatures.register(modBus, modContainer);
         DryingRackSeasonService.install(DryingRackSeasonIntegrations.createProvider());
+        CarriedWeightIntegrations.register();
     }
 
     public static ResourceLocation id(String path) {

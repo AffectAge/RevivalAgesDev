@@ -5,7 +5,6 @@ import com.protyvkultury.revivalages.RevivalAges;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.BooleanSupplier;
-import mezz.jei.api.gui.builder.ITooltipBuilder;
 import mezz.jei.api.gui.ingredient.IRecipeSlotDrawable;
 import mezz.jei.api.gui.inputs.IJeiGuiEventListener;
 import mezz.jei.api.gui.inputs.RecipeSlotUnderMouse;
@@ -70,7 +69,7 @@ final class FrameAssemblyJeiWidget implements ISlottedRecipeWidget, IJeiGuiEvent
                                 y + 74 + gridX * 4 - z * 4 - gridY * 32,
                                 index * 5.0D
                         );
-                        ingredient.draw(graphics);
+                        ingredient.draw(graphics, false);
                         graphics.pose().popPose();
                     }
                     index++;
@@ -88,7 +87,7 @@ final class FrameAssemblyJeiWidget implements ISlottedRecipeWidget, IJeiGuiEvent
                     helpers.getGuiHelper().getSlotDrawable().draw(graphics, x + gridX * 18, y + 22 + z * 18);
                     graphics.pose().pushPose();
                     graphics.pose().translate(x + 1 + gridX * 18, y + 23 + z * 18, index * 5.0D);
-                    ingredient.draw(graphics);
+                    ingredient.draw(graphics, false);
                     graphics.pose().popPose();
                 }
                 index++;
@@ -102,11 +101,6 @@ final class FrameAssemblyJeiWidget implements ISlottedRecipeWidget, IJeiGuiEvent
                 0,
                 false
         );
-    }
-
-    @Override
-    public void getTooltip(ITooltipBuilder tooltip, double mouseX, double mouseY) {
-        slotAt(mouseX, mouseY).map(RecipeSlotUnderMouse::slot).ifPresent(slot -> slot.getTooltip(tooltip));
     }
 
     @Override

@@ -13,6 +13,11 @@ public final class ItemSizeConfig {
     public static final ModConfigSpec.EnumValue<Size> PIT_KILN_BATCHABLE_MAXIMUM_SIZE;
     public static final ModConfigSpec.IntValue PIT_KILN_BATCH_SIZE;
     public static final ModConfigSpec.IntValue PIT_KILN_OVERSIZED_BATCH_SIZE;
+    public static final ModConfigSpec.BooleanValue REJECTION_ACTIONBAR_ENABLED;
+    public static final ModConfigSpec.BooleanValue REJECTION_SOUND_ENABLED;
+    public static final ModConfigSpec.IntValue REJECTION_COOLDOWN_TICKS;
+    public static final ModConfigSpec.DoubleValue REJECTION_SOUND_VOLUME;
+    public static final ModConfigSpec.DoubleValue REJECTION_SOUND_PITCH;
     public static final ModConfigSpec.ConfigValue<List<? extends String>> CONTAINER_OVERRIDES;
 
     static {
@@ -38,6 +43,21 @@ public final class ItemSizeConfig {
         PIT_KILN_OVERSIZED_BATCH_SIZE = builder
                 .comment("Maximum Pit Kiln input count for items above the batchable size.")
                 .defineInRange("itemSize.pitKiln.oversizedBatchSize", 1, 1, 64);
+        REJECTION_ACTIONBAR_ENABLED = builder
+                .comment("Shows an action-bar explanation when a player tries to insert an oversized item.")
+                .define("itemSize.rejectionFeedback.actionbarEnabled", true);
+        REJECTION_SOUND_ENABLED = builder
+                .comment("Plays a short rejection sound when a player tries to insert an oversized item.")
+                .define("itemSize.rejectionFeedback.soundEnabled", true);
+        REJECTION_COOLDOWN_TICKS = builder
+                .comment("Minimum delay between repeated Item Size rejection feedback for one player.")
+                .defineInRange("itemSize.rejectionFeedback.cooldownTicks", 20, 0, 200);
+        REJECTION_SOUND_VOLUME = builder
+                .comment("Volume of the Item Size rejection sound.")
+                .defineInRange("itemSize.rejectionFeedback.soundVolume", 0.45D, 0.0D, 2.0D);
+        REJECTION_SOUND_PITCH = builder
+                .comment("Pitch of the Item Size rejection sound.")
+                .defineInRange("itemSize.rejectionFeedback.soundPitch", 0.6D, 0.1D, 2.0D);
         CONTAINER_OVERRIDES = builder
                 .comment(
                         "Optional adapter overrides in the form block|namespace:id=size or item|namespace:id=size.",

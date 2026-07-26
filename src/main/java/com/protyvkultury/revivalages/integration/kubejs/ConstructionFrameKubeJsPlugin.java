@@ -104,5 +104,6 @@ public final class ConstructionFrameKubeJsPlugin implements KubeJSPlugin {
     @Override
     public void registerBindings(BindingRegistry registry) {
         registry.add("RevivalAgesItemSize", ItemSizeScriptBindings.INSTANCE);
+        registry.add("RevivalAgesCarriedWeight", CarriedWeightScriptBindings.INSTANCE);
     }
 }
