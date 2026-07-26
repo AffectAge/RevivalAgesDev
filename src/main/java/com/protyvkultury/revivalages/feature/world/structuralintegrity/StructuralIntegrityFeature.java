@@ -3,6 +3,8 @@ package com.protyvkultury.revivalages.feature.world.structuralintegrity;
 import com.mojang.serialization.MapCodec;
 import com.protyvkultury.revivalages.RevivalAges;
 import com.protyvkultury.revivalages.feature.FeatureModule;
+import com.protyvkultury.revivalages.feature.content.ContentKey;
+import com.protyvkultury.revivalages.feature.content.ContentPolicy;
 import com.protyvkultury.revivalages.feature.world.structuralintegrity.client.StructuralIntegrityClientEvents;
 import com.protyvkultury.revivalages.feature.world.structuralintegrity.network.CollapseShakePayload;
 import com.protyvkultury.revivalages.feature.world.structuralintegrity.block.HorizontalSupportBlock;
@@ -139,6 +141,32 @@ public final class StructuralIntegrityFeature implements FeatureModule {
             HORIZONTAL_SUPPORTS.put(wood, horizontal);
             SUPPORT_ITEMS.put(wood, item);
         }
+    }
+
+    @Override
+    public ContentPolicy contentPolicy() {
+        ContentPolicy.Builder policy = ContentPolicy.gameplay("structural_integrity")
+                .define(
+                        ContentKey.STRUCTURAL_INTEGRITY,
+                        () -> StructuralIntegrityConfig.configuredEnabled(ContentKey.STRUCTURAL_INTEGRITY)
+                )
+                .define(
+                        ContentKey.SUPPORT_BEAMS,
+                        () -> StructuralIntegrityConfig.configuredEnabled(ContentKey.SUPPORT_BEAMS)
+                )
+                .define(
+                        ContentKey.COLLAPSES,
+                        () -> StructuralIntegrityConfig.configuredEnabled(ContentKey.COLLAPSES)
+                )
+                .define(
+                        ContentKey.LANDSLIDES,
+                        () -> StructuralIntegrityConfig.configuredEnabled(ContentKey.LANDSLIDES)
+                );
+        for (SupportWood wood : SupportWood.values()) {
+            policy.items(ContentKey.SUPPORT_BEAMS, wood.serializedName() + "_support_beam");
+            policy.blocks(ContentKey.SUPPORT_BEAMS, wood.serializedName() + "_support_beam_horizontal");
+        }
+        return policy.build();
     }
 
     @Override

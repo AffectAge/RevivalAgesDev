@@ -2,6 +2,9 @@ package com.protyvkultury.revivalages.feature.technology.choppingblock;
 
 import com.protyvkultury.revivalages.RevivalAges;
 import com.protyvkultury.revivalages.feature.FeatureModule;
+import com.protyvkultury.revivalages.feature.content.ContentAvailability;
+import com.protyvkultury.revivalages.feature.content.ContentKey;
+import com.protyvkultury.revivalages.feature.content.ContentPolicy;
 import com.protyvkultury.revivalages.feature.technology.choppingblock.block.ChoppingBlock;
 import com.protyvkultury.revivalages.feature.technology.choppingblock.blockentity.ChoppingBlockEntity;
 import com.protyvkultury.revivalages.feature.technology.choppingblock.recipe.ChoppingRecipe;
@@ -64,6 +67,17 @@ public final class ChoppingBlockFeature implements FeatureModule {
     }
 
     @Override
+    public ContentPolicy contentPolicy() {
+        return ContentPolicy.gameplay("chopping_block")
+                .define(
+                        ContentKey.CHOPPING_BLOCK,
+                        () -> PrimitiveTechnologyConfig.contentEnabled(ContentKey.CHOPPING_BLOCK)
+                )
+                .items(ContentKey.CHOPPING_BLOCK, "chopping_block")
+                .build();
+    }
+
+    @Override
     public void register(IEventBus modBus, ModContainer modContainer) {
         BLOCKS.register(modBus);
         ITEMS.register(modBus);
@@ -84,7 +98,8 @@ public final class ChoppingBlockFeature implements FeatureModule {
         event.registerBlockEntity(
                 Capabilities.ItemHandler.BLOCK,
                 BLOCK_ENTITY.get(),
-                (block, side) -> PrimitiveTechnologyConfig.AUTOMATION_ENABLED.get() ? block.itemHandler(side) : null
+                (block, side) -> ContentAvailability.isEnabled(ContentKey.CHOPPING_BLOCK)
+                        && PrimitiveTechnologyConfig.AUTOMATION_ENABLED.get() ? block.itemHandler(side) : null
         );
     }
 }

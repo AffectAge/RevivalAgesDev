@@ -1,10 +1,12 @@
 package com.protyvkultury.revivalages.feature.worldgen.surfacedeposit.worldgen;
 
 import com.mojang.serialization.MapCodec;
+import com.protyvkultury.revivalages.feature.content.ContentAvailability;
 import com.protyvkultury.revivalages.feature.worldgen.surfacedeposit.SurfaceDepositFeature;
 import java.util.List;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
@@ -17,7 +19,8 @@ public record AddFeaturesWithBlacklistBiomeModifier(
         List<HolderSet<Biome>> biomes,
         List<HolderSet<Biome>> blacklistBiomes,
         HolderSet<PlacedFeature> features,
-        GenerationStep.Decoration step
+        GenerationStep.Decoration step,
+        ResourceLocation content
 ) implements BiomeModifier {
 
     @Override
@@ -25,6 +28,9 @@ public record AddFeaturesWithBlacklistBiomeModifier(
         if (phase != Phase.ADD
                 || biomes.stream().noneMatch(set -> set.contains(biome))
                 || blacklistBiomes.stream().anyMatch(set -> set.contains(biome))) {
+            return;
+        }
+        if (!ContentAvailability.isEnabled(content).orElse(false)) {
             return;
         }
         BiomeGenerationSettingsBuilder generation = builder.getGenerationSettings();

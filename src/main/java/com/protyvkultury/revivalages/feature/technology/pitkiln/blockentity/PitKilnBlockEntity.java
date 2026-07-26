@@ -2,6 +2,8 @@ package com.protyvkultury.revivalages.feature.technology.pitkiln.blockentity;
 
 import com.protyvkultury.revivalages.core.interaction.ItemStackInteraction;
 import com.protyvkultury.revivalages.core.machine.BurnableStructureTracker;
+import com.protyvkultury.revivalages.feature.content.ContentAvailability;
+import com.protyvkultury.revivalages.feature.content.ContentKey;
 import com.protyvkultury.revivalages.feature.technology.pitkiln.PitKilnFeature;
 import com.protyvkultury.revivalages.feature.technology.pitkiln.block.PitKilnBlock;
 import com.protyvkultury.revivalages.feature.technology.pitkiln.block.PitKilnStage;
@@ -58,6 +60,9 @@ public final class PitKilnBlockEntity extends BlockEntity {
     }
 
     public static void serverTick(Level level, BlockPos pos, BlockState state, PitKilnBlockEntity kiln) {
+        if (!ContentAvailability.isEnabled(ContentKey.PIT_KILN)) {
+            return;
+        }
         if (state.getValue(PitKilnBlock.STAGE) != PitKilnStage.ACTIVE) {
             return;
         }
@@ -100,7 +105,9 @@ public final class PitKilnBlockEntity extends BlockEntity {
     }
 
     public static void clientTick(Level level, BlockPos pos, BlockState state, PitKilnBlockEntity kiln) {
-        if (state.getValue(PitKilnBlock.STAGE) != PitKilnStage.ACTIVE || level.getGameTime() % 10L != 0L) {
+        if (!ContentAvailability.isEnabled(ContentKey.PIT_KILN)
+                || state.getValue(PitKilnBlock.STAGE) != PitKilnStage.ACTIVE
+                || level.getGameTime() % 10L != 0L) {
             return;
         }
         level.addParticle(ParticleTypes.FLAME,
@@ -237,6 +244,9 @@ public final class PitKilnBlockEntity extends BlockEntity {
     }
 
     public boolean canIgnite() {
+        if (!ContentAvailability.isEnabled(ContentKey.PIT_KILN)) {
+            return false;
+        }
         resolveRecipe();
         return getBlockState().getValue(PitKilnBlock.STAGE) == PitKilnStage.WOOD
                 && activeRecipe != null

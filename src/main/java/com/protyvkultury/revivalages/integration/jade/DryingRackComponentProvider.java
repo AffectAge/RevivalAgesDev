@@ -24,6 +24,9 @@ public enum DryingRackComponentProvider implements IBlockComponentProvider {
 
     @Override
     public void appendTooltip(ITooltip tooltip, BlockAccessor accessor, IPluginConfig config) {
+        if (DisabledContentComponentProvider.isDisabled(accessor)) {
+            return;
+        }
         if (!(accessor.getBlockEntity() instanceof DryingRackBlockEntity rack)) {
             return;
         }

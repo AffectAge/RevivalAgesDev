@@ -1,5 +1,7 @@
 package com.protyvkultury.revivalages.feature.world.structuralintegrity;
 
+import com.protyvkultury.revivalages.feature.content.ContentAvailability;
+import com.protyvkultury.revivalages.feature.content.ContentKey;
 import net.neoforged.neoforge.common.ModConfigSpec;
 
 /** Server-owned availability, balance, and work-budget settings for structural simulation. */
@@ -8,6 +10,7 @@ public final class StructuralIntegrityConfig {
     public static final ModConfigSpec SPEC;
     public static final ModConfigSpec CLIENT_SPEC;
 
+    public static final ModConfigSpec.BooleanValue STRUCTURAL_INTEGRITY_ENABLED;
     public static final ModConfigSpec.BooleanValue SUPPORT_BEAMS_ENABLED;
     public static final ModConfigSpec.BooleanValue COLLAPSES_ENABLED;
     public static final ModConfigSpec.BooleanValue LANDSLIDES_ENABLED;
@@ -41,6 +44,11 @@ public final class StructuralIntegrityConfig {
     static {
         ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
         builder.push("structuralIntegrity");
+        STRUCTURAL_INTEGRITY_ENABLED = restartBoolean(
+                builder,
+                "enabled",
+                "Enables the complete Structural Integrity feature family."
+        );
 
         builder.push("supportBeams");
         SUPPORT_BEAMS_ENABLED = restartBoolean(
@@ -113,15 +121,25 @@ public final class StructuralIntegrityConfig {
     }
 
     public static boolean supportBeamsEnabled() {
-        return value(SUPPORT_BEAMS_ENABLED);
+        return ContentAvailability.isEnabled(ContentKey.SUPPORT_BEAMS);
     }
 
     public static boolean collapsesEnabled() {
-        return value(COLLAPSES_ENABLED);
+        return ContentAvailability.isEnabled(ContentKey.COLLAPSES);
     }
 
     public static boolean landslidesEnabled() {
-        return value(LANDSLIDES_ENABLED);
+        return ContentAvailability.isEnabled(ContentKey.LANDSLIDES);
+    }
+
+    public static boolean configuredEnabled(ContentKey key) {
+        return value(switch (key) {
+            case STRUCTURAL_INTEGRITY -> STRUCTURAL_INTEGRITY_ENABLED;
+            case SUPPORT_BEAMS -> SUPPORT_BEAMS_ENABLED;
+            case COLLAPSES -> COLLAPSES_ENABLED;
+            case LANDSLIDES -> LANDSLIDES_ENABLED;
+            default -> throw new IllegalArgumentException("Not a structural integrity key: " + key);
+        });
     }
 
     public static boolean cameraShakeEnabled() {

@@ -1,4 +1,5 @@
 {
+  "content": "revivalages:surface_rocks",
   "type": "revivalages:add_features_with_blacklist",
   "blacklist": [],
   "features": "revivalages:endstone_rock",

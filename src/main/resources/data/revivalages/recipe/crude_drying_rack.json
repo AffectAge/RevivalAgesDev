@@ -1,5 +1,6 @@
 {
   "neoforge:conditions": [
+    {"type":"revivalages:content_enabled","content":"revivalages:crude_drying_rack","enabled":true},
     {
       "enabled": false,
       "type": "revivalages:construction_frame_enabled"

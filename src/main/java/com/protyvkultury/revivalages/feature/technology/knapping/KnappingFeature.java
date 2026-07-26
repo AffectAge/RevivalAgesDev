@@ -3,6 +3,8 @@ package com.protyvkultury.revivalages.feature.technology.knapping;
 import com.mojang.serialization.MapCodec;
 import com.protyvkultury.revivalages.RevivalAges;
 import com.protyvkultury.revivalages.feature.FeatureModule;
+import com.protyvkultury.revivalages.feature.content.ContentKey;
+import com.protyvkultury.revivalages.feature.content.ContentPolicy;
 import com.protyvkultury.revivalages.feature.technology.knapping.client.KnappingClientEvents;
 import com.protyvkultury.revivalages.feature.technology.knapping.menu.KnappingMenu;
 import com.protyvkultury.revivalages.feature.technology.knapping.network.KnappingCellPayload;
@@ -77,6 +79,13 @@ public final class KnappingFeature implements FeatureModule {
             sound("knapping_clay");
     public static final DeferredHolder<SoundEvent, SoundEvent> LEATHER_CLICK =
             sound("knapping_leather");
+
+    @Override
+    public ContentPolicy contentPolicy() {
+        return ContentPolicy.gameplay("knapping")
+                .define(ContentKey.KNAPPING, KnappingConfig::configuredEnabled)
+                .build();
+    }
 
     @Override
     public void register(IEventBus modBus, ModContainer modContainer) {

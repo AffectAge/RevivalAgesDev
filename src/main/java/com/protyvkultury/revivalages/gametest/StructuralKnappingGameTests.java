@@ -38,6 +38,9 @@ public final class StructuralKnappingGameTests {
 
     @GameTest(template = "animal_power_empty")
     public static void allSupportMaterialsRemainRegistered(GameTestHelper helper) {
+        if (!GameTestProfiles.requireEnabledContent(helper)) {
+            return;
+        }
         helper.assertValueEqual(
                 StructuralIntegrityFeature.supportItems().size(),
                 SupportWood.values().length,
@@ -57,6 +60,9 @@ public final class StructuralKnappingGameTests {
 
     @GameTest(template = "animal_power_empty")
     public static void supportDataMapIsAvailableOnTheDedicatedServer(GameTestHelper helper) {
+        if (!GameTestProfiles.requireEnabledContent(helper)) {
+            return;
+        }
         var vertical = StructuralIntegrityFeature.verticalSupport(SupportWood.OAK);
         var horizontal = StructuralIntegrityFeature.horizontalSupport(SupportWood.OAK);
         helper.assertTrue(
@@ -72,6 +78,9 @@ public final class StructuralKnappingGameTests {
 
     @GameTest(template = "animal_power_empty")
     public static void supportIngredientMatchesSpecificBlockStates(GameTestHelper helper) {
+        if (!GameTestProfiles.requireEnabledContent(helper)) {
+            return;
+        }
         SupportIngredient powered = new SupportIngredient(Map.of("powered", "true"));
         var unpowered = Blocks.LEVER.defaultBlockState();
         helper.assertTrue(!powered.test(unpowered), "state ingredient accepted the wrong property value");
@@ -84,6 +93,9 @@ public final class StructuralKnappingGameTests {
 
     @GameTest(template = "animal_power_empty")
     public static void supportDefinitionKeepsUpAndDownAsymmetric(GameTestHelper helper) {
+        if (!GameTestProfiles.requireEnabledContent(helper)) {
+            return;
+        }
         SupportDefinition definition = new SupportDefinition(SupportIngredient.ANY, 1, 5, 0);
         BlockPos source = new BlockPos(4, 4, 4);
         helper.assertTrue(definition.supports(source, source.above()), "supportUp boundary was rejected");
@@ -95,6 +107,9 @@ public final class StructuralKnappingGameTests {
 
     @GameTest(template = "animal_power_empty")
     public static void verticalSupportAutoStacksThreeAndSneakPlacesOne(GameTestHelper helper) {
+        if (!GameTestProfiles.requireEnabledContent(helper)) {
+            return;
+        }
         var support = StructuralIntegrityFeature.verticalSupport(SupportWood.OAK);
         BlockPos base = new BlockPos(2, 2, 2);
         helper.setBlock(base.below(), Blocks.STONE);
@@ -121,6 +136,9 @@ public final class StructuralKnappingGameTests {
 
     @GameTest(template = "animal_power_empty")
     public static void autoPlacementRejectsPlantsAndAcceptsWater(GameTestHelper helper) {
+        if (!GameTestProfiles.requireEnabledContent(helper)) {
+            return;
+        }
         var support = StructuralIntegrityFeature.verticalSupport(SupportWood.OAK);
         var placer = helper.spawnWithNoFreeWill(EntityType.ZOMBIE, new BlockPos(8, 2, 8));
         BlockPos plantBase = new BlockPos(2, 2, 5);
@@ -148,6 +166,9 @@ public final class StructuralKnappingGameTests {
 
     @GameTest(template = "animal_power_empty")
     public static void verticalSupportUsesCenterFoundationSemantics(GameTestHelper helper) {
+        if (!GameTestProfiles.requireEnabledContent(helper)) {
+            return;
+        }
         var support = StructuralIntegrityFeature.verticalSupport(SupportWood.OAK);
         BlockPos pos = new BlockPos(4, 2, 4);
         helper.setBlock(pos.below(), Blocks.OAK_FENCE);
@@ -158,6 +179,9 @@ public final class StructuralKnappingGameTests {
 
     @GameTest(template = "animal_power_empty")
     public static void horizontalSpanBuildsFiveAndInvalidSegmentsDrop(GameTestHelper helper) {
+        if (!GameTestProfiles.requireEnabledContent(helper)) {
+            return;
+        }
         var vertical = StructuralIntegrityFeature.verticalSupport(SupportWood.OAK);
         var horizontal = StructuralIntegrityFeature.horizontalSupport(SupportWood.OAK);
         var supportItem = StructuralIntegrityFeature.supportItems().get(SupportWood.OAK).get();
@@ -193,6 +217,9 @@ public final class StructuralKnappingGameTests {
 
     @GameTest(template = "animal_power_empty")
     public static void breakingPostBaseDropsDependentColumnAndSpan(GameTestHelper helper) {
+        if (!GameTestProfiles.requireEnabledContent(helper)) {
+            return;
+        }
         var vertical = StructuralIntegrityFeature.verticalSupport(SupportWood.OAK);
         var horizontal = StructuralIntegrityFeature.horizontalSupport(SupportWood.OAK);
         var supportItem = StructuralIntegrityFeature.supportItems().get(SupportWood.OAK).get();
@@ -233,6 +260,9 @@ public final class StructuralKnappingGameTests {
 
     @GameTest(template = "animal_power_empty")
     public static void builtInKnappingDataLoadsFromCanonicalRegistries(GameTestHelper helper) {
+        if (!GameTestProfiles.requireEnabledContent(helper)) {
+            return;
+        }
         var registry = helper.getLevel().registryAccess().registryOrThrow(KnappingFeature.KNAPPING_TYPES);
         for (String name : new String[]{"rock", "clay", "leather", "horn"}) {
             helper.assertTrue(
@@ -249,6 +279,9 @@ public final class StructuralKnappingGameTests {
 
     @GameTest(template = "animal_power_empty")
     public static void unrelatedTerrainIsNotCollapsible(GameTestHelper helper) {
+        if (!GameTestProfiles.requireEnabledContent(helper)) {
+            return;
+        }
         for (var block : new net.minecraft.world.level.block.Block[]{
                 Blocks.CLAY,
                 Blocks.DIRT,
@@ -268,6 +301,9 @@ public final class StructuralKnappingGameTests {
 
     @GameTest(template = "animal_power_empty")
     public static void knappingPatternAndFullGridPayloadPreserveCanonicalState(GameTestHelper helper) {
+        if (!GameTestProfiles.requireEnabledContent(helper)) {
+            return;
+        }
         KnappingPattern pattern = KnappingPattern.CODEC
                 .parse(JsonOps.INSTANCE, JsonParser.parseString("[\"#X.\"]"))
                 .getOrThrow();
@@ -288,6 +324,9 @@ public final class StructuralKnappingGameTests {
 
     @GameTest(template = "animal_power_empty")
     public static void collapseShakePayloadPreservesAtmosphereParameters(GameTestHelper helper) {
+        if (!GameTestProfiles.requireEnabledContent(helper)) {
+            return;
+        }
         RegistryFriendlyByteBuf buffer = new RegistryFriendlyByteBuf(
                 Unpooled.buffer(),
                 helper.getLevel().registryAccess(),
@@ -307,6 +346,9 @@ public final class StructuralKnappingGameTests {
 
     @GameTest(template = "animal_power_empty", timeoutTicks = 100)
     public static void fallingStructuralBlockPlacesItsResult(GameTestHelper helper) {
+        if (!GameTestProfiles.requireEnabledContent(helper)) {
+            return;
+        }
         helper.setBlock(TEST_COLUMN.below(), Blocks.OBSIDIAN);
         braceLanding(helper, TEST_COLUMN);
         BlockPos source = helper.absolutePos(TEST_COLUMN.above(4));
@@ -325,6 +367,9 @@ public final class StructuralKnappingGameTests {
 
     @GameTest(template = "animal_power_empty", timeoutTicks = 100)
     public static void fallingStructuralBlockStopsOnSturdyTerrain(GameTestHelper helper) {
+        if (!GameTestProfiles.requireEnabledContent(helper)) {
+            return;
+        }
         helper.setBlock(TEST_COLUMN.below(), Blocks.OBSIDIAN);
         helper.setBlock(TEST_COLUMN, Blocks.CLAY);
         braceLanding(helper, TEST_COLUMN.above());
@@ -345,6 +390,9 @@ public final class StructuralKnappingGameTests {
 
     @GameTest(template = "animal_power_empty", timeoutTicks = 100)
     public static void fallingStructuralBlockDoesNotDrillThroughDeepslate(GameTestHelper helper) {
+        if (!GameTestProfiles.requireEnabledContent(helper)) {
+            return;
+        }
         helper.setBlock(TEST_COLUMN, Blocks.DEEPSLATE);
         braceLanding(helper, TEST_COLUMN.above());
         BlockPos source = helper.absolutePos(TEST_COLUMN.above(4));
@@ -364,6 +412,9 @@ public final class StructuralKnappingGameTests {
 
     @GameTest(template = "animal_power_empty", timeoutTicks = 100)
     public static void fallingStructuralBlockBreaksNonSturdyObstacleOnce(GameTestHelper helper) {
+        if (!GameTestProfiles.requireEnabledContent(helper)) {
+            return;
+        }
         helper.setBlock(TEST_COLUMN.below(), Blocks.OBSIDIAN);
         helper.setBlock(TEST_COLUMN, Blocks.SNOW);
         braceLanding(helper, TEST_COLUMN);

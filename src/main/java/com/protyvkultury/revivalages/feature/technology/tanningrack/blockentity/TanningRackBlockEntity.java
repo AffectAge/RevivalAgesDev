@@ -1,5 +1,7 @@
 package com.protyvkultury.revivalages.feature.technology.tanningrack.blockentity;
 
+import com.protyvkultury.revivalages.feature.content.ContentAvailability;
+import com.protyvkultury.revivalages.feature.content.ContentKey;
 import com.protyvkultury.revivalages.feature.technology.primitive.config.PrimitiveTechnologyConfig;
 import com.protyvkultury.revivalages.feature.technology.tanningrack.TanningRackFeature;
 import com.protyvkultury.revivalages.feature.technology.tanningrack.recipe.TanningRackRecipe;
@@ -36,6 +38,9 @@ public final class TanningRackBlockEntity extends BlockEntity {
     }
 
     public static void serverTick(Level level, BlockPos pos, BlockState state, TanningRackBlockEntity rack) {
+        if (!ContentAvailability.isEnabled(ContentKey.TANNING_RACK)) {
+            return;
+        }
         rack.resolveRecipe();
         if (rack.activeRecipe == null || rack.input.isEmpty() || !rack.output.isEmpty()) {
             return;
@@ -88,7 +93,8 @@ public final class TanningRackBlockEntity extends BlockEntity {
 
     public static void clientTick(Level level, BlockPos pos, BlockState state, TanningRackBlockEntity rack) {
         long time = level.getDayTime() % 24000L;
-        if (rack.activeRecipe != null
+        if (ContentAvailability.isEnabled(ContentKey.TANNING_RACK)
+                && rack.activeRecipe != null
                 && !rack.input.isEmpty()
                 && level.canSeeSky(pos)
                 && (PrimitiveTechnologyConfig.TANNING_RACK_RAIN_RUIN_TICKS.get() < 0

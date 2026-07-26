@@ -1,5 +1,6 @@
 package com.protyvkultury.revivalages.feature.technology.constructionframe.view;
 
+import com.protyvkultury.revivalages.feature.content.ContentAvailability;
 import com.protyvkultury.revivalages.feature.technology.constructionframe.ConstructionFrameConfig;
 import com.protyvkultury.revivalages.feature.technology.constructionframe.ConstructionFrameFeature;
 import java.util.List;
@@ -16,6 +17,7 @@ public final class FrameAssemblyRecipeCatalog {
             return List.of();
         }
         return manager.getAllRecipesFor(ConstructionFrameFeature.RECIPE_TYPE.get()).stream()
+                .filter(holder -> ContentAvailability.isResultEnabled(holder.value().result()))
                 .map(holder -> new FrameAssemblyRecipeView(
                         holder.id(),
                         holder.value().getIngredients(),

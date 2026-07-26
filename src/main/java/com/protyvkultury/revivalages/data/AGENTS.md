@@ -18,6 +18,10 @@ depend on it.
   load registered content safely, and encode supported load conditions or
   feature-owned filtering metadata for recipes, loot, worldgen, and other normal
   acquisition paths that must be inactive when content is disabled.
+- Keep `ContentAvailabilityDataProvider` exhaustive. It must validate every
+  conditioned acquisition resource and worldgen contribution against
+  `ContentKey`, and its deterministic manifest must make newly ungated data fail
+  `runData`.
 - Run datagen after provider changes, review additions and deletions, then run it a
   second time when investigating nondeterminism.
 - Never patch generated JSON to make a test pass. Fix the provider or its source

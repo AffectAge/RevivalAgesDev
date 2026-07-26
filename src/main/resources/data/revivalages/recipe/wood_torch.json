@@ -1,4 +1,5 @@
 {
+  "neoforge:conditions": [{"type":"revivalages:content_enabled","content":"revivalages:wood_torch","enabled":true}],
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "pattern": ["S", "I"],

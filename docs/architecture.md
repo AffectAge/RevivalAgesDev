@@ -128,7 +128,9 @@ viewer and probe APIs never enter the machine packages.
 
 ## Adding a feature
 
-Use [module-template.md](module-template.md) as the checklist. Add the feature to
+Use [module-template.md](module-template.md) as the checklist and
+[content-availability.md](content-availability.md) as the mandatory availability
+contract. Add the feature to
 `ModFeatures` only after its entry point exists. Every feature family and every
 independently usable content unit has an enable setting. A disabled feature keeps
 all registry identities and saved state loadable while suppressing normal

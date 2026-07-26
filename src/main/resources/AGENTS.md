@@ -71,6 +71,11 @@ This subtree contains source resources that humans intentionally maintain.
   other normal acquisition paths through supported load conditions or
   server-authoritative filtering; never treat missing registry entries as the
   disabled state.
+- Every acquisition recipe and block loot table must contain a recognized
+  Revival Ages content condition, and every worldgen contribution must declare
+  its content key. Shared consumers use `revivalages:any_content_enabled`. The
+  resource-gate test and datagen manifest validation are mandatory and must fail
+  when a new JSON resource omits this classification.
 - JSON must be strict, UTF-8, deterministic, and free of comments or trailing
   commas. Resource locations must be namespaced.
 - Do not replace Minecraft namespace data unless the feature explicitly requires

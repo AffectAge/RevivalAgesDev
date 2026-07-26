@@ -100,6 +100,11 @@ license and attribution.
 - Every independently usable content feature or machine must have a server
   configuration toggle that defaults to enabled. Content toggles may require a
   restart, but must never change the registry set.
+- Every `FeatureModule` must declare a `ContentPolicy`. Gameplay policies define
+  stable content keys, parents, configured suppliers, and every public item/block
+  membership. `core` and `creative_tab` are the only infrastructure policies.
+  Missing, duplicate, cyclic, or unclassified declarations are build/startup
+  failures, never review-only findings.
 - Register every public block, item, block entity, menu, recipe type, serializer,
   payload type, and other registry object unconditionally. Disabled content must
   be hidden from creative tabs and normal acquisition, contribute no enabled
@@ -224,6 +229,8 @@ set before declaring work complete:
    behavior works, disabled content is inert and unavailable through normal
    acquisition or data, serialized state is preserved, and existing worlds load
    without missing mappings or item loss.
+9. Run `runGameTestServerContentDisabled` for changes to gameplay content,
+   acquisition, worldgen, capabilities, payloads, or optional integrations.
 
 On Windows use `gradlew.bat`. Never accept a warning, missing model, missing
 translation, registry error, data-pack error, or dedicated-server classloading

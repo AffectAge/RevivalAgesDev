@@ -2,13 +2,17 @@ package com.protyvkultury.revivalages.feature.technology.anvil;
 
 import com.protyvkultury.revivalages.RevivalAges;
 import com.protyvkultury.revivalages.feature.FeatureModule;
+import com.protyvkultury.revivalages.feature.content.ContentAvailability;
+import com.protyvkultury.revivalages.feature.content.ContentKey;
+import com.protyvkultury.revivalages.feature.content.ContentPolicy;
+import com.protyvkultury.revivalages.feature.technology.primitive.config.PrimitiveTechnologyConfig;
 import com.protyvkultury.revivalages.feature.technology.anvil.block.AnvilBlock;
 import com.protyvkultury.revivalages.feature.technology.anvil.blockentity.AnvilBlockEntity;
 import com.protyvkultury.revivalages.feature.technology.anvil.client.AnvilClientEvents;
 import com.protyvkultury.revivalages.feature.technology.anvil.recipe.AnvilRecipe;
 import com.protyvkultury.revivalages.feature.technology.anvil.recipe.AnvilRecipeSerializer;
-import com.protyvkultury.revivalages.feature.technology.primitive.config.PrimitiveTechnologyConfig;
 import java.util.function.Supplier;
+import java.util.Set;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTabs;
@@ -59,6 +63,18 @@ public final class AnvilFeature implements FeatureModule {
             RECIPE_SERIALIZERS.register("anvil", AnvilRecipeSerializer::new);
 
     @Override
+    public ContentPolicy contentPolicy() {
+        return ContentPolicy.gameplay("anvil")
+                .define(
+                        ContentKey.ANVIL,
+                        () -> PrimitiveTechnologyConfig.contentEnabled(ContentKey.ANVIL)
+                )
+                .items(ContentKey.ANVIL, "anvil")
+                .sharedItems(Set.of(ContentKey.ANVIL, ContentKey.CONSTRUCTION_FRAME), "stone_hammer")
+                .build();
+    }
+
+    @Override
     public void register(IEventBus modBus, ModContainer modContainer) {
         BLOCKS.register(modBus);
         ITEMS.register(modBus);
@@ -93,7 +109,8 @@ public final class AnvilFeature implements FeatureModule {
         event.registerBlockEntity(
                 Capabilities.ItemHandler.BLOCK,
                 BLOCK_ENTITY.get(),
-                (anvil, side) -> PrimitiveTechnologyConfig.AUTOMATION_ENABLED.get() ? anvil.itemHandler() : null
+                (anvil, side) -> ContentAvailability.isEnabled(ContentKey.ANVIL)
+                        && PrimitiveTechnologyConfig.AUTOMATION_ENABLED.get() ? anvil.itemHandler() : null
         );
     }
 }

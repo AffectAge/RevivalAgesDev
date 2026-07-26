@@ -1,5 +1,7 @@
 package com.protyvkultury.revivalages.feature.technology.primitive.view;
 
+import com.protyvkultury.revivalages.feature.content.ContentAvailability;
+import com.protyvkultury.revivalages.feature.content.ContentKey;
 import com.protyvkultury.revivalages.feature.technology.barrel.BarrelFeature;
 import com.protyvkultury.revivalages.feature.technology.barrel.recipe.BarrelRecipe;
 import com.protyvkultury.revivalages.feature.technology.campfire.CampfireFeature;
@@ -34,6 +36,9 @@ public final class PrimitiveRecipeCatalog {
 
     public static List<PrimitiveRecipeView> campfire(
             RecipeManager manager, HolderLookup.Provider registries) {
+        if (!ContentAvailability.isEnabled(ContentKey.CAMPFIRE)) {
+            return List.of();
+        }
         List<PrimitiveRecipeView> result = new ArrayList<>();
         List<RecipeHolder<CampfireRecipe>> custom =
                 manager.getAllRecipesFor(CampfireFeature.RECIPE_TYPE.get());
@@ -64,6 +69,10 @@ public final class PrimitiveRecipeCatalog {
     }
 
     public static List<PrimitiveRecipeView> chopping(RecipeManager manager) {
+        if (!ContentAvailability.isEnabled(ContentKey.CHOPPING_BLOCK)
+                && !ContentAvailability.isEnabled(ContentKey.HORSE_CHOPPING_BLOCK)) {
+            return List.of();
+        }
         return manager.getAllRecipesFor(ChoppingBlockFeature.RECIPE_TYPE.get()).stream()
                 .map(
                         holder -> {
@@ -86,6 +95,9 @@ public final class PrimitiveRecipeCatalog {
     }
 
     public static List<PrimitiveRecipeView> pitKiln(RecipeManager manager) {
+        if (!ContentAvailability.isEnabled(ContentKey.PIT_KILN)) {
+            return List.of();
+        }
         return manager.getAllRecipesFor(PitKilnFeature.RECIPE_TYPE.get()).stream()
                 .map(
                         holder -> {
@@ -109,6 +121,9 @@ public final class PrimitiveRecipeCatalog {
     }
 
     public static List<PrimitiveRecipeView> pitBurn(RecipeManager manager) {
+        if (!ContentAvailability.isEnabled(ContentKey.PIT_BURN)) {
+            return List.of();
+        }
         return manager.getAllRecipesFor(PitBurnFeature.RECIPE_TYPE.get()).stream()
                 .map(holder -> {
                     PitBurnRecipe recipe = holder.value();
@@ -132,6 +147,9 @@ public final class PrimitiveRecipeCatalog {
     }
 
     public static List<PrimitiveRecipeView> barrel(RecipeManager manager) {
+        if (!ContentAvailability.isEnabled(ContentKey.BARREL)) {
+            return List.of();
+        }
         return manager.getAllRecipesFor(BarrelFeature.RECIPE_TYPE.get()).stream()
                 .map(
                         holder -> {
@@ -150,6 +168,9 @@ public final class PrimitiveRecipeCatalog {
     }
 
     public static List<PrimitiveRecipeView> soakingPot(RecipeManager manager) {
+        if (!ContentAvailability.isEnabled(ContentKey.SOAKING_POT)) {
+            return List.of();
+        }
         return manager.getAllRecipesFor(SoakingPotFeature.RECIPE_TYPE.get()).stream()
                 .map(
                         holder -> {
@@ -170,6 +191,9 @@ public final class PrimitiveRecipeCatalog {
     }
 
     public static List<PrimitiveRecipeView> tanningRack(RecipeManager manager) {
+        if (!ContentAvailability.isEnabled(ContentKey.TANNING_RACK)) {
+            return List.of();
+        }
         return manager.getAllRecipesFor(TanningRackFeature.RECIPE_TYPE.get()).stream()
                 .map(
                         holder -> {

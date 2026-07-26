@@ -1,4 +1,5 @@
 {
+  "neoforge:conditions": [{"type":"revivalages:content_enabled","content":"revivalages:horse_press","enabled":true}],
   "type": "revivalages:pressing",
   "ingredient": { "item": "minecraft:wheat_seeds" },
   "input_count": 12,

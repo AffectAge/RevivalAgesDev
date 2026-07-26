@@ -1,5 +1,6 @@
 {
   "neoforge:conditions": [
+    {"type":"revivalages:content_enabled","content":"revivalages:clay_bucket","enabled":true},
     {
       "type": "revivalages:knapping_enabled",
       "enabled": true

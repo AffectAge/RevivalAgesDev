@@ -1,1 +1,2 @@
-{ "type": "revivalages:chopping", "ingredient": { "tag": "minecraft:acacia_logs" }, "result": { "id": "minecraft:acacia_planks", "count": 1 }, "chops": [6,5,4,3], "quantities": [2,3,4,5] }
+{
+  "neoforge:conditions": [{"type":"revivalages:any_content_enabled","contents":["revivalages:chopping_block","revivalages:horse_chopping_block"],"enabled":true}], "type": "revivalages:chopping", "ingredient": { "tag": "minecraft:acacia_logs" }, "result": { "id": "minecraft:acacia_planks", "count": 1 }, "chops": [6,5,4,3], "quantities": [2,3,4,5] }

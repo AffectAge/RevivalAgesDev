@@ -1,6 +1,8 @@
 package com.protyvkultury.revivalages.feature.technology.pitburn.blockentity;
 
 import com.protyvkultury.revivalages.core.machine.BurnableStructureTracker;
+import com.protyvkultury.revivalages.feature.content.ContentAvailability;
+import com.protyvkultury.revivalages.feature.content.ContentKey;
 import com.protyvkultury.revivalages.feature.technology.pitburn.PitBurnFeature;
 import com.protyvkultury.revivalages.feature.technology.pitburn.recipe.PitBurnRecipe;
 import com.protyvkultury.revivalages.feature.technology.primitive.PrimitiveMaterialsFeature;
@@ -53,6 +55,9 @@ public final class PitBurnBlockEntity extends BlockEntity {
     }
 
     public static void serverTick(Level level, BlockPos pos, BlockState state, PitBurnBlockEntity burn) {
+        if (!ContentAvailability.isEnabled(ContentKey.PIT_BURN)) {
+            return;
+        }
         if (!state.is(PitBurnFeature.ACTIVE_PILE.get())) {
             return;
         }

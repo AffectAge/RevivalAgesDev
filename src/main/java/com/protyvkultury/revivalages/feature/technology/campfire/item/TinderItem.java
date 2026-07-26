@@ -1,5 +1,7 @@
 package com.protyvkultury.revivalages.feature.technology.campfire.item;
 
+import com.protyvkultury.revivalages.feature.content.ContentAvailability;
+import com.protyvkultury.revivalages.feature.content.ContentKey;
 import com.protyvkultury.revivalages.feature.technology.campfire.CampfireFeature;
 import com.protyvkultury.revivalages.feature.technology.campfire.blockentity.CampfireBlockEntity;
 import net.minecraft.core.BlockPos;
@@ -19,6 +21,9 @@ public final class TinderItem extends Item {
 
     @Override
     public InteractionResult useOn(UseOnContext context) {
+        if (!ContentAvailability.isEnabled(ContentKey.CAMPFIRE)) {
+            return InteractionResult.FAIL;
+        }
         Level level = context.getLevel();
         BlockPos placePos = context.getClickedPos().relative(context.getClickedFace());
         BlockState support = level.getBlockState(placePos.below());

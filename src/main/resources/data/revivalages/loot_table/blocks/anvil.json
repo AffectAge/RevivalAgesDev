@@ -1,8 +1,22 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "revivalages:content_enabled",
+      "content": "revivalages:anvil",
+      "enabled": true
+    }
+  ],
   "type": "minecraft:block",
-  "pools": [{
-    "rolls": 1,
-    "entries": [{ "type": "minecraft:item", "name": "revivalages:anvil" }]
-  }],
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "revivalages:anvil"
+        }
+      ]
+    }
+  ],
   "random_sequence": "revivalages:blocks/anvil"
 }

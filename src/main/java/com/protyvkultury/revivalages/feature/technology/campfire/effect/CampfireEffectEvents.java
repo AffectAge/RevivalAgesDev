@@ -1,5 +1,7 @@
 package com.protyvkultury.revivalages.feature.technology.campfire.effect;
 
+import com.protyvkultury.revivalages.feature.content.ContentAvailability;
+import com.protyvkultury.revivalages.feature.content.ContentKey;
 import com.protyvkultury.revivalages.feature.technology.campfire.CampfireFeature;
 import com.protyvkultury.revivalages.feature.technology.campfire.block.CampfireBlock;
 import com.protyvkultury.revivalages.feature.technology.primitive.config.PrimitiveTechnologyConfig;
@@ -29,8 +31,16 @@ public final class CampfireEffectEvents {
 
     @SubscribeEvent
     public static void onPlayerTick(PlayerTickEvent.Post event) {
-        if (!(event.getEntity() instanceof ServerPlayer player)
-                || !PrimitiveTechnologyConfig.CAMPFIRE_EFFECTS_ENABLED.get()) {
+        if (!(event.getEntity() instanceof ServerPlayer player)) {
+            return;
+        }
+        if (!ContentAvailability.isEnabled(ContentKey.CAMPFIRE_EFFECTS)) {
+            STATES.remove(player.getUUID());
+            player.removeEffect(CampfireFeature.COMFORT);
+            player.removeEffect(CampfireFeature.RESTING);
+            player.removeEffect(CampfireFeature.WELL_FED);
+            player.removeEffect(CampfireFeature.WELL_RESTED);
+            player.removeEffect(CampfireFeature.FOCUSED);
             return;
         }
         RestState tracked = STATES.computeIfAbsent(player.getUUID(), ignored -> new RestState(player.position()));
@@ -91,7 +101,9 @@ public final class CampfireEffectEvents {
 
     @SubscribeEvent
     public static void onFoodFinished(LivingEntityUseItemEvent.Finish event) {
-        if (!(event.getEntity() instanceof ServerPlayer player) || !player.hasEffect(CampfireFeature.COMFORT)) {
+        if (!ContentAvailability.isEnabled(ContentKey.CAMPFIRE_EFFECTS)
+                || !(event.getEntity() instanceof ServerPlayer player)
+                || !player.hasEffect(CampfireFeature.COMFORT)) {
             return;
         }
         FoodProperties food = event.getItem().get(DataComponents.FOOD);
@@ -116,7 +128,9 @@ public final class CampfireEffectEvents {
 
     @SubscribeEvent
     public static void onXpChange(PlayerXpEvent.XpChange event) {
-        if (event.getAmount() > 0 && event.getEntity().hasEffect(CampfireFeature.FOCUSED)) {
+        if (ContentAvailability.isEnabled(ContentKey.CAMPFIRE_EFFECTS)
+                && event.getAmount() > 0
+                && event.getEntity().hasEffect(CampfireFeature.FOCUSED)) {
             event.setAmount((int) Math.ceil(event.getAmount()
                     * (1.0D + PrimitiveTechnologyConfig.FOCUSED_XP_BONUS.get())));
         }

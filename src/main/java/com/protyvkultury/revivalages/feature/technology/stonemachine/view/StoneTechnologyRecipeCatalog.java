@@ -1,6 +1,8 @@
 package com.protyvkultury.revivalages.feature.technology.stonemachine.view;
 
 import com.protyvkultury.revivalages.RevivalAges;
+import com.protyvkultury.revivalages.feature.content.ContentAvailability;
+import com.protyvkultury.revivalages.feature.content.ContentKey;
 import com.protyvkultury.revivalages.feature.technology.anvil.AnvilFeature;
 import com.protyvkultury.revivalages.feature.technology.anvil.recipe.AnvilRecipe;
 import com.protyvkultury.revivalages.feature.technology.anvil.recipe.AnvilTool;
@@ -32,6 +34,9 @@ public final class StoneTechnologyRecipeCatalog {
     }
 
     public static List<PrimitiveRecipeView> sawmill(RecipeManager manager) {
+        if (!ContentAvailability.isEnabled(ContentKey.STONE_SAWMILL)) {
+            return List.of();
+        }
         List<PrimitiveRecipeView> result = new ArrayList<>();
         for (var holder : manager.getAllRecipesFor(ChoppingBlockFeature.RECIPE_TYPE.get())) {
             ChoppingRecipe recipe = holder.value();
@@ -72,15 +77,21 @@ public final class StoneTechnologyRecipeCatalog {
     }
 
     public static List<PrimitiveRecipeView> oven(Level level) {
-        return processViews(level, StoneMachineKind.OVEN, "stone_oven");
+        return ContentAvailability.isEnabled(ContentKey.STONE_OVEN)
+                ? processViews(level, StoneMachineKind.OVEN, "stone_oven")
+                : List.of();
     }
 
     public static List<PrimitiveRecipeView> kiln(Level level) {
-        return processViews(level, StoneMachineKind.KILN, "stone_kiln");
+        return ContentAvailability.isEnabled(ContentKey.STONE_KILN)
+                ? processViews(level, StoneMachineKind.KILN, "stone_kiln")
+                : List.of();
     }
 
     public static List<PrimitiveRecipeView> crucible(Level level) {
-        return processViews(level, StoneMachineKind.CRUCIBLE, "stone_crucible");
+        return ContentAvailability.isEnabled(ContentKey.STONE_CRUCIBLE)
+                ? processViews(level, StoneMachineKind.CRUCIBLE, "stone_crucible")
+                : List.of();
     }
 
     private static List<PrimitiveRecipeView> processViews(Level level, StoneMachineKind kind, String category) {
@@ -110,6 +121,9 @@ public final class StoneTechnologyRecipeCatalog {
     }
 
     public static List<PrimitiveRecipeView> anvil(RecipeManager manager) {
+        if (!ContentAvailability.isEnabled(ContentKey.ANVIL)) {
+            return List.of();
+        }
         return manager.getAllRecipesFor(AnvilFeature.RECIPE_TYPE.get()).stream()
                 .map(holder -> {
                     AnvilRecipe recipe = holder.value();

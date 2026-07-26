@@ -1,5 +1,6 @@
 {
   "neoforge:conditions": [
+    {"type":"revivalages:any_content_enabled","contents":["revivalages:chopping_block","revivalages:horse_chopping_block"],"enabled":true},
     {
       "type": "neoforge:mod_loaded",
       "modid": "biomesoplenty"

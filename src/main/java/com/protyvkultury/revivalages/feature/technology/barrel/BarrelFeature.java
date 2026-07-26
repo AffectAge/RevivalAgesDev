@@ -2,6 +2,9 @@ package com.protyvkultury.revivalages.feature.technology.barrel;
 
 import com.protyvkultury.revivalages.RevivalAges;
 import com.protyvkultury.revivalages.feature.FeatureModule;
+import com.protyvkultury.revivalages.feature.content.ContentAvailability;
+import com.protyvkultury.revivalages.feature.content.ContentKey;
+import com.protyvkultury.revivalages.feature.content.ContentPolicy;
 import com.protyvkultury.revivalages.feature.technology.barrel.block.BarrelBlock;
 import com.protyvkultury.revivalages.feature.technology.barrel.blockentity.BarrelBlockEntity;
 import com.protyvkultury.revivalages.feature.technology.barrel.item.BarrelBlockItem;
@@ -71,6 +74,17 @@ public final class BarrelFeature implements FeatureModule {
     }
 
     @Override
+    public ContentPolicy contentPolicy() {
+        return ContentPolicy.gameplay("barrel")
+                .define(
+                        ContentKey.BARREL,
+                        () -> PrimitiveTechnologyConfig.contentEnabled(ContentKey.BARREL)
+                )
+                .items(ContentKey.BARREL, "barrel", "barrel_lid")
+                .build();
+    }
+
+    @Override
     public void register(IEventBus modBus, ModContainer modContainer) {
         BLOCKS.register(modBus);
         ITEMS.register(modBus);
@@ -93,7 +107,8 @@ public final class BarrelFeature implements FeatureModule {
         event.registerBlockEntity(
                 Capabilities.ItemHandler.BLOCK,
                 BLOCK_ENTITY.get(),
-                (barrel, side) -> PrimitiveTechnologyConfig.AUTOMATION_ENABLED.get()
+                (barrel, side) -> ContentAvailability.isEnabled(ContentKey.BARREL)
+                        && PrimitiveTechnologyConfig.AUTOMATION_ENABLED.get()
                         && !barrel.getBlockState().getValue(BarrelBlock.SEALED)
                         && side == Direction.UP
                         ? barrel.itemHandler(side)
@@ -102,7 +117,8 @@ public final class BarrelFeature implements FeatureModule {
         event.registerBlockEntity(
                 Capabilities.FluidHandler.BLOCK,
                 BLOCK_ENTITY.get(),
-                (barrel, side) -> PrimitiveTechnologyConfig.AUTOMATION_ENABLED.get()
+                (barrel, side) -> ContentAvailability.isEnabled(ContentKey.BARREL)
+                        && PrimitiveTechnologyConfig.AUTOMATION_ENABLED.get()
                         && !barrel.getBlockState().getValue(BarrelBlock.SEALED)
                         ? barrel.fluidTank()
                         : null

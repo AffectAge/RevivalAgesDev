@@ -2,6 +2,9 @@ package com.protyvkultury.revivalages.feature.technology.animalpower;
 
 import com.protyvkultury.revivalages.RevivalAges;
 import com.protyvkultury.revivalages.feature.FeatureModule;
+import com.protyvkultury.revivalages.feature.content.ContentAvailability;
+import com.protyvkultury.revivalages.feature.content.ContentKey;
+import com.protyvkultury.revivalages.feature.content.ContentPolicy;
 import com.protyvkultury.revivalages.feature.technology.animalpower.block.AnimalMachineBlock;
 import com.protyvkultury.revivalages.feature.technology.animalpower.block.HandGrindstoneBlock;
 import com.protyvkultury.revivalages.feature.technology.animalpower.blockentity.AnimalMachineBlockEntity;
@@ -119,6 +122,36 @@ public final class AnimalPowerFeature implements FeatureModule {
             );
 
     @Override
+    public ContentPolicy contentPolicy() {
+        return ContentPolicy.gameplay("animal_power")
+                .define(
+                        ContentKey.ANIMAL_POWER,
+                        () -> AnimalPowerConfig.contentEnabled(ContentKey.ANIMAL_POWER)
+                )
+                .define(
+                        ContentKey.HAND_GRINDSTONE,
+                        () -> AnimalPowerConfig.contentEnabled(ContentKey.HAND_GRINDSTONE)
+                )
+                .define(
+                        ContentKey.HORSE_GRINDSTONE,
+                        () -> AnimalPowerConfig.contentEnabled(ContentKey.HORSE_GRINDSTONE)
+                )
+                .define(
+                        ContentKey.HORSE_CHOPPING_BLOCK,
+                        () -> AnimalPowerConfig.contentEnabled(ContentKey.HORSE_CHOPPING_BLOCK)
+                )
+                .define(
+                        ContentKey.HORSE_PRESS,
+                        () -> AnimalPowerConfig.contentEnabled(ContentKey.HORSE_PRESS)
+                )
+                .items(ContentKey.HAND_GRINDSTONE, "hand_grindstone")
+                .items(ContentKey.HORSE_GRINDSTONE, "horse_grindstone")
+                .items(ContentKey.HORSE_CHOPPING_BLOCK, "horse_chopping_block")
+                .items(ContentKey.HORSE_PRESS, "horse_press")
+                .build();
+    }
+
+    @Override
     public void register(IEventBus modBus, ModContainer modContainer) {
         DATA_COMPONENTS.register(modBus);
         BLOCKS.register(modBus);
@@ -175,14 +208,16 @@ public final class AnimalPowerFeature implements FeatureModule {
         event.registerBlockEntity(
                 Capabilities.ItemHandler.BLOCK,
                 ANIMAL_MACHINE_BLOCK_ENTITY.get(),
-                (machine, side) -> AnimalPowerConfig.AUTOMATION_ENABLED.get()
+                (machine, side) -> ContentAvailability.isEnabled(machine.contentKey())
+                        && AnimalPowerConfig.AUTOMATION_ENABLED.get()
                         ? machine.itemHandler(side)
                         : null
         );
         event.registerBlockEntity(
                 Capabilities.FluidHandler.BLOCK,
                 ANIMAL_MACHINE_BLOCK_ENTITY.get(),
-                (machine, side) -> AnimalPowerConfig.AUTOMATION_ENABLED.get()
+                (machine, side) -> ContentAvailability.isEnabled(machine.contentKey())
+                        && AnimalPowerConfig.AUTOMATION_ENABLED.get()
                         && machine.kind() == AnimalMachineKind.PRESS
                         && side == net.minecraft.core.Direction.DOWN
                         ? machine.fluidOutputHandler()

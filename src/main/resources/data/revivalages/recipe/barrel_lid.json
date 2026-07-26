@@ -1,4 +1,5 @@
 {
+  "neoforge:conditions": [{"type":"revivalages:content_enabled","content":"revivalages:barrel","enabled":true}],
   "type": "minecraft:crafting_shaped", "category": "misc",
   "pattern": ["PPP"], "key": { "P": { "tag": "minecraft:planks" } },
   "result": { "id": "revivalages:barrel_lid", "count": 1 }

@@ -1,5 +1,7 @@
 package com.protyvkultury.revivalages.feature.technology.knapping;
 
+import com.protyvkultury.revivalages.feature.content.ContentAvailability;
+import com.protyvkultury.revivalages.feature.content.ContentKey;
 import net.neoforged.neoforge.common.ModConfigSpec;
 
 public final class KnappingConfig {
@@ -28,6 +30,10 @@ public final class KnappingConfig {
     }
 
     public static boolean enabled() {
+        return ContentAvailability.isEnabled(ContentKey.KNAPPING);
+    }
+
+    public static boolean configuredEnabled() {
         return SERVER_SPEC.isLoaded() ? ENABLED.get() : ENABLED.getDefault();
     }
 

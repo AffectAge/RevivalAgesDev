@@ -1,5 +1,6 @@
 {
   "neoforge:conditions": [
+    {"type":"revivalages:any_content_enabled","contents":["revivalages:anvil","revivalages:construction_frame"],"enabled":true},
     {
       "type": "revivalages:knapping_enabled",
       "enabled": true

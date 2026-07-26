@@ -2,6 +2,9 @@ package com.protyvkultury.revivalages.feature.technology.stonemachine;
 
 import com.protyvkultury.revivalages.RevivalAges;
 import com.protyvkultury.revivalages.feature.FeatureModule;
+import com.protyvkultury.revivalages.feature.content.ContentAvailability;
+import com.protyvkultury.revivalages.feature.content.ContentKey;
+import com.protyvkultury.revivalages.feature.content.ContentPolicy;
 import com.protyvkultury.revivalages.feature.technology.primitive.config.PrimitiveTechnologyConfig;
 import com.protyvkultury.revivalages.feature.technology.stonemachine.block.StoneCrucibleBlock;
 import com.protyvkultury.revivalages.feature.technology.stonemachine.block.StoneKilnBlock;
@@ -15,6 +18,7 @@ import com.protyvkultury.revivalages.feature.technology.stonemachine.recipe.Ston
 import com.protyvkultury.revivalages.feature.technology.stonemachine.recipe.StoneKilnRecipe;
 import com.protyvkultury.revivalages.feature.technology.stonemachine.recipe.StoneKilnRecipeSerializer;
 import java.util.function.Supplier;
+import java.util.Set;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.item.BlockItem;
@@ -104,6 +108,38 @@ public final class StoneMachineFeature implements FeatureModule {
                     "stone_crucible", StoneCrucibleRecipeSerializer::new);
 
     @Override
+    public ContentPolicy contentPolicy() {
+        return ContentPolicy.gameplay("stone_machines")
+                .define(
+                        ContentKey.STONE_SAWMILL,
+                        () -> PrimitiveTechnologyConfig.contentEnabled(ContentKey.STONE_SAWMILL)
+                )
+                .define(
+                        ContentKey.STONE_OVEN,
+                        () -> PrimitiveTechnologyConfig.contentEnabled(ContentKey.STONE_OVEN)
+                )
+                .define(
+                        ContentKey.STONE_KILN,
+                        () -> PrimitiveTechnologyConfig.contentEnabled(ContentKey.STONE_KILN)
+                )
+                .define(
+                        ContentKey.STONE_CRUCIBLE,
+                        () -> PrimitiveTechnologyConfig.contentEnabled(ContentKey.STONE_CRUCIBLE)
+                )
+                .items(ContentKey.STONE_SAWMILL, "stone_sawmill")
+                .items(ContentKey.STONE_OVEN, "stone_oven")
+                .items(ContentKey.STONE_KILN, "stone_kiln")
+                .items(ContentKey.STONE_CRUCIBLE, "stone_crucible")
+                .sharedItems(
+                        Set.of(ContentKey.STONE_SAWMILL, ContentKey.SUPPORT_BEAMS),
+                        "stone_saw_blade",
+                        "flint_saw_blade",
+                        "bone_saw_blade"
+                )
+                .build();
+    }
+
+    @Override
     public void register(IEventBus modBus, ModContainer modContainer) {
         BLOCKS.register(modBus);
         ITEMS.register(modBus);
@@ -156,14 +192,16 @@ public final class StoneMachineFeature implements FeatureModule {
         event.registerBlockEntity(
                 Capabilities.ItemHandler.BLOCK,
                 BLOCK_ENTITY.get(),
-                (machine, side) -> PrimitiveTechnologyConfig.AUTOMATION_ENABLED.get()
+                (machine, side) -> ContentAvailability.isEnabled(machine.contentKey())
+                        && PrimitiveTechnologyConfig.AUTOMATION_ENABLED.get()
                         ? machine.itemHandler(side)
                         : null
         );
         event.registerBlockEntity(
                 Capabilities.FluidHandler.BLOCK,
                 BLOCK_ENTITY.get(),
-                (machine, side) -> PrimitiveTechnologyConfig.AUTOMATION_ENABLED.get()
+                (machine, side) -> ContentAvailability.isEnabled(machine.contentKey())
+                        && PrimitiveTechnologyConfig.AUTOMATION_ENABLED.get()
                         ? machine.fluidHandler(side)
                         : null
         );

@@ -3,6 +3,9 @@
 Create `feature/<feature_name>` and add only the subpackages the feature uses.
 
 - Define one `<FeatureName>Feature` entry point implementing `FeatureModule`.
+- Declare a mandatory `ContentPolicy`: define every owned `ContentKey`, its
+  parents and configured supplier, and classify every public item and block.
+  Declare infrastructure explicitly; never use an empty gameplay policy.
 - Keep every `DeferredRegister` in a clearly named feature-local registry class.
 - Register mod-bus listeners once from the feature entry point.
 - Register game-bus listeners only for actual runtime events.
@@ -26,6 +29,13 @@ Create `feature/<feature_name>` and add only the subpackages the feature uses.
 - Test enabled and disabled startup configurations. Disabled content must leave
   no exclusive registry, data, creative-tab, networking, worldgen, or integration
   contribution.
+- Add universal content conditions to every acquisition resource, gate shared
+  recipe types with `any_content_enabled`, and add the resource to the automated
+  gate-validation suite.
+- Prove that disabled block entities retain inventory/fluid state, expose no
+  capability, perform no tick work, reject payloads/interactions, and drop one
+  restorable state-carrying block item.
+- Run both `runGameTestServer` and `runGameTestServerContentDisabled`.
 - Verify client, dedicated server, datagen, and build tasks.
 
 Do not place unfinished global helpers in `util`. Prefer a private helper inside

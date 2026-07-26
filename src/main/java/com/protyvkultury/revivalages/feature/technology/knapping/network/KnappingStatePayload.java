@@ -1,6 +1,8 @@
 package com.protyvkultury.revivalages.feature.technology.knapping.network;
 
 import com.protyvkultury.revivalages.RevivalAges;
+import com.protyvkultury.revivalages.feature.content.ContentAvailability;
+import com.protyvkultury.revivalages.feature.content.ContentKey;
 import com.protyvkultury.revivalages.feature.technology.knapping.menu.KnappingMenu;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -31,7 +33,8 @@ public record KnappingStatePayload(int containerId, int cells, int acceptedCell)
     }
 
     public static void handle(KnappingStatePayload payload, IPayloadContext context) {
-        if (context.player().containerMenu instanceof KnappingMenu menu
+        if (ContentAvailability.isEnabled(ContentKey.KNAPPING)
+                && context.player().containerMenu instanceof KnappingMenu menu
                 && menu.containerId == payload.containerId()) {
             menu.applyServerState(payload.cells(), payload.acceptedCell());
         }

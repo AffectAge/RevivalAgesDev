@@ -46,6 +46,9 @@ public final class AnimalPowerGameTests {
 
     @GameTest(template = "animal_power_empty")
     public static void symmetricWorkAreaAcceptsEveryEdge(GameTestHelper helper) {
+        if (!GameTestProfiles.requireEnabledContent(helper)) {
+            return;
+        }
         buildFloor(helper);
         helper.setBlock(MACHINE, AnimalPowerFeature.HORSE_GRINDSTONE.get());
 
@@ -57,6 +60,9 @@ public final class AnimalPowerGameTests {
 
     @GameTest(template = "animal_power_empty")
     public static void missingCornerInvalidatesWorkArea(GameTestHelper helper) {
+        if (!GameTestProfiles.requireEnabledContent(helper)) {
+            return;
+        }
         buildFloor(helper);
         helper.setBlock(MACHINE, AnimalPowerFeature.HORSE_GRINDSTONE.get());
         helper.setBlock(new BlockPos(1, 1, 1), Blocks.AIR);
@@ -69,6 +75,9 @@ public final class AnimalPowerGameTests {
 
     @GameTest(template = "animal_power_empty")
     public static void configuredWorkerTagContainsEveryDefaultWorker(GameTestHelper helper) {
+        if (!GameTestProfiles.requireEnabledContent(helper)) {
+            return;
+        }
         List<EntityType<?>> workers = List.of(
                 EntityType.HORSE,
                 EntityType.DONKEY,
@@ -84,6 +93,9 @@ public final class AnimalPowerGameTests {
 
     @GameTest(template = "animal_power_empty", timeoutTicks = 20)
     public static void breakingUpperHalfRemovesTallMachine(GameTestHelper helper) {
+        if (!GameTestProfiles.requireEnabledContent(helper)) {
+            return;
+        }
         buildFloor(helper);
         helper.setBlock(
                 MACHINE,
@@ -106,6 +118,9 @@ public final class AnimalPowerGameTests {
 
     @GameTest(template = "animal_power_empty")
     public static void processingRecipeStreamCodecsRoundTrip(GameTestHelper helper) {
+        if (!GameTestProfiles.requireEnabledContent(helper)) {
+            return;
+        }
         ServerLevel level = helper.getLevel();
         GrindingRecipe grinding = level.getRecipeManager()
                 .getAllRecipesFor(AnimalPowerFeature.GRINDING_TYPE.get())
@@ -164,6 +179,9 @@ public final class AnimalPowerGameTests {
 
     @GameTest(template = "animal_power_empty")
     public static void pressingCodecRejectsMutuallyExclusiveResultViolation(GameTestHelper helper) {
+        if (!GameTestProfiles.requireEnabledContent(helper)) {
+            return;
+        }
         var operations = RegistryOps.create(JsonOps.INSTANCE, helper.getLevel().registryAccess());
         var bothResults = JsonParser.parseString("""
                 {
@@ -202,6 +220,9 @@ public final class AnimalPowerGameTests {
 
     @GameTest(template = "animal_power_empty")
     public static void everyDefaultWorkerAttachesAndDetaches(GameTestHelper helper) {
+        if (!GameTestProfiles.requireEnabledContent(helper)) {
+            return;
+        }
         ServerLevel level = helper.getLevel();
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
         BlockPos machinePos = helper.absolutePos(MACHINE);
@@ -234,6 +255,9 @@ public final class AnimalPowerGameTests {
 
     @GameTest(template = "animal_power_empty")
     public static void waypointAndMissingEntityStatePersist(GameTestHelper helper) {
+        if (!GameTestProfiles.requireEnabledContent(helper)) {
+            return;
+        }
         ServerLevel level = helper.getLevel();
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
         BlockPos machinePos = helper.absolutePos(MACHINE);
@@ -275,6 +299,9 @@ public final class AnimalPowerGameTests {
 
     @GameTest(template = "animal_power_empty")
     public static void pressFluidHandlerIsDrainOnly(GameTestHelper helper) {
+        if (!GameTestProfiles.requireEnabledContent(helper)) {
+            return;
+        }
         helper.setBlock(MACHINE, AnimalPowerFeature.HORSE_PRESS.get());
         if (!(helper.getBlockEntity(MACHINE) instanceof AnimalMachineBlockEntity press)) {
             helper.fail("Press block entity was not created", MACHINE);

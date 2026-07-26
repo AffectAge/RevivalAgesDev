@@ -1,4 +1,5 @@
 {
+  "neoforge:conditions": [{"type":"revivalages:any_content_enabled","contents":["revivalages:hand_grindstone","revivalages:horse_grindstone"],"enabled":true}],
   "type": "revivalages:grinding",
   "ingredient": { "item": "minecraft:bone" },
   "input_count": 1,

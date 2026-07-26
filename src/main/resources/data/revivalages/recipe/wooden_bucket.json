@@ -1,4 +1,5 @@
 {
+  "neoforge:conditions": [{"type":"revivalages:content_enabled","content":"revivalages:wooden_bucket","enabled":true}],
   "type": "minecraft:crafting_shaped",
   "category": "tools",
   "pattern": ["# #", " # "],

@@ -1,5 +1,7 @@
 package com.protyvkultury.revivalages.feature.technology.dryingrack.view;
 
+import com.protyvkultury.revivalages.feature.content.ContentAvailability;
+import com.protyvkultury.revivalages.feature.content.ContentKey;
 import com.protyvkultury.revivalages.feature.technology.dryingrack.DryingRackFeature;
 import com.protyvkultury.revivalages.feature.technology.dryingrack.recipe.DryingRecipe;
 import java.util.ArrayList;
@@ -16,6 +18,9 @@ public final class DryingRecipeCatalog {
     private DryingRecipeCatalog() {}
 
     public static List<DryingRecipeView> crude(RecipeManager recipeManager) {
+        if (!ContentAvailability.isEnabled(ContentKey.CRUDE_DRYING_RACK)) {
+            return List.of();
+        }
         return sorted(recipeManager.getAllRecipesFor(DryingRackFeature.CRUDE_DRYING_RECIPE_TYPE.get()))
                 .stream()
                 .map(holder -> new DryingRecipeView(holder, holder.value().ingredient(), false))
@@ -23,18 +28,23 @@ public final class DryingRecipeCatalog {
     }
 
     public static List<DryingRecipeView> normal(RecipeManager recipeManager) {
+        if (!ContentAvailability.isEnabled(ContentKey.DRYING_RACK)) {
+            return List.of();
+        }
         List<RecipeHolder<DryingRecipe>> own =
                 sorted(recipeManager.getAllRecipesFor(DryingRackFeature.DRYING_RECIPE_TYPE.get()));
         List<DryingRecipeView> views = new ArrayList<>();
         for (RecipeHolder<DryingRecipe> holder : own) {
             views.add(new DryingRecipeView(holder, holder.value().ingredient(), false));
         }
-        for (RecipeHolder<DryingRecipe> holder :
-                sorted(recipeManager.getAllRecipesFor(DryingRackFeature.CRUDE_DRYING_RECIPE_TYPE.get()))) {
-            Ingredient inheritedIngredient =
-                    removeOverriddenAlternatives(holder.value().ingredient(), own);
-            if (!inheritedIngredient.isEmpty()) {
-                views.add(new DryingRecipeView(holder, inheritedIngredient, true));
+        if (ContentAvailability.isEnabled(ContentKey.CRUDE_DRYING_RACK)) {
+            for (RecipeHolder<DryingRecipe> holder :
+                    sorted(recipeManager.getAllRecipesFor(DryingRackFeature.CRUDE_DRYING_RECIPE_TYPE.get()))) {
+                Ingredient inheritedIngredient =
+                        removeOverriddenAlternatives(holder.value().ingredient(), own);
+                if (!inheritedIngredient.isEmpty()) {
+                    views.add(new DryingRecipeView(holder, inheritedIngredient, true));
+                }
             }
         }
         return List.copyOf(views);

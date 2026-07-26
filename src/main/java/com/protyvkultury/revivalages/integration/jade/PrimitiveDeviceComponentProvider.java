@@ -37,6 +37,9 @@ public enum PrimitiveDeviceComponentProvider implements IBlockComponentProvider 
 
     @Override
     public void appendTooltip(ITooltip tooltip, BlockAccessor accessor, IPluginConfig config) {
+        if (DisabledContentComponentProvider.isDisabled(accessor)) {
+            return;
+        }
         switch (accessor.getBlockEntity()) {
             case CampfireBlockEntity campfire -> appendCampfire(tooltip, campfire);
             case ChoppingBlockEntity chopping -> appendChopping(tooltip, accessor, chopping);

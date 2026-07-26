@@ -4,12 +4,15 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.protyvkultury.revivalages.RevivalAges;
 import com.protyvkultury.revivalages.feature.FeatureModule;
+import com.protyvkultury.revivalages.feature.content.ContentKey;
+import com.protyvkultury.revivalages.feature.content.ContentPolicy;
 import com.protyvkultury.revivalages.feature.worldgen.surfacedeposit.block.RockDepositBlock;
 import com.protyvkultury.revivalages.feature.worldgen.surfacedeposit.block.StickDepositBlock;
 import com.protyvkultury.revivalages.feature.worldgen.surfacedeposit.worldgen.AddFeaturesWithBlacklistBiomeModifier;
 import java.util.List;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -17,6 +20,7 @@ import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.config.ModConfig;
 import net.neoforged.neoforge.common.world.BiomeModifier;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredItem;
@@ -75,7 +79,11 @@ public final class SurfaceDepositFeature implements FeatureModule {
                             PlacedFeature.LIST_CODEC.fieldOf("features")
                                     .forGetter(AddFeaturesWithBlacklistBiomeModifier::features),
                             GenerationStep.Decoration.CODEC.fieldOf("step")
-                                    .forGetter(AddFeaturesWithBlacklistBiomeModifier::step)
+                                    .forGetter(AddFeaturesWithBlacklistBiomeModifier::step),
+                            ResourceLocation.CODEC.optionalFieldOf(
+                                    "content",
+                                    ContentKey.SURFACE_ROCKS.id()
+                            ).forGetter(AddFeaturesWithBlacklistBiomeModifier::content)
                     ).apply(instance, AddFeaturesWithBlacklistBiomeModifier::new))
             );
 
@@ -112,9 +120,68 @@ public final class SurfaceDepositFeature implements FeatureModule {
     }
 
     @Override
+    public ContentPolicy contentPolicy() {
+        return ContentPolicy.gameplay("surface_deposits")
+                .define(
+                        ContentKey.SURFACE_DEPOSITS,
+                        () -> SurfaceDepositConfig.contentEnabled(ContentKey.SURFACE_DEPOSITS)
+                )
+                .define(
+                        ContentKey.SURFACE_ROCKS,
+                        () -> SurfaceDepositConfig.contentEnabled(ContentKey.SURFACE_ROCKS)
+                )
+                .define(
+                        ContentKey.SURFACE_STICKS,
+                        () -> SurfaceDepositConfig.contentEnabled(ContentKey.SURFACE_STICKS)
+                )
+                .items(
+                        ContentKey.SURFACE_ROCKS,
+                        "rock",
+                        "granite_rock",
+                        "diorite_rock",
+                        "andesite_rock",
+                        "sand_rock",
+                        "red_sand_rock",
+                        "gravel_rock",
+                        "end_stone_rock",
+                        "netherrack_rock",
+                        "soul_soil_rock",
+                        "cobblestone_splitter",
+                        "granite_splitter",
+                        "diorite_splitter",
+                        "andesite_splitter",
+                        "sandstone_splitter",
+                        "red_sandstone_splitter",
+                        "end_stone_splitter",
+                        "netherrack_splitter",
+                        "soul_soil_splitter"
+                )
+                .items(
+                        ContentKey.SURFACE_STICKS,
+                        "oak_stick",
+                        "spruce_stick",
+                        "birch_stick",
+                        "acacia_stick",
+                        "jungle_stick",
+                        "dark_oak_stick",
+                        "mangrove_stick",
+                        "cherry_stick",
+                        "bamboo_stick",
+                        "crimson_stick",
+                        "warped_stick"
+                )
+                .build();
+    }
+
+    @Override
     public void register(IEventBus modBus, ModContainer modContainer) {
         BLOCKS.register(modBus);
         ITEMS.register(modBus);
         BIOME_MODIFIER_SERIALIZERS.register(modBus);
+        modContainer.registerConfig(
+                ModConfig.Type.SERVER,
+                SurfaceDepositConfig.SPEC,
+                "revivalages-surface-deposits-server.toml"
+        );
     }
 }

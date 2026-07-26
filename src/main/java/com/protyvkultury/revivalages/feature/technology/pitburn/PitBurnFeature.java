@@ -2,6 +2,9 @@ package com.protyvkultury.revivalages.feature.technology.pitburn;
 
 import com.protyvkultury.revivalages.RevivalAges;
 import com.protyvkultury.revivalages.feature.FeatureModule;
+import com.protyvkultury.revivalages.feature.content.ContentAvailability;
+import com.protyvkultury.revivalages.feature.content.ContentKey;
+import com.protyvkultury.revivalages.feature.content.ContentPolicy;
 import com.protyvkultury.revivalages.feature.technology.pitburn.block.ActivePileBlock;
 import com.protyvkultury.revivalages.feature.technology.pitburn.block.AshPileBlock;
 import com.protyvkultury.revivalages.feature.technology.pitburn.block.LogPileBlock;
@@ -77,6 +80,18 @@ public final class PitBurnFeature implements FeatureModule {
     }
 
     @Override
+    public ContentPolicy contentPolicy() {
+        return ContentPolicy.gameplay("pit_burn")
+                .define(
+                        ContentKey.PIT_BURN,
+                        () -> PrimitiveTechnologyConfig.contentEnabled(ContentKey.PIT_BURN)
+                )
+                .items(ContentKey.PIT_BURN, "log_pile")
+                .blocks(ContentKey.PIT_BURN, "active_pile", "ash_pile")
+                .build();
+    }
+
+    @Override
     public void register(IEventBus modBus, ModContainer modContainer) {
         BLOCKS.register(modBus);
         ITEMS.register(modBus);
@@ -86,11 +101,15 @@ public final class PitBurnFeature implements FeatureModule {
     }
 
     public static boolean canIgnite(Level level, BlockPos origin) {
-        return collectConnected(level, origin).isPresent()
+        return ContentAvailability.isEnabled(ContentKey.PIT_BURN)
+                && collectConnected(level, origin).isPresent()
                 && (level.isClientSide || findRecipe(level).isPresent());
     }
 
     public static boolean ignite(Level level, BlockPos origin) {
+        if (!ContentAvailability.isEnabled(ContentKey.PIT_BURN)) {
+            return false;
+        }
         Optional<RecipeHolder<PitBurnRecipe>> recipe = findRecipe(level);
         Optional<Set<BlockPos>> connected = collectConnected(level, origin);
         if (recipe.isEmpty() || connected.isEmpty()) {

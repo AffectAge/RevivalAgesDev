@@ -127,6 +127,12 @@ tasks.named('build').configure {
     dependsOn tasks.named('correspondingSourceZip')
 }
 
+// Content availability is a release invariant: datagen validates every normal
+// acquisition/worldgen contribution and public registry classification.
+tasks.named('check').configure {
+    dependsOn 'runData'
+}
+
 neoForge {
     // Specify the version of NeoForge to use.
     version = project.neo_version
@@ -173,7 +179,15 @@ neoForge {
         // The gametest system is also enabled by default for other run configs under the /test command.
         gameTestServer {
             type = "gameTestServer"
+            gameDirectory = project.file('run-gametest-content-enabled')
             systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+        }
+
+        gameTestServerContentDisabled {
+            type = "gameTestServer"
+            gameDirectory = project.file('run-gametest-content-disabled')
+            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+            systemProperty 'revivalages.test.forceAllContentDisabled', 'true'
         }
 
         data {

@@ -1,4 +1,11 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "revivalages:content_enabled",
+      "content": "revivalages:wood_torch",
+      "enabled": true
+    }
+  ],
   "type": "minecraft:block",
   "pools": [
     {
@@ -14,7 +21,9 @@
                 {
                   "condition": "minecraft:block_state_property",
                   "block": "revivalages:wood_torch",
-                  "properties": { "state": "unlit" }
+                  "properties": {
+                    "state": "unlit"
+                  }
                 }
               ]
             },
@@ -25,17 +34,25 @@
                   "type": "minecraft:item",
                   "name": "minecraft:stick",
                   "conditions": [
-                    { "condition": "minecraft:random_chance", "chance": 0.5 }
+                    {
+                      "condition": "minecraft:random_chance",
+                      "chance": 0.5
+                    }
                   ]
                 },
-                { "type": "minecraft:item", "name": "revivalages:straw" }
+                {
+                  "type": "minecraft:item",
+                  "name": "revivalages:straw"
+                }
               ]
             }
           ]
         }
       ],
       "conditions": [
-        { "condition": "minecraft:survives_explosion" }
+        {
+          "condition": "minecraft:survives_explosion"
+        }
       ]
     }
   ],

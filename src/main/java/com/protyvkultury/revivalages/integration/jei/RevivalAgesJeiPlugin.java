@@ -1,6 +1,8 @@
 package com.protyvkultury.revivalages.integration.jei;
 
 import com.protyvkultury.revivalages.RevivalAges;
+import com.protyvkultury.revivalages.feature.content.ContentAvailability;
+import com.protyvkultury.revivalages.feature.content.ContentKey;
 import com.protyvkultury.revivalages.feature.technology.barrel.BarrelFeature;
 import com.protyvkultury.revivalages.feature.technology.campfire.CampfireFeature;
 import com.protyvkultury.revivalages.feature.technology.choppingblock.ChoppingBlockFeature;
@@ -26,6 +28,7 @@ import com.protyvkultury.revivalages.feature.technology.knapping.view.KnappingRe
 import com.protyvkultury.revivalages.feature.worldgen.surfacedeposit.SurfaceDepositFeature;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
+import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
@@ -207,6 +210,17 @@ public final class RevivalAgesJeiPlugin implements IModPlugin {
     }
 
     public void registerRecipes(IRecipeRegistration registration) {
+        java.util.List<net.minecraft.world.item.ItemStack> disabledItems = registration.getIngredientManager()
+                .getAllItemStacks()
+                .stream()
+                .filter(stack -> net.minecraft.core.registries.BuiltInRegistries.ITEM
+                        .getKey(stack.getItem()).getNamespace().equals(RevivalAges.MOD_ID))
+                .filter(stack -> !ContentAvailability.isItemEnabled(stack.getItem()))
+                .toList();
+        if (!disabledItems.isEmpty()) {
+            registration.getIngredientManager()
+                    .removeIngredientsAtRuntime(VanillaTypes.ITEM_STACK, disabledItems);
+        }
         if (Minecraft.getInstance().level == null) {
             return;
         }
@@ -254,44 +268,43 @@ public final class RevivalAgesJeiPlugin implements IModPlugin {
     }
 
     public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
-        registration.addRecipeCatalyst(
-                (ItemLike) DryingRackFeature.CRUDE_DRYING_RACK_ITEM.get(), new RecipeType[] {CRUDE_DRYING});
-        registration.addRecipeCatalyst(
-                (ItemLike) DryingRackFeature.DRYING_RACK_ITEM.get(),
-                new RecipeType[] {CRUDE_DRYING, DRYING});
-        registration.addRecipeCatalyst(
-                (ItemLike) CampfireFeature.TINDER.get(), new RecipeType[] {CAMPFIRE});
-        registration.addRecipeCatalyst(
-                (ItemLike) ChoppingBlockFeature.CHOPPING_BLOCK_ITEM.get(), new RecipeType[] {CHOPPING});
-        registration.addRecipeCatalyst(
-                (ItemLike) PitKilnFeature.PIT_KILN_ITEM.get(), new RecipeType[] {PIT_KILN});
-        registration.addRecipeCatalyst(
-                (ItemLike) PitBurnFeature.LOG_PILE_ITEM.get(), new RecipeType[] {PIT_BURN});
-        registration.addRecipeCatalyst(
-                (ItemLike) BarrelFeature.BARREL_ITEM.get(), new RecipeType[] {BARREL});
-        registration.addRecipeCatalyst(
-                (ItemLike) SoakingPotFeature.SOAKING_POT_ITEM.get(), new RecipeType[] {SOAKING_POT});
-        registration.addRecipeCatalyst(
-                (ItemLike) TanningRackFeature.TANNING_RACK_ITEM.get(), new RecipeType[] {TANNING_RACK});
-        registration.addRecipeCatalyst(
-                (ItemLike) StoneMachineFeature.STONE_SAWMILL_ITEM.get(), new RecipeType[] {STONE_SAWMILL});
-        registration.addRecipeCatalyst(
-                (ItemLike) StoneMachineFeature.STONE_OVEN_ITEM.get(), new RecipeType[] {STONE_OVEN});
-        registration.addRecipeCatalyst(
-                (ItemLike) StoneMachineFeature.STONE_KILN_ITEM.get(), new RecipeType[] {STONE_KILN});
-        registration.addRecipeCatalyst(
-                (ItemLike) StoneMachineFeature.STONE_CRUCIBLE_ITEM.get(), new RecipeType[] {STONE_CRUCIBLE});
-        registration.addRecipeCatalyst((ItemLike) AnvilFeature.ANVIL_ITEM.get(), new RecipeType[] {ANVIL});
-        registration.addRecipeCatalyst(
-                (ItemLike) AnimalPowerFeature.HAND_GRINDSTONE_ITEM.get(), new RecipeType[] {GRINDING});
-        registration.addRecipeCatalyst(
-                (ItemLike) AnimalPowerFeature.HORSE_GRINDSTONE_ITEM.get(), new RecipeType[] {GRINDING});
-        registration.addRecipeCatalyst(
-                (ItemLike) AnimalPowerFeature.HORSE_CHOPPING_BLOCK_ITEM.get(), new RecipeType[] {CHOPPING});
-        registration.addRecipeCatalyst(
-                (ItemLike) AnimalPowerFeature.HORSE_PRESS_ITEM.get(), new RecipeType[] {PRESSING});
-        registration.addRecipeCatalyst(
-                (ItemLike) ConstructionFrameFeature.CONSTRUCTION_FRAME_ITEM.get(),
-                new RecipeType[] {FRAME_ASSEMBLY});
+        catalyst(registration, ContentKey.CRUDE_DRYING_RACK,
+                DryingRackFeature.CRUDE_DRYING_RACK_ITEM.get(), CRUDE_DRYING);
+        catalyst(registration, ContentKey.DRYING_RACK,
+                DryingRackFeature.DRYING_RACK_ITEM.get(), DRYING);
+        if (ContentAvailability.isEnabled(ContentKey.CRUDE_DRYING_RACK)
+                && ContentAvailability.isEnabled(ContentKey.DRYING_RACK)) {
+            registration.addRecipeCatalyst(DryingRackFeature.DRYING_RACK_ITEM.get(), CRUDE_DRYING);
+        }
+        catalyst(registration, ContentKey.CAMPFIRE, CampfireFeature.TINDER.get(), CAMPFIRE);
+        catalyst(registration, ContentKey.CHOPPING_BLOCK, ChoppingBlockFeature.CHOPPING_BLOCK_ITEM.get(), CHOPPING);
+        catalyst(registration, ContentKey.PIT_KILN, PitKilnFeature.PIT_KILN_ITEM.get(), PIT_KILN);
+        catalyst(registration, ContentKey.PIT_BURN, PitBurnFeature.LOG_PILE_ITEM.get(), PIT_BURN);
+        catalyst(registration, ContentKey.BARREL, BarrelFeature.BARREL_ITEM.get(), BARREL);
+        catalyst(registration, ContentKey.SOAKING_POT, SoakingPotFeature.SOAKING_POT_ITEM.get(), SOAKING_POT);
+        catalyst(registration, ContentKey.TANNING_RACK, TanningRackFeature.TANNING_RACK_ITEM.get(), TANNING_RACK);
+        catalyst(registration, ContentKey.STONE_SAWMILL, StoneMachineFeature.STONE_SAWMILL_ITEM.get(), STONE_SAWMILL);
+        catalyst(registration, ContentKey.STONE_OVEN, StoneMachineFeature.STONE_OVEN_ITEM.get(), STONE_OVEN);
+        catalyst(registration, ContentKey.STONE_KILN, StoneMachineFeature.STONE_KILN_ITEM.get(), STONE_KILN);
+        catalyst(registration, ContentKey.STONE_CRUCIBLE, StoneMachineFeature.STONE_CRUCIBLE_ITEM.get(), STONE_CRUCIBLE);
+        catalyst(registration, ContentKey.ANVIL, AnvilFeature.ANVIL_ITEM.get(), ANVIL);
+        catalyst(registration, ContentKey.HAND_GRINDSTONE, AnimalPowerFeature.HAND_GRINDSTONE_ITEM.get(), GRINDING);
+        catalyst(registration, ContentKey.HORSE_GRINDSTONE, AnimalPowerFeature.HORSE_GRINDSTONE_ITEM.get(), GRINDING);
+        catalyst(registration, ContentKey.HORSE_CHOPPING_BLOCK,
+                AnimalPowerFeature.HORSE_CHOPPING_BLOCK_ITEM.get(), CHOPPING);
+        catalyst(registration, ContentKey.HORSE_PRESS, AnimalPowerFeature.HORSE_PRESS_ITEM.get(), PRESSING);
+        catalyst(registration, ContentKey.CONSTRUCTION_FRAME,
+                ConstructionFrameFeature.CONSTRUCTION_FRAME_ITEM.get(), FRAME_ASSEMBLY);
+    }
+
+    private static void catalyst(
+            IRecipeCatalystRegistration registration,
+            ContentKey content,
+            ItemLike item,
+            RecipeType<?>... recipeTypes
+    ) {
+        if (ContentAvailability.isEnabled(content)) {
+            registration.addRecipeCatalyst(item, recipeTypes);
+        }
     }
 }

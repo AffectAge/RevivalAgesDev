@@ -1,13 +1,25 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "revivalages:content_enabled",
+      "content": "revivalages:pit_burn",
+      "enabled": true
+    }
+  ],
   "type": "minecraft:block",
   "pools": [
     {
       "rolls": 1,
       "entries": [
-        { "type": "minecraft:item", "name": "revivalages:log_pile" }
+        {
+          "type": "minecraft:item",
+          "name": "revivalages:log_pile"
+        }
       ],
       "conditions": [
-        { "condition": "minecraft:survives_explosion" }
+        {
+          "condition": "minecraft:survives_explosion"
+        }
       ]
     }
   ],

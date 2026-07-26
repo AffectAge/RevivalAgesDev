@@ -19,6 +19,9 @@ public enum StructuralIntegrityComponentProvider implements IBlockComponentProvi
 
     @Override
     public void appendTooltip(ITooltip tooltip, BlockAccessor accessor, IPluginConfig config) {
+        if (DisabledContentComponentProvider.isDisabled(accessor)) {
+            return;
+        }
         SupportDefinition support = SupportService.definition(accessor.getBlockState());
         if (support != null) {
             tooltip.add(Component.translatable(

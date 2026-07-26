@@ -1,4 +1,11 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "revivalages:content_enabled",
+      "content": "revivalages:construction_frame",
+      "enabled": true
+    }
+  ],
   "type": "minecraft:block",
   "pools": [
     {

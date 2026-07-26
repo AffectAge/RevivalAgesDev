@@ -3,6 +3,8 @@ package com.protyvkultury.revivalages.feature.technology.constructionframe;
 import com.mojang.serialization.MapCodec;
 import com.protyvkultury.revivalages.RevivalAges;
 import com.protyvkultury.revivalages.feature.FeatureModule;
+import com.protyvkultury.revivalages.feature.content.ContentKey;
+import com.protyvkultury.revivalages.feature.content.ContentPolicy;
 import com.protyvkultury.revivalages.feature.technology.constructionframe.block.ConstructionFrameBlock;
 import com.protyvkultury.revivalages.feature.technology.constructionframe.blockentity.ConstructionFrameBlockEntity;
 import com.protyvkultury.revivalages.feature.technology.constructionframe.client.ConstructionFrameClientEvents;
@@ -24,10 +26,8 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.loading.FMLEnvironment;
-import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.conditions.ICondition;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
-import net.neoforged.neoforge.event.server.ServerStartedEvent;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredItem;
@@ -75,6 +75,14 @@ public final class ConstructionFrameFeature implements FeatureModule {
             ENABLED_CONDITION = CONDITIONS.register("construction_frame_enabled", () -> FrameEnabledCondition.CODEC);
 
     @Override
+    public ContentPolicy contentPolicy() {
+        return ContentPolicy.gameplay("construction_frame")
+                .define(ContentKey.CONSTRUCTION_FRAME, ConstructionFrameConfig::configuredEnabled)
+                .items(ContentKey.CONSTRUCTION_FRAME, "construction_frame")
+                .build();
+    }
+
+    @Override
     public void register(IEventBus modBus, ModContainer modContainer) {
         BLOCKS.register(modBus);
         ITEMS.register(modBus);
@@ -83,7 +91,6 @@ public final class ConstructionFrameFeature implements FeatureModule {
         RECIPE_SERIALIZERS.register(modBus);
         CONDITIONS.register(modBus);
         modBus.addListener(this::addCreativeItems);
-        NeoForge.EVENT_BUS.addListener(this::reloadDisabledRecipeSet);
         modContainer.registerConfig(
                 ModConfig.Type.SERVER,
                 ConstructionFrameConfig.SPEC,
@@ -102,18 +109,6 @@ public final class ConstructionFrameFeature implements FeatureModule {
         if (ConstructionFrameConfig.enabled() && event.getTabKey() == CreativeModeTabs.FUNCTIONAL_BLOCKS) {
             event.accept(CONSTRUCTION_FRAME_ITEM.get());
         }
-    }
-
-    private void reloadDisabledRecipeSet(ServerStartedEvent event) {
-        if (ConstructionFrameConfig.enabled()) {
-            return;
-        }
-        event.getServer()
-                .reloadResources(event.getServer().getPackRepository().getSelectedIds())
-                .exceptionally(error -> {
-                    RevivalAges.LOGGER.error("Unable to activate Construction Frame fallback recipes", error);
-                    return null;
-                });
     }
 
     private static Supplier<RecipeType<FrameAssemblyRecipe>> simpleRecipeType() {

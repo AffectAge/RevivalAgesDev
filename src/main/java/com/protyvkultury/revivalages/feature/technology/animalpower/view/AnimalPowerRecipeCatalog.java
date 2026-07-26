@@ -1,5 +1,7 @@
 package com.protyvkultury.revivalages.feature.technology.animalpower.view;
 
+import com.protyvkultury.revivalages.feature.content.ContentAvailability;
+import com.protyvkultury.revivalages.feature.content.ContentKey;
 import com.protyvkultury.revivalages.feature.technology.animalpower.AnimalPowerConfig;
 import com.protyvkultury.revivalages.feature.technology.animalpower.AnimalPowerFeature;
 import com.protyvkultury.revivalages.feature.technology.animalpower.recipe.GrindingRecipe;
@@ -19,12 +21,19 @@ public final class AnimalPowerRecipeCatalog {
     }
 
     public static List<PrimitiveRecipeView> grinding(RecipeManager manager) {
+        if (!ContentAvailability.isEnabled(ContentKey.HAND_GRINDSTONE)
+                && !ContentAvailability.isEnabled(ContentKey.HORSE_GRINDSTONE)) {
+            return List.of();
+        }
         return manager.getAllRecipesFor(AnimalPowerFeature.GRINDING_TYPE.get()).stream()
                 .map(AnimalPowerRecipeCatalog::grinding)
                 .toList();
     }
 
     public static List<PrimitiveRecipeView> pressing(RecipeManager manager) {
+        if (!ContentAvailability.isEnabled(ContentKey.HORSE_PRESS)) {
+            return List.of();
+        }
         return manager.getAllRecipesFor(AnimalPowerFeature.PRESSING_TYPE.get()).stream()
                 .map(AnimalPowerRecipeCatalog::pressing)
                 .toList();

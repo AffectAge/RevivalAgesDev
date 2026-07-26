@@ -1,5 +1,6 @@
 package com.protyvkultury.revivalages.feature.technology.knapping.view;
 
+import com.protyvkultury.revivalages.feature.content.ContentAvailability;
 import com.protyvkultury.revivalages.feature.technology.knapping.KnappingConfig;
 import com.protyvkultury.revivalages.feature.technology.knapping.KnappingFeature;
 import com.protyvkultury.revivalages.feature.technology.knapping.KnappingType;
@@ -20,6 +21,7 @@ public final class KnappingRecipeCatalog {
         }
         var types = registries.registryOrThrow(KnappingFeature.KNAPPING_TYPES);
         return manager.getAllRecipesFor(KnappingFeature.RECIPE_TYPE.get()).stream()
+                .filter(holder -> ContentAvailability.isResultEnabled(holder.value().result()))
                 .map(holder -> {
                     KnappingType type = types.get(holder.value().knappingType());
                     if (type == null) {

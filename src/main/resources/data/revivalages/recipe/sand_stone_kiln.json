@@ -1,4 +1,5 @@
 {
+  "neoforge:conditions": [{"type":"revivalages:content_enabled","content":"revivalages:stone_kiln","enabled":true}],
   "type": "revivalages:stone_kiln",
   "ingredient": { "tag": "minecraft:sand" },
   "result": { "id": "minecraft:glass", "count": 1 },

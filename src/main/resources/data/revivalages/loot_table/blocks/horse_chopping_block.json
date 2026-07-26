@@ -1,23 +1,42 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "revivalages:content_enabled",
+      "content": "revivalages:horse_chopping_block",
+      "enabled": true
+    }
+  ],
   "type": "minecraft:block",
-  "pools": [{
-    "rolls": 1,
-    "conditions": [
-      { "condition": "minecraft:survives_explosion" },
-      {
-        "condition": "minecraft:block_state_property",
-        "block": "revivalages:horse_chopping_block",
-        "properties": { "half": "lower" }
-      }
-    ],
-    "entries": [{
-      "type": "minecraft:item",
-      "name": "revivalages:horse_chopping_block",
-      "functions": [{
-        "function": "minecraft:copy_components",
-        "source": "block_entity",
-        "include": ["revivalages:wood_variant"]
-      }]
-    }]
-  }]
+  "pools": [
+    {
+      "rolls": 1,
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        },
+        {
+          "condition": "minecraft:block_state_property",
+          "block": "revivalages:horse_chopping_block",
+          "properties": {
+            "half": "lower"
+          }
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "revivalages:horse_chopping_block",
+          "functions": [
+            {
+              "function": "minecraft:copy_components",
+              "source": "block_entity",
+              "include": [
+                "revivalages:wood_variant"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
 }

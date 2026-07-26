@@ -18,11 +18,16 @@ import com.protyvkultury.revivalages.feature.technology.ignition.IgnitionFeature
 import com.protyvkultury.revivalages.feature.technology.knapping.KnappingFeature;
 import com.protyvkultury.revivalages.feature.technology.pitburn.PitBurnFeature;
 import com.protyvkultury.revivalages.feature.creative.CreativeTabFeature;
+import com.protyvkultury.revivalages.feature.content.ContentAvailability;
+import com.protyvkultury.revivalages.feature.content.ContentAvailabilityEvents;
 import com.protyvkultury.revivalages.feature.worldgen.surfacedeposit.SurfaceDepositFeature;
 import com.protyvkultury.revivalages.feature.world.structuralintegrity.StructuralIntegrityFeature;
 import java.util.List;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.server.ServerStartedEvent;
 
 public final class ModFeatures {
 
@@ -53,6 +58,29 @@ public final class ModFeatures {
     }
 
     public static void register(IEventBus modBus, ModContainer modContainer) {
+        ContentAvailability.install(FEATURES);
         FEATURES.forEach(feature -> feature.register(modBus, modContainer));
+        modBus.addListener(ModFeatures::validateRegisteredContent);
+        NeoForge.EVENT_BUS.register(ContentAvailabilityEvents.class);
+        NeoForge.EVENT_BUS.addListener(ModFeatures::validateContentAvailability);
+    }
+
+    private static void validateRegisteredContent(FMLCommonSetupEvent event) {
+        event.enqueueWork(ContentAvailability::validateRegisteredContent);
+    }
+
+    private static void validateContentAvailability(ServerStartedEvent event) {
+        ContentAvailability.reportConflicts();
+        if (ContentAvailability.hasDisabledContent()) {
+            event.getServer()
+                    .reloadResources(event.getServer().getPackRepository().getSelectedIds())
+                    .exceptionally(error -> {
+                        com.protyvkultury.revivalages.RevivalAges.LOGGER.error(
+                                "Unable to rebuild data after applying content availability",
+                                error
+                        );
+                        return null;
+                    });
+        }
     }
 }

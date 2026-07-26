@@ -1,5 +1,7 @@
 package com.protyvkultury.revivalages.feature.technology.campfire.block;
 
+import com.protyvkultury.revivalages.feature.content.ContentAvailability;
+import com.protyvkultury.revivalages.feature.content.ContentKey;
 import com.mojang.serialization.MapCodec;
 import com.protyvkultury.revivalages.core.interaction.ItemStackInteraction;
 import com.protyvkultury.revivalages.feature.technology.campfire.CampfireFeature;
@@ -191,7 +193,8 @@ public final class CampfireBlock extends BaseEntityBlock {
 
     @Override
     protected void entityInside(BlockState state, Level level, BlockPos pos, Entity entity) {
-        if (state.getValue(LIT)
+        if (ContentAvailability.isEnabled(ContentKey.CAMPFIRE)
+                && state.getValue(LIT)
                 && entity instanceof LivingEntity living
                 && !entity.fireImmune()
                 && !wearsFrostWalker(level, living)) {

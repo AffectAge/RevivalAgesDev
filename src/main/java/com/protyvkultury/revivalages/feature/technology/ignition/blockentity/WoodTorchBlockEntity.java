@@ -1,5 +1,7 @@
 package com.protyvkultury.revivalages.feature.technology.ignition.blockentity;
 
+import com.protyvkultury.revivalages.feature.content.ContentAvailability;
+import com.protyvkultury.revivalages.feature.content.ContentKey;
 import com.protyvkultury.revivalages.feature.technology.ignition.IgnitionFeature;
 import com.protyvkultury.revivalages.feature.technology.ignition.block.WoodTorchBlock;
 import com.protyvkultury.revivalages.feature.technology.ignition.block.WoodTorchState;
@@ -26,7 +28,9 @@ public final class WoodTorchBlockEntity extends BlockEntity {
     }
 
     public static void serverTick(Level level, BlockPos pos, BlockState state, WoodTorchBlockEntity torch) {
-        if (state.getValue(WoodTorchBlock.STATE) != WoodTorchState.LIT || level.getGameTime() % 20L != 0L) {
+        if (!ContentAvailability.isEnabled(ContentKey.WOOD_TORCH)
+                || state.getValue(WoodTorchBlock.STATE) != WoodTorchState.LIT
+                || level.getGameTime() % 20L != 0L) {
             return;
         }
         if (PrimitiveTechnologyConfig.WOOD_TORCH_RAIN_EXTINGUISHES.get()
@@ -48,7 +52,9 @@ public final class WoodTorchBlockEntity extends BlockEntity {
     }
 
     public boolean ignite() {
-        if (level == null || getBlockState().getValue(WoodTorchBlock.STATE) == WoodTorchState.LIT) {
+        if (!ContentAvailability.isEnabled(ContentKey.WOOD_TORCH)
+                || level == null
+                || getBlockState().getValue(WoodTorchBlock.STATE) == WoodTorchState.LIT) {
             return false;
         }
         if (PrimitiveTechnologyConfig.WOOD_TORCH_RAIN_EXTINGUISHES.get()
@@ -62,7 +68,9 @@ public final class WoodTorchBlockEntity extends BlockEntity {
     }
 
     public void douse() {
-        if (level == null || getBlockState().getValue(WoodTorchBlock.STATE) != WoodTorchState.LIT) {
+        if (!ContentAvailability.isEnabled(ContentKey.WOOD_TORCH)
+                || level == null
+                || getBlockState().getValue(WoodTorchBlock.STATE) != WoodTorchState.LIT) {
             return;
         }
         level.setBlock(worldPosition, getBlockState().setValue(WoodTorchBlock.STATE, WoodTorchState.DOUSED), Block.UPDATE_ALL);

@@ -14,6 +14,10 @@ architecture.
   requires it, and never copy obsolete platform mechanisms.
 
 - Each first-level feature has one entry point implementing `FeatureModule`.
+- Every entry point declares its mandatory `ContentPolicy`. A gameplay policy
+  defines every owned content key and classifies every public item and block;
+  infrastructure must be declared explicitly. Do not merge a feature whose
+  policy fails catalog or resource-gate validation.
 - The entry point only wires deferred registers, configs, payloads, and listeners.
   Gameplay behavior stays in domain types.
 - A feature owns its registry classes and related `block`, `item`, `blockentity`,

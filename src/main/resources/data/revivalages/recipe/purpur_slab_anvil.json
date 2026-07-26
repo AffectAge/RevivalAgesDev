@@ -1,4 +1,5 @@
 {
+  "neoforge:conditions": [{"type":"revivalages:content_enabled","content":"revivalages:anvil","enabled":true}],
   "type": "revivalages:anvil",
   "ingredient": { "item": "minecraft:purpur_block" },
   "result": { "id": "minecraft:purpur_slab", "count": 2 },

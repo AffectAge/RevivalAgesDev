@@ -1,5 +1,8 @@
 # Structural Integrity
 
+The family toggle and the independent support-beam, collapse, and landslide
+toggles follow the shared [content availability contract](content-availability.md).
+
 ## Scope
 
 Structural Integrity owns Support Beams, mining- and explosion-triggered

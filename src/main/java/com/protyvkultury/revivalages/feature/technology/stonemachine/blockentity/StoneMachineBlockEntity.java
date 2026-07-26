@@ -1,6 +1,8 @@
 package com.protyvkultury.revivalages.feature.technology.stonemachine.blockentity;
 
 import com.protyvkultury.revivalages.core.interaction.ItemStackInteraction;
+import com.protyvkultury.revivalages.feature.content.ContentAvailability;
+import com.protyvkultury.revivalages.feature.content.ContentKey;
 import com.protyvkultury.revivalages.feature.technology.primitive.PrimitiveMaterialsFeature;
 import com.protyvkultury.revivalages.feature.technology.primitive.config.PrimitiveTechnologyConfig;
 import com.protyvkultury.revivalages.feature.technology.stonemachine.StoneMachineFeature;
@@ -71,6 +73,9 @@ public final class StoneMachineBlockEntity extends BlockEntity {
     }
 
     public static void serverTick(Level level, BlockPos pos, BlockState state, StoneMachineBlockEntity machine) {
+        if (!ContentAvailability.isEnabled(machine.contentKey())) {
+            return;
+        }
         machine.decayAirflow();
         if (!machine.isLit()) {
             machine.sawmillIdleSoundTicks = 0;
@@ -122,7 +127,7 @@ public final class StoneMachineBlockEntity extends BlockEntity {
     }
 
     public static void clientTick(Level level, BlockPos pos, BlockState state, StoneMachineBlockEntity machine) {
-        if (!machine.isLit()) {
+        if (!ContentAvailability.isEnabled(machine.contentKey()) || !machine.isLit()) {
             return;
         }
         if (level.random.nextInt(10) == 0) {
@@ -149,6 +154,10 @@ public final class StoneMachineBlockEntity extends BlockEntity {
 
     public StoneMachineKind kind() {
         return kind;
+    }
+
+    public ContentKey contentKey() {
+        return kind.contentKey();
     }
 
     public ItemStack fuel() {

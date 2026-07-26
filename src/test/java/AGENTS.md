@@ -13,3 +13,6 @@
 - Configuration tests cover defaults, bounds, invalid values, dependency
   validation, and enabled/disabled behavior for every content toggle. They must
   also prove that toggle values never alter registry identity.
+- Keep dependency-graph and generated-resource gate checks exhaustive. Adding a
+  `ContentKey`, recipe, block loot table, or worldgen contribution without
+  extending those checks is a build failure, not an optional follow-up.

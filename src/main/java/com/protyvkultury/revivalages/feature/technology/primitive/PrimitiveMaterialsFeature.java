@@ -2,10 +2,14 @@ package com.protyvkultury.revivalages.feature.technology.primitive;
 
 import com.protyvkultury.revivalages.RevivalAges;
 import com.protyvkultury.revivalages.feature.FeatureModule;
+import com.protyvkultury.revivalages.feature.content.ContentAvailability;
+import com.protyvkultury.revivalages.feature.content.ContentKey;
+import com.protyvkultury.revivalages.feature.content.ContentPolicy;
 import com.protyvkultury.revivalages.feature.technology.primitive.client.PrimitiveFluidClientEvents;
 import com.protyvkultury.revivalages.feature.technology.primitive.client.PrimitiveDeviceClientEvents;
 import com.protyvkultury.revivalages.feature.technology.primitive.config.PrimitiveTechnologyConfig;
 import java.util.function.Supplier;
+import java.util.Set;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.BucketItem;
@@ -25,8 +29,11 @@ import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.fluids.BaseFlowingFluid;
 import net.neoforged.neoforge.fluids.FluidType;
+import net.neoforged.neoforge.fluids.capability.wrappers.FluidBucketWrapper;
 import net.minecraft.core.component.DataComponentType;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.common.SoundActions;
@@ -94,7 +101,10 @@ public final class PrimitiveMaterialsFeature implements FeatureModule {
     );
     public static final DeferredItem<BucketItem> TANNIN_BUCKET = ITEMS.registerItem(
             "tannin_bucket",
-            properties -> new BucketItem(TANNIN.get(), properties),
+            // A subclass avoids NeoForge's unconditional exact-BucketItem fallback
+            // provider. Revival Ages registers the availability-aware provider below.
+            properties -> new BucketItem(TANNIN.get(), properties) {
+            },
             new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1)
     );
 
@@ -111,6 +121,58 @@ public final class PrimitiveMaterialsFeature implements FeatureModule {
     }
 
     @Override
+    public ContentPolicy contentPolicy() {
+        Set<ContentKey> ashConsumers = Set.of(
+                ContentKey.CAMPFIRE,
+                ContentKey.PIT_KILN,
+                ContentKey.PIT_BURN,
+                ContentKey.STONE_KILN
+        );
+        Set<ContentKey> hideChain = Set.of(
+                ContentKey.RAW_HIDE_DROPS,
+                ContentKey.CHOPPING_BLOCK,
+                ContentKey.HORSE_CHOPPING_BLOCK,
+                ContentKey.SOAKING_POT,
+                ContentKey.TANNING_RACK
+        );
+        return ContentPolicy.gameplay("primitive_materials")
+                .define(
+                        ContentKey.PRIMITIVE_TECHNOLOGY,
+                        () -> PrimitiveTechnologyConfig.contentEnabled(ContentKey.PRIMITIVE_TECHNOLOGY)
+                )
+                .define(
+                        ContentKey.RAW_HIDE_DROPS,
+                        () -> PrimitiveTechnologyConfig.contentEnabled(ContentKey.RAW_HIDE_DROPS)
+                )
+                .sharedItems(
+                        Set.of(
+                                ContentKey.CRUDE_DRYING_RACK,
+                                ContentKey.DRYING_RACK,
+                                ContentKey.CAMPFIRE,
+                                ContentKey.PIT_KILN,
+                                ContentKey.WOOD_TORCH
+                        ),
+                        "straw",
+                        "thatch"
+                )
+                .sharedItems(
+                        Set.of(
+                                ContentKey.CHOPPING_BLOCK,
+                                ContentKey.HORSE_CHOPPING_BLOCK,
+                                ContentKey.STONE_SAWMILL
+                        ),
+                        "wood_chips"
+                )
+                .sharedItems(ashConsumers, "pit_ash")
+                .items(ContentKey.CAMPFIRE, "burned_food")
+                .sharedItems(Set.of(ContentKey.PIT_KILN, ContentKey.STONE_KILN), "unfired_brick")
+                .sharedItems(hideChain, "raw_hide", "scraped_hide", "washed_hide", "tanned_hide")
+                .sharedItems(Set.of(ContentKey.BARREL, ContentKey.SOAKING_POT), "tannin_bucket")
+                .blocks(ContentKey.PRIMITIVE_TECHNOLOGY, "tannin")
+                .build();
+    }
+
+    @Override
     public void register(IEventBus modBus, ModContainer modContainer) {
         DATA_COMPONENTS.register(modBus);
         FLUID_TYPES.register(modBus);
@@ -119,6 +181,7 @@ public final class PrimitiveMaterialsFeature implements FeatureModule {
         ITEMS.register(modBus);
         NeoForge.EVENT_BUS.register(PrimitiveMaterialEvents.class);
         modBus.addListener(this::addCreativeTabItems);
+        modBus.addListener(this::registerCapabilities);
         if (FMLEnvironment.dist == Dist.CLIENT) {
             PrimitiveFluidClientEvents.register(modBus);
             PrimitiveDeviceClientEvents.register(modBus);
@@ -127,6 +190,16 @@ public final class PrimitiveMaterialsFeature implements FeatureModule {
                 ModConfig.Type.SERVER,
                 PrimitiveTechnologyConfig.SPEC,
                 "revivalages-primitive-server.toml"
+        );
+    }
+
+    private void registerCapabilities(RegisterCapabilitiesEvent event) {
+        event.registerItem(
+                Capabilities.FluidHandler.ITEM,
+                (stack, ignored) -> ContentAvailability.isItemEnabled(stack.getItem())
+                        ? new FluidBucketWrapper(stack)
+                        : null,
+                TANNIN_BUCKET.get()
         );
     }
 

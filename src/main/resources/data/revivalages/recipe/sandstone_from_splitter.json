@@ -1,4 +1,5 @@
 {
+  "neoforge:conditions": [{"type":"revivalages:content_enabled","content":"revivalages:surface_rocks","enabled":true}],
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [

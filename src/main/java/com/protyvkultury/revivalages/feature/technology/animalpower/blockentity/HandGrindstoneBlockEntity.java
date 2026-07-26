@@ -1,5 +1,7 @@
 package com.protyvkultury.revivalages.feature.technology.animalpower.blockentity;
 
+import com.protyvkultury.revivalages.feature.content.ContentAvailability;
+import com.protyvkultury.revivalages.feature.content.ContentKey;
 import com.protyvkultury.revivalages.feature.technology.animalpower.AnimalPowerConfig;
 import com.protyvkultury.revivalages.feature.technology.animalpower.AnimalPowerFeature;
 import com.protyvkultury.revivalages.feature.technology.animalpower.recipe.GrindingMachine;
@@ -42,6 +44,9 @@ public final class HandGrindstoneBlockEntity extends BlockEntity {
             BlockState state,
             HandGrindstoneBlockEntity grindstone
     ) {
+        if (!ContentAvailability.isEnabled(ContentKey.HAND_GRINDSTONE)) {
+            return;
+        }
         if (grindstone.rotationTicks <= 0) {
             return;
         }

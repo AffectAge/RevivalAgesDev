@@ -1,5 +1,9 @@
 # Drying Rack
 
+Crude and normal racks have independent restart-required content toggles under
+the Primitive Technology family and follow the shared
+[content availability contract](content-availability.md).
+
 The Drying Rack is a server-authoritative, no-menu processing feature. A Crude
 Drying Rack has one wall-mounted slot. A normal
 Drying Rack has four independent slots, inherits crude recipes, processes at a

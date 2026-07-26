@@ -1,5 +1,6 @@
 {
   "neoforge:conditions": [
+    {"type":"revivalages:content_enabled","content":"revivalages:pit_kiln","enabled":true},
     {
       "type": "revivalages:construction_frame_enabled",
       "enabled": true

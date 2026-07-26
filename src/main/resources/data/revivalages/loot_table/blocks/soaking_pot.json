@@ -1,1 +1,26 @@
-{ "type": "minecraft:block", "pools": [{ "rolls": 1, "conditions": [{ "condition": "minecraft:survives_explosion" }], "entries": [{ "type": "minecraft:item", "name": "revivalages:soaking_pot" }] }] }
+{
+  "neoforge:conditions": [
+    {
+      "type": "revivalages:content_enabled",
+      "content": "revivalages:soaking_pot",
+      "enabled": true
+    }
+  ],
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "rolls": 1,
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "revivalages:soaking_pot"
+        }
+      ]
+    }
+  ]
+}

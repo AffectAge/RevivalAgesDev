@@ -1,4 +1,5 @@
 {
+  "neoforge:conditions": [{"type":"revivalages:content_enabled","content":"revivalages:anvil","enabled":true}],
   "type": "revivalages:anvil",
   "ingredient": { "item": "minecraft:red_sandstone" },
   "result": { "id": "minecraft:red_sandstone_slab", "count": 2 },

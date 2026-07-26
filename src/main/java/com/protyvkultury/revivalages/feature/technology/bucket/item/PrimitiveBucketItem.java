@@ -1,5 +1,7 @@
 package com.protyvkultury.revivalages.feature.technology.bucket.item;
 
+import com.protyvkultury.revivalages.feature.content.ContentAvailability;
+import com.protyvkultury.revivalages.feature.content.ContentKey;
 import com.protyvkultury.revivalages.feature.technology.bucket.PrimitiveBucketFeature;
 import com.protyvkultury.revivalages.feature.technology.primitive.config.PrimitiveTechnologyConfig;
 import net.minecraft.core.BlockPos;
@@ -53,6 +55,10 @@ public final class PrimitiveBucketItem extends Item {
                 : PrimitiveTechnologyConfig.CLAY_BUCKET_MAX_USES.get();
     }
 
+    public ContentKey contentKey() {
+        return material == Material.WOODEN ? ContentKey.WOODEN_BUCKET : ContentKey.CLAY_BUCKET;
+    }
+
     public net.neoforged.neoforge.fluids.capability.IFluidHandlerItem createHandler(ItemStack stack) {
         return new PrimitiveBucketFluidHandler(PrimitiveBucketFeature.BUCKET_FLUID, stack, CAPACITY, maximumUses());
     }
@@ -60,6 +66,9 @@ public final class PrimitiveBucketItem extends Item {
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack held = player.getItemInHand(hand);
+        if (!ContentAvailability.isEnabled(contentKey())) {
+            return InteractionResultHolder.fail(held);
+        }
         FluidStack heldFluid = held.getOrDefault(PrimitiveBucketFeature.BUCKET_FLUID.get(), SimpleFluidContent.EMPTY).copy();
         if (!heldFluid.isEmpty() && heldFluid.is(NeoForgeMod.MILK.value())) {
             player.startUsingItem(hand);
@@ -109,6 +118,9 @@ public final class PrimitiveBucketItem extends Item {
 
     @Override
     public ItemStack finishUsingItem(ItemStack stack, Level level, LivingEntity entity) {
+        if (!ContentAvailability.isEnabled(contentKey())) {
+            return stack;
+        }
         FluidStack fluid = stack.getOrDefault(PrimitiveBucketFeature.BUCKET_FLUID.get(), SimpleFluidContent.EMPTY).copy();
         if (!fluid.isEmpty() && fluid.is(NeoForgeMod.MILK.value())) {
             if (!level.isClientSide) {
@@ -133,7 +145,10 @@ public final class PrimitiveBucketItem extends Item {
     @Override
     public void inventoryTick(ItemStack stack, Level level, Entity entity, int slot, boolean selected) {
         super.inventoryTick(stack, level, entity, slot, selected);
-        if (level.isClientSide || level.getGameTime() % 20L != 0L || !(entity instanceof LivingEntity living)) {
+        if (!ContentAvailability.isEnabled(contentKey())
+                || level.isClientSide
+                || level.getGameTime() % 20L != 0L
+                || !(entity instanceof LivingEntity living)) {
             return;
         }
         FluidStack fluid = stack.getOrDefault(PrimitiveBucketFeature.BUCKET_FLUID.get(), SimpleFluidContent.EMPTY).copy();

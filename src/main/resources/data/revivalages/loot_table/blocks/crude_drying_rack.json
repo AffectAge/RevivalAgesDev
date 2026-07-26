@@ -1,8 +1,15 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "revivalages:content_enabled",
+      "content": "revivalages:crude_drying_rack",
+      "enabled": true
+    }
+  ],
   "type": "minecraft:block",
   "pools": [
     {
-      "bonus_rolls": 0.0,
+      "bonus_rolls": 0,
       "conditions": [
         {
           "condition": "minecraft:survives_explosion"
@@ -14,7 +21,7 @@
           "name": "revivalages:crude_drying_rack"
         }
       ],
-      "rolls": 1.0
+      "rolls": 1
     }
   ],
   "random_sequence": "revivalages:blocks/crude_drying_rack"

@@ -9,9 +9,12 @@ The animal-power feature owns four always-registered devices:
 - `revivalages:horse_chopping_block`;
 - `revivalages:horse_press`.
 
-The feature has no content enable flags. Its server configuration contains only
-balance, navigation, capacity, and automation values. Changing configuration
-never changes registry identity.
+`revivalages-animal-power-server.toml` contains a family toggle and one
+restart-required toggle for every device. All default to enabled. A device is
+effective only when both its own value and `animalPower.enabled` are true.
+Changing availability never changes registry identity; unavailable devices are
+hidden, inert, expose no capability, and retain their serialized machine and
+worker state. See [content-availability.md](content-availability.md).
 
 ## Worker lifecycle
 

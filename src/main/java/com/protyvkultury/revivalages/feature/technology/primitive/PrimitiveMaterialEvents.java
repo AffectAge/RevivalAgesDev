@@ -1,5 +1,7 @@
 package com.protyvkultury.revivalages.feature.technology.primitive;
 
+import com.protyvkultury.revivalages.feature.content.ContentAvailability;
+import com.protyvkultury.revivalages.feature.content.ContentKey;
 import com.protyvkultury.revivalages.feature.technology.primitive.config.PrimitiveTechnologyConfig;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
@@ -14,7 +16,8 @@ public final class PrimitiveMaterialEvents {
 
     @SubscribeEvent
     public static void onLivingDrops(LivingDropsEvent event) {
-        if (!(event.getSource().getEntity() instanceof Player)
+        if (!ContentAvailability.isEnabled(ContentKey.RAW_HIDE_DROPS)
+                || !(event.getSource().getEntity() instanceof Player)
                 || !event.getEntity().getType().is(PrimitiveTags.DROPS_RAW_HIDE)
                 || event.getEntity().getRandom().nextDouble() >= PrimitiveTechnologyConfig.RAW_HIDE_DROP_CHANCE.get()) {
             return;

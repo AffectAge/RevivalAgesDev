@@ -1,5 +1,7 @@
 package com.protyvkultury.revivalages.feature.technology.dryingrack.blockentity;
 
+import com.protyvkultury.revivalages.feature.content.ContentAvailability;
+import com.protyvkultury.revivalages.feature.content.ContentKey;
 import com.protyvkultury.revivalages.feature.technology.dryingrack.DryingRackFeature;
 import com.protyvkultury.revivalages.feature.technology.dryingrack.block.CrudeDryingRackBlock;
 import com.protyvkultury.revivalages.feature.technology.dryingrack.config.DryingRackClientConfig;
@@ -95,6 +97,9 @@ public final class DryingRackBlockEntity extends BlockEntity {
     }
 
     public static void serverTick(Level level, BlockPos pos, BlockState state, DryingRackBlockEntity rack) {
+        if (!ContentAvailability.isEnabled(rack.contentKey())) {
+            return;
+        }
         if (level.getGameTime() % ENVIRONMENT_UPDATE_INTERVAL == 0L) {
             rack.environment = DryingEnvironmentCalculator.snapshot(
                     level,
@@ -110,7 +115,8 @@ public final class DryingRackBlockEntity extends BlockEntity {
     }
 
     public static void clientTick(Level level, BlockPos pos, BlockState state, DryingRackBlockEntity rack) {
-        if (!DryingRackClientConfig.SHOW_PROGRESS_PARTICLES.get()
+        if (!ContentAvailability.isEnabled(rack.contentKey())
+                || !DryingRackClientConfig.SHOW_PROGRESS_PARTICLES.get()
                 || rack.speed <= 0.0D
                 || !rack.hasProcessingInput()
                 || level.getGameTime() % PARTICLE_INTERVAL != 0L) {
@@ -122,6 +128,10 @@ public final class DryingRackBlockEntity extends BlockEntity {
         } else {
             rack.spawnCrudeProgressParticle(level, pos, state.getValue(CrudeDryingRackBlock.FACING));
         }
+    }
+
+    public ContentKey contentKey() {
+        return normalRack ? ContentKey.DRYING_RACK : ContentKey.CRUDE_DRYING_RACK;
     }
 
     public boolean canInsert(int slot) {

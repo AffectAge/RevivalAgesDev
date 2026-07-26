@@ -1,4 +1,5 @@
 {
+  "neoforge:conditions": [{"type":"revivalages:content_enabled","content":"revivalages:flint_and_tinder","enabled":true}],
   "type": "minecraft:crafting_shapeless",
   "category": "tools",
   "ingredients": [

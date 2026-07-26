@@ -1,8 +1,26 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "revivalages:content_enabled",
+      "content": "revivalages:hand_grindstone",
+      "enabled": true
+    }
+  ],
   "type": "minecraft:block",
-  "pools": [{
-    "rolls": 1,
-    "conditions": [{ "condition": "minecraft:survives_explosion" }],
-    "entries": [{ "type": "minecraft:item", "name": "revivalages:hand_grindstone" }]
-  }]
+  "pools": [
+    {
+      "rolls": 1,
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "revivalages:hand_grindstone"
+        }
+      ]
+    }
+  ]
 }

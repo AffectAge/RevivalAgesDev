@@ -1,4 +1,5 @@
 {
+  "neoforge:conditions": [{"type":"revivalages:any_content_enabled","contents":["revivalages:pit_kiln","revivalages:stone_kiln"],"enabled":true}],
   "type": "minecraft:crafting_shapeless", "category": "misc",
   "ingredients": [{ "item": "minecraft:clay_ball" }, { "item": "revivalages:straw" }],
   "result": { "id": "revivalages:unfired_brick", "count": 1 }

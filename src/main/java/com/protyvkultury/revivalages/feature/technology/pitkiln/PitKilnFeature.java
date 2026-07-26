@@ -2,6 +2,9 @@ package com.protyvkultury.revivalages.feature.technology.pitkiln;
 
 import com.protyvkultury.revivalages.RevivalAges;
 import com.protyvkultury.revivalages.feature.FeatureModule;
+import com.protyvkultury.revivalages.feature.content.ContentKey;
+import com.protyvkultury.revivalages.feature.content.ContentPolicy;
+import com.protyvkultury.revivalages.feature.technology.primitive.config.PrimitiveTechnologyConfig;
 import com.protyvkultury.revivalages.feature.technology.pitkiln.block.PitKilnBlock;
 import com.protyvkultury.revivalages.feature.technology.pitkiln.blockentity.PitKilnBlockEntity;
 import com.protyvkultury.revivalages.feature.technology.pitkiln.recipe.PitKilnRecipe;
@@ -59,6 +62,17 @@ public final class PitKilnFeature implements FeatureModule {
                 return RevivalAges.id(id).toString();
             }
         };
+    }
+
+    @Override
+    public ContentPolicy contentPolicy() {
+        return ContentPolicy.gameplay("pit_kiln")
+                .define(
+                        ContentKey.PIT_KILN,
+                        () -> PrimitiveTechnologyConfig.contentEnabled(ContentKey.PIT_KILN)
+                )
+                .items(ContentKey.PIT_KILN, "pit_kiln")
+                .build();
     }
 
     @Override

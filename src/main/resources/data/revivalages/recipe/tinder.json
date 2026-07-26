@@ -1,4 +1,5 @@
 {
+  "neoforge:conditions": [{"type":"revivalages:content_enabled","content":"revivalages:campfire","enabled":true}],
   "type": "minecraft:crafting_shapeless", "category": "misc",
   "ingredients": [{ "item": "revivalages:straw" }, { "tag": "c:rods/wooden" }],
   "result": { "id": "revivalages:tinder", "count": 2 }

@@ -27,6 +27,8 @@ material consumption exactly once.
 When Knapping is disabled, its registry, menu, payload, and recipe serializer
 remain registered. Opening is blocked, the category is hidden, and the affected
 two-dimensional fallback recipes load instead.
+The complete lifecycle follows the shared
+[content availability contract](content-availability.md).
 
 ## Optional integration assessment
 

@@ -1,5 +1,6 @@
 package com.protyvkultury.revivalages.feature.technology.knapping.recipe;
 
+import com.protyvkultury.revivalages.feature.content.ContentAvailability;
 import com.protyvkultury.revivalages.feature.technology.knapping.KnappingFeature;
 import java.util.Optional;
 import net.minecraft.core.HolderLookup;
@@ -51,14 +52,16 @@ public final class KnappingRecipe implements Recipe<SingleRecipeInput> {
     }
 
     public boolean matches(ResourceLocation type, ItemStack source, int cells) {
-        return knappingType.equals(type)
+        return ContentAvailability.isResultEnabled(result)
+                && knappingType.equals(type)
                 && ingredient.map(value -> value.test(source)).orElse(true)
                 && pattern.matches(cells);
     }
 
     @Override
     public boolean matches(SingleRecipeInput input, Level level) {
-        return ingredient.map(value -> value.test(input.item())).orElse(true);
+        return ContentAvailability.isResultEnabled(result)
+                && ingredient.map(value -> value.test(input.item())).orElse(true);
     }
 
     @Override

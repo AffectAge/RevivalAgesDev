@@ -2,6 +2,9 @@ package com.protyvkultury.revivalages.feature.technology.soakingpot;
 
 import com.protyvkultury.revivalages.RevivalAges;
 import com.protyvkultury.revivalages.feature.FeatureModule;
+import com.protyvkultury.revivalages.feature.content.ContentAvailability;
+import com.protyvkultury.revivalages.feature.content.ContentKey;
+import com.protyvkultury.revivalages.feature.content.ContentPolicy;
 import com.protyvkultury.revivalages.feature.technology.primitive.config.PrimitiveTechnologyConfig;
 import com.protyvkultury.revivalages.feature.technology.soakingpot.block.SoakingPotBlock;
 import com.protyvkultury.revivalages.feature.technology.soakingpot.blockentity.SoakingPotBlockEntity;
@@ -65,6 +68,17 @@ public final class SoakingPotFeature implements FeatureModule {
     }
 
     @Override
+    public ContentPolicy contentPolicy() {
+        return ContentPolicy.gameplay("soaking_pot")
+                .define(
+                        ContentKey.SOAKING_POT,
+                        () -> PrimitiveTechnologyConfig.contentEnabled(ContentKey.SOAKING_POT)
+                )
+                .items(ContentKey.SOAKING_POT, "soaking_pot")
+                .build();
+    }
+
+    @Override
     public void register(IEventBus modBus, ModContainer modContainer) {
         BLOCKS.register(modBus);
         ITEMS.register(modBus);
@@ -85,12 +99,14 @@ public final class SoakingPotFeature implements FeatureModule {
         event.registerBlockEntity(
                 Capabilities.ItemHandler.BLOCK,
                 BLOCK_ENTITY.get(),
-                (pot, side) -> PrimitiveTechnologyConfig.AUTOMATION_ENABLED.get() ? pot.itemHandler(side) : null
+                (pot, side) -> ContentAvailability.isEnabled(ContentKey.SOAKING_POT)
+                        && PrimitiveTechnologyConfig.AUTOMATION_ENABLED.get() ? pot.itemHandler(side) : null
         );
         event.registerBlockEntity(
                 Capabilities.FluidHandler.BLOCK,
                 BLOCK_ENTITY.get(),
-                (pot, side) -> PrimitiveTechnologyConfig.AUTOMATION_ENABLED.get() ? pot.fluidTank() : null
+                (pot, side) -> ContentAvailability.isEnabled(ContentKey.SOAKING_POT)
+                        && PrimitiveTechnologyConfig.AUTOMATION_ENABLED.get() ? pot.fluidTank() : null
         );
     }
 }

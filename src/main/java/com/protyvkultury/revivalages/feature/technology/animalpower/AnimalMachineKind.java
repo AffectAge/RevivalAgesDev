@@ -1,5 +1,7 @@
 package com.protyvkultury.revivalages.feature.technology.animalpower;
 
+import com.protyvkultury.revivalages.feature.content.ContentKey;
+
 public enum AnimalMachineKind {
     GRINDSTONE(false),
     CHOPPING_BLOCK(true),
@@ -13,5 +15,13 @@ public enum AnimalMachineKind {
 
     public boolean tall() {
         return tall;
+    }
+
+    public ContentKey contentKey() {
+        return switch (this) {
+            case GRINDSTONE -> ContentKey.HORSE_GRINDSTONE;
+            case CHOPPING_BLOCK -> ContentKey.HORSE_CHOPPING_BLOCK;
+            case PRESS -> ContentKey.HORSE_PRESS;
+        };
     }
 }

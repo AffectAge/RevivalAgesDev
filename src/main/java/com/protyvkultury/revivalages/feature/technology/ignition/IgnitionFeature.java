@@ -2,6 +2,8 @@ package com.protyvkultury.revivalages.feature.technology.ignition;
 
 import com.protyvkultury.revivalages.RevivalAges;
 import com.protyvkultury.revivalages.feature.FeatureModule;
+import com.protyvkultury.revivalages.feature.content.ContentKey;
+import com.protyvkultury.revivalages.feature.content.ContentPolicy;
 import com.protyvkultury.revivalages.feature.technology.ignition.block.WoodTorchBlock;
 import com.protyvkultury.revivalages.feature.technology.ignition.block.WoodTorchState;
 import com.protyvkultury.revivalages.feature.technology.ignition.blockentity.WoodTorchBlockEntity;
@@ -47,6 +49,22 @@ public final class IgnitionFeature implements FeatureModule {
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<WoodTorchBlockEntity>> WOOD_TORCH_BLOCK_ENTITY =
             BLOCK_ENTITIES.register("wood_torch", () -> BlockEntityType.Builder.of(
                     WoodTorchBlockEntity::new, WOOD_TORCH.get()).build(null));
+
+    @Override
+    public ContentPolicy contentPolicy() {
+        return ContentPolicy.gameplay("ignition")
+                .define(
+                        ContentKey.FLINT_AND_TINDER,
+                        () -> PrimitiveTechnologyConfig.contentEnabled(ContentKey.FLINT_AND_TINDER)
+                )
+                .define(
+                        ContentKey.WOOD_TORCH,
+                        () -> PrimitiveTechnologyConfig.contentEnabled(ContentKey.WOOD_TORCH)
+                )
+                .items(ContentKey.FLINT_AND_TINDER, "flint_and_tinder")
+                .items(ContentKey.WOOD_TORCH, "wood_torch")
+                .build();
+    }
 
     @Override
     public void register(IEventBus modBus, ModContainer modContainer) {

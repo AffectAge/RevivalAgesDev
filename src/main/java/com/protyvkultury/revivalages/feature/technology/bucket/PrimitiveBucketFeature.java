@@ -3,6 +3,10 @@ package com.protyvkultury.revivalages.feature.technology.bucket;
 import com.mojang.serialization.Codec;
 import com.protyvkultury.revivalages.RevivalAges;
 import com.protyvkultury.revivalages.feature.FeatureModule;
+import com.protyvkultury.revivalages.feature.content.ContentAvailability;
+import com.protyvkultury.revivalages.feature.content.ContentKey;
+import com.protyvkultury.revivalages.feature.content.ContentPolicy;
+import com.protyvkultury.revivalages.feature.technology.primitive.config.PrimitiveTechnologyConfig;
 import com.protyvkultury.revivalages.feature.technology.bucket.client.PrimitiveBucketClientEvents;
 import com.protyvkultury.revivalages.feature.technology.bucket.item.PrimitiveBucketItem;
 import net.minecraft.core.component.DataComponentType;
@@ -48,6 +52,22 @@ public final class PrimitiveBucketFeature implements FeatureModule {
             new Item.Properties().stacksTo(4));
 
     @Override
+    public ContentPolicy contentPolicy() {
+        return ContentPolicy.gameplay("primitive_buckets")
+                .define(
+                        ContentKey.WOODEN_BUCKET,
+                        () -> PrimitiveTechnologyConfig.contentEnabled(ContentKey.WOODEN_BUCKET)
+                )
+                .define(
+                        ContentKey.CLAY_BUCKET,
+                        () -> PrimitiveTechnologyConfig.contentEnabled(ContentKey.CLAY_BUCKET)
+                )
+                .items(ContentKey.WOODEN_BUCKET, "wooden_bucket")
+                .items(ContentKey.CLAY_BUCKET, "unfired_clay_bucket", "clay_bucket")
+                .build();
+    }
+
+    @Override
     public void register(IEventBus modBus, ModContainer modContainer) {
         NeoForgeMod.enableMilkFluid();
         DATA_COMPONENTS.register(modBus);
@@ -61,7 +81,10 @@ public final class PrimitiveBucketFeature implements FeatureModule {
 
     private void registerCapabilities(RegisterCapabilitiesEvent event) {
         event.registerItem(Capabilities.FluidHandler.ITEM,
-                (stack, context) -> ((PrimitiveBucketItem) stack.getItem()).createHandler(stack),
+                (stack, context) -> {
+                    PrimitiveBucketItem bucket = (PrimitiveBucketItem) stack.getItem();
+                    return ContentAvailability.isEnabled(bucket.contentKey()) ? bucket.createHandler(stack) : null;
+                },
                 WOODEN_BUCKET.get(), CLAY_BUCKET.get());
     }
 }

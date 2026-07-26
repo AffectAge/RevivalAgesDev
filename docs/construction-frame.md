@@ -39,6 +39,8 @@ the same IDs; normal pack priority determines the winner.
 The frame exposes no item capability. Existing disabled frames remain loadable,
 preserve their synchronized contents, can be broken safely, and perform no
 assembly behavior.
+The universal condition and complete disabled lifecycle are defined by the
+shared [content availability contract](content-availability.md).
 
 ## Recipe viewers
 

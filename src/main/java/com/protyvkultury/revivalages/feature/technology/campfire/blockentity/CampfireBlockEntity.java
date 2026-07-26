@@ -1,5 +1,7 @@
 package com.protyvkultury.revivalages.feature.technology.campfire.blockentity;
 
+import com.protyvkultury.revivalages.feature.content.ContentAvailability;
+import com.protyvkultury.revivalages.feature.content.ContentKey;
 import com.protyvkultury.revivalages.feature.technology.campfire.CampfireFeature;
 import com.protyvkultury.revivalages.feature.technology.campfire.block.CampfireBlock;
 import com.protyvkultury.revivalages.feature.technology.campfire.recipe.CampfireRecipeResolver;
@@ -57,6 +59,9 @@ public final class CampfireBlockEntity extends BlockEntity {
     }
 
     public static void serverTick(Level level, BlockPos pos, BlockState state, CampfireBlockEntity campfire) {
+        if (!ContentAvailability.isEnabled(ContentKey.CAMPFIRE)) {
+            return;
+        }
         if (level.getGameTime() % 20L == 0L) {
             campfire.resolveRecipe();
             campfire.refreshLightLevel();
@@ -131,7 +136,7 @@ public final class CampfireBlockEntity extends BlockEntity {
     }
 
     public static void clientTick(Level level, BlockPos pos, BlockState state, CampfireBlockEntity campfire) {
-        if (!state.getValue(CampfireBlock.LIT)) {
+        if (!ContentAvailability.isEnabled(ContentKey.CAMPFIRE) || !state.getValue(CampfireBlock.LIT)) {
             return;
         }
         if (level.random.nextInt(10) == 0) {
@@ -170,7 +175,8 @@ public final class CampfireBlockEntity extends BlockEntity {
     }
 
     public boolean canIgnite() {
-        return hasTinder && !dead && !lit && fuelLevel() > 0 && ash < 8;
+        return ContentAvailability.isEnabled(ContentKey.CAMPFIRE)
+                && hasTinder && !dead && !lit && fuelLevel() > 0 && ash < 8;
     }
 
     public void ignite() {

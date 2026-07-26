@@ -1,6 +1,8 @@
 package com.protyvkultury.revivalages.feature.world.structuralintegrity.network;
 
 import com.protyvkultury.revivalages.RevivalAges;
+import com.protyvkultury.revivalages.feature.content.ContentAvailability;
+import com.protyvkultury.revivalages.feature.content.ContentKey;
 import com.protyvkultury.revivalages.feature.world.structuralintegrity.CollapseShakeEvent;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -45,6 +47,9 @@ public record CollapseShakePayload(
     }
 
     public static void handle(CollapseShakePayload payload, IPayloadContext context) {
+        if (!ContentAvailability.isEnabled(ContentKey.COLLAPSES)) {
+            return;
+        }
         context.enqueueWork(() -> NeoForge.EVENT_BUS.post(new CollapseShakeEvent(
                 payload.origin(),
                 payload.strength(),

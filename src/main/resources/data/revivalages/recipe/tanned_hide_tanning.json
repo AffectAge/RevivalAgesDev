@@ -1,4 +1,5 @@
 {
+  "neoforge:conditions": [{"type":"revivalages:content_enabled","content":"revivalages:tanning_rack","enabled":true}],
   "type": "revivalages:tanning_rack", "ingredient": { "item": "revivalages:tanned_hide" },
   "result": { "id": "minecraft:leather", "count": 3 },
   "rain_failure": { "id": "revivalages:washed_hide", "count": 1 }, "processing_time": 12000

@@ -26,6 +26,9 @@ public final class ConstructionFrameGameTests {
 
     @GameTest(template = "animal_power_empty")
     public static void everyCellStoresExactlyOneItem(GameTestHelper helper) {
+        if (!GameTestProfiles.requireEnabledContent(helper)) {
+            return;
+        }
         helper.setBlock(FRAME, ConstructionFrameFeature.CONSTRUCTION_FRAME.get());
         if (!(helper.getBlockEntity(FRAME) instanceof ConstructionFrameBlockEntity frame)) {
             helper.fail("Construction Frame block entity was not created", FRAME);
@@ -47,6 +50,9 @@ public final class ConstructionFrameGameTests {
 
     @GameTest(template = "animal_power_empty")
     public static void frameRecipeStreamCodecRoundTrips(GameTestHelper helper) {
+        if (!GameTestProfiles.requireEnabledContent(helper)) {
+            return;
+        }
         FrameAssemblyRecipe recipe = helper.getLevel().getRecipeManager()
                 .getAllRecipesFor(ConstructionFrameFeature.RECIPE_TYPE.get())
                 .getFirst()

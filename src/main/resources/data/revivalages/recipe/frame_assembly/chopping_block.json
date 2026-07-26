@@ -1,5 +1,6 @@
 {
   "neoforge:conditions": [
+    {"type":"revivalages:content_enabled","content":"revivalages:chopping_block","enabled":true},
     {
       "type": "revivalages:construction_frame_enabled",
       "enabled": true

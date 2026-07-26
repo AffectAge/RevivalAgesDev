@@ -1,5 +1,6 @@
 package com.protyvkultury.revivalages.feature.technology.constructionframe.recipe;
 
+import com.protyvkultury.revivalages.feature.content.ContentAvailability;
 import com.protyvkultury.revivalages.feature.technology.constructionframe.ConstructionFrameFeature;
 import java.util.List;
 import java.util.Optional;
@@ -61,6 +62,9 @@ public final class FrameAssemblyRecipe implements Recipe<FrameAssemblyInput> {
 
     @Override
     public boolean matches(FrameAssemblyInput input, Level level) {
+        if (!ContentAvailability.isResultEnabled(result)) {
+            return false;
+        }
         for (int rotations = 0; rotations < 4; rotations++) {
             if (matchesRotation(input, rotations)) {
                 return true;

@@ -1,8 +1,15 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "revivalages:content_enabled",
+      "content": "revivalages:surface_rocks",
+      "enabled": true
+    }
+  ],
   "type": "minecraft:block",
   "pools": [
     {
-      "bonus_rolls": 0.0,
+      "bonus_rolls": 0,
       "conditions": [
         {
           "condition": "minecraft:survives_explosion"
@@ -14,7 +21,7 @@
           "name": "revivalages:cobblestone_splitter"
         }
       ],
-      "rolls": 1.0
+      "rolls": 1
     }
   ],
   "random_sequence": "revivalages:blocks/rock"

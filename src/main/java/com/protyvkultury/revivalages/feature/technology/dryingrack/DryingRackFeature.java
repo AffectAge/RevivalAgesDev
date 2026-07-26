@@ -2,6 +2,10 @@ package com.protyvkultury.revivalages.feature.technology.dryingrack;
 
 import com.protyvkultury.revivalages.RevivalAges;
 import com.protyvkultury.revivalages.feature.FeatureModule;
+import com.protyvkultury.revivalages.feature.content.ContentAvailability;
+import com.protyvkultury.revivalages.feature.content.ContentKey;
+import com.protyvkultury.revivalages.feature.content.ContentPolicy;
+import com.protyvkultury.revivalages.feature.technology.primitive.config.PrimitiveTechnologyConfig;
 import com.protyvkultury.revivalages.feature.technology.dryingrack.block.CrudeDryingRackBlock;
 import com.protyvkultury.revivalages.feature.technology.dryingrack.block.DryingRackBlock;
 import com.protyvkultury.revivalages.feature.technology.dryingrack.blockentity.DryingRackBlockEntity;
@@ -110,6 +114,22 @@ public final class DryingRackFeature implements FeatureModule {
     }
 
     @Override
+    public ContentPolicy contentPolicy() {
+        return ContentPolicy.gameplay("drying_rack")
+                .define(
+                        ContentKey.CRUDE_DRYING_RACK,
+                        () -> PrimitiveTechnologyConfig.contentEnabled(ContentKey.CRUDE_DRYING_RACK)
+                )
+                .define(
+                        ContentKey.DRYING_RACK,
+                        () -> PrimitiveTechnologyConfig.contentEnabled(ContentKey.DRYING_RACK)
+                )
+                .items(ContentKey.CRUDE_DRYING_RACK, "crude_drying_rack")
+                .items(ContentKey.DRYING_RACK, "drying_rack")
+                .build();
+    }
+
+    @Override
     public void register(IEventBus modBus, ModContainer modContainer) {
         BLOCKS.register(modBus);
         ITEMS.register(modBus);
@@ -136,12 +156,14 @@ public final class DryingRackFeature implements FeatureModule {
         event.registerBlockEntity(
                 Capabilities.ItemHandler.BLOCK,
                 CRUDE_DRYING_RACK_BLOCK_ENTITY.get(),
-                (rack, side) -> DryingRackConfig.AUTOMATION_ENABLED.get() ? rack.itemHandler(side) : null
+                (rack, side) -> ContentAvailability.isEnabled(rack.contentKey())
+                        && DryingRackConfig.AUTOMATION_ENABLED.get() ? rack.itemHandler(side) : null
         );
         event.registerBlockEntity(
                 Capabilities.ItemHandler.BLOCK,
                 DRYING_RACK_BLOCK_ENTITY.get(),
-                (rack, side) -> DryingRackConfig.AUTOMATION_ENABLED.get() ? rack.itemHandler(side) : null
+                (rack, side) -> ContentAvailability.isEnabled(rack.contentKey())
+                        && DryingRackConfig.AUTOMATION_ENABLED.get() ? rack.itemHandler(side) : null
         );
     }
 }

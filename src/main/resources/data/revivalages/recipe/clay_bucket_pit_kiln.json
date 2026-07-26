@@ -1,4 +1,8 @@
 {
+  "neoforge:conditions": [
+    {"type":"revivalages:content_enabled","content":"revivalages:pit_kiln","enabled":true},
+    {"type":"revivalages:content_enabled","content":"revivalages:clay_bucket","enabled":true}
+  ],
   "type": "revivalages:pit_kiln",
   "ingredient": { "item": "revivalages:unfired_clay_bucket" },
   "result": { "id": "revivalages:clay_bucket", "count": 1 },

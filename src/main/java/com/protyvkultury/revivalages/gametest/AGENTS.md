@@ -15,3 +15,6 @@
   the feature is inert, unavailable through normal acquisition and data, absent
   from creative and integration displays, and safe to break without item or fluid
   loss.
+- `runGameTestServer` is the all-enabled contract and
+  `runGameTestServerContentDisabled` is the all-disabled contract. New gameplay
+  content must add coverage to both profiles before it is complete.

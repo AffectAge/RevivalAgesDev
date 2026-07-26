@@ -9,6 +9,12 @@ Revival Ages' shared NeoForge core and used by the mechanisms.
 
 ## Progression chain
 
+The family and every independently usable machine or portable mechanism have
+default-enabled, restart-required server toggles in
+`revivalages-primitive-server.toml`. Effective availability, shared materials,
+data conditions, inert saved machines, and integration filtering follow
+[content-availability.md](content-availability.md).
+
 1. Dry wheat on a Crude Drying Rack to obtain straw.
 2. Craft straw into thatch and tinder.
 3. Hunt animals in the `revivalages:drops_raw_hide` entity-type tag to obtain raw

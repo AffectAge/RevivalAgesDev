@@ -1,5 +1,7 @@
 package com.protyvkultury.revivalages.feature.technology.ignition.block;
 
+import com.protyvkultury.revivalages.feature.content.ContentAvailability;
+import com.protyvkultury.revivalages.feature.content.ContentKey;
 import com.mojang.serialization.MapCodec;
 import com.protyvkultury.revivalages.feature.technology.ignition.IgnitionFeature;
 import com.protyvkultury.revivalages.feature.technology.ignition.blockentity.WoodTorchBlockEntity;
@@ -180,7 +182,8 @@ public final class WoodTorchBlock extends BaseEntityBlock {
 
     @Override
     protected void entityInside(BlockState state, Level level, BlockPos pos, Entity entity) {
-        if (state.getValue(STATE) == WoodTorchState.LIT
+        if (ContentAvailability.isEnabled(ContentKey.WOOD_TORCH)
+                && state.getValue(STATE) == WoodTorchState.LIT
                 && PrimitiveTechnologyConfig.WOOD_TORCH_FIRE_DAMAGE.get() > 0) {
             entity.igniteForSeconds(2.0F);
             entity.hurt(level.damageSources().inFire(), PrimitiveTechnologyConfig.WOOD_TORCH_FIRE_DAMAGE.get());
@@ -190,7 +193,8 @@ public final class WoodTorchBlock extends BaseEntityBlock {
 
     @Override
     public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource random) {
-        if (state.getValue(STATE) != WoodTorchState.LIT) {
+        if (!ContentAvailability.isEnabled(ContentKey.WOOD_TORCH)
+                || state.getValue(STATE) != WoodTorchState.LIT) {
             return;
         }
         double x = pos.getX() + 0.5D;
@@ -213,7 +217,8 @@ public final class WoodTorchBlock extends BaseEntityBlock {
 
     @Override
     public int getLightEmission(BlockState state, BlockGetter level, BlockPos pos) {
-        return state.getValue(STATE) == WoodTorchState.LIT
+        return ContentAvailability.isEnabled(ContentKey.WOOD_TORCH)
+                && state.getValue(STATE) == WoodTorchState.LIT
                 ? PrimitiveTechnologyConfig.WOOD_TORCH_LIGHT.get()
                 : 0;
     }

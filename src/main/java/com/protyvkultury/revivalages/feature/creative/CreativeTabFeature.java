@@ -2,9 +2,9 @@ package com.protyvkultury.revivalages.feature.creative;
 
 import com.protyvkultury.revivalages.RevivalAges;
 import com.protyvkultury.revivalages.feature.FeatureModule;
+import com.protyvkultury.revivalages.feature.content.ContentAvailability;
+import com.protyvkultury.revivalages.feature.content.ContentPolicy;
 import com.protyvkultury.revivalages.feature.technology.ignition.IgnitionFeature;
-import com.protyvkultury.revivalages.feature.technology.constructionframe.ConstructionFrameFeature;
-import com.protyvkultury.revivalages.feature.world.structuralintegrity.StructuralIntegrityFeature;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -16,6 +16,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -60,8 +61,7 @@ public final class CreativeTabFeature implements FeatureModule {
                     .icon(() -> new ItemStack(IgnitionFeature.WOOD_TORCH_ITEM.get()))
                     .displayItems((parameters, output) -> BuiltInRegistries.ITEM.entrySet().stream()
                             .filter(entry -> entry.getKey().location().getNamespace().equals(RevivalAges.MOD_ID))
-                            .filter(entry -> ConstructionFrameFeature.visible(entry.getValue()))
-                            .filter(entry -> StructuralIntegrityFeature.visible(entry.getValue()))
+                            .filter(entry -> ContentAvailability.isItemEnabled(entry.getKey().location()))
                             .sorted(Comparator
                                     .comparingInt(CreativeTabFeature::progressionIndex)
                                     .thenComparing(entry -> entry.getKey().location().toString()))
@@ -69,8 +69,30 @@ public final class CreativeTabFeature implements FeatureModule {
                     .build());
 
     @Override
+    public ContentPolicy contentPolicy() {
+        return ContentPolicy.infrastructure("creative_tab");
+    }
+
+    @Override
     public void register(IEventBus modBus, ModContainer modContainer) {
         TABS.register(modBus);
+        modBus.addListener(EventPriority.LOWEST, this::removeDisabledItems);
+    }
+
+    private void removeDisabledItems(net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent event) {
+        List.copyOf(event.getParentEntries()).stream()
+                .filter(stack -> isDisabledModItem(stack.getItem()))
+                .forEach(stack -> event.remove(stack, CreativeModeTab.TabVisibility.PARENT_TAB_ONLY));
+        List.copyOf(event.getSearchEntries()).stream()
+                .filter(stack -> isDisabledModItem(stack.getItem()))
+                .forEach(stack -> event.remove(stack, CreativeModeTab.TabVisibility.SEARCH_TAB_ONLY));
+    }
+
+    private static boolean isDisabledModItem(Item item) {
+        ResourceKey<Item> key = BuiltInRegistries.ITEM.getResourceKey(item).orElse(null);
+        return key != null
+                && key.location().getNamespace().equals(RevivalAges.MOD_ID)
+                && !ContentAvailability.isItemEnabled(key.location());
     }
 
     private static Map<String, Integer> createProgressionIndex() {

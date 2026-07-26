@@ -1,13 +1,31 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "revivalages:content_enabled",
+      "content": "revivalages:stone_oven",
+      "enabled": true
+    }
+  ],
   "type": "minecraft:block",
-  "pools": [{
-    "rolls": 1,
-    "entries": [{ "type": "minecraft:item", "name": "revivalages:stone_oven" }],
-    "conditions": [{
-      "condition": "minecraft:block_state_property",
-      "block": "revivalages:stone_oven",
-      "properties": { "half": "lower" }
-    }]
-  }],
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "revivalages:stone_oven"
+        }
+      ],
+      "conditions": [
+        {
+          "condition": "minecraft:block_state_property",
+          "block": "revivalages:stone_oven",
+          "properties": {
+            "half": "lower"
+          }
+        }
+      ]
+    }
+  ],
   "random_sequence": "revivalages:blocks/stone_oven"
 }

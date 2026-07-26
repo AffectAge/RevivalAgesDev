@@ -1,4 +1,5 @@
 {
+  "neoforge:conditions": [{"type":"revivalages:any_content_enabled","contents":["revivalages:chopping_block","revivalages:horse_chopping_block"],"enabled":true}],
   "type": "revivalages:chopping", "ingredient": { "item": "revivalages:raw_hide" },
   "result": { "id": "revivalages:scraped_hide", "count": 1 }, "chops": [8, 6, 4, 3]
 }

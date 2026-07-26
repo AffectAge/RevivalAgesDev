@@ -1,4 +1,5 @@
 {
+  "neoforge:conditions": [{"type":"revivalages:content_enabled","content":"revivalages:stone_crucible","enabled":true}],
   "type": "revivalages:stone_crucible",
   "ingredient": { "item": "minecraft:snowball" },
   "result": { "id": "minecraft:water", "amount": 125 },

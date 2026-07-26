@@ -1,5 +1,6 @@
 package com.protyvkultury.revivalages.feature.technology.bucket;
 
+import com.protyvkultury.revivalages.feature.content.ContentAvailability;
 import com.protyvkultury.revivalages.feature.technology.bucket.item.PrimitiveBucketItem;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -27,6 +28,7 @@ public final class PrimitiveBucketEvents {
         Player player = event.getEntity();
         ItemStack held = player.getItemInHand(event.getHand());
         if (!(held.getItem() instanceof PrimitiveBucketItem bucket)
+                || !ContentAvailability.isEnabled(bucket.contentKey())
                 || !held.getOrDefault(PrimitiveBucketFeature.BUCKET_FLUID.get(), SimpleFluidContent.EMPTY).isEmpty()) {
             return;
         }

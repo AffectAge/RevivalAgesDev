@@ -1,10 +1,19 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "revivalages:content_enabled",
+      "content": "revivalages:pit_kiln",
+      "enabled": true
+    }
+  ],
   "type": "minecraft:block",
   "pools": [
     {
       "rolls": 1,
       "conditions": [
-        { "condition": "minecraft:survives_explosion" },
+        {
+          "condition": "minecraft:survives_explosion"
+        },
         {
           "condition": "minecraft:inverted",
           "term": {
@@ -13,18 +22,27 @@
               {
                 "condition": "minecraft:block_state_property",
                 "block": "revivalages:pit_kiln",
-                "properties": { "stage": "active" }
+                "properties": {
+                  "stage": "active"
+                }
               },
               {
                 "condition": "minecraft:block_state_property",
                 "block": "revivalages:pit_kiln",
-                "properties": { "stage": "complete" }
+                "properties": {
+                  "stage": "complete"
+                }
               }
             ]
           }
         }
       ],
-      "entries": [{ "type": "minecraft:item", "name": "revivalages:pit_kiln" }]
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "revivalages:pit_kiln"
+        }
+      ]
     }
   ]
 }

@@ -1,4 +1,5 @@
 {
+  "neoforge:conditions": [{"type":"revivalages:content_enabled","content":"revivalages:barrel","enabled":true}],
   "type": "revivalages:barrel",
   "items": [{ "tag": "revivalages:barrel_leaves" }, { "tag": "revivalages:barrel_leaves" }, { "tag": "revivalages:barrel_leaves" }, { "tag": "revivalages:barrel_leaves" }],
   "input_fluid": { "id": "minecraft:water", "amount": 1000 },

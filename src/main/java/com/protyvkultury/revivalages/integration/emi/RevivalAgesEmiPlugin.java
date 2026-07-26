@@ -1,6 +1,8 @@
 package com.protyvkultury.revivalages.integration.emi;
 
 import com.protyvkultury.revivalages.RevivalAges;
+import com.protyvkultury.revivalages.feature.content.ContentAvailability;
+import com.protyvkultury.revivalages.feature.content.ContentKey;
 import com.protyvkultury.revivalages.feature.technology.barrel.BarrelFeature;
 import com.protyvkultury.revivalages.feature.technology.campfire.CampfireFeature;
 import com.protyvkultury.revivalages.feature.technology.choppingblock.ChoppingBlockFeature;
@@ -33,6 +35,8 @@ import dev.emi.emi.api.stack.EmiStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.level.ItemLike;
 
@@ -98,6 +102,12 @@ public final class RevivalAgesEmiPlugin implements EmiPlugin {
     }
 
     public void register(EmiRegistry registry) {
+        registry.removeEmiStacks(stack -> {
+            ItemStack itemStack = stack.getItemStack();
+            return !itemStack.isEmpty()
+                    && BuiltInRegistries.ITEM.getKey(itemStack.getItem()).getNamespace().equals(RevivalAges.MOD_ID)
+                    && !ContentAvailability.isItemEnabled(itemStack.getItem());
+        });
         registry.addCategory(CRUDE_DRYING);
         registry.addCategory(DRYING);
         registry.addCategory(CAMPFIRE);
@@ -119,53 +129,34 @@ public final class RevivalAgesEmiPlugin implements EmiPlugin {
         registry.addCategory(CLAY_KNAPPING);
         registry.addCategory(LEATHER_KNAPPING);
         registry.addCategory(HORN_KNAPPING);
-        registry.addWorkstation(
-                CRUDE_DRYING,
-                (EmiIngredient)
-                        EmiStack.of((ItemLike) ((ItemLike) DryingRackFeature.CRUDE_DRYING_RACK_ITEM.get())));
-        registry.addWorkstation(
-                CRUDE_DRYING,
-                (EmiIngredient)
-                        EmiStack.of((ItemLike) ((ItemLike) DryingRackFeature.DRYING_RACK_ITEM.get())));
-        registry.addWorkstation(
-                DRYING,
-                (EmiIngredient)
-                        EmiStack.of((ItemLike) ((ItemLike) DryingRackFeature.DRYING_RACK_ITEM.get())));
-        registry.addWorkstation(
-                CAMPFIRE,
-                (EmiIngredient) EmiStack.of((ItemLike) ((ItemLike) CampfireFeature.TINDER.get())));
-        registry.addWorkstation(
-                CHOPPING,
-                (EmiIngredient)
-                        EmiStack.of((ItemLike) ((ItemLike) ChoppingBlockFeature.CHOPPING_BLOCK_ITEM.get())));
-        registry.addWorkstation(
-                PIT_KILN,
-                (EmiIngredient) EmiStack.of((ItemLike) ((ItemLike) PitKilnFeature.PIT_KILN_ITEM.get())));
-        registry.addWorkstation(PIT_BURN, EmiStack.of(PitBurnFeature.LOG_PILE_ITEM.get()));
-        registry.addWorkstation(
-                BARREL,
-                (EmiIngredient) EmiStack.of((ItemLike) ((ItemLike) BarrelFeature.BARREL_ITEM.get())));
-        registry.addWorkstation(
-                SOAKING_POT,
-                (EmiIngredient)
-                        EmiStack.of((ItemLike) ((ItemLike) SoakingPotFeature.SOAKING_POT_ITEM.get())));
-        registry.addWorkstation(
-                TANNING_RACK,
-                (EmiIngredient)
-                        EmiStack.of((ItemLike) ((ItemLike) TanningRackFeature.TANNING_RACK_ITEM.get())));
-        registry.addWorkstation(STONE_SAWMILL, EmiStack.of(StoneMachineFeature.STONE_SAWMILL_ITEM.get()));
-        registry.addWorkstation(STONE_OVEN, EmiStack.of(StoneMachineFeature.STONE_OVEN_ITEM.get()));
-        registry.addWorkstation(STONE_KILN, EmiStack.of(StoneMachineFeature.STONE_KILN_ITEM.get()));
-        registry.addWorkstation(STONE_CRUCIBLE, EmiStack.of(StoneMachineFeature.STONE_CRUCIBLE_ITEM.get()));
-        registry.addWorkstation(ANVIL, EmiStack.of(AnvilFeature.ANVIL_ITEM.get()));
-        registry.addWorkstation(GRINDING, EmiStack.of(AnimalPowerFeature.HAND_GRINDSTONE_ITEM.get()));
-        registry.addWorkstation(GRINDING, EmiStack.of(AnimalPowerFeature.HORSE_GRINDSTONE_ITEM.get()));
-        registry.addWorkstation(CHOPPING, EmiStack.of(AnimalPowerFeature.HORSE_CHOPPING_BLOCK_ITEM.get()));
-        registry.addWorkstation(PRESSING, EmiStack.of(AnimalPowerFeature.HORSE_PRESS_ITEM.get()));
-        registry.addWorkstation(
-                FRAME_ASSEMBLY,
-                EmiStack.of(ConstructionFrameFeature.CONSTRUCTION_FRAME_ITEM.get())
-        );
+        workstation(registry, ContentKey.CRUDE_DRYING_RACK, CRUDE_DRYING,
+                DryingRackFeature.CRUDE_DRYING_RACK_ITEM.get());
+        if (ContentAvailability.isEnabled(ContentKey.CRUDE_DRYING_RACK)
+                && ContentAvailability.isEnabled(ContentKey.DRYING_RACK)) {
+            registry.addWorkstation(CRUDE_DRYING, EmiStack.of(DryingRackFeature.DRYING_RACK_ITEM.get()));
+        }
+        workstation(registry, ContentKey.DRYING_RACK, DRYING, DryingRackFeature.DRYING_RACK_ITEM.get());
+        workstation(registry, ContentKey.CAMPFIRE, CAMPFIRE, CampfireFeature.TINDER.get());
+        workstation(registry, ContentKey.CHOPPING_BLOCK, CHOPPING, ChoppingBlockFeature.CHOPPING_BLOCK_ITEM.get());
+        workstation(registry, ContentKey.PIT_KILN, PIT_KILN, PitKilnFeature.PIT_KILN_ITEM.get());
+        workstation(registry, ContentKey.PIT_BURN, PIT_BURN, PitBurnFeature.LOG_PILE_ITEM.get());
+        workstation(registry, ContentKey.BARREL, BARREL, BarrelFeature.BARREL_ITEM.get());
+        workstation(registry, ContentKey.SOAKING_POT, SOAKING_POT, SoakingPotFeature.SOAKING_POT_ITEM.get());
+        workstation(registry, ContentKey.TANNING_RACK, TANNING_RACK, TanningRackFeature.TANNING_RACK_ITEM.get());
+        workstation(registry, ContentKey.STONE_SAWMILL, STONE_SAWMILL, StoneMachineFeature.STONE_SAWMILL_ITEM.get());
+        workstation(registry, ContentKey.STONE_OVEN, STONE_OVEN, StoneMachineFeature.STONE_OVEN_ITEM.get());
+        workstation(registry, ContentKey.STONE_KILN, STONE_KILN, StoneMachineFeature.STONE_KILN_ITEM.get());
+        workstation(registry, ContentKey.STONE_CRUCIBLE, STONE_CRUCIBLE,
+                StoneMachineFeature.STONE_CRUCIBLE_ITEM.get());
+        workstation(registry, ContentKey.ANVIL, ANVIL, AnvilFeature.ANVIL_ITEM.get());
+        workstation(registry, ContentKey.HAND_GRINDSTONE, GRINDING, AnimalPowerFeature.HAND_GRINDSTONE_ITEM.get());
+        workstation(registry, ContentKey.HORSE_GRINDSTONE, GRINDING,
+                AnimalPowerFeature.HORSE_GRINDSTONE_ITEM.get());
+        workstation(registry, ContentKey.HORSE_CHOPPING_BLOCK, CHOPPING,
+                AnimalPowerFeature.HORSE_CHOPPING_BLOCK_ITEM.get());
+        workstation(registry, ContentKey.HORSE_PRESS, PRESSING, AnimalPowerFeature.HORSE_PRESS_ITEM.get());
+        workstation(registry, ContentKey.CONSTRUCTION_FRAME, FRAME_ASSEMBLY,
+                ConstructionFrameFeature.CONSTRUCTION_FRAME_ITEM.get());
         DryingRecipeCatalog.crude(registry.getRecipeManager())
                 .forEach(
                         view ->
@@ -259,5 +250,16 @@ public final class RevivalAgesEmiPlugin implements EmiPlugin {
             };
             registry.addRecipe(new KnappingEmiRecipe(category, view));
         });
+    }
+
+    private static void workstation(
+            EmiRegistry registry,
+            ContentKey content,
+            EmiRecipeCategory category,
+            ItemLike item
+    ) {
+        if (ContentAvailability.isEnabled(content)) {
+            registry.addWorkstation(category, EmiStack.of(item));
+        }
     }
 }

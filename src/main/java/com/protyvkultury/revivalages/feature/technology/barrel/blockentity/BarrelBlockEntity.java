@@ -1,6 +1,8 @@
 package com.protyvkultury.revivalages.feature.technology.barrel.blockentity;
 
 import com.protyvkultury.revivalages.core.interaction.ItemStackInteraction;
+import com.protyvkultury.revivalages.feature.content.ContentAvailability;
+import com.protyvkultury.revivalages.feature.content.ContentKey;
 import com.protyvkultury.revivalages.feature.technology.barrel.BarrelFeature;
 import com.protyvkultury.revivalages.feature.technology.barrel.block.BarrelBlock;
 import com.protyvkultury.revivalages.feature.technology.barrel.recipe.BarrelRecipe;
@@ -71,6 +73,9 @@ public final class BarrelBlockEntity extends BlockEntity {
     }
 
     public static void serverTick(Level level, BlockPos pos, BlockState state, BarrelBlockEntity barrel) {
+        if (!ContentAvailability.isEnabled(ContentKey.BARREL)) {
+            return;
+        }
         if (!state.getValue(BarrelBlock.SEALED)) {
             barrel.collectRain(level, pos);
             return;
@@ -92,7 +97,8 @@ public final class BarrelBlockEntity extends BlockEntity {
     }
 
     public static void clientTick(Level level, BlockPos pos, BlockState state, BarrelBlockEntity barrel) {
-        if (state.getValue(BarrelBlock.SEALED)
+        if (ContentAvailability.isEnabled(ContentKey.BARREL)
+                && state.getValue(BarrelBlock.SEALED)
                 && barrel.activeRecipe != null
                 && PrimitiveTechnologyConfig.PROGRESS_PARTICLES.get()
                 && level.getGameTime() % 40L == 0L) {

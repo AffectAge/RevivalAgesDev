@@ -2,6 +2,9 @@ package com.protyvkultury.revivalages.feature.technology.campfire;
 
 import com.protyvkultury.revivalages.RevivalAges;
 import com.protyvkultury.revivalages.feature.FeatureModule;
+import com.protyvkultury.revivalages.feature.content.ContentAvailability;
+import com.protyvkultury.revivalages.feature.content.ContentKey;
+import com.protyvkultury.revivalages.feature.content.ContentPolicy;
 import com.protyvkultury.revivalages.feature.technology.campfire.block.CampfireBlock;
 import com.protyvkultury.revivalages.feature.technology.campfire.blockentity.CampfireBlockEntity;
 import com.protyvkultury.revivalages.feature.technology.campfire.effect.CampfireEffectEvents;
@@ -88,6 +91,22 @@ public final class CampfireFeature implements FeatureModule {
     }
 
     @Override
+    public ContentPolicy contentPolicy() {
+        return ContentPolicy.gameplay("campfire")
+                .define(
+                        ContentKey.CAMPFIRE,
+                        () -> PrimitiveTechnologyConfig.contentEnabled(ContentKey.CAMPFIRE)
+                )
+                .define(
+                        ContentKey.CAMPFIRE_EFFECTS,
+                        () -> PrimitiveTechnologyConfig.contentEnabled(ContentKey.CAMPFIRE_EFFECTS)
+                )
+                .items(ContentKey.CAMPFIRE, "tinder")
+                .blocks(ContentKey.CAMPFIRE, "campfire")
+                .build();
+    }
+
+    @Override
     public void register(IEventBus modBus, ModContainer modContainer) {
         BLOCKS.register(modBus);
         ITEMS.register(modBus);
@@ -110,7 +129,8 @@ public final class CampfireFeature implements FeatureModule {
         event.registerBlockEntity(
                 Capabilities.ItemHandler.BLOCK,
                 BLOCK_ENTITY.get(),
-                (campfire, side) -> PrimitiveTechnologyConfig.AUTOMATION_ENABLED.get()
+                (campfire, side) -> ContentAvailability.isEnabled(ContentKey.CAMPFIRE)
+                        && PrimitiveTechnologyConfig.AUTOMATION_ENABLED.get()
                         ? campfire.itemHandler(side)
                         : null
         );

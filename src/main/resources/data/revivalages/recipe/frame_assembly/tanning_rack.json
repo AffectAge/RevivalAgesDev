@@ -1,5 +1,6 @@
 {
   "neoforge:conditions": [
+    {"type":"revivalages:content_enabled","content":"revivalages:tanning_rack","enabled":true},
     {
       "type": "revivalages:construction_frame_enabled",
       "enabled": true

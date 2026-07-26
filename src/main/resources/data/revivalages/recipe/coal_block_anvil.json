@@ -1,4 +1,5 @@
 {
+  "neoforge:conditions": [{"type":"revivalages:content_enabled","content":"revivalages:anvil","enabled":true}],
   "type": "revivalages:anvil",
   "ingredient": { "item": "minecraft:coal_block" },
   "result": { "id": "minecraft:coal", "count": 9 },

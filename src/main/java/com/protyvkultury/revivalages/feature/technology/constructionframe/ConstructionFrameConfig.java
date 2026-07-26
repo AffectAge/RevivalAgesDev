@@ -1,5 +1,7 @@
 package com.protyvkultury.revivalages.feature.technology.constructionframe;
 
+import com.protyvkultury.revivalages.feature.content.ContentAvailability;
+import com.protyvkultury.revivalages.feature.content.ContentKey;
 import net.neoforged.neoforge.common.ModConfigSpec;
 
 /** Server-owned availability and balance settings for frame assembly. */
@@ -27,6 +29,10 @@ public final class ConstructionFrameConfig {
     }
 
     public static boolean enabled() {
+        return ContentAvailability.isEnabled(ContentKey.CONSTRUCTION_FRAME);
+    }
+
+    public static boolean configuredEnabled() {
         return SPEC.isLoaded() ? ENABLED.get() : ENABLED.getDefault();
     }
 

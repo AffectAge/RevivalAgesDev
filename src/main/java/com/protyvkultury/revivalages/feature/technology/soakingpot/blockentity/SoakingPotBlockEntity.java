@@ -1,5 +1,7 @@
 package com.protyvkultury.revivalages.feature.technology.soakingpot.blockentity;
 
+import com.protyvkultury.revivalages.feature.content.ContentAvailability;
+import com.protyvkultury.revivalages.feature.content.ContentKey;
 import com.protyvkultury.revivalages.feature.technology.campfire.CampfireFeature;
 import com.protyvkultury.revivalages.feature.technology.campfire.block.CampfireBlock;
 import com.protyvkultury.revivalages.feature.technology.soakingpot.SoakingPotFeature;
@@ -64,6 +66,9 @@ public final class SoakingPotBlockEntity extends BlockEntity {
     }
 
     public static void serverTick(Level level, BlockPos pos, BlockState state, SoakingPotBlockEntity pot) {
+        if (!ContentAvailability.isEnabled(ContentKey.SOAKING_POT)) {
+            return;
+        }
         pot.resolveRecipe();
         if (pot.activeRecipe == null || pot.input.isEmpty() || !pot.output.isEmpty()) {
             pot.elapsedTicks = 0;
@@ -91,7 +96,8 @@ public final class SoakingPotBlockEntity extends BlockEntity {
     }
 
     public static void clientTick(Level level, BlockPos pos, BlockState state, SoakingPotBlockEntity pot) {
-        if (pot.activeRecipe != null
+        if (ContentAvailability.isEnabled(ContentKey.SOAKING_POT)
+                && pot.activeRecipe != null
                 && !pot.input.isEmpty()
                 && (!pot.activeRecipe.requiresCampfire()
                 || (level.getBlockState(pos.below()).is(CampfireFeature.CAMPFIRE.get())

@@ -26,6 +26,9 @@ public enum AnimalPowerComponentProvider implements IBlockComponentProvider {
 
     @Override
     public void appendTooltip(ITooltip tooltip, BlockAccessor accessor, IPluginConfig config) {
+        if (DisabledContentComponentProvider.isDisabled(accessor)) {
+            return;
+        }
         BlockEntity blockEntity = accessor.getBlockEntity();
         if (blockEntity == null
                 && accessor.getBlockState().hasProperty(AnimalMachineBlock.HALF)

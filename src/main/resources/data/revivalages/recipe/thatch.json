@@ -1,4 +1,5 @@
 {
+  "neoforge:conditions": [{"type":"revivalages:any_content_enabled","contents":["revivalages:crude_drying_rack","revivalages:drying_rack","revivalages:campfire","revivalages:pit_kiln","revivalages:wood_torch"],"enabled":true}],
   "type": "minecraft:crafting_shaped", "category": "building",
   "pattern": ["SS", "SS"], "key": { "S": { "item": "revivalages:straw" } },
   "result": { "id": "revivalages:thatch", "count": 1 }

@@ -1,11 +1,33 @@
 package com.protyvkultury.revivalages.feature.technology.primitive.config;
 
+import com.protyvkultury.revivalages.feature.content.ContentKey;
 import net.neoforged.neoforge.common.ModConfigSpec;
 
 /** Server-owned balance settings for the primitive technology feature family. */
 public final class PrimitiveTechnologyConfig {
 
     public static final ModConfigSpec SPEC;
+
+    public static final ModConfigSpec.BooleanValue PRIMITIVE_TECHNOLOGY_ENABLED;
+    public static final ModConfigSpec.BooleanValue RAW_HIDE_DROPS_ENABLED;
+    public static final ModConfigSpec.BooleanValue CRUDE_DRYING_RACK_ENABLED;
+    public static final ModConfigSpec.BooleanValue DRYING_RACK_ENABLED;
+    public static final ModConfigSpec.BooleanValue CAMPFIRE_ENABLED;
+    public static final ModConfigSpec.BooleanValue CHOPPING_BLOCK_ENABLED;
+    public static final ModConfigSpec.BooleanValue PIT_KILN_ENABLED;
+    public static final ModConfigSpec.BooleanValue BARREL_ENABLED;
+    public static final ModConfigSpec.BooleanValue SOAKING_POT_ENABLED;
+    public static final ModConfigSpec.BooleanValue TANNING_RACK_ENABLED;
+    public static final ModConfigSpec.BooleanValue STONE_SAWMILL_ENABLED;
+    public static final ModConfigSpec.BooleanValue STONE_OVEN_ENABLED;
+    public static final ModConfigSpec.BooleanValue STONE_KILN_ENABLED;
+    public static final ModConfigSpec.BooleanValue STONE_CRUCIBLE_ENABLED;
+    public static final ModConfigSpec.BooleanValue ANVIL_ENABLED;
+    public static final ModConfigSpec.BooleanValue PIT_BURN_ENABLED;
+    public static final ModConfigSpec.BooleanValue FLINT_AND_TINDER_ENABLED;
+    public static final ModConfigSpec.BooleanValue WOOD_TORCH_ENABLED;
+    public static final ModConfigSpec.BooleanValue WOODEN_BUCKET_ENABLED;
+    public static final ModConfigSpec.BooleanValue CLAY_BUCKET_ENABLED;
 
     public static final ModConfigSpec.BooleanValue AUTOMATION_ENABLED;
     public static final ModConfigSpec.BooleanValue PROGRESS_PARTICLES;
@@ -125,6 +147,26 @@ public final class PrimitiveTechnologyConfig {
     static {
         ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
         builder.push("primitiveTechnology");
+        PRIMITIVE_TECHNOLOGY_ENABLED = restartToggle(
+                builder,
+                "enabled",
+                "Enables the complete primitive technology family."
+        );
+        RAW_HIDE_DROPS_ENABLED = restartToggle(
+                builder,
+                "rawHideDropsEnabled",
+                "Enables raw hide drops from tagged animals."
+        );
+        CRUDE_DRYING_RACK_ENABLED = restartToggle(
+                builder,
+                "crudeDryingRackEnabled",
+                "Enables the Crude Drying Rack."
+        );
+        DRYING_RACK_ENABLED = restartToggle(
+                builder,
+                "dryingRackEnabled",
+                "Enables the normal Drying Rack."
+        );
         AUTOMATION_ENABLED = builder.comment("Exposes item and fluid capabilities on primitive devices.")
                 .define("automationEnabled", true);
         PROGRESS_PARTICLES = builder.comment("Shows recipe progress and failure particles.")
@@ -133,6 +175,7 @@ public final class PrimitiveTechnologyConfig {
         RAW_HIDE_MAX_DROPS = builder.defineInRange("rawHideMaxDrops", 2, 1, 16);
 
         builder.push("campfire");
+        CAMPFIRE_ENABLED = restartToggle(builder, "enabled", "Enables the Campfire.");
         CAMPFIRE_COOK_TICKS = positive(builder, "cookTicks", 90 * 20);
         CAMPFIRE_BURN_TICKS_PER_LOG = positive(builder, "burnTicksPerLog", 2 * 60 * 20);
         CAMPFIRE_BURNED_FOOD_TICKS = positive(builder, "burnedFoodTicks", 30 * 20);
@@ -149,6 +192,7 @@ public final class PrimitiveTechnologyConfig {
         builder.pop();
 
         builder.push("choppingBlock");
+        CHOPPING_BLOCK_ENABLED = restartToggle(builder, "enabled", "Enables the Chopping Block.");
         CHOPPING_WOOD_CHOPS = positive(builder, "woodTierChops", 6);
         CHOPPING_STONE_CHOPS = positive(builder, "stoneTierChops", 4);
         CHOPPING_IRON_CHOPS = positive(builder, "ironTierChops", 2);
@@ -167,6 +211,7 @@ public final class PrimitiveTechnologyConfig {
         builder.pop();
 
         builder.push("pitKiln");
+        PIT_KILN_ENABLED = restartToggle(builder, "enabled", "Enables the Pit Kiln.");
         PIT_KILN_MAX_STACK_SIZE = builder.defineInRange("maxStackSize", 8, 1, 64);
         PIT_KILN_DURATION_MULTIPLIER = nonNegative(builder, "durationMultiplier", 1.0D);
         PIT_KILN_VARIABLE_SPEED = builder.defineInRange("variableSpeedModifier", 0.5D, 0.01D, 1.0D);
@@ -175,6 +220,7 @@ public final class PrimitiveTechnologyConfig {
         builder.pop();
 
         builder.push("barrel");
+        BARREL_ENABLED = restartToggle(builder, "enabled", "Enables the primitive Barrel.");
         BARREL_CAPACITY = positive(builder, "capacity", 1000);
         BARREL_DURATION_MULTIPLIER = nonNegative(builder, "durationMultiplier", 1.0D);
         BARREL_RAIN_FILL_INTERVAL = nonNegativeInt(builder, "rainFillInterval", 20);
@@ -184,12 +230,14 @@ public final class PrimitiveTechnologyConfig {
         builder.pop();
 
         builder.push("soakingPot");
+        SOAKING_POT_ENABLED = restartToggle(builder, "enabled", "Enables the Soaking Pot.");
         SOAKING_POT_CAPACITY = positive(builder, "capacity", 4000);
         SOAKING_POT_MAX_STACK_SIZE = builder.defineInRange("maxStackSize", 8, 1, 64);
         SOAKING_POT_DURATION_MULTIPLIER = nonNegative(builder, "durationMultiplier", 1.0D);
         builder.pop();
 
         builder.push("tanningRack");
+        TANNING_RACK_ENABLED = restartToggle(builder, "enabled", "Enables the Tanning Rack.");
         TANNING_RACK_DURATION_MULTIPLIER = nonNegative(builder, "durationMultiplier", 1.0D);
         TANNING_RACK_RAIN_RUIN_TICKS = builder.defineInRange("rainRuinTicks", 2 * 60 * 20, -1, Integer.MAX_VALUE);
         builder.pop();
@@ -205,6 +253,7 @@ public final class PrimitiveTechnologyConfig {
                 .define("keepHeat", false);
 
         builder.push("sawmill");
+        STONE_SAWMILL_ENABLED = restartToggle(builder, "enabled", "Enables the Stone Sawmill.");
         STONE_SAWMILL_BLADE_DAMAGE = nonNegative(builder, "activeBladeEntityDamage", 3.0D);
         STONE_SAWMILL_DAMAGE_BLADES = builder.define("damageBlades", true);
         STONE_SAWMILL_WOOD_CHIP_CHANCE = chance(builder, "woodChipChance", 0.25D);
@@ -215,20 +264,24 @@ public final class PrimitiveTechnologyConfig {
         builder.pop();
 
         builder.push("oven");
+        STONE_OVEN_ENABLED = restartToggle(builder, "enabled", "Enables the Stone Oven.");
         STONE_OVEN_COOK_TICKS = positive(builder, "foodCookTicks", 2 * 60 * 20);
         STONE_OVEN_DRYING_DURATION_MULTIPLIER = nonNegative(builder, "dryingDurationMultiplier", 0.25D);
         builder.pop();
 
         builder.push("kiln");
+        STONE_KILN_ENABLED = restartToggle(builder, "enabled", "Enables the Stone Kiln.");
         STONE_KILN_PIT_DURATION_MULTIPLIER = nonNegative(builder, "pitKilnDurationMultiplier", 0.5D);
         STONE_KILN_PIT_FAILURE_MULTIPLIER = nonNegative(builder, "pitKilnFailureMultiplier", 0.25D);
         builder.pop();
 
         builder.push("crucible");
+        STONE_CRUCIBLE_ENABLED = restartToggle(builder, "enabled", "Enables the Stone Crucible.");
         STONE_CRUCIBLE_CAPACITY = positive(builder, "capacity", 4000);
         builder.pop(2);
 
         builder.push("anvil");
+        ANVIL_ENABLED = restartToggle(builder, "enabled", "Enables the primitive Anvil.");
         ANVIL_HITS_PER_DAMAGE_STAGE = positive(builder, "hitsPerDamageStage", 64);
         ANVIL_EXHAUSTION_PER_HIT = nonNegative(builder, "exhaustionPerHit", 0.5D);
         ANVIL_EXHAUSTION_PER_CRAFT = nonNegative(builder, "exhaustionPerCraft", 0.0D);
@@ -237,6 +290,7 @@ public final class PrimitiveTechnologyConfig {
         builder.pop();
 
         builder.push("pitBurn");
+        PIT_BURN_ENABLED = restartToggle(builder, "enabled", "Enables Pit Burn processing.");
         PIT_BURN_MAX_BLOCKS = builder.defineInRange("maximumConnectedPiles", 27, 1, 256);
         PIT_BURN_DURATION_MULTIPLIER = nonNegative(builder, "durationMultiplier", 1.0D);
         PIT_BURN_STRUCTURE_CHECK_INTERVAL = positive(builder, "structureCheckInterval", 20);
@@ -244,6 +298,12 @@ public final class PrimitiveTechnologyConfig {
         builder.pop();
 
         builder.push("ignition");
+        FLINT_AND_TINDER_ENABLED = restartToggle(
+                builder,
+                "flintAndTinderEnabled",
+                "Enables Flint and Tinder."
+        );
+        WOOD_TORCH_ENABLED = restartToggle(builder, "woodTorchEnabled", "Enables Wood Torches.");
         FLINT_AND_TINDER_USE_TICKS = positive(builder, "flintAndTinderUseTicks", 4 * 20);
         FLINT_AND_TINDER_MAX_USES = positive(builder, "flintAndTinderMaxUses", 8);
         FLINT_AND_TINDER_COOLDOWN_TICKS = nonNegativeInt(builder, "flintAndTinderCooldownTicks", 20);
@@ -256,6 +316,8 @@ public final class PrimitiveTechnologyConfig {
         builder.pop();
 
         builder.push("primitiveBuckets");
+        WOODEN_BUCKET_ENABLED = restartToggle(builder, "woodenBucketEnabled", "Enables Wooden Buckets.");
+        CLAY_BUCKET_ENABLED = restartToggle(builder, "clayBucketEnabled", "Enables Clay Buckets.");
         WOODEN_BUCKET_MAX_USES = positive(builder, "woodenBucketMaxUses", 8);
         WOODEN_BUCKET_HOT_DAMAGE_PER_SECOND = nonNegativeInt(builder, "woodenBucketHotWearPerSecond", 8);
         WOODEN_BUCKET_FULL_DAMAGE_PER_SECOND = nonNegativeInt(builder, "woodenBucketFullWearPerSecond", 1);
@@ -285,6 +347,46 @@ public final class PrimitiveTechnologyConfig {
     }
 
     private PrimitiveTechnologyConfig() {
+    }
+
+    public static boolean contentEnabled(ContentKey key) {
+        return value(switch (key) {
+            case PRIMITIVE_TECHNOLOGY -> PRIMITIVE_TECHNOLOGY_ENABLED;
+            case RAW_HIDE_DROPS -> RAW_HIDE_DROPS_ENABLED;
+            case CRUDE_DRYING_RACK -> CRUDE_DRYING_RACK_ENABLED;
+            case DRYING_RACK -> DRYING_RACK_ENABLED;
+            case CAMPFIRE -> CAMPFIRE_ENABLED;
+            case CAMPFIRE_EFFECTS -> CAMPFIRE_EFFECTS_ENABLED;
+            case CHOPPING_BLOCK -> CHOPPING_BLOCK_ENABLED;
+            case PIT_KILN -> PIT_KILN_ENABLED;
+            case BARREL -> BARREL_ENABLED;
+            case SOAKING_POT -> SOAKING_POT_ENABLED;
+            case TANNING_RACK -> TANNING_RACK_ENABLED;
+            case STONE_SAWMILL -> STONE_SAWMILL_ENABLED;
+            case STONE_OVEN -> STONE_OVEN_ENABLED;
+            case STONE_KILN -> STONE_KILN_ENABLED;
+            case STONE_CRUCIBLE -> STONE_CRUCIBLE_ENABLED;
+            case ANVIL -> ANVIL_ENABLED;
+            case PIT_BURN -> PIT_BURN_ENABLED;
+            case FLINT_AND_TINDER -> FLINT_AND_TINDER_ENABLED;
+            case WOOD_TORCH -> WOOD_TORCH_ENABLED;
+            case WOODEN_BUCKET -> WOODEN_BUCKET_ENABLED;
+            case CLAY_BUCKET -> CLAY_BUCKET_ENABLED;
+            default -> throw new IllegalArgumentException("Not a primitive technology key: " + key);
+        });
+    }
+
+    private static ModConfigSpec.BooleanValue restartToggle(
+            ModConfigSpec.Builder builder,
+            String name,
+            String comment
+    ) {
+        return builder.comment(comment, "Changing this value requires a server restart.")
+                .define(name, true);
+    }
+
+    private static boolean value(ModConfigSpec.BooleanValue value) {
+        return SPEC.isLoaded() ? value.get() : value.getDefault();
     }
 
     private static ModConfigSpec.IntValue positive(ModConfigSpec.Builder builder, String key, int value) {

@@ -2,6 +2,9 @@ package com.protyvkultury.revivalages.feature.technology.tanningrack;
 
 import com.protyvkultury.revivalages.RevivalAges;
 import com.protyvkultury.revivalages.feature.FeatureModule;
+import com.protyvkultury.revivalages.feature.content.ContentAvailability;
+import com.protyvkultury.revivalages.feature.content.ContentKey;
+import com.protyvkultury.revivalages.feature.content.ContentPolicy;
 import com.protyvkultury.revivalages.feature.technology.primitive.config.PrimitiveTechnologyConfig;
 import com.protyvkultury.revivalages.feature.technology.tanningrack.block.TanningRackBlock;
 import com.protyvkultury.revivalages.feature.technology.tanningrack.blockentity.TanningRackBlockEntity;
@@ -64,6 +67,17 @@ public final class TanningRackFeature implements FeatureModule {
     }
 
     @Override
+    public ContentPolicy contentPolicy() {
+        return ContentPolicy.gameplay("tanning_rack")
+                .define(
+                        ContentKey.TANNING_RACK,
+                        () -> PrimitiveTechnologyConfig.contentEnabled(ContentKey.TANNING_RACK)
+                )
+                .items(ContentKey.TANNING_RACK, "tanning_rack")
+                .build();
+    }
+
+    @Override
     public void register(IEventBus modBus, ModContainer modContainer) {
         BLOCKS.register(modBus);
         ITEMS.register(modBus);
@@ -84,7 +98,8 @@ public final class TanningRackFeature implements FeatureModule {
         event.registerBlockEntity(
                 Capabilities.ItemHandler.BLOCK,
                 BLOCK_ENTITY.get(),
-                (rack, side) -> PrimitiveTechnologyConfig.AUTOMATION_ENABLED.get() ? rack.itemHandler(side) : null
+                (rack, side) -> ContentAvailability.isEnabled(ContentKey.TANNING_RACK)
+                        && PrimitiveTechnologyConfig.AUTOMATION_ENABLED.get() ? rack.itemHandler(side) : null
         );
     }
 }

@@ -1,5 +1,7 @@
 package com.protyvkultury.revivalages.feature.technology.ignition.item;
 
+import com.protyvkultury.revivalages.feature.content.ContentAvailability;
+import com.protyvkultury.revivalages.feature.content.ContentKey;
 import com.protyvkultury.revivalages.feature.technology.campfire.blockentity.CampfireBlockEntity;
 import com.protyvkultury.revivalages.feature.technology.ignition.blockentity.WoodTorchBlockEntity;
 import com.protyvkultury.revivalages.feature.technology.pitburn.PitBurnFeature;
@@ -33,6 +35,9 @@ public final class FlintAndTinderItem extends Item {
 
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+        if (!ContentAvailability.isEnabled(ContentKey.FLINT_AND_TINDER)) {
+            return InteractionResultHolder.fail(player.getItemInHand(hand));
+        }
         BlockHitResult hit = getPlayerPOVHitResult(level, player, ClipContext.Fluid.NONE);
         if (hit.getType() == HitResult.Type.MISS) {
             return InteractionResultHolder.pass(player.getItemInHand(hand));
@@ -53,7 +58,10 @@ public final class FlintAndTinderItem extends Item {
 
     @Override
     public void onUseTick(Level level, LivingEntity entity, ItemStack stack, int remainingUseDuration) {
-        if (level.isClientSide && remainingUseDuration % 4 == 0 && entity instanceof Player player) {
+        if (ContentAvailability.isEnabled(ContentKey.FLINT_AND_TINDER)
+                && level.isClientSide
+                && remainingUseDuration % 4 == 0
+                && entity instanceof Player player) {
             BlockHitResult hit = getPlayerPOVHitResult(level, player, ClipContext.Fluid.NONE);
             if (hit.getType() == HitResult.Type.BLOCK) {
                 level.addParticle(ParticleTypes.SMOKE,
@@ -65,7 +73,8 @@ public final class FlintAndTinderItem extends Item {
 
     @Override
     public ItemStack finishUsingItem(ItemStack stack, Level level, LivingEntity entity) {
-        if (!(entity instanceof Player player)) {
+        if (!ContentAvailability.isEnabled(ContentKey.FLINT_AND_TINDER)
+                || !(entity instanceof Player player)) {
             return stack;
         }
         BlockHitResult hit = getPlayerPOVHitResult(level, player, ClipContext.Fluid.NONE);
