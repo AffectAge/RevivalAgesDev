@@ -1,5 +1,6 @@
 package com.protyvkultury.revivalages.feature.technology.pitburn.blockentity;
 
+import com.protyvkultury.revivalages.api.food.FoodFreshnessApi;
 import com.protyvkultury.revivalages.core.machine.BurnableStructureTracker;
 import com.protyvkultury.revivalages.feature.content.ContentAvailability;
 import com.protyvkultury.revivalages.feature.content.ContentKey;
@@ -58,6 +59,13 @@ public final class PitBurnBlockEntity extends BlockEntity {
         if (!ContentAvailability.isEnabled(ContentKey.PIT_BURN)) {
             return;
         }
+        ItemStack materializedInput = FoodFreshnessApi.materialize(burn.recipeInput);
+        boolean changed = materializedInput != burn.recipeInput;
+        burn.recipeInput = materializedInput;
+        changed |= FoodFreshnessApi.materializeAll(burn.outputs);
+        if (changed) {
+            burn.sync();
+        }
         if (!state.is(PitBurnFeature.ACTIVE_PILE.get())) {
             return;
         }
@@ -102,6 +110,7 @@ public final class PitBurnBlockEntity extends BlockEntity {
                     ? new ItemStack(PrimitiveMaterialsFeature.PIT_ASH.get())
                     : failures.get(level.random.nextInt(failures.size())).copy();
         }
+        FoodFreshnessApi.copyOldest(result, List.of(recipeInput.copy()));
         insertOutput(result);
     }
 

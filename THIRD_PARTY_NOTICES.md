@@ -1,5 +1,35 @@
 # Third-Party Notices
 
+## Nutrition
+
+Diet group tracking, hunger-driven decay, detector semantics, food-use and Cake
+hooks, the scrolling nutrition-screen interaction, and Diet Toughness attribute
+behavior were adapted from Nutrition for Minecraft 1.12. The source used is the
+local `Nutrition-1.12` source tree.
+
+Nutrition is licensed under the MIT License. A copy is included at
+`licenses/Diet-MIT.txt`.
+
+The original Java paths under `ca/wescook/nutrition`, including the nutrient
+manager, effect detectors, player event handlers, network messages, and dynamic
+GUI, were rewritten into `api/diet` and `feature/player/diet` for NeoForge
+1.21.1. No Nutrition runtime dependency or original namespace is used by game
+content.
+
+## TerraFirmaCraft Food
+
+Per-stack creation times, decay modifiers, preservation-trait algebra, freshness
+inheritance, spoilage materialization, and server-authoritative food checks were
+adapted from TerraFirmaCraft for Minecraft 1.21.x. This material is covered by
+the EUPL-1.2 copy already included at
+`licenses/Structural-Knapping-EUPL-1.2.txt`.
+
+The original food component, capability, trait, stack, recipe, inventory, and
+tooltip paths were rewritten into `api/food`, `feature/food/spoilage`, and the
+targeted Drying Rack and Barrel integration points. The independent spoilage
+tick counter is a Revival Ages implementation and does not include the source
+calendar, date, sun, or seasonal systems.
+
 ## Inventory Weight
 
 Carried-item formulas, inventory aggregation, armor-pocket capacity, overload

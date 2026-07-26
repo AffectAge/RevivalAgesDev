@@ -1,5 +1,6 @@
 package com.protyvkultury.revivalages.feature.technology.anvil.blockentity;
 
+import com.protyvkultury.revivalages.api.food.FoodFreshnessApi;
 import com.protyvkultury.revivalages.feature.technology.anvil.AnvilFeature;
 import com.protyvkultury.revivalages.feature.technology.anvil.AnvilTags;
 import com.protyvkultury.revivalages.feature.technology.anvil.block.AnvilBlock;
@@ -101,6 +102,7 @@ public final class AnvilBlockEntity extends BlockEntity {
     }
 
     public ItemStack extract() {
+        input = FoodFreshnessApi.materialize(input);
         ItemStack result = input;
         input = ItemStack.EMPTY;
         hits = 0;
@@ -116,6 +118,12 @@ public final class AnvilBlockEntity extends BlockEntity {
     }
 
     public void hit(Player player, ItemStack tool, InteractionHand hand, Vec3 hitPosition) {
+        ItemStack materialized = FoodFreshnessApi.materialize(input);
+        if (materialized != input) {
+            input = materialized;
+            resolveRecipe();
+            sync();
+        }
         if (level == null || input.isEmpty()) {
             return;
         }
@@ -176,6 +184,7 @@ public final class AnvilBlockEntity extends BlockEntity {
 
         if (hits >= requiredHits) {
             ItemStack output = recipe.result();
+            FoodFreshnessApi.copyOldest(output, java.util.List.of(input.copy()));
             input = ItemStack.EMPTY;
             hits = 0;
             requiredHits = 0;

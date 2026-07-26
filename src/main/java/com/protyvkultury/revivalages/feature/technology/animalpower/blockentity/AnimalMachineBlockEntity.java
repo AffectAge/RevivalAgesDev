@@ -1,5 +1,6 @@
 package com.protyvkultury.revivalages.feature.technology.animalpower.blockentity;
 
+import com.protyvkultury.revivalages.api.food.FoodFreshnessApi;
 import com.protyvkultury.revivalages.RevivalAges;
 import com.protyvkultury.revivalages.feature.content.ContentAvailability;
 import com.protyvkultury.revivalages.feature.content.ContentKey;
@@ -70,6 +71,9 @@ public final class AnimalMachineBlockEntity extends BlockEntity {
     public static void serverTick(Level level, BlockPos pos, BlockState state, AnimalMachineBlockEntity machine) {
         if (!(level instanceof ServerLevel server)) {
             return;
+        }
+        if (FoodFreshnessApi.materializeAll(machine.items)) {
+            machine.sync();
         }
         machine.kind = AnimalPowerFeature.kind(state);
         if (!ContentAvailability.isEnabled(machine.contentKey())) {
@@ -290,6 +294,7 @@ public final class AnimalMachineBlockEntity extends BlockEntity {
         if (required <= 0 || workPoints < required || !outputsFit() || level == null) {
             return;
         }
+        ItemStack freshnessInput = items.getFirst().copy();
         ItemStack itemOutput = recipeOutput();
         ItemStack secondaryOutput = ItemStack.EMPTY;
         double secondaryChance = 0.0D;
@@ -301,6 +306,8 @@ public final class AnimalMachineBlockEntity extends BlockEntity {
             }
         }
         FluidStack fluidOutput = recipeFluidOutput();
+        FoodFreshnessApi.copyOldest(itemOutput, java.util.List.of(freshnessInput));
+        FoodFreshnessApi.copyOldest(secondaryOutput, java.util.List.of(freshnessInput));
         int inputCount = requiredInputCount(items.getFirst());
         items.getFirst().shrink(inputCount);
         if (items.getFirst().isEmpty()) {

@@ -1,5 +1,6 @@
 package com.protyvkultury.revivalages.feature.technology.animalpower.blockentity;
 
+import com.protyvkultury.revivalages.api.food.FoodFreshnessApi;
 import com.protyvkultury.revivalages.feature.content.ContentAvailability;
 import com.protyvkultury.revivalages.feature.content.ContentKey;
 import com.protyvkultury.revivalages.feature.technology.animalpower.AnimalPowerConfig;
@@ -44,6 +45,9 @@ public final class HandGrindstoneBlockEntity extends BlockEntity {
             BlockState state,
             HandGrindstoneBlockEntity grindstone
     ) {
+        if (FoodFreshnessApi.materializeAll(grindstone.items)) {
+            grindstone.sync();
+        }
         if (!ContentAvailability.isEnabled(ContentKey.HAND_GRINDSTONE)) {
             return;
         }
@@ -157,14 +161,19 @@ public final class HandGrindstoneBlockEntity extends BlockEntity {
         if (workPoints < recipe.workPoints() || !outputsFit(recipe)) {
             return;
         }
+        ItemStack freshnessInput = items.getFirst().copy();
+        ItemStack primary = recipe.result();
+        FoodFreshnessApi.copyOldest(primary, java.util.List.of(freshnessInput));
+        ItemStack secondary = recipe.secondaryResult();
+        FoodFreshnessApi.copyOldest(secondary, java.util.List.of(freshnessInput));
         items.getFirst().shrink(recipe.inputCount());
         if (items.getFirst().isEmpty()) {
             items.set(0, ItemStack.EMPTY);
         }
-        merge(1, recipe.result());
-        if (!recipe.secondaryResult().isEmpty()
+        merge(1, primary);
+        if (!secondary.isEmpty()
                 && GrindingChance.shouldProduce(recipe.secondaryChance(), level.random.nextDouble())) {
-            merge(2, recipe.secondaryResult());
+            merge(2, secondary);
         }
         workPoints = 0;
         level.playSound(null, worldPosition, SoundEvents.GRINDSTONE_USE, SoundSource.BLOCKS, 1.0F, 0.8F);

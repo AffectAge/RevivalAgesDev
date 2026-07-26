@@ -1,0 +1,7 @@
+{
+  "effect": "minecraft:mining_fatigue",
+  "amplifier": 0,
+  "minimum": 0.0,
+  "maximum": 20.0,
+  "detector": "average"
+}

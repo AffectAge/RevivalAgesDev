@@ -1,5 +1,6 @@
 package com.protyvkultury.revivalages.feature.technology.choppingblock.blockentity;
 
+import com.protyvkultury.revivalages.api.food.FoodFreshnessApi;
 import com.protyvkultury.revivalages.feature.technology.choppingblock.ChoppingBlockFeature;
 import com.protyvkultury.revivalages.feature.technology.choppingblock.block.ChoppingBlock;
 import com.protyvkultury.revivalages.feature.technology.choppingblock.recipe.ChoppingRecipe;
@@ -84,6 +85,7 @@ public final class ChoppingBlockEntity extends BlockEntity {
     }
 
     public ItemStack extract() {
+        input = FoodFreshnessApi.materialize(input);
         ItemStack result = input;
         input = ItemStack.EMPTY;
         chops = 0;
@@ -94,6 +96,12 @@ public final class ChoppingBlockEntity extends BlockEntity {
     }
 
     public void chop(Player player, ItemStack axe, InteractionHand hand) {
+        ItemStack materialized = FoodFreshnessApi.materialize(input);
+        if (materialized != input) {
+            input = materialized;
+            resolveRecipe();
+            sync();
+        }
         if (level == null || level.isClientSide || activeRecipe == null) {
             resolveRecipe();
         }
@@ -149,6 +157,7 @@ public final class ChoppingBlockEntity extends BlockEntity {
             player.causeFoodExhaustion(PrimitiveTechnologyConfig.CHOPPING_EXHAUSTION_PER_CRAFT.get().floatValue());
             ItemStack output = activeRecipe.result();
             output.setCount(activeRecipe.quantityForTier(tier, defaultQuantity(tier)));
+            FoodFreshnessApi.copyOldest(output, java.util.List.of(input.copy()));
             input = ItemStack.EMPTY;
             chops = 0;
             requiredChops = 0;

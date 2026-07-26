@@ -56,6 +56,9 @@ tasks.named('processResources', ProcessResources).configure {
     from('licenses/CarriedWeight-CC0-1.0.txt') {
         into 'META-INF/licenses'
     }
+    from('licenses/Diet-MIT.txt') {
+        into 'META-INF/licenses'
+    }
 }
 
 repositories {

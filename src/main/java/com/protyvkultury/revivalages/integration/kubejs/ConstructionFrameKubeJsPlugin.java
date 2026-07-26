@@ -105,5 +105,7 @@ public final class ConstructionFrameKubeJsPlugin implements KubeJSPlugin {
     public void registerBindings(BindingRegistry registry) {
         registry.add("RevivalAgesItemSize", ItemSizeScriptBindings.INSTANCE);
         registry.add("RevivalAgesCarriedWeight", CarriedWeightScriptBindings.INSTANCE);
+        registry.add("RevivalAgesDiet", DietScriptBindings.INSTANCE);
+        registry.add("RevivalAgesFoodFreshness", FoodFreshnessScriptBindings.INSTANCE);
     }
 }

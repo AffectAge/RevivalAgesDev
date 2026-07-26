@@ -134,6 +134,16 @@ recomputed rather than persisted, while permanent capacity bonuses use the
 standard persistent player attribute. Optional equipment-slot sources remain
 isolated under `integration`.
 
+Diet owns reloadable group and effect-rule registries under `api/diet`, while
+persisted player values and authoritative gain, decay, and effect evaluation live
+under `feature/player/diet`. The client screen renders synchronized attachment
+state and never mutates diet values.
+
+Food Spoilage owns freshness contracts under `api/food` and its independent
+Overworld `SavedData` clock under `feature/food/spoilage`. Per-stack creation
+ticks and traits are persistent data components. Vanilla day time, calendars,
+seasons, and wall-clock time are deliberately outside this dependency path.
+
 Primitive technology is a coordinated feature family below `feature/technology`.
 Each machine owns its block, block entity, and recipe type, while shared materials,
 configuration, rendering helpers, tags, and shared recipe-query semantics live in

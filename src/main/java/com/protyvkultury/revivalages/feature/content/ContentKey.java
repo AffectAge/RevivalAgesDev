@@ -14,6 +14,8 @@ import net.minecraft.resources.ResourceLocation;
 public enum ContentKey {
     ITEM_SIZE("item_size"),
     CARRIED_WEIGHT("carried_weight"),
+    DIET("diet"),
+    FOOD_SPOILAGE("food_spoilage"),
 
     SURFACE_DEPOSITS("surface_deposits"),
     SURFACE_ROCKS("surface_rocks", SURFACE_DEPOSITS),

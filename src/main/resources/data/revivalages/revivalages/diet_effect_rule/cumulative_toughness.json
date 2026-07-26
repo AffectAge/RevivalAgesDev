@@ -1,0 +1,7 @@
+{
+  "effect": "revivalages:diet_toughness",
+  "minimum": 90.0,
+  "maximum": 100.0,
+  "detector": "cumulative",
+  "cumulative_multiplier": 1
+}

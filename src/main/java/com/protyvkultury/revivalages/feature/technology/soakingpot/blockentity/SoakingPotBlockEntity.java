@@ -1,5 +1,6 @@
 package com.protyvkultury.revivalages.feature.technology.soakingpot.blockentity;
 
+import com.protyvkultury.revivalages.api.food.FoodFreshnessApi;
 import com.protyvkultury.revivalages.feature.content.ContentAvailability;
 import com.protyvkultury.revivalages.feature.content.ContentKey;
 import com.protyvkultury.revivalages.feature.technology.campfire.CampfireFeature;
@@ -68,6 +69,14 @@ public final class SoakingPotBlockEntity extends BlockEntity {
     public static void serverTick(Level level, BlockPos pos, BlockState state, SoakingPotBlockEntity pot) {
         if (!ContentAvailability.isEnabled(ContentKey.SOAKING_POT)) {
             return;
+        }
+        ItemStack materializedInput = FoodFreshnessApi.materialize(pot.input);
+        ItemStack materializedOutput = FoodFreshnessApi.materialize(pot.output);
+        if (materializedInput != pot.input || materializedOutput != pot.output) {
+            pot.input = materializedInput;
+            pot.output = materializedOutput;
+            pot.elapsedTicks = 0;
+            pot.sync();
         }
         pot.resolveRecipe();
         if (pot.activeRecipe == null || pot.input.isEmpty() || !pot.output.isEmpty()) {
@@ -236,10 +245,12 @@ public final class SoakingPotBlockEntity extends BlockEntity {
             return;
         }
         SoakingPotRecipe completedRecipe = activeRecipe;
+        ItemStack freshnessInput = input.copy();
         int count = input.getCount();
         input = ItemStack.EMPTY;
         tank.drain(completedRecipe.inputFluid().getAmount() * count, IFluidHandler.FluidAction.EXECUTE);
         ItemStack recipeOutput = completedRecipe.result();
+        FoodFreshnessApi.copyOldest(recipeOutput, java.util.List.of(freshnessInput));
         outputCount = recipeOutput.getCount() * count;
         output = recipeOutput.copyWithCount(1);
         elapsedTicks = 0;

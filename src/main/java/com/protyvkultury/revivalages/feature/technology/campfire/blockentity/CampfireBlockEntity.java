@@ -1,5 +1,6 @@
 package com.protyvkultury.revivalages.feature.technology.campfire.blockentity;
 
+import com.protyvkultury.revivalages.api.food.FoodFreshnessApi;
 import com.protyvkultury.revivalages.feature.content.ContentAvailability;
 import com.protyvkultury.revivalages.feature.content.ContentKey;
 import com.protyvkultury.revivalages.feature.technology.campfire.CampfireFeature;
@@ -7,6 +8,7 @@ import com.protyvkultury.revivalages.feature.technology.campfire.block.CampfireB
 import com.protyvkultury.revivalages.feature.technology.campfire.recipe.CampfireRecipeResolver;
 import com.protyvkultury.revivalages.feature.technology.primitive.PrimitiveMaterialsFeature;
 import com.protyvkultury.revivalages.feature.technology.primitive.config.PrimitiveTechnologyConfig;
+import java.util.List;
 import java.util.Optional;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -61,6 +63,15 @@ public final class CampfireBlockEntity extends BlockEntity {
     public static void serverTick(Level level, BlockPos pos, BlockState state, CampfireBlockEntity campfire) {
         if (!ContentAvailability.isEnabled(ContentKey.CAMPFIRE)) {
             return;
+        }
+        ItemStack cooking = campfire.items.get(COOKING_SLOT);
+        ItemStack materialized = FoodFreshnessApi.materialize(cooking);
+        if (materialized != cooking) {
+            campfire.items.set(COOKING_SLOT, materialized);
+            campfire.completed = false;
+            campfire.progress = 0.0D;
+            campfire.resolveRecipe();
+            campfire.sync();
         }
         if (level.getGameTime() % 20L == 0L) {
             campfire.resolveRecipe();
@@ -125,7 +136,14 @@ public final class CampfireBlockEntity extends BlockEntity {
                 / (double) PrimitiveTechnologyConfig.CAMPFIRE_FULL_SPEED_FUEL_LEVEL.get());
         campfire.progress += fuelSpeed;
         if (campfire.progress >= campfire.totalTime) {
-            campfire.items.set(COOKING_SLOT, campfire.recipeOutput.copy());
+            ItemStack input = campfire.items.get(COOKING_SLOT).copy();
+            ItemStack output = campfire.recipeOutput.copy();
+            if (campfire.recipeId != null) {
+                FoodFreshnessApi.transformOutput(output, List.of(input), campfire.recipeId);
+            } else {
+                FoodFreshnessApi.copyOldest(output, List.of(input));
+            }
+            campfire.items.set(COOKING_SLOT, output);
             campfire.completed = true;
             campfire.progress = campfire.totalTime;
             campfire.burnOutputTicks = 0;

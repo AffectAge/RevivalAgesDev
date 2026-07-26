@@ -1,8 +1,10 @@
 package com.protyvkultury.revivalages.feature.technology.barrel.blockentity;
 
 import com.protyvkultury.revivalages.core.interaction.ItemStackInteraction;
+import com.protyvkultury.revivalages.api.food.FoodFreshnessApi;
 import com.protyvkultury.revivalages.feature.content.ContentAvailability;
 import com.protyvkultury.revivalages.feature.content.ContentKey;
+import com.protyvkultury.revivalages.feature.food.spoilage.FoodFreshnessService;
 import com.protyvkultury.revivalages.feature.technology.barrel.BarrelFeature;
 import com.protyvkultury.revivalages.feature.technology.barrel.block.BarrelBlock;
 import com.protyvkultury.revivalages.feature.technology.barrel.recipe.BarrelRecipe;
@@ -76,10 +78,25 @@ public final class BarrelBlockEntity extends BlockEntity {
         if (!ContentAvailability.isEnabled(ContentKey.BARREL)) {
             return;
         }
+        boolean materialized = false;
+        for (int slot = 0; slot < barrel.items.size(); slot++) {
+            ItemStack before = barrel.items.get(slot);
+            ItemStack after = FoodFreshnessApi.materialize(before);
+            if (after != before) {
+                barrel.items.set(slot, after);
+                materialized = true;
+            }
+        }
+        if (materialized) {
+            barrel.resolveRecipe();
+            barrel.sync();
+        }
         if (!state.getValue(BarrelBlock.SEALED)) {
+            barrel.setPreserved(false);
             barrel.collectRain(level, pos);
             return;
         }
+        barrel.setPreserved(true);
         barrel.resolveRecipe();
         if (barrel.activeRecipe == null) {
             barrel.elapsedTicks = 0;
@@ -147,6 +164,7 @@ public final class BarrelBlockEntity extends BlockEntity {
             return ItemStack.EMPTY;
         }
         ItemStack result = items.get(slot);
+        FoodFreshnessApi.removeTrait(result, FoodFreshnessService.PRESERVED);
         items.set(slot, ItemStack.EMPTY);
         elapsedTicks = 0;
         totalTicks = 0;
@@ -174,10 +192,35 @@ public final class BarrelBlockEntity extends BlockEntity {
             Block.popResource(level, worldPosition.above(), lid);
         }
         ItemStackInteraction.playExtractionSound(level, worldPosition);
+        setPreserved(false);
         elapsedTicks = 0;
         totalTicks = 0;
         level.setBlock(worldPosition, getBlockState().setValue(BarrelBlock.SEALED, false), Block.UPDATE_ALL);
         sync();
+    }
+
+    private void setPreserved(boolean preserved) {
+        boolean changed = false;
+        for (ItemStack stack : items) {
+            if (stack.isEmpty()) {
+                continue;
+            }
+            boolean hadTrait = FoodFreshnessApi.state(stack)
+                    .map(state -> state.traits().contains(FoodFreshnessService.PRESERVED))
+                    .orElse(false);
+            if (preserved && !hadTrait) {
+                FoodFreshnessApi.applyTrait(stack, FoodFreshnessService.PRESERVED);
+                changed = FoodFreshnessApi.state(stack)
+                        .map(state -> state.traits().contains(FoodFreshnessService.PRESERVED))
+                        .orElse(false);
+            } else if (!preserved && hadTrait) {
+                FoodFreshnessApi.removeTrait(stack, FoodFreshnessService.PRESERVED);
+                changed = true;
+            }
+        }
+        if (changed) {
+            sync();
+        }
     }
 
     public double progress() {

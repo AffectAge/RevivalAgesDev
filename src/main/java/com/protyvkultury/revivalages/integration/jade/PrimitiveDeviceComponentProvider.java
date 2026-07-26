@@ -9,6 +9,7 @@ import com.protyvkultury.revivalages.feature.technology.choppingblock.blockentit
 import com.protyvkultury.revivalages.feature.technology.pitkiln.block.PitKilnBlock;
 import com.protyvkultury.revivalages.feature.technology.pitkiln.blockentity.PitKilnBlockEntity;
 import com.protyvkultury.revivalages.api.size.SizeApi;
+import com.protyvkultury.revivalages.api.food.FoodFreshnessApi;
 import com.protyvkultury.revivalages.feature.technology.primitive.config.PrimitiveTechnologyConfig;
 import com.protyvkultury.revivalages.feature.technology.soakingpot.blockentity.SoakingPotBlockEntity;
 import com.protyvkultury.revivalages.feature.technology.tanningrack.blockentity.TanningRackBlockEntity;
@@ -108,6 +109,19 @@ public enum PrimitiveDeviceComponentProvider implements IBlockComponentProvider 
     private static void appendBarrel(ITooltip tooltip, BlockAccessor accessor, BarrelBlockEntity barrel) {
         boolean sealed = accessor.getBlockState().getValue(BarrelBlock.SEALED);
         tooltip.add(Component.translatable("jade.revivalages.barrel.state." + (sealed ? "sealed" : "open")));
+        if (sealed) {
+            long nearest = java.util.Arrays.stream(barrel.itemsForView())
+                    .filter(stack -> FoodFreshnessApi.profile(stack).isPresent())
+                    .mapToLong(FoodFreshnessApi::remaining)
+                    .min()
+                    .orElse(Long.MAX_VALUE);
+            if (nearest != Long.MAX_VALUE) {
+                tooltip.add(Component.translatable(
+                        "jade.revivalages.barrel.preservation",
+                        Math.max(0L, nearest / 20L)
+                ));
+            }
+        }
         appendFluid(tooltip, barrel.fluidTank().getFluid(), barrel.fluidTank().getCapacity());
         FluidStack output = barrel.recipeOutput();
         if (!output.isEmpty()) {

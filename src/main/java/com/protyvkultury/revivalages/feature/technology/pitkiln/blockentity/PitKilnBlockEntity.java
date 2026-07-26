@@ -1,5 +1,6 @@
 package com.protyvkultury.revivalages.feature.technology.pitkiln.blockentity;
 
+import com.protyvkultury.revivalages.api.food.FoodFreshnessApi;
 import com.protyvkultury.revivalages.api.size.SizeApi;
 import com.protyvkultury.revivalages.core.interaction.ItemStackInteraction;
 import com.protyvkultury.revivalages.core.machine.BurnableStructureTracker;
@@ -63,6 +64,10 @@ public final class PitKilnBlockEntity extends BlockEntity {
     public static void serverTick(Level level, BlockPos pos, BlockState state, PitKilnBlockEntity kiln) {
         if (!ContentAvailability.isEnabled(ContentKey.PIT_KILN)) {
             return;
+        }
+        if (FoodFreshnessApi.materializeAll(kiln.items)) {
+            kiln.resolveRecipe();
+            kiln.sync();
         }
         if (state.getValue(PitKilnBlock.STAGE) != PitKilnStage.ACTIVE) {
             return;
@@ -316,13 +321,17 @@ public final class PitKilnBlockEntity extends BlockEntity {
         int refractory = countRefractoryBlocks();
         float chance = activeRecipe.failureChance() * (1.0F - refractory / 5.0F);
         int count = items.get(INPUT_SLOT).getCount();
+        ItemStack freshnessInput = items.get(INPUT_SLOT).copy();
         items.set(INPUT_SLOT, ItemStack.EMPTY);
         for (int i = 0; i < count; i++) {
+            ItemStack result;
             if (level.random.nextFloat() < chance) {
-                insertOutput(randomFailure(activeRecipe.failureResults()));
+                result = randomFailure(activeRecipe.failureResults());
             } else {
-                insertOutput(activeRecipe.result());
+                result = activeRecipe.result();
             }
+            FoodFreshnessApi.copyOldest(result, java.util.List.of(freshnessInput));
+            insertOutput(result);
         }
         insertOutput(new ItemStack(PrimitiveMaterialsFeature.PIT_ASH.get(), level.random.nextInt(3) + 1));
         clearFireAbove();

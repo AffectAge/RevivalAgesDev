@@ -1,4 +1,23 @@
 {
+  "effect.revivalages.diet_toughness": "Диетическая выносливость",
+  "screen.revivalages.diet": "Диета",
+  "button.revivalages.diet": "Д",
+  "key.revivalages.open_diet": "Открыть экран диеты",
+  "diet_group.revivalages.dairy": "Молочные продукты",
+  "diet_group.revivalages.fruit": "Фрукты",
+  "diet_group.revivalages.grain": "Злаки",
+  "diet_group.revivalages.protein": "Белок",
+  "diet_group.revivalages.vegetable": "Овощи",
+  "tooltip.revivalages.diet": "Диета: %s",
+  "tooltip.revivalages.food_fresh": "Свежее",
+  "tooltip.revivalages.food_spoiled": "Испорчено",
+  "tooltip.revivalages.food_time_left": "Испортится через %s",
+  "tooltip.revivalages.food_traits": "Сохранение: %s",
+  "food_trait.revivalages.dried": "Высушено",
+  "food_trait.revivalages.preserved": "Законсервировано",
+  "content.revivalages.diet": "Диета",
+  "content.revivalages.food_spoilage": "Порча еды",
+  "jade.revivalages.barrel.preservation": "Законсервировано; ближайшая порча через %s с",
   "block.revivalages.crude_drying_rack": "Примитивная сушилка",
   "block.revivalages.drying_rack": "Сушилка",
   "block.revivalages.campfire": "Костёр",
@@ -293,4 +312,8 @@
   ,"command.revivalages.weight.missing_attribute": "У %s отсутствует атрибут грузоподъёмности"
   ,"command.revivalages.weight.inspect": "%s весит %s г; содержимое весит %s г"
   ,"command.revivalages.weight.inspect_armor": "Броня даёт %s карманов и %s г грузоподъёмности"
+  ,"config.jade.plugin_revivalages.disabled_content": "Состояние отключённого контента"
+  ,"config.jade.plugin_revivalages.construction_frame": "Сведения о строительной раме"
+  ,"config.jade.plugin_revivalages.animal_power": "Сведения о механизмах животной тяги"
+  ,"config.jade.plugin_revivalages.structural_integrity": "Структурная целостность"
 }

@@ -1,5 +1,6 @@
 package com.protyvkultury.revivalages.feature.technology.stonemachine.blockentity;
 
+import com.protyvkultury.revivalages.api.food.FoodFreshnessApi;
 import com.protyvkultury.revivalages.core.interaction.ItemStackInteraction;
 import com.protyvkultury.revivalages.feature.content.ContentAvailability;
 import com.protyvkultury.revivalages.feature.content.ContentKey;
@@ -75,6 +76,9 @@ public final class StoneMachineBlockEntity extends BlockEntity {
     public static void serverTick(Level level, BlockPos pos, BlockState state, StoneMachineBlockEntity machine) {
         if (!ContentAvailability.isEnabled(machine.contentKey())) {
             return;
+        }
+        if (FoodFreshnessApi.materializeAll(machine.items)) {
+            machine.sync();
         }
         machine.decayAirflow();
         if (!machine.isLit()) {
@@ -531,18 +535,22 @@ public final class StoneMachineBlockEntity extends BlockEntity {
 
     private void complete(StoneMachineProcess process) {
         int inputCount = input().getCount();
+        ItemStack freshnessInput = input().copy();
         switch (kind) {
             case SAWMILL -> completeSawmill(process);
             case OVEN -> {
                 ItemStack result = process.itemResult();
                 result.setCount(result.getCount() * inputCount);
+                FoodFreshnessApi.transformOutput(result, List.of(freshnessInput), process.sourceId());
                 items.set(INPUT_SLOT, ItemStack.EMPTY);
                 insertOutput(result);
             }
             case KILN -> {
                 items.set(INPUT_SLOT, ItemStack.EMPTY);
                 for (int index = 0; index < inputCount; index++) {
-                    insertOutput(randomKilnResult(process));
+                    ItemStack result = randomKilnResult(process);
+                    FoodFreshnessApi.transformOutput(result, List.of(freshnessInput), process.sourceId());
+                    insertOutput(result);
                 }
             }
             case CRUCIBLE -> {
@@ -558,11 +566,14 @@ public final class StoneMachineBlockEntity extends BlockEntity {
     }
 
     private void completeSawmill(StoneMachineProcess process) {
+        ItemStack freshnessInput = input().copyWithCount(1);
         items.get(INPUT_SLOT).shrink(1);
         if (items.get(INPUT_SLOT).isEmpty()) {
             items.set(INPUT_SLOT, ItemStack.EMPTY);
         }
-        insertOutput(process.itemResult());
+        ItemStack result = process.itemResult();
+        FoodFreshnessApi.transformOutput(result, List.of(freshnessInput), process.sourceId());
+        insertOutput(result);
         if (PrimitiveTechnologyConfig.STONE_SAWMILL_DAMAGE_BLADES.get()) {
             ItemStack sawBlade = blade();
             sawBlade.setDamageValue(sawBlade.getDamageValue() + 1);

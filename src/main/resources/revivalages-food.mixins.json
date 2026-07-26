@@ -1,0 +1,19 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.protyvkultury.revivalages.feature.food.spoilage.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "ExpiredIngredientMixin",
+    "DietCakeMixin",
+    "FoodCraftingResultMixin",
+    "FoodFurnaceMixin",
+    "FoodHopperMixin",
+    "FoodItemEntityMixin",
+    "FoodSlotMixin",
+    "FoodStackingMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

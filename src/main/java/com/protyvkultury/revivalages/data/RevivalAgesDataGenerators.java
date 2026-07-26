@@ -2,6 +2,8 @@ package com.protyvkultury.revivalages.data;
 
 import com.protyvkultury.revivalages.data.content.ContentAvailabilityDataProvider;
 import com.protyvkultury.revivalages.data.itemsize.ItemSizeDataProvider;
+import com.protyvkultury.revivalages.data.food.FoodSystemsDataProvider;
+import com.protyvkultury.revivalages.data.food.DietIconDataProvider;
 import net.minecraft.server.packs.PackType;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 
@@ -17,10 +19,17 @@ public final class RevivalAgesDataGenerators {
                     output,
                     event.getLookupProvider()
             ));
+            event.createProvider(output -> new FoodSystemsDataProvider(
+                    output,
+                    event.getLookupProvider()
+            ));
             event.createProvider(output -> new ContentAvailabilityDataProvider(
                     output,
                     event.getResourceManager(PackType.SERVER_DATA)
             ));
+        }
+        if (event.includeClient()) {
+            event.createProvider(DietIconDataProvider::new);
         }
     }
 }

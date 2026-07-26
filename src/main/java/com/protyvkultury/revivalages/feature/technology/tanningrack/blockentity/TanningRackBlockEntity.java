@@ -1,5 +1,6 @@
 package com.protyvkultury.revivalages.feature.technology.tanningrack.blockentity;
 
+import com.protyvkultury.revivalages.api.food.FoodFreshnessApi;
 import com.protyvkultury.revivalages.feature.content.ContentAvailability;
 import com.protyvkultury.revivalages.feature.content.ContentKey;
 import com.protyvkultury.revivalages.feature.technology.primitive.config.PrimitiveTechnologyConfig;
@@ -41,6 +42,15 @@ public final class TanningRackBlockEntity extends BlockEntity {
         if (!ContentAvailability.isEnabled(ContentKey.TANNING_RACK)) {
             return;
         }
+        ItemStack materializedInput = FoodFreshnessApi.materialize(rack.input);
+        ItemStack materializedOutput = FoodFreshnessApi.materialize(rack.output);
+        if (materializedInput != rack.input || materializedOutput != rack.output) {
+            rack.input = materializedInput;
+            rack.output = materializedOutput;
+            rack.elapsedTicks = 0;
+            rack.resolveRecipe();
+            rack.sync();
+        }
         rack.resolveRecipe();
         if (rack.activeRecipe == null || rack.input.isEmpty() || !rack.output.isEmpty()) {
             return;
@@ -80,7 +90,9 @@ public final class TanningRackBlockEntity extends BlockEntity {
                 * PrimitiveTechnologyConfig.TANNING_RACK_DURATION_MULTIPLIER.get()));
         rack.elapsedTicks++;
         if (rack.elapsedTicks >= rack.totalTicks) {
-            rack.output = rack.activeRecipe.result();
+            ItemStack result = rack.activeRecipe.result();
+            FoodFreshnessApi.copyOldest(result, java.util.List.of(rack.input.copy()));
+            rack.output = result;
             rack.input = ItemStack.EMPTY;
             rack.elapsedTicks = 0;
             rack.totalTicks = 0;

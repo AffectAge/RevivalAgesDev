@@ -1,0 +1,281 @@
+{
+  "values": {
+    "minecraft:apple": {
+      "replace": true,
+      "value": {
+        "revivalages:fruit": 1.0
+      }
+    },
+    "minecraft:baked_potato": {
+      "replace": true,
+      "value": {
+        "revivalages:vegetable": 1.0
+      }
+    },
+    "minecraft:beef": {
+      "replace": true,
+      "value": {
+        "revivalages:protein": 1.0
+      }
+    },
+    "minecraft:beetroot": {
+      "replace": true,
+      "value": {
+        "revivalages:vegetable": 1.0
+      }
+    },
+    "minecraft:beetroot_soup": {
+      "replace": true,
+      "value": {
+        "revivalages:vegetable": 1.0
+      }
+    },
+    "minecraft:bread": {
+      "replace": true,
+      "value": {
+        "revivalages:grain": 1.0
+      }
+    },
+    "minecraft:brown_mushroom": {
+      "replace": true,
+      "value": {
+        "revivalages:vegetable": 1.0
+      }
+    },
+    "minecraft:cake": {
+      "replace": true,
+      "value": {
+        "revivalages:dairy": 1.0,
+        "revivalages:grain": 1.0
+      }
+    },
+    "minecraft:carrot": {
+      "replace": true,
+      "value": {
+        "revivalages:vegetable": 1.0
+      }
+    },
+    "minecraft:chicken": {
+      "replace": true,
+      "value": {
+        "revivalages:protein": 1.0
+      }
+    },
+    "minecraft:chorus_fruit": {
+      "replace": true,
+      "value": {
+        "revivalages:fruit": 1.0
+      }
+    },
+    "minecraft:cod": {
+      "replace": true,
+      "value": {
+        "revivalages:protein": 1.0
+      }
+    },
+    "minecraft:cooked_beef": {
+      "replace": true,
+      "value": {
+        "revivalages:protein": 1.0
+      }
+    },
+    "minecraft:cooked_chicken": {
+      "replace": true,
+      "value": {
+        "revivalages:protein": 1.0
+      }
+    },
+    "minecraft:cooked_cod": {
+      "replace": true,
+      "value": {
+        "revivalages:protein": 1.0
+      }
+    },
+    "minecraft:cooked_mutton": {
+      "replace": true,
+      "value": {
+        "revivalages:protein": 1.0
+      }
+    },
+    "minecraft:cooked_porkchop": {
+      "replace": true,
+      "value": {
+        "revivalages:protein": 1.0
+      }
+    },
+    "minecraft:cooked_rabbit": {
+      "replace": true,
+      "value": {
+        "revivalages:protein": 1.0
+      }
+    },
+    "minecraft:cooked_salmon": {
+      "replace": true,
+      "value": {
+        "revivalages:protein": 1.0
+      }
+    },
+    "minecraft:cookie": {
+      "replace": true,
+      "value": {
+        "revivalages:grain": 1.0
+      }
+    },
+    "minecraft:dried_kelp": {
+      "replace": true,
+      "value": {
+        "revivalages:vegetable": 1.0
+      }
+    },
+    "minecraft:egg": {
+      "replace": true,
+      "value": {
+        "revivalages:protein": 1.0
+      }
+    },
+    "minecraft:enchanted_golden_apple": {
+      "replace": true,
+      "value": {
+        "revivalages:dairy": 1.0,
+        "revivalages:fruit": 1.0,
+        "revivalages:grain": 1.0,
+        "revivalages:protein": 1.0,
+        "revivalages:vegetable": 1.0
+      }
+    },
+    "minecraft:glow_berries": {
+      "replace": true,
+      "value": {
+        "revivalages:fruit": 1.0
+      }
+    },
+    "minecraft:golden_apple": {
+      "replace": true,
+      "value": {
+        "revivalages:fruit": 1.0
+      }
+    },
+    "minecraft:golden_carrot": {
+      "replace": true,
+      "value": {
+        "revivalages:vegetable": 1.0
+      }
+    },
+    "minecraft:honey_bottle": {
+      "replace": true,
+      "value": {
+        "revivalages:fruit": 1.0
+      }
+    },
+    "minecraft:melon_slice": {
+      "replace": true,
+      "value": {
+        "revivalages:fruit": 1.0
+      }
+    },
+    "minecraft:milk_bucket": {
+      "replace": true,
+      "value": {
+        "revivalages:dairy": 1.0
+      }
+    },
+    "minecraft:mushroom_stew": {
+      "replace": true,
+      "value": {
+        "revivalages:vegetable": 1.0
+      }
+    },
+    "minecraft:mutton": {
+      "replace": true,
+      "value": {
+        "revivalages:protein": 1.0
+      }
+    },
+    "minecraft:poisonous_potato": {
+      "replace": true,
+      "value": {
+        "revivalages:vegetable": 1.0
+      }
+    },
+    "minecraft:porkchop": {
+      "replace": true,
+      "value": {
+        "revivalages:protein": 1.0
+      }
+    },
+    "minecraft:potato": {
+      "replace": true,
+      "value": {
+        "revivalages:vegetable": 1.0
+      }
+    },
+    "minecraft:pufferfish": {
+      "replace": true,
+      "value": {
+        "revivalages:protein": 1.0
+      }
+    },
+    "minecraft:pumpkin_pie": {
+      "replace": true,
+      "value": {
+        "revivalages:grain": 1.0,
+        "revivalages:vegetable": 1.0
+      }
+    },
+    "minecraft:rabbit": {
+      "replace": true,
+      "value": {
+        "revivalages:protein": 1.0
+      }
+    },
+    "minecraft:rabbit_stew": {
+      "replace": true,
+      "value": {
+        "revivalages:protein": 1.0,
+        "revivalages:vegetable": 1.0
+      }
+    },
+    "minecraft:red_mushroom": {
+      "replace": true,
+      "value": {
+        "revivalages:vegetable": 1.0
+      }
+    },
+    "minecraft:salmon": {
+      "replace": true,
+      "value": {
+        "revivalages:protein": 1.0
+      }
+    },
+    "minecraft:spider_eye": {
+      "replace": true,
+      "value": {
+        "revivalages:protein": 1.0
+      }
+    },
+    "minecraft:suspicious_stew": {
+      "replace": true,
+      "value": {
+        "revivalages:vegetable": 1.0
+      }
+    },
+    "minecraft:sweet_berries": {
+      "replace": true,
+      "value": {
+        "revivalages:fruit": 1.0
+      }
+    },
+    "minecraft:tropical_fish": {
+      "replace": true,
+      "value": {
+        "revivalages:protein": 1.0
+      }
+    },
+    "minecraft:wheat": {
+      "replace": true,
+      "value": {
+        "revivalages:grain": 1.0
+      }
+    }
+  }
+}

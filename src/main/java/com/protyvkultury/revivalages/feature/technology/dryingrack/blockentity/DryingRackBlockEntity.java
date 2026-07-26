@@ -1,5 +1,7 @@
 package com.protyvkultury.revivalages.feature.technology.dryingrack.blockentity;
 
+import com.protyvkultury.revivalages.api.food.FoodFreshnessApi;
+import com.protyvkultury.revivalages.feature.food.spoilage.FoodFreshnessService;
 import com.protyvkultury.revivalages.feature.content.ContentAvailability;
 import com.protyvkultury.revivalages.feature.content.ContentKey;
 import com.protyvkultury.revivalages.feature.technology.dryingrack.DryingRackFeature;
@@ -99,6 +101,22 @@ public final class DryingRackBlockEntity extends BlockEntity {
     public static void serverTick(Level level, BlockPos pos, BlockState state, DryingRackBlockEntity rack) {
         if (!ContentAvailability.isEnabled(rack.contentKey())) {
             return;
+        }
+        boolean materialized = false;
+        for (int slot = 0; slot < rack.items.size(); slot++) {
+            ItemStack before = rack.items.get(slot);
+            ItemStack after = FoodFreshnessApi.materialize(before);
+            if (after != before) {
+                rack.items.set(slot, after);
+                rack.completed[slot] = false;
+                rack.activeRecipes[slot] = null;
+                rack.recipeIds[slot] = null;
+                materialized = true;
+            }
+        }
+        if (materialized) {
+            rack.refreshRecipes(level);
+            rack.sync();
         }
         if (level.getGameTime() % ENVIRONMENT_UPDATE_INTERVAL == 0L) {
             rack.environment = DryingEnvironmentCalculator.snapshot(
@@ -234,7 +252,11 @@ public final class DryingRackBlockEntity extends BlockEntity {
             }
             remainingTimes[slot] = Math.max(0.0D, Math.min(totalTimes[slot], remainingTimes[slot] - speed));
             if (remainingTimes[slot] <= 0.0D) {
-                items.set(slot, recipe.assemble(new SingleRecipeInput(items.get(slot)), level.registryAccess()));
+                ItemStack input = items.get(slot).copy();
+                ItemStack output = recipe.assemble(new SingleRecipeInput(items.get(slot)), level.registryAccess());
+                FoodFreshnessApi.copyOldest(output, List.of(input));
+                FoodFreshnessApi.applyTrait(output, FoodFreshnessService.DRIED);
+                items.set(slot, output);
                 completed[slot] = true;
                 recipeIds[slot] = null;
                 activeRecipes[slot] = null;

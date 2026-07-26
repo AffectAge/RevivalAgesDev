@@ -1,0 +1,256 @@
+{
+  "values": {
+    "minecraft:apple": {
+      "replace": true,
+      "value": {
+        "decay_modifier": 1.7
+      }
+    },
+    "minecraft:baked_potato": {
+      "replace": true,
+      "value": {
+        "decay_modifier": 1.0
+      }
+    },
+    "minecraft:beef": {
+      "replace": true,
+      "value": {
+        "decay_modifier": 2.0
+      }
+    },
+    "minecraft:beetroot": {
+      "replace": true,
+      "value": {
+        "decay_modifier": 0.5
+      }
+    },
+    "minecraft:beetroot_soup": {
+      "replace": true,
+      "value": {
+        "decay_modifier": 4.5
+      }
+    },
+    "minecraft:bread": {
+      "replace": true,
+      "value": {
+        "decay_modifier": 1.0
+      }
+    },
+    "minecraft:brown_mushroom": {
+      "replace": true,
+      "value": {
+        "decay_modifier": 0.5
+      }
+    },
+    "minecraft:cake": {
+      "replace": true,
+      "value": {
+        "decay_modifier": 4.5
+      }
+    },
+    "minecraft:carrot": {
+      "replace": true,
+      "value": {
+        "decay_modifier": 0.5
+      }
+    },
+    "minecraft:chicken": {
+      "replace": true,
+      "value": {
+        "decay_modifier": 3.0
+      }
+    },
+    "minecraft:chorus_fruit": {
+      "replace": true,
+      "value": {
+        "decay_modifier": 1.7
+      }
+    },
+    "minecraft:cod": {
+      "replace": true,
+      "value": {
+        "decay_modifier": 3.0
+      }
+    },
+    "minecraft:cooked_beef": {
+      "replace": true,
+      "value": {
+        "decay_modifier": 1.5
+      }
+    },
+    "minecraft:cooked_chicken": {
+      "replace": true,
+      "value": {
+        "decay_modifier": 2.25
+      }
+    },
+    "minecraft:cooked_cod": {
+      "replace": true,
+      "value": {
+        "decay_modifier": 2.25
+      }
+    },
+    "minecraft:cooked_mutton": {
+      "replace": true,
+      "value": {
+        "decay_modifier": 2.25
+      }
+    },
+    "minecraft:cooked_porkchop": {
+      "replace": true,
+      "value": {
+        "decay_modifier": 1.5
+      }
+    },
+    "minecraft:cooked_rabbit": {
+      "replace": true,
+      "value": {
+        "decay_modifier": 2.25
+      }
+    },
+    "minecraft:cooked_salmon": {
+      "replace": true,
+      "value": {
+        "decay_modifier": 2.25
+      }
+    },
+    "minecraft:cookie": {
+      "replace": true,
+      "value": {
+        "decay_modifier": 4.5
+      }
+    },
+    "minecraft:dried_kelp": {
+      "replace": true,
+      "value": {
+        "decay_modifier": 2.5
+      }
+    },
+    "minecraft:egg": {
+      "replace": true,
+      "value": {
+        "decay_modifier": 2.0
+      }
+    },
+    "minecraft:glow_berries": {
+      "replace": true,
+      "value": {
+        "decay_modifier": 4.9
+      }
+    },
+    "minecraft:melon_slice": {
+      "replace": true,
+      "value": {
+        "decay_modifier": 2.5
+      }
+    },
+    "minecraft:milk_bucket": {
+      "replace": true,
+      "value": {
+        "decay_modifier": 4.5
+      }
+    },
+    "minecraft:mushroom_stew": {
+      "replace": true,
+      "value": {
+        "decay_modifier": 4.5
+      }
+    },
+    "minecraft:mutton": {
+      "replace": true,
+      "value": {
+        "decay_modifier": 3.0
+      }
+    },
+    "minecraft:poisonous_potato": {
+      "replace": true,
+      "value": {
+        "decay_modifier": 0.666
+      }
+    },
+    "minecraft:porkchop": {
+      "replace": true,
+      "value": {
+        "decay_modifier": 2.0
+      }
+    },
+    "minecraft:potato": {
+      "replace": true,
+      "value": {
+        "decay_modifier": 0.666
+      }
+    },
+    "minecraft:pufferfish": {
+      "replace": true,
+      "value": {
+        "decay_modifier": 3.0
+      }
+    },
+    "minecraft:pumpkin_pie": {
+      "replace": true,
+      "value": {
+        "decay_modifier": 2.5
+      }
+    },
+    "minecraft:rabbit": {
+      "replace": true,
+      "value": {
+        "decay_modifier": 3.0
+      }
+    },
+    "minecraft:rabbit_stew": {
+      "replace": true,
+      "value": {
+        "decay_modifier": 4.5
+      }
+    },
+    "minecraft:red_mushroom": {
+      "replace": true,
+      "value": {
+        "decay_modifier": 0.5
+      }
+    },
+    "minecraft:salmon": {
+      "replace": true,
+      "value": {
+        "decay_modifier": 3.0
+      }
+    },
+    "minecraft:spider_eye": {
+      "replace": true,
+      "value": {
+        "decay_modifier": 3.0
+      }
+    },
+    "minecraft:sugar": {
+      "replace": true,
+      "value": {
+        "decay_modifier": 0.5
+      }
+    },
+    "minecraft:suspicious_stew": {
+      "replace": true,
+      "value": {
+        "decay_modifier": 4.5
+      }
+    },
+    "minecraft:sweet_berries": {
+      "replace": true,
+      "value": {
+        "decay_modifier": 4.9
+      }
+    },
+    "minecraft:tropical_fish": {
+      "replace": true,
+      "value": {
+        "decay_modifier": 3.0
+      }
+    },
+    "minecraft:wheat": {
+      "replace": true,
+      "value": {
+        "decay_modifier": 2.0
+      }
+    }
+  }
+}

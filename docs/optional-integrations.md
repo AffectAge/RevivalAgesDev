@@ -57,3 +57,5 @@ from the compatible 1.21.1 release when implementing an adapter.
 - [Knapping](knapping.md#optional-integration-assessment)
 - [Item Size](item-size.md#optional-integration-assessment)
 - [Carried Weight](carried-weight.md#optional-integration-assessment)
+- [Diet](diet.md#optional-integration-assessment)
+- [Food Spoilage](food-spoilage.md#optional-integration-assessment)

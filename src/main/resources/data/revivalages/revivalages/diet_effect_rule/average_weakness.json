@@ -1,0 +1,7 @@
+{
+  "effect": "minecraft:weakness",
+  "amplifier": 0,
+  "minimum": 0.0,
+  "maximum": 10.0,
+  "detector": "average"
+}
