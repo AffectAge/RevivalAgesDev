@@ -26,6 +26,7 @@ public final class RevivalAgesJadePlugin implements IWailaPlugin {
     @Override
     public void registerClient(IWailaClientRegistration registration) {
         registration.registerBlockComponent(DisabledContentComponentProvider.INSTANCE, Block.class);
+        registration.registerBlockComponent(ItemSizeComponentProvider.INSTANCE, Block.class);
         registration.registerBlockComponent(DryingRackComponentProvider.INSTANCE, AbstractDryingRackBlock.class);
         registration.registerBlockComponent(PrimitiveDeviceComponentProvider.INSTANCE, CampfireBlock.class);
         registration.registerBlockComponent(PrimitiveDeviceComponentProvider.INSTANCE, ChoppingBlock.class);

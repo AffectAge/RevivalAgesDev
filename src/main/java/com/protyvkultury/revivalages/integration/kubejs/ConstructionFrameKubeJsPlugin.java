@@ -17,6 +17,7 @@ import dev.latvian.mods.kubejs.recipe.schema.RecipeConstructor;
 import dev.latvian.mods.kubejs.recipe.schema.RecipeSchema;
 import dev.latvian.mods.kubejs.recipe.schema.RecipeSchemaRegistry;
 import dev.latvian.mods.kubejs.recipe.schema.RecipeSchemaType;
+import dev.latvian.mods.kubejs.script.BindingRegistry;
 import dev.latvian.mods.kubejs.util.IntBounds;
 import dev.latvian.mods.kubejs.util.TinyMap;
 import java.util.List;
@@ -98,5 +99,10 @@ public final class ConstructionFrameKubeJsPlugin implements KubeJSPlugin {
         registry.register(RevivalAges.id("knapping"), KNAPPING_SCHEMA);
         registry.register(RevivalAges.id("collapse"), BLOCK_TRANSFORMATION_SCHEMA);
         registry.register(RevivalAges.id("landslide"), BLOCK_TRANSFORMATION_SCHEMA);
+    }
+
+    @Override
+    public void registerBindings(BindingRegistry registry) {
+        registry.add("RevivalAgesItemSize", ItemSizeScriptBindings.INSTANCE);
     }
 }

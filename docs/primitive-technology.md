@@ -24,7 +24,10 @@ data conditions, inert saved machines, and integration filtering follow
 4. Load a Pit Kiln, cover it with thatch, add three logs, validate its surrounding
    structure, and ignite it. An active kiln maintains a real fire block above it.
    A broken structure receives a 100-tick recovery window before its contents
-   fail. Rain can extinguish it and recipes may define failure products.
+   fail. Rain can extinguish it and recipes may define failure products. When
+   Item Size is enabled, the effective input capacity is four items through the
+   configured batchable size and one larger item by default; existing inputs are
+   preserved across reload.
 5. Fill a Barrel with water and leaves, close it with a Barrel Lid, and wait for
    tannin. Open barrels collect rain based on continuous exposure. Breaking an
    open barrel drops its contents separately; breaking a sealed barrel produces

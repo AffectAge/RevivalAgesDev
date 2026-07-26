@@ -105,7 +105,7 @@ class ContentResourceGateTest {
         while (matcher.find()) {
             keys.add(matcher.group(1));
         }
-        assertEquals(35, keys.size(), "content key declaration count");
+        assertEquals(36, keys.size(), "content key declaration count");
         return Set.copyOf(keys);
     }
 }

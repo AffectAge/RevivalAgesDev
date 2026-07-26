@@ -41,6 +41,7 @@ warning when a child is configured `true` below a disabled parent.
 
 | Content ID | Parent | Owning server config path |
 | --- | --- | --- |
+| `revivalages:item_size` | — | `revivalages-item-size-server.toml`: `itemSize.enabled` |
 | `revivalages:surface_deposits` | — | `revivalages-surface-deposits-server.toml`: `surfaceDeposits.enabled` |
 | `revivalages:surface_rocks` | `surface_deposits` | `surfaceDeposits.rocksEnabled` |
 | `revivalages:surface_sticks` | `surface_deposits` | `surfaceDeposits.sticksEnabled` |

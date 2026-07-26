@@ -12,6 +12,8 @@ import net.minecraft.resources.ResourceLocation;
  * acquisition, presentation, and behavior.</p>
  */
 public enum ContentKey {
+    ITEM_SIZE("item_size"),
+
     SURFACE_DEPOSITS("surface_deposits"),
     SURFACE_ROCKS("surface_rocks", SURFACE_DEPOSITS),
     SURFACE_STICKS("surface_sticks", SURFACE_DEPOSITS),

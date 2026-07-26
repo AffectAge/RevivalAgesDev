@@ -8,6 +8,7 @@ import com.protyvkultury.revivalages.feature.technology.choppingblock.block.Chop
 import com.protyvkultury.revivalages.feature.technology.choppingblock.blockentity.ChoppingBlockEntity;
 import com.protyvkultury.revivalages.feature.technology.pitkiln.block.PitKilnBlock;
 import com.protyvkultury.revivalages.feature.technology.pitkiln.blockentity.PitKilnBlockEntity;
+import com.protyvkultury.revivalages.api.size.SizeApi;
 import com.protyvkultury.revivalages.feature.technology.primitive.config.PrimitiveTechnologyConfig;
 import com.protyvkultury.revivalages.feature.technology.soakingpot.blockentity.SoakingPotBlockEntity;
 import com.protyvkultury.revivalages.feature.technology.tanningrack.blockentity.TanningRackBlockEntity;
@@ -89,6 +90,15 @@ public enum PrimitiveDeviceComponentProvider implements IBlockComponentProvider 
                     kiln.invalidStructureTicks(), kiln.maximumInvalidStructureTicks()));
         }
         tooltip.add(Component.translatable("jade.revivalages.pit_kiln.logs", kiln.logCount(), 3));
+        if (!kiln.input().isEmpty()) {
+            tooltip.add(Component.translatable(
+                    "jade.revivalages.pit_kiln.item_size",
+                    Component.translatable(
+                            "size.revivalages." + SizeApi.getSize(kiln.input()).getSerializedName()
+                    ),
+                    kiln.maximumInputCount(kiln.input())
+            ));
+        }
         appendItemProgress(tooltip, kiln.input(), kiln.recipeOutput(), kiln.progress());
         if (!kiln.displayOutput().isEmpty()) {
             tooltip.add(Component.translatable("jade.revivalages.primitive.ready_item", kiln.displayOutput().getHoverName()));

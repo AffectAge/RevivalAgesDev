@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.protyvkultury.revivalages.feature.inventory.itemsize.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "ChestBlockEntityMixin",
+    "ChestSlotMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

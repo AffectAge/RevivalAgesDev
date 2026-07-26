@@ -43,6 +43,20 @@ The thirteen functional source recordings
 `assets/revivalages/sounds/structural/` and
 `assets/revivalages/sounds/knapping/` paths.
 
+Item Size ordering, dynamic item/block providers, data-driven item
+classification, chest and bundle insertion restrictions, and placed-item
+capacity behavior were additionally adapted from the same source. The original
+Java paths `common/component/size/Size.java`,
+`common/component/size/IItemSize.java`,
+`common/component/size/ItemSizeDefinition.java`,
+`common/component/size/ItemSizeManager.java`,
+`common/blockentities/TFCChestBlockEntity.java`,
+`common/items/TFCBundleItem.java`, and
+`common/blockentities/PlacedItemBlockEntity.java` were adapted into
+`api/size`, `feature/inventory/itemsize`, the Pit Kiln integration, and the
+corresponding generated data maps. Revival Ages intentionally implements only
+the size half of the source inventory policy.
+
 ## YTech
 
 Construction Frame interaction semantics, the 3x3x3 recipe format, four-way

@@ -1,6 +1,7 @@
 package com.protyvkultury.revivalages.feature;
 
 import com.protyvkultury.revivalages.feature.core.CoreFeature;
+import com.protyvkultury.revivalages.feature.inventory.itemsize.ItemSizeFeature;
 import com.protyvkultury.revivalages.feature.technology.primitive.PrimitiveMaterialsFeature;
 import com.protyvkultury.revivalages.feature.technology.animalpower.AnimalPowerFeature;
 import com.protyvkultury.revivalages.feature.technology.constructionframe.ConstructionFrameFeature;
@@ -33,6 +34,7 @@ public final class ModFeatures {
 
     private static final List<FeatureModule> FEATURES = List.of(
             new CoreFeature(),
+            new ItemSizeFeature(),
             new PrimitiveMaterialsFeature(),
             new KnappingFeature(),
             new ConstructionFrameFeature(),

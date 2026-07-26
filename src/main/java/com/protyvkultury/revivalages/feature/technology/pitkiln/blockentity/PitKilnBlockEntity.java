@@ -1,5 +1,6 @@
 package com.protyvkultury.revivalages.feature.technology.pitkiln.blockentity;
 
+import com.protyvkultury.revivalages.api.size.SizeApi;
 import com.protyvkultury.revivalages.core.interaction.ItemStackInteraction;
 import com.protyvkultury.revivalages.core.machine.BurnableStructureTracker;
 import com.protyvkultury.revivalages.feature.content.ContentAvailability;
@@ -169,7 +170,7 @@ public final class PitKilnBlockEntity extends BlockEntity {
         }
         ItemStack current = items.get(INPUT_SLOT);
         return (current.isEmpty() || ItemStack.isSameItemSameComponents(current, stack))
-                && current.getCount() < PrimitiveTechnologyConfig.PIT_KILN_MAX_STACK_SIZE.get()
+                && current.getCount() < maximumInputCount(stack)
                 && findRecipe(stack).isPresent();
     }
 
@@ -195,6 +196,14 @@ public final class PitKilnBlockEntity extends BlockEntity {
         activeRecipe = null;
         sync();
         return result;
+    }
+
+    public int maximumInputCount(ItemStack stack) {
+        int configuredMaximum = PrimitiveTechnologyConfig.PIT_KILN_MAX_STACK_SIZE.get();
+        if (stack.isEmpty()) {
+            return configuredMaximum;
+        }
+        return SizeApi.maximumPlacedInputCount(stack, configuredMaximum);
     }
 
     public void addThatch() {
@@ -259,7 +268,7 @@ public final class PitKilnBlockEntity extends BlockEntity {
             return;
         }
         int count = items.get(INPUT_SLOT).getCount();
-        int max = PrimitiveTechnologyConfig.PIT_KILN_MAX_STACK_SIZE.get();
+        int max = maximumInputCount(items.get(INPUT_SLOT));
         double percentage = max <= 1 ? 1.0D : (count - 1) / (double) (max - 1);
         double variable = PrimitiveTechnologyConfig.PIT_KILN_VARIABLE_SPEED.get();
         double scalar = (1.0D - variable) * percentage + variable;

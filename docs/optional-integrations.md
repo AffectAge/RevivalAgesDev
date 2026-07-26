@@ -55,3 +55,4 @@ from the compatible 1.21.1 release when implementing an adapter.
 - [Construction Frame](construction-frame.md#optional-integration-assessment)
 - [Structural Integrity](structural-integrity.md#optional-integration-assessment)
 - [Knapping](knapping.md#optional-integration-assessment)
+- [Item Size](item-size.md#optional-integration-assessment)

@@ -65,6 +65,7 @@ com.protyvkultury.revivalages
 |-- data/                     datagen providers
 |-- feature/
 |   |-- core/                 universally required foundation
+|   |-- inventory/            inventory classification and container policies
 |   |-- progression/          age/progression rules and unlocks
 |   |-- survival/             survival interactions
 |   |-- technology/           processing and machines
@@ -117,6 +118,12 @@ because registry sets must agree between server, client, saves, and data packs.
 
 Choose the narrowest owner with the correct lifetime. Persist only the minimum
 state and define migration/default behavior before changing a serialized format.
+
+Item Size keeps its stable extension contracts under `api/size` and its
+configuration, synchronization, tooltip, and vanilla adapters under
+`feature/inventory/itemsize`. Synchronized item and container data maps are the
+classification source; a container enforces a policy only through an explicit
+adapter or `SizeApi` call.
 
 Primitive technology is a coordinated feature family below `feature/technology`.
 Each machine owns its block, block entity, and recipe type, while shared materials,

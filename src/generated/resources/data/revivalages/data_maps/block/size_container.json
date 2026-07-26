@@ -1,0 +1,10 @@
+{
+  "values": {
+    "minecraft:chest": {
+      "max_size": "large"
+    },
+    "minecraft:trapped_chest": {
+      "max_size": "large"
+    }
+  }
+}

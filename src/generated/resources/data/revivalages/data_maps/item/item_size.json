@@ -1,0 +1,444 @@
+{
+  "values": {
+    "#c:buckets": {
+      "replace": true,
+      "value": "large"
+    },
+    "#c:chests": {
+      "replace": true,
+      "value": "large"
+    },
+    "#c:dusts": {
+      "replace": true,
+      "value": "very_small"
+    },
+    "#c:dyes": {
+      "replace": true,
+      "value": "tiny"
+    },
+    "#c:foods": {
+      "replace": true,
+      "value": "small"
+    },
+    "#c:ingots": {
+      "replace": true,
+      "value": "large"
+    },
+    "#c:minecarts": {
+      "replace": true,
+      "value": "very_large"
+    },
+    "#c:rods": {
+      "replace": true,
+      "value": "normal"
+    },
+    "#c:tools/fishing_rod": {
+      "replace": true,
+      "value": "very_large"
+    },
+    "#c:tools/hammer": {
+      "replace": true,
+      "value": "very_large"
+    },
+    "#c:tools/melee_weapon": {
+      "replace": true,
+      "value": "very_large"
+    },
+    "#c:tools/ranged_weapon": {
+      "replace": true,
+      "value": "very_large"
+    },
+    "#c:tools/saw": {
+      "replace": true,
+      "value": "very_large"
+    },
+    "#c:tools/shield": {
+      "replace": true,
+      "value": "very_large"
+    },
+    "#minecraft:boats": {
+      "replace": true,
+      "value": "very_large"
+    },
+    "#minecraft:doors": {
+      "replace": true,
+      "value": "very_large"
+    },
+    "#minecraft:hanging_signs": {
+      "replace": true,
+      "value": "very_small"
+    },
+    "#minecraft:hoes": {
+      "replace": true,
+      "value": "very_large"
+    },
+    "#minecraft:logs": {
+      "replace": true,
+      "value": "very_large"
+    },
+    "#minecraft:pickaxes": {
+      "replace": true,
+      "value": "very_large"
+    },
+    "#minecraft:rails": {
+      "replace": true,
+      "value": "large"
+    },
+    "#minecraft:shovels": {
+      "replace": true,
+      "value": "very_large"
+    },
+    "#minecraft:signs": {
+      "replace": true,
+      "value": "very_small"
+    },
+    "#minecraft:slabs": {
+      "replace": true,
+      "value": "small"
+    },
+    "#minecraft:stairs": {
+      "replace": true,
+      "value": "small"
+    },
+    "#minecraft:trapdoors": {
+      "replace": true,
+      "value": "large"
+    },
+    "minecraft:anvil": {
+      "replace": true,
+      "value": "huge"
+    },
+    "minecraft:bowl": {
+      "replace": true,
+      "value": "small"
+    },
+    "minecraft:chipped_anvil": {
+      "replace": true,
+      "value": "huge"
+    },
+    "minecraft:damaged_anvil": {
+      "replace": true,
+      "value": "huge"
+    },
+    "minecraft:glass_bottle": {
+      "replace": true,
+      "value": "normal"
+    },
+    "revivalages:acacia_stick": {
+      "replace": true,
+      "value": "very_small"
+    },
+    "revivalages:acacia_support_beam": {
+      "replace": true,
+      "value": "large"
+    },
+    "revivalages:andesite_rock": {
+      "replace": true,
+      "value": "very_small"
+    },
+    "revivalages:andesite_splitter": {
+      "replace": true,
+      "value": "very_small"
+    },
+    "revivalages:anvil": {
+      "replace": true,
+      "value": "huge"
+    },
+    "revivalages:bamboo_stick": {
+      "replace": true,
+      "value": "very_small"
+    },
+    "revivalages:bamboo_support_beam": {
+      "replace": true,
+      "value": "large"
+    },
+    "revivalages:barrel": {
+      "replace": true,
+      "value": "huge"
+    },
+    "revivalages:barrel_lid": {
+      "replace": true,
+      "value": "large"
+    },
+    "revivalages:birch_stick": {
+      "replace": true,
+      "value": "very_small"
+    },
+    "revivalages:birch_support_beam": {
+      "replace": true,
+      "value": "large"
+    },
+    "revivalages:bone_saw_blade": {
+      "replace": true,
+      "value": "normal"
+    },
+    "revivalages:burned_food": {
+      "replace": true,
+      "value": "small"
+    },
+    "revivalages:cherry_stick": {
+      "replace": true,
+      "value": "very_small"
+    },
+    "revivalages:cherry_support_beam": {
+      "replace": true,
+      "value": "large"
+    },
+    "revivalages:chopping_block": {
+      "replace": true,
+      "value": "very_large"
+    },
+    "revivalages:clay_bucket": {
+      "replace": true,
+      "value": "large"
+    },
+    "revivalages:cobblestone_splitter": {
+      "replace": true,
+      "value": "very_small"
+    },
+    "revivalages:construction_frame": {
+      "replace": true,
+      "value": "small"
+    },
+    "revivalages:crimson_stick": {
+      "replace": true,
+      "value": "very_small"
+    },
+    "revivalages:crude_drying_rack": {
+      "replace": true,
+      "value": "large"
+    },
+    "revivalages:dark_oak_stick": {
+      "replace": true,
+      "value": "very_small"
+    },
+    "revivalages:dark_oak_support_beam": {
+      "replace": true,
+      "value": "large"
+    },
+    "revivalages:diorite_rock": {
+      "replace": true,
+      "value": "very_small"
+    },
+    "revivalages:diorite_splitter": {
+      "replace": true,
+      "value": "very_small"
+    },
+    "revivalages:drying_rack": {
+      "replace": true,
+      "value": "large"
+    },
+    "revivalages:end_stone_rock": {
+      "replace": true,
+      "value": "very_small"
+    },
+    "revivalages:end_stone_splitter": {
+      "replace": true,
+      "value": "very_small"
+    },
+    "revivalages:flint_and_tinder": {
+      "replace": true,
+      "value": "large"
+    },
+    "revivalages:flint_saw_blade": {
+      "replace": true,
+      "value": "normal"
+    },
+    "revivalages:granite_rock": {
+      "replace": true,
+      "value": "very_small"
+    },
+    "revivalages:granite_splitter": {
+      "replace": true,
+      "value": "very_small"
+    },
+    "revivalages:gravel_rock": {
+      "replace": true,
+      "value": "very_small"
+    },
+    "revivalages:hand_grindstone": {
+      "replace": true,
+      "value": "very_large"
+    },
+    "revivalages:horse_chopping_block": {
+      "replace": true,
+      "value": "huge"
+    },
+    "revivalages:horse_grindstone": {
+      "replace": true,
+      "value": "huge"
+    },
+    "revivalages:horse_press": {
+      "replace": true,
+      "value": "huge"
+    },
+    "revivalages:jungle_stick": {
+      "replace": true,
+      "value": "very_small"
+    },
+    "revivalages:jungle_support_beam": {
+      "replace": true,
+      "value": "large"
+    },
+    "revivalages:log_pile": {
+      "replace": true,
+      "value": "very_large"
+    },
+    "revivalages:mangrove_stick": {
+      "replace": true,
+      "value": "very_small"
+    },
+    "revivalages:mangrove_support_beam": {
+      "replace": true,
+      "value": "large"
+    },
+    "revivalages:netherrack_rock": {
+      "replace": true,
+      "value": "very_small"
+    },
+    "revivalages:netherrack_splitter": {
+      "replace": true,
+      "value": "very_small"
+    },
+    "revivalages:oak_stick": {
+      "replace": true,
+      "value": "very_small"
+    },
+    "revivalages:oak_support_beam": {
+      "replace": true,
+      "value": "large"
+    },
+    "revivalages:pit_ash": {
+      "replace": true,
+      "value": "very_small"
+    },
+    "revivalages:pit_kiln": {
+      "replace": true,
+      "value": "large"
+    },
+    "revivalages:raw_hide": {
+      "replace": true,
+      "value": "small"
+    },
+    "revivalages:red_sand_rock": {
+      "replace": true,
+      "value": "very_small"
+    },
+    "revivalages:red_sandstone_splitter": {
+      "replace": true,
+      "value": "very_small"
+    },
+    "revivalages:rock": {
+      "replace": true,
+      "value": "very_small"
+    },
+    "revivalages:sand_rock": {
+      "replace": true,
+      "value": "very_small"
+    },
+    "revivalages:sandstone_splitter": {
+      "replace": true,
+      "value": "very_small"
+    },
+    "revivalages:scraped_hide": {
+      "replace": true,
+      "value": "small"
+    },
+    "revivalages:soaking_pot": {
+      "replace": true,
+      "value": "huge"
+    },
+    "revivalages:soul_soil_rock": {
+      "replace": true,
+      "value": "very_small"
+    },
+    "revivalages:soul_soil_splitter": {
+      "replace": true,
+      "value": "very_small"
+    },
+    "revivalages:spruce_stick": {
+      "replace": true,
+      "value": "very_small"
+    },
+    "revivalages:spruce_support_beam": {
+      "replace": true,
+      "value": "large"
+    },
+    "revivalages:stone_crucible": {
+      "replace": true,
+      "value": "huge"
+    },
+    "revivalages:stone_hammer": {
+      "replace": true,
+      "value": "very_large"
+    },
+    "revivalages:stone_kiln": {
+      "replace": true,
+      "value": "huge"
+    },
+    "revivalages:stone_oven": {
+      "replace": true,
+      "value": "huge"
+    },
+    "revivalages:stone_saw_blade": {
+      "replace": true,
+      "value": "normal"
+    },
+    "revivalages:stone_sawmill": {
+      "replace": true,
+      "value": "huge"
+    },
+    "revivalages:straw": {
+      "replace": true,
+      "value": "small"
+    },
+    "revivalages:tanned_hide": {
+      "replace": true,
+      "value": "small"
+    },
+    "revivalages:tannin_bucket": {
+      "replace": true,
+      "value": "large"
+    },
+    "revivalages:tanning_rack": {
+      "replace": true,
+      "value": "large"
+    },
+    "revivalages:thatch": {
+      "replace": true,
+      "value": "small"
+    },
+    "revivalages:tinder": {
+      "replace": true,
+      "value": "very_small"
+    },
+    "revivalages:unfired_brick": {
+      "replace": true,
+      "value": "small"
+    },
+    "revivalages:unfired_clay_bucket": {
+      "replace": true,
+      "value": "large"
+    },
+    "revivalages:warped_stick": {
+      "replace": true,
+      "value": "very_small"
+    },
+    "revivalages:washed_hide": {
+      "replace": true,
+      "value": "small"
+    },
+    "revivalages:wood_chips": {
+      "replace": true,
+      "value": "very_small"
+    },
+    "revivalages:wood_torch": {
+      "replace": true,
+      "value": "very_small"
+    },
+    "revivalages:wooden_bucket": {
+      "replace": true,
+      "value": "large"
+    }
+  }
+}
