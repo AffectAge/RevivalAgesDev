@@ -13,6 +13,9 @@ public final class DryingRackConfig {
     public static final ModConfigSpec.DoubleValue LADDER_CLIMB_SPEED;
     public static final ModConfigSpec.DoubleValue CRUDE_MULTIPLIER;
     public static final ModConfigSpec.DoubleValue NORMAL_MULTIPLIER;
+    public static final ModConfigSpec.DoubleValue CRUDE_BASE_RECIPE_DURATION_MODIFIER;
+    public static final ModConfigSpec.DoubleValue NORMAL_BASE_RECIPE_DURATION_MODIFIER;
+    public static final ModConfigSpec.DoubleValue INHERITED_CRUDE_RECIPE_DURATION_MODIFIER;
     public static final ModConfigSpec.DoubleValue DIRECT_RAIN_SPEED;
     public static final ModConfigSpec.DoubleValue INDIRECT_RAIN_SPEED;
     public static final ModConfigSpec.DoubleValue NETHER_SPEED;
@@ -44,6 +47,15 @@ public final class DryingRackConfig {
                 .defineInRange("crudeMultiplier", 1.0D, 0.0D, 100.0D);
         NORMAL_MULTIPLIER = builder.comment("Final speed multiplier for the normal drying rack.")
                 .defineInRange("normalMultiplier", 1.35D, 0.0D, 100.0D);
+        CRUDE_BASE_RECIPE_DURATION_MODIFIER = builder
+                .comment("Duration multiplier applied to recipes processed by the crude drying rack.")
+                .defineInRange("crudeBaseRecipeDurationModifier", 1.0D, 0.01D, 100.0D);
+        NORMAL_BASE_RECIPE_DURATION_MODIFIER = builder
+                .comment("Duration multiplier applied to every recipe processed by the normal drying rack.")
+                .defineInRange("normalBaseRecipeDurationModifier", 1.0D, 0.01D, 100.0D);
+        INHERITED_CRUDE_RECIPE_DURATION_MODIFIER = builder
+                .comment("Additional duration multiplier for crude recipes inherited by the normal drying rack.")
+                .defineInRange("inheritedCrudeRecipeDurationModifier", 1.0D, 0.01D, 100.0D);
 
         builder.push("environment");
         DIRECT_RAIN_SPEED = speed(builder, "directRainSpeed", -1.0D);

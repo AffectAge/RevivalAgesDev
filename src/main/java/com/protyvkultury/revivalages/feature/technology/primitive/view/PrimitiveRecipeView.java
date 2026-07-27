@@ -16,7 +16,32 @@ public record PrimitiveRecipeView(
         FluidStack fluidOutput,
         int processingTime,
         Component detail,
-        RecipeHolder<?> backingRecipe) {
+        RecipeHolder<?> backingRecipe,
+        boolean requiresCampfire) {
+
+    public PrimitiveRecipeView(
+            ResourceLocation id,
+            List<Ingredient> itemInputs,
+            FluidStack fluidInput,
+            List<ItemStack> itemOutputs,
+            FluidStack fluidOutput,
+            int processingTime,
+            Component detail,
+            RecipeHolder<?> backingRecipe
+    ) {
+        this(
+                id,
+                itemInputs,
+                fluidInput,
+                itemOutputs,
+                fluidOutput,
+                processingTime,
+                detail,
+                backingRecipe,
+                false
+        );
+    }
+
     public PrimitiveRecipeView {
         itemInputs = List.copyOf(itemInputs);
         fluidInput = fluidInput.copy();

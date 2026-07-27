@@ -1,0 +1,17 @@
+{
+  "parent": "revivalages:block/campfire_ash_1",
+  "elements": [
+    {
+      "from": [2, 0, 2],
+      "to": [14, 6, 14],
+      "faces": {
+        "north": {"uv": [2, 10, 14, 16], "texture": "#ash"},
+        "east": {"uv": [14, 16, 2, 10], "texture": "#ash"},
+        "south": {"uv": [2, 10, 14, 16], "texture": "#ash"},
+        "west": {"uv": [2, 10, 14, 16], "texture": "#ash"},
+        "up": {"uv": [2, 2, 14, 14], "texture": "#ash"},
+        "down": {"uv": [2, 2, 14, 14], "texture": "#ash"}
+      }
+    }
+  ]
+}

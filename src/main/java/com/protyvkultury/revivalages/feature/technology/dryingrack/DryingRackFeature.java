@@ -12,12 +12,13 @@ import com.protyvkultury.revivalages.feature.technology.dryingrack.blockentity.D
 import com.protyvkultury.revivalages.feature.technology.dryingrack.client.DryingRackClientEvents;
 import com.protyvkultury.revivalages.feature.technology.dryingrack.config.DryingRackConfig;
 import com.protyvkultury.revivalages.feature.technology.dryingrack.config.DryingRackClientConfig;
+import com.protyvkultury.revivalages.feature.technology.dryingrack.environment.DryingRackDataMaps;
 import com.protyvkultury.revivalages.feature.technology.dryingrack.recipe.DryingRecipe;
 import com.protyvkultury.revivalages.feature.technology.dryingrack.recipe.DryingRecipeSerializer;
+import com.protyvkultury.revivalages.feature.technology.dryingrack.network.DryingRackScrollPayload;
 import java.util.function.Supplier;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -30,13 +31,14 @@ import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.api.distmarker.Dist;
-import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
+import net.neoforged.neoforge.registries.datamaps.RegisterDataMapTypesEvent;
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 
 public final class DryingRackFeature implements FeatureModule {
 
@@ -136,8 +138,9 @@ public final class DryingRackFeature implements FeatureModule {
         BLOCK_ENTITY_TYPES.register(modBus);
         RECIPE_TYPES.register(modBus);
         RECIPE_SERIALIZERS.register(modBus);
-        modBus.addListener(this::addCreativeTabItems);
         modBus.addListener(this::registerCapabilities);
+        modBus.addListener(this::registerDataMaps);
+        modBus.addListener(this::registerPayloads);
         if (FMLEnvironment.dist == Dist.CLIENT) {
             DryingRackClientEvents.register(modBus);
         }
@@ -145,11 +148,16 @@ public final class DryingRackFeature implements FeatureModule {
         modContainer.registerConfig(ModConfig.Type.CLIENT, DryingRackClientConfig.SPEC, "revivalages-client.toml");
     }
 
-    private void addCreativeTabItems(BuildCreativeModeTabContentsEvent event) {
-        if (event.getTabKey() == CreativeModeTabs.FUNCTIONAL_BLOCKS) {
-            event.accept(CRUDE_DRYING_RACK_ITEM.get());
-            event.accept(DRYING_RACK_ITEM.get());
-        }
+    private void registerDataMaps(RegisterDataMapTypesEvent event) {
+        event.register(DryingRackDataMaps.CRUDE_DRYING_SPEED);
+        event.register(DryingRackDataMaps.DRYING_SPEED);
+    }
+
+    private void registerPayloads(RegisterPayloadHandlersEvent event) {
+        event.registrar("1").playToServer(
+                DryingRackScrollPayload.TYPE,
+                DryingRackScrollPayload.STREAM_CODEC,
+                DryingRackScrollPayload::handle);
     }
 
     private void registerCapabilities(RegisterCapabilitiesEvent event) {

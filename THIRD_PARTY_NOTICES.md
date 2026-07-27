@@ -191,6 +191,48 @@ Revival Ages namespace as `sounds/sawmill/sawmill-idle.ogg`,
 `sawmill-active-short-b.ogg`. Their sound events and playback behavior were
 adapted to the Minecraft 1.21.1 sound registry and server configuration.
 
+The Chopping Block wood-chip accumulation models from
+`models/block/chopping_block_sawdust_side.json` and
+`models/block/chopping_block_sawdust_top.json` are shipped under the same renamed
+paths in the Revival Ages namespace. They use the existing Revival Ages wood-chip
+texture and reproduce the functional five-stage placement around and above the
+block.
+
+The Campfire visual-state contract was adapted from
+`assets/pyrotech/blockstates/campfire.json`,
+`assets/pyrotech/models/block/tinder.json`,
+`assets/pyrotech/models/block/campfire_fire.json`, and
+`assets/pyrotech/models/block/campfire_ash_[a-h].json` into
+`assets/revivalages/blockstates/campfire.json` and
+`assets/revivalages/models/block/campfire_{tinder,active,fire,ash_1-ash_8}.json`.
+The block tinder texture was renamed from
+`assets/pyrotech/textures/blocks/tinder.png` to
+`assets/revivalages/textures/block/tinder.png`. Existing renamed active-pile and
+ash textures are reused. Model resource locations and the animated vanilla fire
+texture reference were updated for Minecraft 1.21.1.
+
+The lowered Soaking Pot geometry and its functional combined texture were
+adapted from
+`assets/pyrotech/models/block/soaking_pot_campfire.json` and
+`assets/pyrotech/textures/blocks/soaking_pot_campfire.png` into
+`assets/revivalages/models/block/soaking_pot_campfire.json` and
+`assets/revivalages/textures/block/soaking_pot_campfire.png`. Model texture
+paths and vanilla texture names were updated for Minecraft 1.21.1.
+
+The Wood Torch volumetric standing and wall geometry was adapted from
+`assets/pyrotech/models/block/torch.json` and
+`assets/pyrotech/models/block/torch_wall.json` into
+`assets/revivalages/models/block/wood_torch_base.json` and
+`assets/revivalages/models/block/wood_wall_torch_base.json`. Its timestamp-based
+burning, rain, particles, collision damage, and state-dependent drops were
+adapted from the corresponding torch block and tile paths.
+
+The Storage Barrel reuses the already adapted barrel side, bottom, inside, and
+lid models and textures through the renamed
+`assets/revivalages/models/block/storage_barrel*.json` paths. Its general storage
+and sealed-access lifecycle was adapted separately from the source storage
+container contract; the processing Barrel semantics remain unchanged.
+
 ## Athenaeum
 
 The item interaction semantics, including its shared item-extraction sound,

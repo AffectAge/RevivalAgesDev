@@ -16,7 +16,6 @@ import com.protyvkultury.revivalages.feature.technology.primitive.config.Primiti
 import java.util.function.Supplier;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.effect.MobEffect;
-import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -27,7 +26,6 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -114,15 +112,8 @@ public final class CampfireFeature implements FeatureModule {
         RECIPE_TYPES.register(modBus);
         RECIPE_SERIALIZERS.register(modBus);
         EFFECTS.register(modBus);
-        modBus.addListener(this::addCreativeItems);
         modBus.addListener(this::registerCapabilities);
         NeoForge.EVENT_BUS.register(CampfireEffectEvents.class);
-    }
-
-    private void addCreativeItems(BuildCreativeModeTabContentsEvent event) {
-        if (event.getTabKey() == CreativeModeTabs.INGREDIENTS) {
-            event.accept(TINDER.get());
-        }
     }
 
     private void registerCapabilities(RegisterCapabilitiesEvent event) {

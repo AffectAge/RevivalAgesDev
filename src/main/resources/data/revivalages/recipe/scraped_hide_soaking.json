@@ -2,5 +2,7 @@
   "neoforge:conditions": [{"type":"revivalages:content_enabled","content":"revivalages:soaking_pot","enabled":true}],
   "type": "revivalages:soaking_pot", "ingredient": { "item": "revivalages:scraped_hide" },
   "input_fluid": { "id": "minecraft:water", "amount": 250 },
-  "result": { "id": "revivalages:washed_hide", "count": 1 }, "processing_time": 6000
+  "result": { "id": "revivalages:washed_hide", "count": 1 },
+  "requires_campfire": true,
+  "processing_time": 2400
 }

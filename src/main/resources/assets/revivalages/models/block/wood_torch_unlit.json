@@ -1,5 +1,4 @@
 {
-  "parent": "minecraft:block/template_torch",
-  "render_type": "minecraft:cutout",
+  "parent": "revivalages:block/wood_torch_base",
   "textures": { "torch": "revivalages:block/wood_torch_unlit" }
 }

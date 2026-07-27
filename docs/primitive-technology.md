@@ -33,9 +33,13 @@ data conditions, inert saved machines, and integration filtering follow
    open barrel drops its contents separately; breaking a sealed barrel produces
    one sealed barrel item that preserves its contents, fluid, and lid state.
 6. Scraped hide is washed with water and then soaked in tannin in a Soaking Pot.
-   Recipes may require a lit Campfire directly below the pot. Compatible input
-   stacks can be added incrementally; draining required fluid ejects excess input,
-   and large outputs are retained and extracted in safe stack-sized chunks.
+   Manual item and fluid interaction is available only from the top face.
+   Recipes may require a lit Campfire directly below the pot. Placing the pot
+   above a Campfire immediately ejects its cooking input or completed result.
+   The pot lowers into a dedicated combined model, and its item, fluid surface,
+   shape, and interaction height move down with it. Compatible input stacks can
+   be added incrementally; draining required fluid ejects excess input, and
+   large outputs are retained and extracted in safe stack-sized chunks.
 7. Place tanned hide on a Tanning Rack under open daytime sky. Darkness pauses
    work, blocked sky resets it, and prolonged rain can produce the configured
    failure result.
@@ -101,7 +105,8 @@ The primitive technology configuration is written to
 `config/revivalages-primitive-server.toml`. It controls automation and progress
 particles, Campfire cooking, fuel, ash, rain, light, floor ignition, burn damage and all five
 effects, Chopping Block tier work/output/durability/exhaustion, Pit Kiln batch and
-rain behavior, Barrel capacity/rain/hot fluids, Soaking Pot batch and duration,
+rain behavior, Barrel capacity/rain/hot fluids, Soaking Pot batch, duration,
+automation, hot-fluid threshold and hot-fluid retention,
 and Tanning Rack duration/rain failure. Raw-hide drop chance and maximum count are
 also configurable. Values are server-owned and are not saved
 inside recipes.
@@ -178,7 +183,9 @@ stacks use `{"id":"namespace:fluid","amount":1000}`.
 - `revivalages:barrel`: one to four `items`, `input_fluid`, `result_fluid`, and
   `processing_time`.
 - `revivalages:soaking_pot`: `ingredient`, `input_fluid`, `result`, optional
-  `requires_campfire`, and `processing_time`.
+  `requires_campfire`, and `processing_time`. The built-in scraped-hide recipe
+  requires a lit Campfire, 250 mB of water, and 2,400 ticks. The tannin recipe
+  consumes 500 mB and takes 12,000 ticks without a Campfire requirement.
 - `revivalages:tanning_rack`: `ingredient`, `result`, optional `rain_failure`, and
   `processing_time`.
 - `revivalages:stone_kiln`: `ingredient`, `result`, `processing_time`, optional
@@ -204,6 +211,12 @@ item and fluid inputs, outputs, duration,
 failure outcomes, and required environmental conditions. All three integrations
 are optional and client-only; a dedicated server and the base mod load without
 them.
+
+Soaking Pot recipes expose the Campfire requirement through the same canonical
+recipe field used by gameplay. JEI and EMI show it in a separate clickable
+catalyst slot and display the processing time and requirement text
+simultaneously; neither viewer maintains a private rule for deciding which
+recipes need heat.
 
 Pit Burn adds its staged success/failure recipe to the same JEI/EMI catalog. Jade
 shows enclosure validity, grace countdown, completed stages, progress, and the

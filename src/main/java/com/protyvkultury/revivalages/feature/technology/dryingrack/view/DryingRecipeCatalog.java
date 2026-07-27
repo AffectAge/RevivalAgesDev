@@ -23,7 +23,7 @@ public final class DryingRecipeCatalog {
         }
         return sorted(recipeManager.getAllRecipesFor(DryingRackFeature.CRUDE_DRYING_RECIPE_TYPE.get()))
                 .stream()
-                .map(holder -> new DryingRecipeView(holder, holder.value().ingredient(), false))
+                .map(holder -> new DryingRecipeView(holder, holder.value().ingredient(), false, false))
                 .toList();
     }
 
@@ -35,7 +35,7 @@ public final class DryingRecipeCatalog {
                 sorted(recipeManager.getAllRecipesFor(DryingRackFeature.DRYING_RECIPE_TYPE.get()));
         List<DryingRecipeView> views = new ArrayList<>();
         for (RecipeHolder<DryingRecipe> holder : own) {
-            views.add(new DryingRecipeView(holder, holder.value().ingredient(), false));
+            views.add(new DryingRecipeView(holder, holder.value().ingredient(), true, false));
         }
         if (ContentAvailability.isEnabled(ContentKey.CRUDE_DRYING_RACK)) {
             for (RecipeHolder<DryingRecipe> holder :
@@ -43,7 +43,7 @@ public final class DryingRecipeCatalog {
                 Ingredient inheritedIngredient =
                         removeOverriddenAlternatives(holder.value().ingredient(), own);
                 if (!inheritedIngredient.isEmpty()) {
-                    views.add(new DryingRecipeView(holder, inheritedIngredient, true));
+                    views.add(new DryingRecipeView(holder, inheritedIngredient, true, true));
                 }
             }
         }

@@ -41,6 +41,15 @@ the combined observable behavior with supported NeoForge 1.21.1 APIs. Reference
 mods and libraries remain reference dependencies only and must not become Revival
 Ages runtime dependencies unless the task explicitly requires and justifies one.
 
+Follow the designated reference's combined observable logic strictly. If exact
+parity cannot be implemented with the supported target APIs, available source,
+compatible licensing, or the constraints of the current task, stop before
+substituting, simplifying, correcting, or redesigning that behavior. Ask the user
+for permission to deviate, explain the concrete blocker, describe the exact
+behavioral and presentation changes that would result, and identify their effects
+on compatibility, data, balance, and player interaction. Do not implement the
+deviation until the user explicitly approves it.
+
 For every reference-derived feature, port each required dependency contract into
 a shared Revival Ages NeoForge layer when the contract is reusable, and consume
 that layer from the feature. Do not replace dependency-provided behavior with a
@@ -49,8 +58,8 @@ integration. The required trace includes interaction ordering and mouse semantic
 oriented interaction-space transforms, item-handler ordering and limits, structure
 and combustion lifecycles, dirty-state observation, persistence, client
 synchronization, particles, sounds, collision shapes, and failure or ejection
-behavior. Record intentional 1.21.1 deviations in feature documentation when such
-documentation is part of the task.
+behavior. Record every user-approved 1.21.1 deviation in feature documentation
+when such documentation is part of the task.
 
 When repository code, old tutorials, and NeoForge 1.21.1 documentation disagree,
 follow the official 1.21.1 documentation. Do not silently upgrade examples from a
@@ -166,8 +175,8 @@ license and attribution.
   `.ogg` does not permit omitting vanilla interaction or state sounds. Sound
   parity is required before the mechanism may be called complete.
 - Verify direction-dependent behavior in every horizontal orientation and exercise
-  both successful and invalid recipes. Document intentional differences from the
-  reference instead of silently omitting behavior.
+  both successful and invalid recipes. Document user-approved differences from
+  the reference instead of silently omitting behavior.
 - Audit the reference mod's functional UI assets whenever implementing recipe
   viewers, probes, guides, or menus. Adapt required slot backgrounds, progress
   arrows, gauges, and state indicators when licensing permits; do not replace

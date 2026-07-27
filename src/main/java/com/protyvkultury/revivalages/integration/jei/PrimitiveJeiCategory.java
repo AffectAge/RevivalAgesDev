@@ -1,6 +1,7 @@
 package com.protyvkultury.revivalages.integration.jei;
 
 import com.protyvkultury.revivalages.RevivalAges;
+import com.protyvkultury.revivalages.feature.technology.campfire.CampfireFeature;
 import com.protyvkultury.revivalages.feature.technology.primitive.view.PrimitiveRecipeView;
 import java.util.Locale;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
@@ -77,7 +78,7 @@ final class PrimitiveJeiCategory implements IRecipeCategory<PrimitiveRecipeView>
     }
 
     public int getHeight() {
-        return this.layout.backgroundHeight + 13;
+        return this.layout.backgroundHeight + (this.layout == Layout.SOAKING_POT ? 24 : 13);
     }
 
     public void setRecipe(
@@ -127,6 +128,10 @@ final class PrimitiveJeiCategory implements IRecipeCategory<PrimitiveRecipeView>
                     PrimitiveJeiCategory.addFluid(
                             builder, RecipeIngredientRole.INPUT, recipe.fluidInput(), 1, 20, 16, 16);
                     PrimitiveJeiCategory.addItemOutputs(builder, recipe, new int[][] {{60, 19}});
+                    if (recipe.requiresCampfire()) {
+                        builder.addSlot(RecipeIngredientRole.CATALYST, 25, 37)
+                                .addItemStack(new ItemStack(CampfireFeature.TINDER.get()));
+                    }
                     break;
                 }
             case TANNING_RACK:
@@ -199,26 +204,31 @@ final class PrimitiveJeiCategory implements IRecipeCategory<PrimitiveRecipeView>
         if (this.arrow != null) {
             this.arrow.draw(graphics, this.layout.arrowX, this.layout.arrowY);
         }
-        Component detail = recipe.detail();
-        if (detail.getString().isEmpty() && recipe.processingTime() > 0) {
-            detail =
+        int textY = this.layout.backgroundHeight + 2;
+        if (recipe.processingTime() > 0) {
+            drawCentered(
+                    graphics,
                     Component.translatable(
-                            (String) "gui.revivalages.recipe.time",
-                            (Object[])
-                                    new Object[] {
-                                        String.format(Locale.ROOT, "%.1f", (double) recipe.processingTime() / 20.0)
-                                    });
+                            "gui.revivalages.recipe.time",
+                            String.format(Locale.ROOT, "%.1f", (double) recipe.processingTime() / 20.0)),
+                    textY);
+            textY += 10;
         }
+        Component detail = recipe.detail();
         if (!detail.getString().isEmpty()) {
-            int x = (this.getWidth() - Minecraft.getInstance().font.width((FormattedText) detail)) / 2;
-            graphics.drawString(
-                    Minecraft.getInstance().font,
-                    detail,
-                    Math.max(0, x),
-                    this.layout.backgroundHeight + 2,
-                    -8355712,
-                    false);
+            drawCentered(graphics, detail, textY);
         }
+    }
+
+    private void drawCentered(GuiGraphics graphics, Component text, int y) {
+        int x = (this.getWidth() - Minecraft.getInstance().font.width((FormattedText) text)) / 2;
+        graphics.drawString(
+                Minecraft.getInstance().font,
+                text,
+                Math.max(0, x),
+                y,
+                -8355712,
+                false);
     }
 
     public ResourceLocation getRegistryName(PrimitiveRecipeView recipe) {

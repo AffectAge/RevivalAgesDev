@@ -1,8 +1,12 @@
 {
   "variants": {
-    "facing=north": { "model": "revivalages:block/soaking_pot" },
-    "facing=east": { "model": "revivalages:block/soaking_pot", "y": 90 },
-    "facing=south": { "model": "revivalages:block/soaking_pot", "y": 180 },
-    "facing=west": { "model": "revivalages:block/soaking_pot", "y": 270 }
+    "campfire=false,facing=north": { "model": "revivalages:block/soaking_pot" },
+    "campfire=false,facing=east": { "model": "revivalages:block/soaking_pot", "y": 90 },
+    "campfire=false,facing=south": { "model": "revivalages:block/soaking_pot", "y": 180 },
+    "campfire=false,facing=west": { "model": "revivalages:block/soaking_pot", "y": 270 },
+    "campfire=true,facing=north": { "model": "revivalages:block/soaking_pot_campfire" },
+    "campfire=true,facing=east": { "model": "revivalages:block/soaking_pot_campfire", "y": 90 },
+    "campfire=true,facing=south": { "model": "revivalages:block/soaking_pot_campfire", "y": 180 },
+    "campfire=true,facing=west": { "model": "revivalages:block/soaking_pot_campfire", "y": 270 }
   }
 }

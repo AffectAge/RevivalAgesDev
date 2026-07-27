@@ -150,6 +150,12 @@ configuration, rendering helpers, tags, and shared recipe-query semantics live i
 `feature/technology/primitive`. Optional Jade, JEI, and EMI adapters depend on
 those synchronized states and gameplay recipe types. JEI and EMI keep separate
 presentation adapters while enumerating the same recipes from `RecipeManager`;
+
+The processing Barrel remains a recipe-and-fluid machine. The Storage Barrel is
+a separate general inventory under the barrel feature, with sealed preservation
+and state-guarded manual and capability access. Timed ignition uses the shared
+held-igniter contracts described in
+[Interaction and Parity Checklist](interaction-contracts.md).
 viewer and probe APIs never enter the machine packages.
 
 ## Adding a feature

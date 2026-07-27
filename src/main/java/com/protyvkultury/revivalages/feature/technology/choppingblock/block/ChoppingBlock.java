@@ -34,11 +34,14 @@ public final class ChoppingBlock extends BaseEntityBlock {
 
     public static final MapCodec<ChoppingBlock> CODEC = simpleCodec(ChoppingBlock::new);
     public static final IntegerProperty DAMAGE = IntegerProperty.create("damage", 0, 5);
-    private static final VoxelShape SHAPE = box(1, 0, 1, 15, 12, 15);
+    public static final IntegerProperty SAWDUST = IntegerProperty.create("sawdust", 0, 5);
+    private static final VoxelShape SHAPE = box(0, 0, 0, 16, 6, 16);
 
     public ChoppingBlock(BlockBehaviour.Properties properties) {
         super(properties);
-        registerDefaultState(stateDefinition.any().setValue(DAMAGE, 0));
+        registerDefaultState(stateDefinition.any()
+                .setValue(DAMAGE, 0)
+                .setValue(SAWDUST, 0));
     }
 
     @Override
@@ -48,7 +51,7 @@ public final class ChoppingBlock extends BaseEntityBlock {
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<net.minecraft.world.level.block.Block, BlockState> builder) {
-        builder.add(DAMAGE);
+        builder.add(DAMAGE, SAWDUST);
     }
 
     @Override

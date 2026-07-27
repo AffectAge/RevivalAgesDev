@@ -14,6 +14,7 @@ import com.protyvkultury.revivalages.feature.technology.dryingrack.environment.D
 import com.protyvkultury.revivalages.feature.technology.dryingrack.environment.DryingEnvironmentSnapshot;
 import com.protyvkultury.revivalages.feature.technology.dryingrack.environment.DryingRackSeasonService;
 import com.protyvkultury.revivalages.feature.technology.dryingrack.recipe.DryingRecipe;
+import com.protyvkultury.revivalages.feature.technology.dryingrack.recipe.DryingRecipeDuration;
 import com.protyvkultury.revivalages.feature.technology.dryingrack.recipe.DryingRecipeResolver;
 import com.protyvkultury.revivalages.feature.technology.dryingrack.view.DryingRackView;
 import com.protyvkultury.revivalages.feature.technology.dryingrack.view.DryingSlotView;
@@ -153,7 +154,9 @@ public final class DryingRackBlockEntity extends BlockEntity {
     }
 
     public boolean canInsert(int slot) {
-        return validSlot(slot) && items.get(slot).isEmpty();
+        return ContentAvailability.isEnabled(contentKey())
+                && validSlot(slot)
+                && items.get(slot).isEmpty();
     }
 
     public void insert(int slot, ItemStack source, boolean infiniteMaterials) {
@@ -291,14 +294,18 @@ public final class DryingRackBlockEntity extends BlockEntity {
 
         RecipeHolder<DryingRecipe> holder = match.get();
         DryingRecipe recipe = holder.value();
+        boolean inheritedCrude =
+                normalRack && recipe.getType() == DryingRackFeature.CRUDE_DRYING_RECIPE_TYPE.get();
+        int effectiveDuration =
+                DryingRecipeDuration.effective(recipe.dryingTime(), normalRack, inheritedCrude);
         if (!holder.id().equals(recipeIds[slot])) {
             recipeIds[slot] = holder.id();
-            totalTimes[slot] = recipe.dryingTime();
-            remainingTimes[slot] = recipe.dryingTime();
-        } else if (totalTimes[slot] != recipe.dryingTime()) {
+            totalTimes[slot] = effectiveDuration;
+            remainingTimes[slot] = effectiveDuration;
+        } else if (totalTimes[slot] != effectiveDuration) {
             double ratio = totalTimes[slot] <= 0 ? 1.0D : remainingTimes[slot] / totalTimes[slot];
-            totalTimes[slot] = recipe.dryingTime();
-            remainingTimes[slot] = ratio * recipe.dryingTime();
+            totalTimes[slot] = effectiveDuration;
+            remainingTimes[slot] = ratio * effectiveDuration;
         }
         activeRecipes[slot] = recipe;
     }
@@ -496,7 +503,8 @@ public final class DryingRackBlockEntity extends BlockEntity {
 
         @Override
         public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
-            if (side == Direction.DOWN
+            if (!ContentAvailability.isEnabled(contentKey())
+                    || side == Direction.DOWN
                     || !validSlot(slot)
                     || !canInsert(slot)
                     || stack.isEmpty()
@@ -515,7 +523,8 @@ public final class DryingRackBlockEntity extends BlockEntity {
 
         @Override
         public ItemStack extractItem(int slot, int amount, boolean simulate) {
-            if (side != Direction.DOWN
+            if (!ContentAvailability.isEnabled(contentKey())
+                    || side != Direction.DOWN
                     || !validSlot(slot)
                     || !completed[slot]
                     || amount <= 0
@@ -542,7 +551,8 @@ public final class DryingRackBlockEntity extends BlockEntity {
 
         @Override
         public boolean isItemValid(int slot, ItemStack stack) {
-            return side != Direction.DOWN
+            return ContentAvailability.isEnabled(contentKey())
+                    && side != Direction.DOWN
                     && validSlot(slot)
                     && level != null
                     && DryingRecipeResolver.find(level, stack, normalRack).isPresent();

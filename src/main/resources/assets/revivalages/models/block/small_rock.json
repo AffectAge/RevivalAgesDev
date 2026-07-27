@@ -1,4 +1,5 @@
 {
+	"format_version": "1.21.11",
 	"credit": "made by Motschen",
 	"parent": "block/block",
 	"ambientocclusion": false,
@@ -8,9 +9,9 @@
 	},
 	"elements": [
 		{
-			"from": [6, 0, 8],
-			"to": [13, 1, 12],
-			"rotation": {"angle": 0, "axis": "y", "origin": [13, 8, 13]},
+			"from": [6, 0, 9],
+			"to": [8, 1, 13],
+			"rotation": {"angle": 0, "axis": "y", "origin": [13, 8, 14]},
 			"faces": {
 				"north": {"uv": [0, 0, 7, 1], "texture": "#0"},
 				"east": {"uv": [0, 0, 4, 1], "texture": "#0"},
@@ -21,9 +22,9 @@
 			}
 		},
 		{
-			"from": [7, 1, 8.5],
-			"to": [10, 2, 10.5],
-			"rotation": {"angle": 0, "axis": "y", "origin": [13, 9, 13]},
+			"from": [7, 0, 4.5],
+			"to": [10, 1, 6.5],
+			"rotation": {"angle": 0, "axis": "y", "origin": [13, 8, 9]},
 			"faces": {
 				"north": {"uv": [0, 0, 3, 1], "texture": "#0"},
 				"east": {"uv": [0, 0, 2, 1], "texture": "#0"},

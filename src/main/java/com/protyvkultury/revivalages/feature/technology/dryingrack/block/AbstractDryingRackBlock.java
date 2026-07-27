@@ -3,8 +3,11 @@ package com.protyvkultury.revivalages.feature.technology.dryingrack.block;
 import com.protyvkultury.revivalages.feature.technology.dryingrack.blockentity.DryingRackBlockEntity;
 import com.mojang.serialization.MapCodec;
 import com.protyvkultury.revivalages.core.interaction.ItemStackInteraction;
+import com.protyvkultury.revivalages.feature.content.ContentAvailability;
 import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
@@ -47,7 +50,16 @@ public abstract class AbstractDryingRackBlock extends BaseEntityBlock {
         if (!(level.getBlockEntity(pos) instanceof DryingRackBlockEntity rack)) {
             return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         }
-        int slot = slotFromHit(state, hitResult);
+        if (!ContentAvailability.isEnabled(rack.contentKey())) {
+            if (!level.isClientSide) {
+                player.displayClientMessage(Component.translatable("message.revivalages.content_disabled"), true);
+            }
+            return ItemInteractionResult.CONSUME;
+        }
+        if (!isInteractionFaceAllowed(state, hitResult.getDirection())) {
+            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        }
+        int slot = interactionSlot(state, hitResult);
         if (!rack.getItem(slot).isEmpty()) {
             return ItemInteractionResult.CONSUME;
         }
@@ -69,7 +81,16 @@ public abstract class AbstractDryingRackBlock extends BaseEntityBlock {
         if (!(level.getBlockEntity(pos) instanceof DryingRackBlockEntity rack)) {
             return InteractionResult.PASS;
         }
-        int slot = slotFromHit(state, hitResult);
+        if (!ContentAvailability.isEnabled(rack.contentKey())) {
+            if (!level.isClientSide) {
+                player.displayClientMessage(Component.translatable("message.revivalages.content_disabled"), true);
+            }
+            return InteractionResult.CONSUME;
+        }
+        if (!isInteractionFaceAllowed(state, hitResult.getDirection())) {
+            return InteractionResult.PASS;
+        }
+        int slot = interactionSlot(state, hitResult);
         return ItemStackInteraction.extract(level, pos, player, rack.getItem(slot), () -> rack.extract(slot));
     }
 
@@ -101,6 +122,16 @@ public abstract class AbstractDryingRackBlock extends BaseEntityBlock {
             }
         };
     }
+
+    public final int interactionSlot(BlockState state, BlockHitResult hitResult) {
+        return slotFromHit(state, hitResult);
+    }
+
+    public final boolean allowsInteractionFace(BlockState state, Direction face) {
+        return isInteractionFaceAllowed(state, face);
+    }
+
+    protected abstract boolean isInteractionFaceAllowed(BlockState state, Direction face);
 
     protected abstract int slotFromHit(BlockState state, BlockHitResult hitResult);
 

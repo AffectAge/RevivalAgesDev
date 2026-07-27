@@ -74,12 +74,19 @@ public final class PrimitiveTechnologyConfig {
     public static final ModConfigSpec.DoubleValue BARREL_DURATION_MULTIPLIER;
     public static final ModConfigSpec.IntValue BARREL_RAIN_FILL_INTERVAL;
     public static final ModConfigSpec.IntValue BARREL_RAIN_CONVERSION_INTERVAL;
+    public static final ModConfigSpec.BooleanValue STORAGE_BARREL_ENABLED;
+    public static final ModConfigSpec.IntValue STORAGE_BARREL_SLOTS;
+    public static final ModConfigSpec.BooleanValue STORAGE_BARREL_AUTOMATION;
+    public static final ModConfigSpec.IntValue STORAGE_BARREL_MATERIALIZATION_INTERVAL;
     public static final ModConfigSpec.IntValue HOT_FLUID_TEMPERATURE;
     public static final ModConfigSpec.BooleanValue WOODEN_CONTAINERS_HOLD_HOT_FLUIDS;
 
     public static final ModConfigSpec.IntValue SOAKING_POT_CAPACITY;
     public static final ModConfigSpec.IntValue SOAKING_POT_MAX_STACK_SIZE;
     public static final ModConfigSpec.DoubleValue SOAKING_POT_DURATION_MULTIPLIER;
+    public static final ModConfigSpec.BooleanValue SOAKING_POT_AUTOMATION;
+    public static final ModConfigSpec.BooleanValue SOAKING_POT_HOLDS_HOT_FLUIDS;
+    public static final ModConfigSpec.IntValue SOAKING_POT_HOT_FLUID_TEMPERATURE;
 
     public static final ModConfigSpec.DoubleValue TANNING_RACK_DURATION_MULTIPLIER;
     public static final ModConfigSpec.IntValue TANNING_RACK_RAIN_RUIN_TICKS;
@@ -119,6 +126,10 @@ public final class PrimitiveTechnologyConfig {
     public static final ModConfigSpec.BooleanValue WOOD_TORCH_RAIN_EXTINGUISHES;
     public static final ModConfigSpec.IntValue WOOD_TORCH_DURATION;
     public static final ModConfigSpec.IntValue WOOD_TORCH_DURATION_VARIANCE;
+    public static final ModConfigSpec.IntValue WOOD_TORCH_MIN_CHECK_INTERVAL;
+    public static final ModConfigSpec.IntValue WOOD_TORCH_MAX_CHECK_INTERVAL;
+    public static final ModConfigSpec.IntValue WOOD_TORCH_EXTINGUISHING_FLUID_COST;
+    public static final ModConfigSpec.IntValue WOOD_TORCH_IGNITION_DAMAGE;
     public static final ModConfigSpec.IntValue WOOD_TORCH_FIRE_DAMAGE;
     public static final ModConfigSpec.IntValue WOOD_TORCH_LIGHT;
     public static final ModConfigSpec.IntValue WOODEN_BUCKET_MAX_USES;
@@ -229,11 +240,25 @@ public final class PrimitiveTechnologyConfig {
         WOODEN_CONTAINERS_HOLD_HOT_FLUIDS = builder.define("holdsHotFluids", false);
         builder.pop();
 
+        builder.push("storageBarrel");
+        STORAGE_BARREL_ENABLED = restartToggle(builder, "enabled", "Enables the Storage Barrel.");
+        STORAGE_BARREL_SLOTS = builder.defineInRange("slots", 27, 9, 54);
+        STORAGE_BARREL_AUTOMATION = builder.define("automation", true);
+        STORAGE_BARREL_MATERIALIZATION_INTERVAL =
+                positive(builder, "materializationInterval", 20);
+        builder.pop();
+
         builder.push("soakingPot");
         SOAKING_POT_ENABLED = restartToggle(builder, "enabled", "Enables the Soaking Pot.");
         SOAKING_POT_CAPACITY = positive(builder, "capacity", 4000);
         SOAKING_POT_MAX_STACK_SIZE = builder.defineInRange("maxStackSize", 8, 1, 64);
         SOAKING_POT_DURATION_MULTIPLIER = nonNegative(builder, "durationMultiplier", 1.0D);
+        SOAKING_POT_AUTOMATION = builder.comment("Exposes Soaking Pot item and fluid capabilities.")
+                .define("allowAutomation", true);
+        SOAKING_POT_HOLDS_HOT_FLUIDS = builder.comment(
+                        "Allows the Soaking Pot to retain fluids at or above hotFluidTemperature.")
+                .define("holdsHotFluids", false);
+        SOAKING_POT_HOT_FLUID_TEMPERATURE = nonNegativeInt(builder, "hotFluidTemperature", 450);
         builder.pop();
 
         builder.push("tanningRack");
@@ -311,6 +336,10 @@ public final class PrimitiveTechnologyConfig {
         WOOD_TORCH_RAIN_EXTINGUISHES = builder.define("woodTorchRainExtinguishes", true);
         WOOD_TORCH_DURATION = nonNegativeInt(builder, "woodTorchDuration", 14 * 60 * 20);
         WOOD_TORCH_DURATION_VARIANCE = nonNegativeInt(builder, "woodTorchDurationVariance", 4 * 60 * 20);
+        WOOD_TORCH_MIN_CHECK_INTERVAL = positive(builder, "woodTorchMinCheckInterval", 10 * 20);
+        WOOD_TORCH_MAX_CHECK_INTERVAL = positive(builder, "woodTorchMaxCheckInterval", 19 * 20);
+        WOOD_TORCH_EXTINGUISHING_FLUID_COST = positive(builder, "woodTorchExtinguishingFluidCost", 1000);
+        WOOD_TORCH_IGNITION_DAMAGE = nonNegativeInt(builder, "woodTorchIgnitionDamage", 1);
         WOOD_TORCH_FIRE_DAMAGE = nonNegativeInt(builder, "woodTorchFireDamage", 1);
         WOOD_TORCH_LIGHT = builder.defineInRange("woodTorchLight", 9, 0, 15);
         builder.pop();
@@ -360,6 +389,7 @@ public final class PrimitiveTechnologyConfig {
             case CHOPPING_BLOCK -> CHOPPING_BLOCK_ENABLED;
             case PIT_KILN -> PIT_KILN_ENABLED;
             case BARREL -> BARREL_ENABLED;
+            case STORAGE_BARREL -> STORAGE_BARREL_ENABLED;
             case SOAKING_POT -> SOAKING_POT_ENABLED;
             case TANNING_RACK -> TANNING_RACK_ENABLED;
             case STONE_SAWMILL -> STONE_SAWMILL_ENABLED;

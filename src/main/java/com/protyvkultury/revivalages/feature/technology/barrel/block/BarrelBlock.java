@@ -6,6 +6,7 @@ import com.protyvkultury.revivalages.feature.technology.barrel.BarrelFeature;
 import com.protyvkultury.revivalages.feature.technology.barrel.blockentity.BarrelBlockEntity;
 import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
@@ -63,9 +64,15 @@ public final class BarrelBlock extends BaseEntityBlock {
             return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         }
         if (state.getValue(SEALED)) {
+            if (hand == InteractionHand.MAIN_HAND && stack.isEmpty() && hit.getDirection() == Direction.UP) {
+                return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+            }
             return ItemInteractionResult.CONSUME;
         }
         if (stack.is(BarrelFeature.BARREL_LID.get())) {
+            if (hit.getDirection() != Direction.UP) {
+                return ItemInteractionResult.CONSUME;
+            }
             if (!level.isClientSide && barrel.seal()) {
                 if (!player.hasInfiniteMaterials()) {
                     stack.shrink(1);
@@ -93,6 +100,9 @@ public final class BarrelBlock extends BaseEntityBlock {
             return InteractionResult.PASS;
         }
         if (state.getValue(SEALED)) {
+            if (hit.getDirection() != Direction.UP) {
+                return InteractionResult.PASS;
+            }
             if (!level.isClientSide) {
                 barrel.unseal(player);
             }

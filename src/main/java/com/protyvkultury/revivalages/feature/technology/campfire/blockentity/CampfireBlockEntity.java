@@ -204,9 +204,6 @@ public final class CampfireBlockEntity extends BlockEntity {
         lit = true;
         burnTime = Math.max(1, burnTime);
         updateState();
-        if (level != null) {
-            level.playSound(null, worldPosition, SoundEvents.FLINTANDSTEEL_USE, SoundSource.BLOCKS, 1.0F, 1.0F);
-        }
     }
 
     public void extinguish() {

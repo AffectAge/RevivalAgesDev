@@ -1,6 +1,6 @@
 {
   "neoforge:conditions": [{"type":"revivalages:content_enabled","content":"revivalages:crude_drying_rack","enabled":true}],
-  "type": "revivalages:crude_drying", "drying_time": 1200,
+  "type": "revivalages:crude_drying", "drying_time": 14400,
   "ingredient": { "item": "minecraft:wheat" },
-  "result": { "id": "revivalages:straw", "count": 2 }
+  "result": { "id": "revivalages:straw", "count": 1 }
 }

@@ -2,6 +2,7 @@ package com.protyvkultury.revivalages.integration.jade;
 
 import com.protyvkultury.revivalages.feature.technology.dryingrack.block.AbstractDryingRackBlock;
 import com.protyvkultury.revivalages.feature.technology.barrel.block.BarrelBlock;
+import com.protyvkultury.revivalages.feature.technology.barrel.storage.StorageBarrelBlock;
 import com.protyvkultury.revivalages.feature.technology.campfire.block.CampfireBlock;
 import com.protyvkultury.revivalages.feature.technology.choppingblock.block.ChoppingBlock;
 import com.protyvkultury.revivalages.feature.technology.pitkiln.block.PitKilnBlock;
@@ -32,6 +33,7 @@ public final class RevivalAgesJadePlugin implements IWailaPlugin {
         registration.registerBlockComponent(PrimitiveDeviceComponentProvider.INSTANCE, ChoppingBlock.class);
         registration.registerBlockComponent(PrimitiveDeviceComponentProvider.INSTANCE, PitKilnBlock.class);
         registration.registerBlockComponent(PrimitiveDeviceComponentProvider.INSTANCE, BarrelBlock.class);
+        registration.registerBlockComponent(StorageBarrelComponentProvider.INSTANCE, StorageBarrelBlock.class);
         registration.registerBlockComponent(PrimitiveDeviceComponentProvider.INSTANCE, SoakingPotBlock.class);
         registration.registerBlockComponent(PrimitiveDeviceComponentProvider.INSTANCE, TanningRackBlock.class);
         registration.registerBlockComponent(StoneMachineComponentProvider.INSTANCE, StoneMachineBlock.class);

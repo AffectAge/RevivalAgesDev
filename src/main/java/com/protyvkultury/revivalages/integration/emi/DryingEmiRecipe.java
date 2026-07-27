@@ -62,7 +62,7 @@ final class DryingEmiRecipe implements EmiRecipe {
     public void addWidgets(WidgetHolder widgets) {
         widgets.addTexture(TEXTURE, 0, 0, 82, 26, 0, 0);
         widgets.addAnimatedTexture(
-                TEXTURE, 24, 4, 24, 17, 82, 0, this.view.recipe().dryingTime() * 50, true, false, false);
+                TEXTURE, 24, 4, 24, 17, 82, 0, this.view.processingTime() * 50, true, false, false);
         widgets.addSlot(this.input, 0, 3).drawBack(false);
         widgets
                 .addSlot(this.output, 60, 4)
@@ -75,7 +75,7 @@ final class DryingEmiRecipe implements EmiRecipe {
                                 String.format(
                                         Locale.ROOT,
                                         "%.1f",
-                                        (double) this.view.recipe().dryingTime() / 20.0
+                                        (double) this.view.processingTime() / 20.0
                                 )
                         ),
                         41,

@@ -34,6 +34,7 @@ bin/
 
 ### Minecraft Modding ###
 run/
+run-data/
 run-gametest-content-enabled/
 run-gametest-content-disabled/
 run-server-content-availability/
@@ -41,3 +42,4 @@ run-server-content-availability/
 **/src/generated/**/.cache/
 repo/
 !**/src/**/repo/
+/run-data

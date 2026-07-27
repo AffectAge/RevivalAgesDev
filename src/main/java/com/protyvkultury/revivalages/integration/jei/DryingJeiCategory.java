@@ -91,7 +91,7 @@ final class DryingJeiCategory implements IRecipeCategory<DryingRecipeView> {
                         (String) "gui.revivalages.drying_rack.time",
                         (Object[])
                                 new Object[] {
-                                    String.format(Locale.ROOT, "%.1f", (double) view.recipe().dryingTime() / 20.0)
+                                    String.format(Locale.ROOT, "%.1f", (double) view.processingTime() / 20.0)
                                 });
         int x = (this.getWidth() - Minecraft.getInstance().font.width((FormattedText) duration)) / 2;
         graphics.drawString(Minecraft.getInstance().font, (Component) duration, x, 31, -8355712, false);

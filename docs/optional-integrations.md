@@ -59,3 +59,4 @@ from the compatible 1.21.1 release when implementing an adapter.
 - [Carried Weight](carried-weight.md#optional-integration-assessment)
 - [Diet](diet.md#optional-integration-assessment)
 - [Food Spoilage](food-spoilage.md#optional-integration-assessment)
+- [Storage Barrel](storage-barrel.md#optional-integration-assessment)
