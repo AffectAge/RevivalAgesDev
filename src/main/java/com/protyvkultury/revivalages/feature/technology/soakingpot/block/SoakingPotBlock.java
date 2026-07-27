@@ -105,6 +105,9 @@ public final class SoakingPotBlock extends BaseEntityBlock {
         if (!(level.getBlockEntity(pos) instanceof SoakingPotBlockEntity pot)) {
             return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         }
+        if (ItemStackInteraction.shouldDeferEmptyMainHand(hand, stack)) {
+            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        }
         if (FluidUtil.interactWithFluidHandler(player, hand, pot.fluidTank())) {
             return ItemInteractionResult.sidedSuccess(level.isClientSide);
         }

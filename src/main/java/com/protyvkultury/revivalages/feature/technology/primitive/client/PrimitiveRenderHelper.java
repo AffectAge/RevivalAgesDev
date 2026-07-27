@@ -24,8 +24,17 @@ public final class PrimitiveRenderHelper {
 
     /** Applies the horizontal interaction-space transform around the block center. */
     public static void rotateInteractionSpace(PoseStack poseStack, Direction facing) {
+        rotateInteractionSpace(poseStack, facing, Direction.SOUTH);
+    }
+
+    /** Applies an oriented interaction transform whose unrotated model faces {@code baseFacing}. */
+    public static void rotateInteractionSpace(
+            PoseStack poseStack,
+            Direction facing,
+            Direction baseFacing
+    ) {
         poseStack.translate(0.5D, 0.0D, 0.5D);
-        poseStack.mulPose(Axis.YP.rotationDegrees(-facing.toYRot()));
+        poseStack.mulPose(Axis.YP.rotationDegrees(baseFacing.toYRot() - facing.toYRot()));
         poseStack.translate(-0.5D, 0.0D, -0.5D);
     }
 

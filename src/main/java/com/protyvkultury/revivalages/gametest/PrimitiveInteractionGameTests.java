@@ -11,16 +11,23 @@ import com.protyvkultury.revivalages.feature.technology.barrel.storage.StorageBa
 import com.protyvkultury.revivalages.feature.technology.barrel.storage.StorageBarrelBlockEntity;
 import com.protyvkultury.revivalages.feature.technology.bucket.PrimitiveBucketFeature;
 import com.protyvkultury.revivalages.feature.technology.bucket.item.PrimitiveBucketItem;
-import com.protyvkultury.revivalages.feature.technology.ignition.IgnitionFeature;
 import com.protyvkultury.revivalages.feature.technology.campfire.CampfireFeature;
 import com.protyvkultury.revivalages.feature.technology.campfire.blockentity.CampfireBlockEntity;
+import com.protyvkultury.revivalages.feature.technology.choppingblock.ChoppingBlockFeature;
+import com.protyvkultury.revivalages.feature.technology.choppingblock.blockentity.ChoppingBlockEntity;
 import com.protyvkultury.revivalages.feature.technology.dryingrack.DryingRackFeature;
 import com.protyvkultury.revivalages.feature.technology.dryingrack.block.AbstractDryingRackBlock;
 import com.protyvkultury.revivalages.feature.technology.dryingrack.blockentity.DryingRackBlockEntity;
+import com.protyvkultury.revivalages.feature.technology.ignition.IgnitionFeature;
 import com.protyvkultury.revivalages.feature.technology.pitkiln.PitKilnFeature;
+import com.protyvkultury.revivalages.feature.technology.pitkiln.block.PitKilnBlock;
+import com.protyvkultury.revivalages.feature.technology.pitkiln.block.PitKilnStage;
 import com.protyvkultury.revivalages.feature.technology.pitkiln.blockentity.PitKilnBlockEntity;
+import com.protyvkultury.revivalages.feature.technology.primitive.PrimitiveMaterialsFeature;
 import com.protyvkultury.revivalages.feature.technology.soakingpot.SoakingPotFeature;
 import com.protyvkultury.revivalages.feature.technology.soakingpot.blockentity.SoakingPotBlockEntity;
+import com.protyvkultury.revivalages.feature.technology.tanningrack.TanningRackFeature;
+import com.protyvkultury.revivalages.feature.technology.tanningrack.blockentity.TanningRackBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.tags.FluidTags;
@@ -37,6 +44,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LayeredCauldronBlock;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 import net.neoforged.neoforge.capabilities.Capabilities;
@@ -279,6 +287,130 @@ public final class PrimitiveInteractionGameTests {
     }
 
     @GameTest(template = "animal_power_empty")
+    public static void physicalDevicesDelegateEmptyMainHandBeforeExtraction(GameTestHelper helper) {
+        if (!ContentAvailability.isEnabled(ContentKey.DRYING_RACK)
+                || !ContentAvailability.isEnabled(ContentKey.TANNING_RACK)
+                || !ContentAvailability.isEnabled(ContentKey.SOAKING_POT)
+                || !ContentAvailability.isEnabled(ContentKey.CHOPPING_BLOCK)
+                || !ContentAvailability.isEnabled(ContentKey.CAMPFIRE)
+                || !ContentAvailability.isEnabled(ContentKey.BARREL)
+                || !ContentAvailability.isEnabled(ContentKey.PIT_KILN)) {
+            helper.succeed();
+            return;
+        }
+        Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+        player.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
+        BlockPos absolute = helper.absolutePos(MACHINE);
+
+        helper.setBlock(MACHINE, DryingRackFeature.DRYING_RACK.get());
+        DryingRackBlockEntity dryingRack = (DryingRackBlockEntity) helper.getBlockEntity(MACHINE);
+        dryingRack.insert(3, new ItemStack(net.minecraft.world.item.Items.WET_SPONGE), true);
+        ItemStack occupiedHand = new ItemStack(net.minecraft.world.item.Items.STONE);
+        player.setItemInHand(InteractionHand.MAIN_HAND, occupiedHand);
+        helper.getBlockState(MACHINE).useItemOn(
+                occupiedHand,
+                helper.getLevel(),
+                player,
+                InteractionHand.MAIN_HAND,
+                hit(absolute, Direction.UP)
+        );
+        helper.assertFalse(dryingRack.getItem(3).isEmpty(), "occupied hand extracted from the drying rack");
+        assertEmptyHandDelegation(helper, player, absolute, "drying rack");
+        helper.getBlockState(MACHINE).useWithoutItem(helper.getLevel(), player, hit(absolute, Direction.UP));
+        helper.assertTrue(dryingRack.getItem(3).isEmpty(), "drying rack did not extract through empty-hand use");
+
+        helper.setBlock(MACHINE, TanningRackFeature.TANNING_RACK.get());
+        TanningRackBlockEntity tanningRack = (TanningRackBlockEntity) helper.getBlockEntity(MACHINE);
+        tanningRack.insert(new ItemStack(PrimitiveMaterialsFeature.TANNED_HIDE.get()), true);
+        var tanningRecipe = helper.getLevel().getRecipeManager().getRecipeFor(
+                TanningRackFeature.RECIPE_TYPE.get(),
+                new net.minecraft.world.item.crafting.SingleRecipeInput(
+                        new ItemStack(PrimitiveMaterialsFeature.TANNED_HIDE.get())
+                ),
+                helper.getLevel()
+        );
+        helper.assertTrue(tanningRecipe.isPresent(), "built-in tanning recipe was not loaded");
+        helper.assertValueEqual(
+                tanningRecipe.orElseThrow().value().result().getCount(),
+                1,
+                "built-in tanning recipe did not produce exactly one leather"
+        );
+        assertEmptyHandDelegation(helper, player, absolute, "tanning rack");
+        helper.getBlockState(MACHINE).useWithoutItem(helper.getLevel(), player, hit(absolute, Direction.UP));
+        helper.assertTrue(tanningRack.input().isEmpty(), "tanning rack did not extract through empty-hand use");
+        helper.assertTrue(
+                helper.getLevel().getCapability(Capabilities.ItemHandler.BLOCK, absolute, Direction.UP) == null,
+                "tanning rack exposed item automation"
+        );
+
+        helper.setBlock(MACHINE, SoakingPotFeature.SOAKING_POT.get());
+        SoakingPotBlockEntity soakingPot = (SoakingPotBlockEntity) helper.getBlockEntity(MACHINE);
+        soakingPot.fluidTank().fill(
+                new FluidStack(net.minecraft.world.level.material.Fluids.WATER, 1000),
+                IFluidHandler.FluidAction.EXECUTE
+        );
+        soakingPot.insert(new ItemStack(PrimitiveMaterialsFeature.SCRAPED_HIDE.get()), true, false);
+        assertEmptyHandDelegation(helper, player, absolute, "soaking pot");
+        helper.getBlockState(MACHINE).useWithoutItem(helper.getLevel(), player, hit(absolute, Direction.UP));
+        helper.assertTrue(soakingPot.input().isEmpty(), "soaking pot did not extract through empty-hand use");
+
+        helper.setBlock(MACHINE, ChoppingBlockFeature.CHOPPING_BLOCK.get());
+        ChoppingBlockEntity choppingBlock = (ChoppingBlockEntity) helper.getBlockEntity(MACHINE);
+        choppingBlock.insert(new ItemStack(net.minecraft.world.item.Items.OAK_LOG), true);
+        assertEmptyHandDelegation(helper, player, absolute, "chopping block");
+        helper.getBlockState(MACHINE).useWithoutItem(helper.getLevel(), player, hit(absolute, Direction.UP));
+        helper.assertTrue(choppingBlock.input().isEmpty(), "chopping block did not extract through empty-hand use");
+
+        helper.setBlock(MACHINE, CampfireFeature.CAMPFIRE.get());
+        CampfireBlockEntity campfire = (CampfireBlockEntity) helper.getBlockEntity(MACHINE);
+        campfire.insertCookingStack(new ItemStack(net.minecraft.world.item.Items.BEEF), true);
+        assertEmptyHandDelegation(helper, player, absolute, "campfire");
+        helper.getBlockState(MACHINE).useWithoutItem(helper.getLevel(), player, hit(absolute, Direction.UP));
+        helper.assertTrue(campfire.cookingStack().isEmpty(), "campfire did not extract through empty-hand use");
+
+        helper.setBlock(MACHINE, BarrelFeature.BARREL.get());
+        BarrelBlockEntity barrel = (BarrelBlockEntity) helper.getBlockEntity(MACHINE);
+        barrel.fluidTank().fill(
+                new FluidStack(net.minecraft.world.level.material.Fluids.WATER, 1000),
+                IFluidHandler.FluidAction.EXECUTE
+        );
+        barrel.insert(3, new ItemStack(net.minecraft.world.item.Items.OAK_LEAVES), true);
+        assertEmptyHandDelegation(helper, player, absolute, "barrel");
+        helper.getBlockState(MACHINE).useWithoutItem(helper.getLevel(), player, hit(absolute, Direction.UP));
+        helper.assertTrue(barrel.item(3).isEmpty(), "barrel did not extract through empty-hand use");
+
+        helper.setBlock(MACHINE, PitKilnFeature.PIT_KILN.get());
+        PitKilnBlockEntity pitKiln = (PitKilnBlockEntity) helper.getBlockEntity(MACHINE);
+        pitKiln.insert(new ItemStack(net.minecraft.world.item.Items.CLAY), true);
+        assertEmptyHandDelegation(helper, player, absolute, "pit kiln");
+        helper.getBlockState(MACHINE).useWithoutItem(helper.getLevel(), player, hit(absolute, Direction.UP));
+        helper.assertTrue(pitKiln.input().isEmpty(), "pit kiln did not extract through empty-hand use");
+
+        player.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
+        helper.setBlock(
+                MACHINE,
+                PitKilnFeature.PIT_KILN.get().defaultBlockState().setValue(PitKilnBlock.STAGE, PitKilnStage.ACTIVE)
+        );
+        helper.assertValueEqual(
+                helper.getBlockState(MACHINE).useItemOn(
+                        ItemStack.EMPTY,
+                        helper.getLevel(),
+                        player,
+                        InteractionHand.MAIN_HAND,
+                        hit(absolute, Direction.UP)
+                ),
+                ItemInteractionResult.CONSUME,
+                "active pit kiln delegated its blocked empty-hand interaction"
+        );
+        helper.setBlock(
+                MACHINE,
+                PitKilnFeature.PIT_KILN.get().defaultBlockState().setValue(PitKilnBlock.STAGE, PitKilnStage.COMPLETE)
+        );
+        assertEmptyHandDelegation(helper, player, absolute, "complete pit kiln");
+        helper.succeed();
+    }
+
+    @GameTest(template = "animal_power_empty")
     public static void normalDryingRackAcceptsManualInteractionOnlyFromAbove(GameTestHelper helper) {
         if (!ContentAvailability.isEnabled(ContentKey.DRYING_RACK)) {
             helper.succeed();
@@ -366,5 +498,26 @@ public final class PrimitiveInteractionGameTests {
         double y = pos.getY() + 0.5D + direction.getStepY() * 0.5D;
         double z = pos.getZ() + 0.5D + direction.getStepZ() * 0.5D;
         return new BlockHitResult(new Vec3(x, y, z), direction, pos, false);
+    }
+
+    private static void assertEmptyHandDelegation(
+            GameTestHelper helper,
+            Player player,
+            BlockPos absolute,
+            String mechanism
+    ) {
+        player.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
+        ItemInteractionResult result = helper.getBlockState(MACHINE).useItemOn(
+                ItemStack.EMPTY,
+                helper.getLevel(),
+                player,
+                InteractionHand.MAIN_HAND,
+                hit(absolute, Direction.UP)
+        );
+        helper.assertValueEqual(
+                result,
+                ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION,
+                mechanism + " blocked the empty-hand interaction callback"
+        );
     }
 }

@@ -112,6 +112,9 @@ public final class CampfireBlock extends BaseEntityBlock implements HeldIgnitabl
         if (campfire.isDead()) {
             return ItemInteractionResult.CONSUME;
         }
+        if (ItemStackInteraction.shouldDeferEmptyMainHand(hand, stack)) {
+            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        }
         if (stack.is(Items.WATER_BUCKET) && state.getValue(LIT)) {
             if (!level.isClientSide) {
                 campfire.extinguish();

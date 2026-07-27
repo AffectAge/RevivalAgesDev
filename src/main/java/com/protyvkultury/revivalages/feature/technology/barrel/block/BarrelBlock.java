@@ -69,6 +69,9 @@ public final class BarrelBlock extends BaseEntityBlock {
             }
             return ItemInteractionResult.CONSUME;
         }
+        if (ItemStackInteraction.shouldDeferEmptyMainHand(hand, stack)) {
+            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        }
         if (stack.is(BarrelFeature.BARREL_LID.get())) {
             if (hit.getDirection() != Direction.UP) {
                 return ItemInteractionResult.CONSUME;

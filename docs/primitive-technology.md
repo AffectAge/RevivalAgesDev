@@ -41,8 +41,11 @@ data conditions, inert saved machines, and integration filtering follow
    be added incrementally; draining required fluid ejects excess input, and
    large outputs are retained and extracted in safe stack-sized chunks.
 7. Place tanned hide on a Tanning Rack under open daytime sky. Darkness pauses
-   work, blocked sky resets it, and prolonged rain can produce the configured
-   failure result.
+   work, blocked sky resets progress, and rain exposure accumulates for the
+   current input across separate storms. Prolonged rain can produce the
+   configured failure result. The built-in recipe converts one tanned hide into
+   one leather. The rack is intentionally player-operated and exposes no item
+   automation capability.
 8. Advance into the stone machine tier. The four two-block machines share the
    same lower fuel chamber, upper process chamber, directional interaction rules,
    synchronized process state, airflow input, and output-blocking behavior.

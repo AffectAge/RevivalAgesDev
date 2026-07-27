@@ -77,6 +77,9 @@ public final class ChoppingBlock extends BaseEntityBlock {
         if (!(level.getBlockEntity(pos) instanceof ChoppingBlockEntity chopping)) {
             return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         }
+        if (ItemStackInteraction.shouldDeferEmptyMainHand(hand, stack)) {
+            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        }
         if (stack.is(net.minecraft.tags.ItemTags.SHOVELS) && chopping.sawdust() > 0) {
             if (!level.isClientSide) {
                 ItemStackInteraction.giveOrDrop(level, pos, player,

@@ -94,6 +94,9 @@ public final class PitKilnBlock extends BaseEntityBlock implements HeldIgnitable
         if (stage == PitKilnStage.ACTIVE) {
             return ItemInteractionResult.CONSUME;
         }
+        if (ItemStackInteraction.shouldDeferEmptyMainHand(hand, stack)) {
+            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        }
         if (stage == PitKilnStage.COMPLETE) {
             return ItemInteractionResult.CONSUME;
         }

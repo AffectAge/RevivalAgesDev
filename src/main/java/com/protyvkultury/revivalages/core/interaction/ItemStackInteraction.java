@@ -4,6 +4,7 @@ import java.util.function.Supplier;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -19,6 +20,14 @@ import net.minecraft.world.level.block.Block;
 public final class ItemStackInteraction {
 
     private ItemStackInteraction() {
+    }
+
+    /**
+     * Returns whether an item interaction must defer to the block's empty-hand
+     * interaction callback. This is intentionally opt-in per physical device.
+     */
+    public static boolean shouldDeferEmptyMainHand(InteractionHand hand, ItemStack stack) {
+        return hand == InteractionHand.MAIN_HAND && stack.isEmpty();
     }
 
     public static ItemInteractionResult insert(Level level, boolean accepted, Runnable serverAction) {

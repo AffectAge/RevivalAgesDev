@@ -386,7 +386,7 @@ public final class PrimitiveDeviceRenderers {
                 pose.pushPose();
                 // Match TESRInteractable: rotate the entire interaction space around
                 // the block center before applying the rack-local item transform.
-                PrimitiveRenderHelper.rotateInteractionSpace(pose, facing);
+                PrimitiveRenderHelper.rotateInteractionSpace(pose, facing, Direction.NORTH);
                 pose.translate(0.5D, 0.525D, 0.475D);
                 pose.mulPose(Axis.XP.rotationDegrees(22.5F));
                 pose.scale(0.75F, 0.75F, 0.75F);
@@ -405,7 +405,7 @@ public final class PrimitiveDeviceRenderers {
                         : (held.isEmpty() || minecraft.player.isShiftKeyDown()) ? shown : ItemStack.EMPTY;
                 if (!preview.isEmpty()) {
                     pose.pushPose();
-                    PrimitiveRenderHelper.rotateInteractionSpace(pose, facing);
+                    PrimitiveRenderHelper.rotateInteractionSpace(pose, facing, Direction.NORTH);
                     pose.translate(0.5D, 0.525D, 0.475D);
                     pose.mulPose(Axis.XP.rotationDegrees(22.5F));
                     pose.scale(0.75F, 0.75F, 0.75F);

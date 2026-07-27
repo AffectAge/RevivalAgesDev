@@ -9,7 +9,6 @@ import com.protyvkultury.revivalages.feature.technology.tanningrack.TanningRackF
 import com.protyvkultury.revivalages.feature.technology.tanningrack.recipe.TanningRackRecipe;
 import java.util.Optional;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -23,8 +22,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.items.IItemHandler;
-import org.jetbrains.annotations.Nullable;
 
 public final class TanningRackBlockEntity extends BlockEntity {
 
@@ -46,43 +43,57 @@ public final class TanningRackBlockEntity extends BlockEntity {
         ItemStack materializedInput = FoodFreshnessApi.materialize(rack.input);
         ItemStack materializedOutput = FoodFreshnessApi.materialize(rack.output);
         if (materializedInput != rack.input || materializedOutput != rack.output) {
+            boolean inputChanged = materializedInput != rack.input;
             rack.input = materializedInput;
             rack.output = materializedOutput;
-            rack.elapsedTicks = 0;
+            if (inputChanged) {
+                rack.elapsedTicks = 0;
+                rack.totalTicks = 0;
+                rack.rainTicks = 0;
+            }
             rack.resolveRecipe();
             rack.sync();
         }
-        rack.resolveRecipe();
+        if (rack.resolveRecipe()) {
+            rack.sync();
+        }
         if (rack.activeRecipe == null || rack.input.isEmpty() || !rack.output.isEmpty()) {
             return;
         }
         if (!level.canSeeSky(pos)) {
-            if (rack.elapsedTicks != 0 || rack.rainTicks != 0) {
+            if (rack.elapsedTicks != 0 || rack.totalTicks != 0) {
                 rack.elapsedTicks = 0;
-                rack.rainTicks = 0;
+                rack.totalTicks = 0;
                 rack.sync();
             }
             return;
         }
         int rainLimit = PrimitiveTechnologyConfig.TANNING_RACK_RAIN_RUIN_TICKS.get();
-        if (rainLimit >= 0 && level.isRainingAt(pos.above())) {
-            if (rack.rainTicks < rainLimit) {
-                rack.rainTicks++;
-            }
-            if (rack.rainTicks >= rainLimit && !rack.activeRecipe.rainFailure().isEmpty()) {
-                rack.output = rack.activeRecipe.rainFailure();
-                rack.input = ItemStack.EMPTY;
-                rack.elapsedTicks = 0;
-                rack.totalTicks = 0;
-                rack.rainTicks = 0;
-                rack.activeRecipe = null;
-                rack.sync();
-            } else {
-                rack.setChanged();
+        boolean raining = level.isRainingAt(pos.above());
+        if (rainLimit >= 0 && raining) {
+            boolean hasRainFailure = !rack.activeRecipe.rainFailure().isEmpty();
+            int nextRainTicks = TanningRackRainExposure.next(
+                    rack.rainTicks,
+                    rainLimit,
+                    raining,
+                    hasRainFailure
+            );
+            if (hasRainFailure) {
+                rack.rainTicks = nextRainTicks;
+                if (rack.rainTicks >= rainLimit) {
+                    rack.output = rack.activeRecipe.rainFailure();
+                    rack.input = ItemStack.EMPTY;
+                    rack.elapsedTicks = 0;
+                    rack.totalTicks = 0;
+                    rack.rainTicks = 0;
+                    rack.activeRecipe = null;
+                    rack.sync();
+                } else {
+                    rack.setChanged();
+                }
             }
             return;
         }
-        rack.rainTicks = 0;
         long time = level.getDayTime() % 24000L;
         if (time > 12000L) {
             return;
@@ -192,10 +203,6 @@ public final class TanningRackBlockEntity extends BlockEntity {
         }
     }
 
-    public IItemHandler itemHandler(@Nullable Direction side) {
-        return new Handler(side);
-    }
-
     private Optional<RecipeHolder<TanningRackRecipe>> findRecipe(ItemStack stack) {
         if (level == null || stack.isEmpty()) {
             return Optional.empty();
@@ -203,8 +210,18 @@ public final class TanningRackBlockEntity extends BlockEntity {
         return level.getRecipeManager().getRecipeFor(TanningRackFeature.RECIPE_TYPE.get(), new SingleRecipeInput(stack), level);
     }
 
-    private void resolveRecipe() {
+    private boolean resolveRecipe() {
         activeRecipe = findRecipe(input).map(RecipeHolder::value).orElse(null);
+        if (level != null
+                && !input.isEmpty()
+                && activeRecipe == null
+                && (elapsedTicks != 0 || totalTicks != 0 || rainTicks != 0)) {
+            elapsedTicks = 0;
+            totalTicks = 0;
+            rainTicks = 0;
+            return true;
+        }
+        return false;
     }
 
     private void sync() {
@@ -249,58 +266,4 @@ public final class TanningRackBlockEntity extends BlockEntity {
         return saveWithoutMetadata(registries);
     }
 
-    private final class Handler implements IItemHandler {
-
-        private final Direction side;
-
-        private Handler(@Nullable Direction side) {
-            this.side = side == null ? Direction.UP : side;
-        }
-
-        @Override
-        public int getSlots() {
-            return 2;
-        }
-
-        @Override
-        public ItemStack getStackInSlot(int slot) {
-            return slot == 0 ? input.copy() : slot == 1 ? output.copy() : ItemStack.EMPTY;
-        }
-
-        @Override
-        public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
-            if (slot != 0 || side == Direction.DOWN || !canInsert(stack)) {
-                return stack;
-            }
-            ItemStack remainder = stack.copy();
-            remainder.shrink(1);
-            if (!simulate) {
-                ItemStack one = stack.copyWithCount(1);
-                insert(one, true);
-            }
-            return remainder;
-        }
-
-        @Override
-        public ItemStack extractItem(int slot, int amount, boolean simulate) {
-            if (slot != 1 || side != Direction.DOWN || amount <= 0 || output.isEmpty()) {
-                return ItemStack.EMPTY;
-            }
-            ItemStack result = output.copyWithCount(1);
-            if (!simulate) {
-                extractOutput();
-            }
-            return result;
-        }
-
-        @Override
-        public int getSlotLimit(int slot) {
-            return 1;
-        }
-
-        @Override
-        public boolean isItemValid(int slot, ItemStack stack) {
-            return slot == 0 && side != Direction.DOWN && findRecipe(stack).isPresent();
-        }
-    }
 }

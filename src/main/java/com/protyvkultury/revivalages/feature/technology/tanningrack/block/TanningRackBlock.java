@@ -2,6 +2,8 @@ package com.protyvkultury.revivalages.feature.technology.tanningrack.block;
 
 import com.mojang.serialization.MapCodec;
 import com.protyvkultury.revivalages.core.interaction.ItemStackInteraction;
+import com.protyvkultury.revivalages.feature.content.ContentAvailability;
+import com.protyvkultury.revivalages.feature.content.ContentKey;
 import com.protyvkultury.revivalages.feature.technology.tanningrack.TanningRackFeature;
 import com.protyvkultury.revivalages.feature.technology.tanningrack.blockentity.TanningRackBlockEntity;
 import javax.annotation.Nullable;
@@ -74,7 +76,19 @@ public final class TanningRackBlock extends BaseEntityBlock {
             InteractionHand hand,
             BlockHitResult hit
     ) {
+        if (!ContentAvailability.isEnabled(ContentKey.TANNING_RACK)) {
+            if (!level.isClientSide) {
+                player.displayClientMessage(
+                        net.minecraft.network.chat.Component.translatable("message.revivalages.content_disabled"),
+                        true
+                );
+            }
+            return ItemInteractionResult.CONSUME;
+        }
         if (!(level.getBlockEntity(pos) instanceof TanningRackBlockEntity rack)) {
+            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        }
+        if (ItemStackInteraction.shouldDeferEmptyMainHand(hand, stack)) {
             return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         }
         if (!rack.output().isEmpty()) {
@@ -92,6 +106,15 @@ public final class TanningRackBlock extends BaseEntityBlock {
 
     @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
+        if (!ContentAvailability.isEnabled(ContentKey.TANNING_RACK)) {
+            if (!level.isClientSide) {
+                player.displayClientMessage(
+                        net.minecraft.network.chat.Component.translatable("message.revivalages.content_disabled"),
+                        true
+                );
+            }
+            return InteractionResult.CONSUME;
+        }
         if (level.getBlockEntity(pos) instanceof TanningRackBlockEntity rack) {
             ItemStack result = !rack.output().isEmpty() ? rack.output() : rack.input();
             if (!result.isEmpty()) {

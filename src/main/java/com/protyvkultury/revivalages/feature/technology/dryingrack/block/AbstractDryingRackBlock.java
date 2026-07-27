@@ -59,6 +59,9 @@ public abstract class AbstractDryingRackBlock extends BaseEntityBlock {
         if (!isInteractionFaceAllowed(state, hitResult.getDirection())) {
             return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         }
+        if (ItemStackInteraction.shouldDeferEmptyMainHand(hand, stack)) {
+            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        }
         int slot = interactionSlot(state, hitResult);
         if (!rack.getItem(slot).isEmpty()) {
             return ItemInteractionResult.CONSUME;
