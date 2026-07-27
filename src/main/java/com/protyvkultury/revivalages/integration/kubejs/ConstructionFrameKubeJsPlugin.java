@@ -92,7 +92,6 @@ public final class ConstructionFrameKubeJsPlugin implements KubeJSPlugin {
     private static final RecipeSchema BLOCK_TRANSFORMATION_SCHEMA =
             new RecipeSchema(BLOCK_INGREDIENT, BLOCK_RESULT)
                     .constructor(BLOCK_RESULT, BLOCK_INGREDIENT);
-
     @Override
     public void registerRecipeSchemas(RecipeSchemaRegistry registry) {
         registry.register(RevivalAges.id("frame_assembly"), SCHEMA);

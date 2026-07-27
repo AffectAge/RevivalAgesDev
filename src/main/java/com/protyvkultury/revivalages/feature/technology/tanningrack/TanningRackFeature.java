@@ -13,7 +13,6 @@ import com.protyvkultury.revivalages.feature.technology.tanningrack.recipe.Tanni
 import java.util.function.Supplier;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -24,7 +23,6 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
-import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredItem;
@@ -84,14 +82,7 @@ public final class TanningRackFeature implements FeatureModule {
         BLOCK_ENTITIES.register(modBus);
         RECIPE_TYPES.register(modBus);
         RECIPE_SERIALIZERS.register(modBus);
-        modBus.addListener(this::addCreativeItems);
         modBus.addListener(this::registerCapabilities);
-    }
-
-    private void addCreativeItems(BuildCreativeModeTabContentsEvent event) {
-        if (event.getTabKey() == CreativeModeTabs.FUNCTIONAL_BLOCKS) {
-            event.accept(TANNING_RACK_ITEM.get());
-        }
     }
 
     private void registerCapabilities(RegisterCapabilitiesEvent event) {

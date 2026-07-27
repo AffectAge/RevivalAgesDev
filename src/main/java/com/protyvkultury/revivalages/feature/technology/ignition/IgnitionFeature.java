@@ -8,12 +8,13 @@ import com.protyvkultury.revivalages.feature.technology.ignition.block.WoodTorch
 import com.protyvkultury.revivalages.feature.technology.ignition.block.WoodTorchState;
 import com.protyvkultury.revivalages.feature.technology.ignition.blockentity.WoodTorchBlockEntity;
 import com.protyvkultury.revivalages.feature.technology.ignition.item.FlintAndTinderItem;
+import com.protyvkultury.revivalages.feature.technology.ignition.item.WoodTorchItem;
+import com.protyvkultury.revivalages.feature.technology.ignition.network.WoodTorchSettingsPayload;
 import com.protyvkultury.revivalages.feature.technology.primitive.config.PrimitiveTechnologyConfig;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.core.component.DataComponentType;
 import com.mojang.serialization.Codec;
 import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -24,6 +25,12 @@ import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.OnDatapackSyncEvent;
+import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
+import net.neoforged.fml.event.config.ModConfigEvent;
+import net.neoforged.neoforge.server.ServerLifecycleHooks;
 
 public final class IgnitionFeature implements FeatureModule {
 
@@ -44,8 +51,11 @@ public final class IgnitionFeature implements FeatureModule {
     public static final DeferredBlock<WoodTorchBlock> WOOD_TORCH = BLOCKS.registerBlock(
             "wood_torch", WoodTorchBlock::new,
             BlockBehaviour.Properties.of().noCollission().instabreak().sound(SoundType.WOOD));
-    public static final DeferredItem<BlockItem> WOOD_TORCH_ITEM =
-            ITEMS.registerSimpleBlockItem(WOOD_TORCH, new Item.Properties());
+    public static final DeferredItem<WoodTorchItem> WOOD_TORCH_ITEM = ITEMS.registerItem(
+            "wood_torch",
+            properties -> new WoodTorchItem(WOOD_TORCH.get(), properties),
+            new Item.Properties()
+    );
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<WoodTorchBlockEntity>> WOOD_TORCH_BLOCK_ENTITY =
             BLOCK_ENTITIES.register("wood_torch", () -> BlockEntityType.Builder.of(
                     WoodTorchBlockEntity::new, WOOD_TORCH.get()).build(null));
@@ -72,5 +82,31 @@ public final class IgnitionFeature implements FeatureModule {
         BLOCKS.register(modBus);
         ITEMS.register(modBus);
         BLOCK_ENTITIES.register(modBus);
+        modBus.addListener(this::registerPayloads);
+        modBus.addListener(this::onConfigReloading);
+        NeoForge.EVENT_BUS.addListener(this::onDatapackSync);
+    }
+
+    private void registerPayloads(RegisterPayloadHandlersEvent event) {
+        event.registrar("1").playToClient(
+                WoodTorchSettingsPayload.TYPE,
+                WoodTorchSettingsPayload.STREAM_CODEC,
+                WoodTorchSettingsPayload::handle
+        );
+    }
+
+    private void onDatapackSync(OnDatapackSyncEvent event) {
+        WoodTorchSettingsPayload payload = new WoodTorchSettingsPayload(WoodTorchSettings.serverSnapshot());
+        event.getRelevantPlayers().forEach(player -> PacketDistributor.sendToPlayer(player, payload));
+    }
+
+    private void onConfigReloading(ModConfigEvent.Reloading event) {
+        if (event.getConfig().getSpec() != PrimitiveTechnologyConfig.SPEC
+                || ServerLifecycleHooks.getCurrentServer() == null) {
+            return;
+        }
+        PacketDistributor.sendToAllPlayers(
+                new WoodTorchSettingsPayload(WoodTorchSettings.serverSnapshot())
+        );
     }
 }

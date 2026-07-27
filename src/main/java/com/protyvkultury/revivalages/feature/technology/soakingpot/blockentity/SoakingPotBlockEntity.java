@@ -22,6 +22,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -47,9 +48,13 @@ public final class SoakingPotBlockEntity extends BlockEntity {
 
         @Override
         public int fill(FluidStack resource, FluidAction action) {
+            if (!ContentAvailability.isEnabled(ContentKey.SOAKING_POT)) {
+                return 0;
+            }
             if (!resource.isEmpty()
-                    && !PrimitiveTechnologyConfig.WOODEN_CONTAINERS_HOLD_HOT_FLUIDS.get()
-                    && resource.getFluidType().getTemperature(resource) >= PrimitiveTechnologyConfig.HOT_FLUID_TEMPERATURE.get()) {
+                    && !PrimitiveTechnologyConfig.SOAKING_POT_HOLDS_HOT_FLUIDS.get()
+                    && resource.getFluidType().getTemperature(resource)
+                    >= PrimitiveTechnologyConfig.SOAKING_POT_HOT_FLUID_TEMPERATURE.get()) {
                 if (action.execute()) {
                     breakForHotFluid(resource);
                 }
@@ -147,7 +152,9 @@ public final class SoakingPotBlockEntity extends BlockEntity {
     }
 
     public boolean canInsert(ItemStack stack) {
-        if (!output.isEmpty() || stack.isEmpty()) {
+        if (!ContentAvailability.isEnabled(ContentKey.SOAKING_POT)
+                || !output.isEmpty()
+                || stack.isEmpty()) {
             return false;
         }
         Optional<SoakingPotRecipe> recipe = findRecipe(stack);
@@ -225,6 +232,10 @@ public final class SoakingPotBlockEntity extends BlockEntity {
         return new PotItemHandler(side);
     }
 
+    public IFluidHandler automationFluidHandler() {
+        return new PotFluidHandler();
+    }
+
     private Optional<SoakingPotRecipe> findRecipe(ItemStack stack) {
         if (level == null || stack.isEmpty() || tank.isEmpty()) {
             return Optional.empty();
@@ -285,6 +296,14 @@ public final class SoakingPotBlockEntity extends BlockEntity {
         BlockState fluidState = resource.getFluid().defaultFluidState().createLegacyBlock();
         level.setBlock(worldPosition, fluidState.isAir() ? Blocks.AIR.defaultBlockState() : fluidState, Block.UPDATE_ALL);
         level.playSound(null, worldPosition, SoundEvents.ITEM_BREAK, SoundSource.PLAYERS, 1.0F, 1.0F);
+        if (level instanceof ServerLevel serverLevel) {
+            double x = worldPosition.getX() + 0.5D;
+            double y = worldPosition.getY() + 0.25D;
+            double z = worldPosition.getZ() + 0.5D;
+            serverLevel.sendParticles(ParticleTypes.SMOKE, x, y, z, 16, 0.2D, 0.2D, 0.2D, 0.0D);
+            serverLevel.sendParticles(ParticleTypes.LARGE_SMOKE, x, y, z, 4, 0.2D, 0.2D, 0.2D, 0.0D);
+            serverLevel.sendParticles(ParticleTypes.FLAME, x, y, z, 16, 0.2D, 0.2D, 0.2D, 0.0D);
+        }
     }
 
     public void dropContents() {
@@ -368,7 +387,7 @@ public final class SoakingPotBlockEntity extends BlockEntity {
 
         @Override
         public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
-            if (slot != 0 || side == Direction.DOWN || !canInsert(stack)) {
+            if (!automationAllowed() || slot != 0 || side == Direction.DOWN || !canInsert(stack)) {
                 return stack;
             }
             Optional<SoakingPotRecipe> recipe = findRecipe(stack);
@@ -390,7 +409,11 @@ public final class SoakingPotBlockEntity extends BlockEntity {
 
         @Override
         public ItemStack extractItem(int slot, int amount, boolean simulate) {
-            if (slot != 1 || side != Direction.DOWN || amount <= 0 || output.isEmpty()) {
+            if (!automationAllowed()
+                    || slot != 1
+                    || side != Direction.DOWN
+                    || amount <= 0
+                    || output.isEmpty()) {
                 return ItemStack.EMPTY;
             }
             int count = Math.min(amount, Math.min(output.getMaxStackSize(), outputCount));
@@ -414,7 +437,53 @@ public final class SoakingPotBlockEntity extends BlockEntity {
 
         @Override
         public boolean isItemValid(int slot, ItemStack stack) {
-            return slot == 0 && side != Direction.DOWN && findRecipe(stack).isPresent();
+            return automationAllowed()
+                    && slot == 0
+                    && side != Direction.DOWN
+                    && findRecipe(stack).isPresent();
+        }
+    }
+
+    private boolean automationAllowed() {
+        return ContentAvailability.isEnabled(ContentKey.SOAKING_POT)
+                && PrimitiveTechnologyConfig.SOAKING_POT_AUTOMATION.get();
+    }
+
+    private final class PotFluidHandler implements IFluidHandler {
+
+        @Override
+        public int getTanks() {
+            return tank.getTanks();
+        }
+
+        @Override
+        public FluidStack getFluidInTank(int tankIndex) {
+            return tank.getFluidInTank(tankIndex);
+        }
+
+        @Override
+        public int getTankCapacity(int tankIndex) {
+            return tank.getTankCapacity(tankIndex);
+        }
+
+        @Override
+        public boolean isFluidValid(int tankIndex, FluidStack stack) {
+            return automationAllowed() && tank.isFluidValid(tankIndex, stack);
+        }
+
+        @Override
+        public int fill(FluidStack resource, FluidAction action) {
+            return automationAllowed() ? tank.fill(resource, action) : 0;
+        }
+
+        @Override
+        public FluidStack drain(FluidStack resource, FluidAction action) {
+            return automationAllowed() ? tank.drain(resource, action) : FluidStack.EMPTY;
+        }
+
+        @Override
+        public FluidStack drain(int maxDrain, FluidAction action) {
+            return automationAllowed() ? tank.drain(maxDrain, action) : FluidStack.EMPTY;
         }
     }
 }

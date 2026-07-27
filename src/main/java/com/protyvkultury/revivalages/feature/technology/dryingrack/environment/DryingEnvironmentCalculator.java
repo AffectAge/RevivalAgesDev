@@ -1,16 +1,13 @@
 package com.protyvkultury.revivalages.feature.technology.dryingrack.environment;
 
+import com.protyvkultury.revivalages.api.ignition.FireSourceApi;
 import com.protyvkultury.revivalages.feature.technology.dryingrack.config.DryingRackConfig;
 import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
-import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.CampfireBlock;
-import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.common.Tags;
 
 public final class DryingEnvironmentCalculator {
@@ -34,7 +31,12 @@ public final class DryingEnvironmentCalculator {
         double baseSpeed;
         List<DryingEnvironmentModifier> modifiers = new ArrayList<>();
 
-        if (canRain && level.isRainingAt(pos.above())) {
+        Double explicitSpeed = biome.getData(
+                normalRack ? DryingRackDataMaps.DRYING_SPEED : DryingRackDataMaps.CRUDE_DRYING_SPEED);
+        if (explicitSpeed != null) {
+            base = DryingEnvironmentBase.EXPLICIT;
+            baseSpeed = explicitSpeed;
+        } else if (canRain && level.isRainingAt(pos.above())) {
             base = DryingEnvironmentBase.DIRECT_RAIN;
             baseSpeed = DryingRackConfig.DIRECT_RAIN_SPEED.get();
         } else if ((canRain && level.isRaining()) || biome.is(Tags.Biomes.IS_WET)) {
@@ -101,11 +103,7 @@ public final class DryingEnvironmentCalculator {
         int count = 0;
         for (BlockPos cursor : BlockPos.betweenClosed(origin.offset(-radius, -radius, -radius),
                 origin.offset(radius, radius, radius))) {
-            BlockState state = level.getBlockState(cursor);
-            if (state.is(BlockTags.FIRE)
-                    || state.is(Blocks.LAVA)
-                    || state.is(Blocks.LAVA_CAULDRON)
-                    || CampfireBlock.isLitCampfire(state)) {
+            if (FireSourceApi.isSourceFacing(level, cursor, origin)) {
                 count++;
             }
         }

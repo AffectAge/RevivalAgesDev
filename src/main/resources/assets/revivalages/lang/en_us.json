@@ -126,6 +126,7 @@
   "jade.revivalages.tanning.rain": "Rain exposure: %s/%s ticks",
   "jade.revivalages.drying_rack.speed": "Speed: %s",
   "jade.revivalages.drying_rack.base.default": "Base: %s",
+  "jade.revivalages.drying_rack.base.explicit": "Biome override: %s",
   "jade.revivalages.drying_rack.base.direct_rain": "Direct rain: %s",
   "jade.revivalages.drying_rack.base.indirect_rain": "Humidity/rain: %s",
   "jade.revivalages.drying_rack.base.nether": "Nether: %s",
@@ -384,4 +385,17 @@
   ,"config.jade.plugin_revivalages.construction_frame": "Construction Frame Details"
   ,"config.jade.plugin_revivalages.animal_power": "Animal Power Details"
   ,"config.jade.plugin_revivalages.structural_integrity": "Structural Integrity"
+  ,"message.revivalages.content_disabled": "This content is disabled by the server."
+  ,"tooltip.revivalages.wood_torch.burns_up.true": "Burns out over time"
+  ,"tooltip.revivalages.wood_torch.burns_up.false": "Does not burn out"
+  ,"tooltip.revivalages.wood_torch.rain_extinguishes.true": "Extinguished by rain"
+  ,"tooltip.revivalages.wood_torch.rain_extinguishes.false": "Not extinguished by rain"
+  ,"block.revivalages.storage_barrel": "Storage Barrel"
+  ,"container.revivalages.storage_barrel": "Storage Barrel"
+  ,"content.revivalages.storage_barrel": "Storage Barrel"
+  ,"jade.revivalages.storage_barrel.sealed.true": "Sealed"
+  ,"jade.revivalages.storage_barrel.sealed.false": "Open"
+  ,"jade.revivalages.storage_barrel.capacity": "Capacity: %s slots"
+  ,"jade.revivalages.storage_barrel.preserved": "Food preservation active"
+  ,"config.jade.plugin_revivalages.storage_barrel": "Storage Barrel Details"
 }

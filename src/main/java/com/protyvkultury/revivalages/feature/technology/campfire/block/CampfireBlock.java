@@ -1,5 +1,7 @@
 package com.protyvkultury.revivalages.feature.technology.campfire.block;
 
+import com.protyvkultury.revivalages.api.ignition.HeldIgnitableBlock;
+import com.protyvkultury.revivalages.api.ignition.HeldIgniter;
 import com.protyvkultury.revivalages.feature.content.ContentAvailability;
 import com.protyvkultury.revivalages.feature.content.ContentKey;
 import com.mojang.serialization.MapCodec;
@@ -48,7 +50,7 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-public final class CampfireBlock extends BaseEntityBlock {
+public final class CampfireBlock extends BaseEntityBlock implements HeldIgnitableBlock {
 
     public static final MapCodec<CampfireBlock> CODEC = simpleCodec(CampfireBlock::new);
     public static final BooleanProperty LIT = BooleanProperty.create("lit");
@@ -101,6 +103,9 @@ public final class CampfireBlock extends BaseEntityBlock {
             InteractionHand hand,
             BlockHitResult hit
     ) {
+        if (stack.getItem() instanceof HeldIgniter) {
+            return ItemInteractionResult.SKIP_DEFAULT_BLOCK_INTERACTION;
+        }
         if (!(level.getBlockEntity(pos) instanceof CampfireBlockEntity campfire)) {
             return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         }
@@ -130,6 +135,8 @@ public final class CampfireBlock extends BaseEntityBlock {
                         stack.shrink(1);
                     }
                 }
+                level.playSound(null, pos, SoundEvents.FLINTANDSTEEL_USE, SoundSource.BLOCKS, 1.0F,
+                        level.random.nextFloat() * 0.4F + 0.8F);
             }
             return ItemInteractionResult.sidedSuccess(level.isClientSide);
         }
@@ -167,6 +174,9 @@ public final class CampfireBlock extends BaseEntityBlock {
 
     @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
+        if (!player.getMainHandItem().isEmpty()) {
+            return InteractionResult.PASS;
+        }
         if (level.getBlockEntity(pos) instanceof CampfireBlockEntity campfire) {
             if (!campfire.cookingStack().isEmpty()) {
                 if (level.getBlockState(pos.above()).is(PrimitiveTags.CAMPFIRE_OCCUPANTS)) {
@@ -189,6 +199,23 @@ public final class CampfireBlock extends BaseEntityBlock {
             }
         }
         return InteractionResult.PASS;
+    }
+
+    @Override
+    public boolean igniteFromHeldItem(
+            Level level,
+            BlockPos pos,
+            BlockState state,
+            Player player,
+            net.minecraft.core.Direction clickedFace
+    ) {
+        if (!ContentAvailability.isEnabled(ContentKey.CAMPFIRE)) {
+            return false;
+        }
+        if (!level.isClientSide && level.getBlockEntity(pos) instanceof CampfireBlockEntity campfire) {
+            campfire.ignite();
+        }
+        return true;
     }
 
     @Override

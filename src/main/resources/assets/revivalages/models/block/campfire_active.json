@@ -1,0 +1,7 @@
+{
+  "parent": "revivalages:block/campfire_tinder",
+  "textures": {
+    "tinder": "revivalages:block/active_pile",
+    "particle": "revivalages:block/active_pile"
+  }
+}

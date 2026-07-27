@@ -1,6 +1,93 @@
 {
   "multipart": [
-    { "when": { "lit": "false" }, "apply": { "model": "minecraft:block/campfire_off" } },
-    { "when": { "lit": "true" }, "apply": { "model": "minecraft:block/campfire" } }
+    {
+      "when": {
+        "lit": "false",
+        "ash": "0|1|2|3|4|5|6|7"
+      },
+      "apply": {
+        "model": "revivalages:block/campfire_tinder"
+      }
+    },
+    {
+      "when": {
+        "lit": "true"
+      },
+      "apply": {
+        "model": "revivalages:block/campfire_active"
+      }
+    },
+    {
+      "when": {
+        "lit": "true"
+      },
+      "apply": {
+        "model": "revivalages:block/campfire_fire"
+      }
+    },
+    {
+      "when": {
+        "ash": "1"
+      },
+      "apply": {
+        "model": "revivalages:block/campfire_ash_1"
+      }
+    },
+    {
+      "when": {
+        "ash": "2"
+      },
+      "apply": {
+        "model": "revivalages:block/campfire_ash_2"
+      }
+    },
+    {
+      "when": {
+        "ash": "3"
+      },
+      "apply": {
+        "model": "revivalages:block/campfire_ash_3"
+      }
+    },
+    {
+      "when": {
+        "ash": "4"
+      },
+      "apply": {
+        "model": "revivalages:block/campfire_ash_4"
+      }
+    },
+    {
+      "when": {
+        "ash": "5"
+      },
+      "apply": {
+        "model": "revivalages:block/campfire_ash_5"
+      }
+    },
+    {
+      "when": {
+        "ash": "6"
+      },
+      "apply": {
+        "model": "revivalages:block/campfire_ash_6"
+      }
+    },
+    {
+      "when": {
+        "ash": "7"
+      },
+      "apply": {
+        "model": "revivalages:block/campfire_ash_7"
+      }
+    },
+    {
+      "when": {
+        "ash": "8"
+      },
+      "apply": {
+        "model": "revivalages:block/campfire_ash_8"
+      }
+    }
   ]
 }

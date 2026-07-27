@@ -9,6 +9,7 @@ import com.protyvkultury.revivalages.feature.technology.choppingblock.blockentit
 import com.protyvkultury.revivalages.feature.technology.pitkiln.block.PitKilnBlock;
 import com.protyvkultury.revivalages.feature.technology.pitkiln.block.PitKilnStage;
 import com.protyvkultury.revivalages.feature.technology.pitkiln.blockentity.PitKilnBlockEntity;
+import com.protyvkultury.revivalages.feature.technology.soakingpot.block.SoakingPotBlock;
 import com.protyvkultury.revivalages.feature.technology.soakingpot.blockentity.SoakingPotBlockEntity;
 import com.protyvkultury.revivalages.feature.technology.tanningrack.blockentity.TanningRackBlockEntity;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -80,16 +81,6 @@ public final class PrimitiveDeviceRenderers {
                 pose.translate(0.5D, 0.75D, 0.5D);
                 pose.scale(0.75F, 0.75F, 0.75F);
                 PrimitiveRenderHelper.renderItem(items, chopping, chopping.input(), pose, buffers, light, overlay, 0);
-                pose.popPose();
-            }
-            if (chopping.sawdust() > 0) {
-                pose.pushPose();
-                pose.translate(0.72D, 0.77D, 0.72D);
-                pose.mulPose(Axis.XP.rotationDegrees(90.0F));
-                pose.scale(0.25F + chopping.sawdust() * 0.025F, 0.25F, 0.25F);
-                PrimitiveRenderHelper.renderItem(items, chopping,
-                        new ItemStack(com.protyvkultury.revivalages.feature.technology.primitive.PrimitiveMaterialsFeature.WOOD_CHIPS.get()),
-                        pose, buffers, light, overlay, 1);
                 pose.popPose();
             }
         }
@@ -178,14 +169,26 @@ public final class PrimitiveDeviceRenderers {
         @Override
         public void render(SoakingPotBlockEntity pot, float partialTick, PoseStack pose, MultiBufferSource buffers, int light, int overlay) {
             float ratio = pot.fluidTank().getFluidAmount() / (float) Math.max(1, pot.fluidTank().getCapacity());
-            float y = 0.16F + ratio * 0.31F;
-            PrimitiveRenderHelper.renderFluidSurface(pot.fluidTank().getFluid(), 0.19F, 0.81F, y, 0.19F, 0.81F, pose, buffers, light, overlay);
+            boolean campfire = pot.getBlockState().getValue(SoakingPotBlock.CAMPFIRE);
+            float y = 1.0F / 16.0F + ratio * 7.0F / 16.0F;
+            if (campfire) {
+                y -= 5.0F / 16.0F;
+            }
+            PrimitiveRenderHelper.renderFluidSurface(
+                    pot.fluidTank().getFluid(),
+                    0.25F,
+                    0.75F,
+                    y,
+                    0.25F,
+                    0.75F,
+                    pose,
+                    buffers,
+                    light,
+                    overlay
+            );
             ItemStack shown = pot.output().isEmpty() ? pot.input() : pot.output();
             if (!shown.isEmpty()) {
                 pose.pushPose();
-                boolean campfire = pot.getLevel() != null
-                        && pot.getLevel().getBlockState(pot.getBlockPos().below())
-                        .is(com.protyvkultury.revivalages.feature.technology.campfire.CampfireFeature.CAMPFIRE.get());
                 pose.translate(0.5D, campfire ? 3.0D / 16.0D : 0.5D, 0.5D);
                 pose.scale(6.0F / 16.0F, 6.0F / 16.0F, 6.0F / 16.0F);
                 PrimitiveRenderHelper.renderItem(items, pot, shown, pose, buffers, light, overlay, 0);

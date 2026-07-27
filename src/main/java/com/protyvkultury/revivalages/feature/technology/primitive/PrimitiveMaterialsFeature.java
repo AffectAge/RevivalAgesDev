@@ -13,7 +13,6 @@ import java.util.Set;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.BucketItem;
-import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
@@ -28,7 +27,6 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.loading.FMLEnvironment;
-import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.fluids.BaseFlowingFluid;
@@ -180,7 +178,6 @@ public final class PrimitiveMaterialsFeature implements FeatureModule {
         BLOCKS.register(modBus);
         ITEMS.register(modBus);
         NeoForge.EVENT_BUS.register(PrimitiveMaterialEvents.class);
-        modBus.addListener(this::addCreativeTabItems);
         modBus.addListener(this::registerCapabilities);
         if (FMLEnvironment.dist == Dist.CLIENT) {
             PrimitiveFluidClientEvents.register(modBus);
@@ -203,21 +200,4 @@ public final class PrimitiveMaterialsFeature implements FeatureModule {
         );
     }
 
-    private void addCreativeTabItems(BuildCreativeModeTabContentsEvent event) {
-        if (event.getTabKey() == CreativeModeTabs.INGREDIENTS) {
-            event.accept(STRAW.get());
-            event.accept(WOOD_CHIPS.get());
-            event.accept(PIT_ASH.get());
-            event.accept(BURNED_FOOD.get());
-            event.accept(UNFIRED_BRICK.get());
-            event.accept(RAW_HIDE.get());
-            event.accept(SCRAPED_HIDE.get());
-            event.accept(WASHED_HIDE.get());
-            event.accept(TANNED_HIDE.get());
-        } else if (event.getTabKey() == CreativeModeTabs.BUILDING_BLOCKS) {
-            event.accept(THATCH_ITEM.get());
-        } else if (event.getTabKey() == CreativeModeTabs.TOOLS_AND_UTILITIES) {
-            event.accept(TANNIN_BUCKET.get());
-        }
-    }
 }

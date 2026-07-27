@@ -185,7 +185,8 @@ public final class PrimitiveRecipeCatalog {
                                     recipe.requiresCampfire()
                                             ? Component.translatable("gui.revivalages.recipe.requires_campfire")
                                             : Component.empty(),
-                                    holder);
+                                    holder,
+                                    recipe.requiresCampfire());
                         })
                 .toList();
     }

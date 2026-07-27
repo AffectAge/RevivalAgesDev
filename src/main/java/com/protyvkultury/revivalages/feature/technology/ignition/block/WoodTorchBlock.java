@@ -1,9 +1,12 @@
 package com.protyvkultury.revivalages.feature.technology.ignition.block;
 
+import com.protyvkultury.revivalages.api.ignition.HeldIgnitableBlock;
+import com.protyvkultury.revivalages.api.ignition.HeldIgniter;
 import com.protyvkultury.revivalages.feature.content.ContentAvailability;
 import com.protyvkultury.revivalages.feature.content.ContentKey;
 import com.mojang.serialization.MapCodec;
 import com.protyvkultury.revivalages.feature.technology.ignition.IgnitionFeature;
+import com.protyvkultury.revivalages.feature.technology.ignition.IgnitionTags;
 import com.protyvkultury.revivalages.feature.technology.ignition.blockentity.WoodTorchBlockEntity;
 import com.protyvkultury.revivalages.feature.technology.primitive.config.PrimitiveTechnologyConfig;
 import javax.annotation.Nullable;
@@ -41,21 +44,20 @@ import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
-public final class WoodTorchBlock extends BaseEntityBlock {
+public final class WoodTorchBlock extends BaseEntityBlock implements HeldIgnitableBlock {
 
     public static final MapCodec<WoodTorchBlock> CODEC = simpleCodec(WoodTorchBlock::new);
     public static final DirectionProperty FACING = DirectionProperty.create("facing", direction -> direction != Direction.DOWN);
     public static final EnumProperty<WoodTorchState> STATE = EnumProperty.create("state", WoodTorchState.class);
-    private static final VoxelShape FLOOR = box(6, 0, 6, 10, 11, 10);
-    private static final VoxelShape NORTH = box(6, 3, 11, 10, 14, 16);
-    private static final VoxelShape SOUTH = box(6, 3, 0, 10, 14, 5);
-    private static final VoxelShape WEST = box(11, 3, 6, 16, 14, 10);
-    private static final VoxelShape EAST = box(0, 3, 6, 5, 14, 10);
+    private static final VoxelShape FLOOR = box(6, 0, 6, 10, 12, 10);
+    private static final VoxelShape NORTH = box(5.6, 3.2, 11.2, 10.4, 14, 16);
+    private static final VoxelShape SOUTH = box(5.6, 3.2, 0, 10.4, 14, 4.8);
+    private static final VoxelShape WEST = box(11.2, 3.2, 5.6, 16, 14, 10.4);
+    private static final VoxelShape EAST = box(0, 3.2, 5.6, 4.8, 14, 10.4);
 
     public WoodTorchBlock(BlockBehaviour.Properties properties) {
         super(properties);
@@ -130,13 +132,20 @@ public final class WoodTorchBlock extends BaseEntityBlock {
             ItemStack stack, BlockState state, Level level, BlockPos pos, Player player,
             InteractionHand hand, BlockHitResult hit
     ) {
+        if (stack.getItem() instanceof HeldIgniter) {
+            return ItemInteractionResult.SKIP_DEFAULT_BLOCK_INTERACTION;
+        }
         WoodTorchState torchState = state.getValue(STATE);
         if ((stack.is(Items.FLINT_AND_STEEL) || stack.is(Items.FIRE_CHARGE)) && torchState != WoodTorchState.LIT) {
             if (!level.isClientSide && level.getBlockEntity(pos) instanceof WoodTorchBlockEntity torch) {
                 if (torch.ignite()) {
                     if (!player.hasInfiniteMaterials()) {
                         if (stack.is(Items.FLINT_AND_STEEL)) {
-                            stack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(hand));
+                            stack.hurtAndBreak(
+                                    PrimitiveTechnologyConfig.WOOD_TORCH_IGNITION_DAMAGE.get(),
+                                    player,
+                                    LivingEntity.getSlotForHand(hand)
+                            );
                         } else {
                             stack.shrink(1);
                         }
@@ -146,33 +155,24 @@ public final class WoodTorchBlock extends BaseEntityBlock {
             }
             return ItemInteractionResult.sidedSuccess(level.isClientSide);
         }
-        if (stack.is(Items.WATER_BUCKET) && torchState == WoodTorchState.LIT) {
-            if (!level.isClientSide && level.getBlockEntity(pos) instanceof WoodTorchBlockEntity torch) {
-                torch.douse();
-                if (!player.hasInfiniteMaterials()) {
-                    if (stack.getCount() == 1) {
-                        player.setItemInHand(hand, new ItemStack(Items.BUCKET));
-                    } else {
-                        stack.shrink(1);
-                        if (!player.getInventory().add(new ItemStack(Items.BUCKET))) {
-                            player.drop(new ItemStack(Items.BUCKET), false);
-                        }
-                    }
-                }
-            }
-            return ItemInteractionResult.sidedSuccess(level.isClientSide);
-        }
         if (torchState == WoodTorchState.LIT) {
             IFluidHandler fluidHandler = stack.getCapability(Capabilities.FluidHandler.ITEM);
+            int fluidCost = PrimitiveTechnologyConfig.WOOD_TORCH_EXTINGUISHING_FLUID_COST.get();
             FluidStack simulatedDrain = fluidHandler == null
                     ? FluidStack.EMPTY
-                    : fluidHandler.drain(1000, IFluidHandler.FluidAction.SIMULATE);
-            if (simulatedDrain.is(Fluids.WATER) && simulatedDrain.getAmount() == 1000) {
+                    : fluidHandler.drain(fluidCost, IFluidHandler.FluidAction.SIMULATE);
+            if (simulatedDrain.is(IgnitionTags.WOOD_TORCH_EXTINGUISHING_FLUIDS)
+                    && simulatedDrain.getAmount() == fluidCost) {
                 if (!level.isClientSide && level.getBlockEntity(pos) instanceof WoodTorchBlockEntity torch) {
-                    torch.douse();
                     if (!player.hasInfiniteMaterials()) {
-                        fluidHandler.drain(1000, IFluidHandler.FluidAction.EXECUTE);
+                        FluidStack drained = fluidHandler.drain(fluidCost, IFluidHandler.FluidAction.EXECUTE);
+                        if (drained.getAmount() != fluidCost
+                                || !drained.is(IgnitionTags.WOOD_TORCH_EXTINGUISHING_FLUIDS)) {
+                            return ItemInteractionResult.FAIL;
+                        }
                     }
+                    torch.douseManually();
+                    level.playSound(null, pos, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 0.8F, 1.0F);
                 }
                 return ItemInteractionResult.sidedSuccess(level.isClientSide);
             }
@@ -181,10 +181,31 @@ public final class WoodTorchBlock extends BaseEntityBlock {
     }
 
     @Override
+    public boolean igniteFromHeldItem(
+            Level level,
+            BlockPos pos,
+            BlockState state,
+            Player player,
+            Direction clickedFace
+    ) {
+        if (!ContentAvailability.isEnabled(ContentKey.WOOD_TORCH)) {
+            return false;
+        }
+        if (!level.isClientSide && level.getBlockEntity(pos) instanceof WoodTorchBlockEntity torch) {
+            torch.ignite();
+        }
+        return true;
+    }
+
+    @Override
     protected void entityInside(BlockState state, Level level, BlockPos pos, Entity entity) {
         if (ContentAvailability.isEnabled(ContentKey.WOOD_TORCH)
                 && state.getValue(STATE) == WoodTorchState.LIT
-                && PrimitiveTechnologyConfig.WOOD_TORCH_FIRE_DAMAGE.get() > 0) {
+                && PrimitiveTechnologyConfig.WOOD_TORCH_FIRE_DAMAGE.get() > 0
+                && getShape(state, level, pos, CollisionContext.empty())
+                        .bounds()
+                        .move(pos)
+                        .intersects(entity.getBoundingBox())) {
             entity.igniteForSeconds(2.0F);
             entity.hurt(level.damageSources().inFire(), PrimitiveTechnologyConfig.WOOD_TORCH_FIRE_DAMAGE.get());
         }
@@ -197,14 +218,15 @@ public final class WoodTorchBlock extends BaseEntityBlock {
                 || state.getValue(STATE) != WoodTorchState.LIT) {
             return;
         }
-        double x = pos.getX() + 0.5D;
-        double y = pos.getY() + 0.75D;
-        double z = pos.getZ() + 0.5D;
+        double x = pos.getX() + 0.5D + (random.nextDouble() * 2.0D - 1.0D) * 0.1D;
+        double y = pos.getY() + 0.825D;
+        double z = pos.getZ() + 0.5D + (random.nextDouble() * 2.0D - 1.0D) * 0.1D;
         Direction facing = state.getValue(FACING);
         if (facing != Direction.UP) {
-            x -= facing.getStepX() * 0.25D;
-            y += 0.15D;
-            z -= facing.getStepZ() * 0.25D;
+            Direction opposite = facing.getOpposite();
+            x += 0.17D * opposite.getStepX();
+            y += 0.22D;
+            z += 0.17D * opposite.getStepZ();
         }
         level.addParticle(ParticleTypes.SMOKE, x, y, z, 0.0D, 0.0D, 0.0D);
         level.addParticle(ParticleTypes.FLAME, x, y, z, 0.0D, 0.0D, 0.0D);

@@ -20,7 +20,6 @@ import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -35,7 +34,6 @@ import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
-import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredItem;
@@ -159,7 +157,6 @@ public final class AnimalPowerFeature implements FeatureModule {
         BLOCK_ENTITIES.register(modBus);
         RECIPE_TYPES.register(modBus);
         RECIPE_SERIALIZERS.register(modBus);
-        modBus.addListener(this::addCreativeItems);
         modBus.addListener(this::registerCapabilities);
         modContainer.registerConfig(
                 ModConfig.Type.SERVER,
@@ -193,15 +190,6 @@ public final class AnimalPowerFeature implements FeatureModule {
                 return RevivalAges.id(id).toString();
             }
         };
-    }
-
-    private void addCreativeItems(BuildCreativeModeTabContentsEvent event) {
-        if (event.getTabKey() == CreativeModeTabs.FUNCTIONAL_BLOCKS) {
-            event.accept(HAND_GRINDSTONE_ITEM.get());
-            event.accept(HORSE_GRINDSTONE_ITEM.get());
-            event.accept(HORSE_CHOPPING_BLOCK_ITEM.get());
-            event.accept(HORSE_PRESS_ITEM.get());
-        }
     }
 
     private void registerCapabilities(RegisterCapabilitiesEvent event) {

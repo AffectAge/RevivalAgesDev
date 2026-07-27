@@ -11,18 +11,60 @@ Drying Rack has four independent slots, inherits crude recipes, processes at a
 
 ## Interaction and feedback
 
-- Right-click an empty slot with a matching ingredient to insert one item.
-- Right-click an occupied slot to retrieve its item, even if the player is
-  holding another item. If the inventory is full, the retrieved stack drops at
-  the rack instead of being deleted.
+- Right-click an empty slot to insert one held item. An item without a matching
+  recipe may still be displayed and recovered.
+- Right-click an occupied slot with an empty hand to retrieve its item. A held
+  item never removes stored contents. If the inventory is full, the retrieved
+  stack drops at the rack instead of being deleted.
+- While sneaking, scroll up over a valid interaction area to insert one
+  main-hand item and scroll down to extract one item. The server validates the
+  targeted block, face, slot, distance, availability, and current contents.
+- A normal rack accepts manual interaction only through the top face of its
+  selected quarter. The crude rack retains its single wall-mounted interaction
+  area on every face.
 - Breaking the rack or removing a crude rack's supporting block drops all stored
   items. Progress belongs to its slot and is synchronized by the block entity.
 - Displayed items use direction-aware transforms for every horizontal facing.
   Crude-rack items lie on the wall-facing mesh; normal-rack items lie on the top
   grill.
+- The selected interaction area receives a green outline. A held item is
+  previewed translucently in an empty selected slot. Both forms of feedback have
+  independent client toggles.
 - A subtle progress particle appears only while at least one valid recipe is
   advancing. It can be disabled in `revivalages-client.toml` with
   `dryingRack.showProgressParticles=false`.
+
+The crude rack deliberately requires a sturdy wall and breaks when that support
+is lost. This is an intentional safety improvement over the designated
+behavioral source. Normal-rack climbing deliberately applies to every
+`LivingEntity`, not only players. Optional item-handler automation is also a
+Revival Ages extension and remains disabled by default. A disabled rack refuses
+new manual and automated insertion while preserving existing contents.
+
+## Recipe duration and environment
+
+The built-in crude recipe converts one wheat into one straw in 14,400 ticks.
+Wet Sponge keeps its 9,600-tick recipe. No Rotten Flesh to Leather recipe is
+provided. Recipes for materials not present in Revival Ages are intentionally
+absent, while the normal-rack crafting recipe continues to consume a crude rack.
+
+Each rack has its own base recipe-duration modifier. A crude recipe inherited by
+the normal rack first receives the inherited-crude modifier and then the normal
+base modifier. Existing environmental speed remains a separate value, so
+duration and changing weather are not folded into one persisted number.
+
+Datapacks can override the exact base speed for individual biomes or biome tags:
+
+```text
+data/<namespace>/data_maps/worldgen/biome/crude_drying_speed.json
+data/<namespace>/data_maps/worldgen/biome/drying_speed.json
+```
+
+An explicit biome value replaces the rain, dimension, and biome-tag base-speed
+selection. Nearby directional fire sources, daylight, the selected season
+provider, and the final rack multiplier are still applied. Heat detection uses
+the shared directional fire-source contract rather than a fixed list of lava or
+campfire blocks.
 
 ## Seasonal configuration
 
@@ -73,6 +115,10 @@ corresponding mod is absent.
 Both recipe viewers use licensed slot-background and animated progress-arrow
 artwork adapted to the modern viewer APIs. Its attribution is recorded in
 `THIRD_PARTY_NOTICES.md`.
+
+JEI deliberately retains its fixed 200-tick progress animation, while EMI uses
+the effective configured recipe duration. Both show the same effective time and
+enumerate recipes through the shared catalog.
 
 Development coordinates are `mezz.jei:jei-1.21.1-*-api:19.39.0.369`,
 `maven.modrinth:fRiHVvU7:5sIPA1To` for EMI, and

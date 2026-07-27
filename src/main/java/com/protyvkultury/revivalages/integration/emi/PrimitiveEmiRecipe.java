@@ -1,6 +1,7 @@
 package com.protyvkultury.revivalages.integration.emi;
 
 import com.protyvkultury.revivalages.RevivalAges;
+import com.protyvkultury.revivalages.feature.technology.campfire.CampfireFeature;
 import com.protyvkultury.revivalages.feature.technology.primitive.view.PrimitiveRecipeView;
 import dev.emi.emi.api.recipe.EmiRecipe;
 import dev.emi.emi.api.recipe.EmiRecipeCategory;
@@ -42,6 +43,9 @@ final class PrimitiveEmiRecipe implements EmiRecipe {
                             EmiStack.of(
                                     (Fluid) view.fluidInput().getFluid(), (long) view.fluidInput().getAmount()));
         }
+        if (view.requiresCampfire()) {
+            this.inputs.add(EmiStack.of(CampfireFeature.TINDER.get()));
+        }
         this.outputs = new ArrayList<EmiStack>();
         view.itemOutputs().forEach(stack -> this.outputs.add(EmiStack.of((ItemStack) stack)));
         if (!view.fluidOutput().isEmpty()) {
@@ -72,7 +76,8 @@ final class PrimitiveEmiRecipe implements EmiRecipe {
     }
 
     public int getDisplayHeight() {
-        return this.layout.backgroundHeight + 13;
+        return this.layout.backgroundHeight
+                + (this.view.processingTime() > 0 && !this.view.detail().getString().isEmpty() ? 24 : 13);
     }
 
     public void addWidgets(WidgetHolder widgets) {
@@ -175,6 +180,13 @@ final class PrimitiveEmiRecipe implements EmiRecipe {
                             16,
                             this.view.fluidInput().getAmount());
                     this.addItemOutputs(widgets, new int[][] {{60, 19}});
+                    if (this.view.requiresCampfire()) {
+                        widgets.addSlot(
+                                        EmiStack.of(CampfireFeature.TINDER.get()),
+                                        25,
+                                        37)
+                                .drawBack(false);
+                    }
                     break;
                 }
             case TANNING_RACK:
@@ -205,19 +217,27 @@ final class PrimitiveEmiRecipe implements EmiRecipe {
                 }
                 break;
         }
-        Component detail = this.view.detail();
-        if (detail.getString().isEmpty() && this.view.processingTime() > 0) {
-            detail =
-                    Component.translatable(
-                            (String) "gui.revivalages.recipe.time",
-                            (Object[])
-                                    new Object[] {
-                                        String.format(Locale.ROOT, "%.1f", (double) this.view.processingTime() / 20.0)
-                                    });
+        int textY = this.layout.backgroundHeight + 2;
+        if (this.view.processingTime() > 0) {
+            widgets
+                    .addText(
+                            Component.translatable(
+                                    "gui.revivalages.recipe.time",
+                                    String.format(
+                                            Locale.ROOT,
+                                            "%.1f",
+                                            (double) this.view.processingTime() / 20.0)),
+                            this.layout.width / 2,
+                            textY,
+                            -1,
+                            true)
+                    .horizontalAlign(TextWidget.Alignment.CENTER);
+            textY += 10;
         }
+        Component detail = this.view.detail();
         if (!detail.getString().isEmpty()) {
             widgets
-                    .addText(detail, this.layout.width / 2, this.layout.backgroundHeight + 2, -1, true)
+                    .addText(detail, this.layout.width / 2, textY, -1, true)
                     .horizontalAlign(TextWidget.Alignment.CENTER);
         }
     }

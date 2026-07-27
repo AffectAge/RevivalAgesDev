@@ -1,6 +1,10 @@
 package com.protyvkultury.revivalages.feature.technology.pitkiln.block;
 
 import com.mojang.serialization.MapCodec;
+import com.protyvkultury.revivalages.api.ignition.HeldIgnitableBlock;
+import com.protyvkultury.revivalages.api.ignition.HeldIgniter;
+import com.protyvkultury.revivalages.feature.content.ContentAvailability;
+import com.protyvkultury.revivalages.feature.content.ContentKey;
 import com.protyvkultury.revivalages.core.interaction.ItemStackInteraction;
 import com.protyvkultury.revivalages.feature.technology.pitkiln.PitKilnFeature;
 import com.protyvkultury.revivalages.feature.technology.pitkiln.blockentity.PitKilnBlockEntity;
@@ -20,6 +24,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
+import net.minecraft.world.level.block.BaseFireBlock;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
@@ -32,7 +38,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-public final class PitKilnBlock extends BaseEntityBlock {
+public final class PitKilnBlock extends BaseEntityBlock implements HeldIgnitableBlock {
 
     public static final MapCodec<PitKilnBlock> CODEC = simpleCodec(PitKilnBlock::new);
     public static final EnumProperty<PitKilnStage> STAGE = EnumProperty.create("stage", PitKilnStage.class);
@@ -78,6 +84,9 @@ public final class PitKilnBlock extends BaseEntityBlock {
             InteractionHand hand,
             BlockHitResult hit
     ) {
+        if (stack.getItem() instanceof HeldIgniter) {
+            return ItemInteractionResult.SKIP_DEFAULT_BLOCK_INTERACTION;
+        }
         if (!(level.getBlockEntity(pos) instanceof PitKilnBlockEntity kiln)) {
             return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         }
@@ -137,6 +146,9 @@ public final class PitKilnBlock extends BaseEntityBlock {
 
     @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
+        if (!player.getMainHandItem().isEmpty()) {
+            return InteractionResult.PASS;
+        }
         if (!(level.getBlockEntity(pos) instanceof PitKilnBlockEntity kiln)) {
             return InteractionResult.PASS;
         }
@@ -154,6 +166,35 @@ public final class PitKilnBlock extends BaseEntityBlock {
             return ItemStackInteraction.extract(level, pos, player, kiln.input(), kiln::extractInput);
         }
         return InteractionResult.PASS;
+    }
+
+    @Override
+    public boolean igniteFromHeldItem(
+            Level level,
+            BlockPos pos,
+            BlockState state,
+            Player player,
+            net.minecraft.core.Direction clickedFace
+    ) {
+        if (!ContentAvailability.isEnabled(ContentKey.PIT_KILN)
+                || !(level.getBlockEntity(pos) instanceof PitKilnBlockEntity kiln)
+                || !kiln.canIgnite()) {
+            return false;
+        }
+        BlockPos firePos = pos.above();
+        BlockState fireState = level.getBlockState(firePos);
+        if (!fireState.is(net.minecraft.world.level.block.Blocks.FIRE)
+                && !BaseFireBlock.canBePlacedAt(level, firePos, player.getDirection())) {
+            return false;
+        }
+        if (!level.isClientSide) {
+            if (!fireState.is(net.minecraft.world.level.block.Blocks.FIRE)) {
+                level.setBlock(firePos, BaseFireBlock.getState(level, firePos), Block.UPDATE_ALL);
+            } else {
+                level.updateNeighborsAt(firePos, fireState.getBlock());
+            }
+        }
+        return true;
     }
 
     @Override

@@ -1,6 +1,8 @@
 package com.protyvkultury.revivalages.feature.technology.pitburn.block;
 
 import com.mojang.serialization.MapCodec;
+import com.protyvkultury.revivalages.api.ignition.HeldIgnitableBlock;
+import com.protyvkultury.revivalages.api.ignition.HeldIgniter;
 import com.protyvkultury.revivalages.feature.technology.pitburn.PitBurnFeature;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvents;
@@ -17,7 +19,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 
-public final class LogPileBlock extends RotatedPillarBlock {
+public final class LogPileBlock extends RotatedPillarBlock implements HeldIgnitableBlock {
 
     public static final MapCodec<LogPileBlock> CODEC = simpleCodec(LogPileBlock::new);
 
@@ -35,6 +37,9 @@ public final class LogPileBlock extends RotatedPillarBlock {
             ItemStack stack, BlockState state, Level level, BlockPos pos, Player player,
             InteractionHand hand, BlockHitResult hit
     ) {
+        if (stack.getItem() instanceof HeldIgniter) {
+            return ItemInteractionResult.SKIP_DEFAULT_BLOCK_INTERACTION;
+        }
         if (!stack.is(Items.FLINT_AND_STEEL) && !stack.is(Items.FIRE_CHARGE)) {
             return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         }
@@ -52,5 +57,16 @@ public final class LogPileBlock extends RotatedPillarBlock {
             level.playSound(null, pos, SoundEvents.FLINTANDSTEEL_USE, SoundSource.BLOCKS, 1.0F, 1.0F);
         }
         return ItemInteractionResult.sidedSuccess(level.isClientSide);
+    }
+
+    @Override
+    public boolean igniteFromHeldItem(
+            Level level,
+            BlockPos pos,
+            BlockState state,
+            Player player,
+            net.minecraft.core.Direction clickedFace
+    ) {
+        return level.isClientSide ? PitBurnFeature.canIgnite(level, pos) : PitBurnFeature.ignite(level, pos);
     }
 }

@@ -114,6 +114,7 @@
   "jade.revivalages.tanning.rain": "Под дождём: %s/%s тиков",
   "jade.revivalages.drying_rack.speed": "Скорость: %s",
   "jade.revivalages.drying_rack.base.default": "Базовая скорость: %s",
+  "jade.revivalages.drying_rack.base.explicit": "Переопределение биома: %s",
   "jade.revivalages.drying_rack.base.direct_rain": "Прямой дождь: %s",
   "jade.revivalages.drying_rack.base.indirect_rain": "Влажность/дождь: %s",
   "jade.revivalages.drying_rack.base.nether": "Незер: %s",
@@ -316,4 +317,17 @@
   ,"config.jade.plugin_revivalages.construction_frame": "Сведения о строительной раме"
   ,"config.jade.plugin_revivalages.animal_power": "Сведения о механизмах животной тяги"
   ,"config.jade.plugin_revivalages.structural_integrity": "Структурная целостность"
+  ,"message.revivalages.content_disabled": "Этот контент отключён настройками сервера."
+  ,"tooltip.revivalages.wood_torch.burns_up.true": "Сгорает со временем"
+  ,"tooltip.revivalages.wood_torch.burns_up.false": "Не сгорает со временем"
+  ,"tooltip.revivalages.wood_torch.rain_extinguishes.true": "Гаснет под дождём"
+  ,"tooltip.revivalages.wood_torch.rain_extinguishes.false": "Не гаснет под дождём"
+  ,"block.revivalages.storage_barrel": "Бочка для хранения"
+  ,"container.revivalages.storage_barrel": "Бочка для хранения"
+  ,"content.revivalages.storage_barrel": "Бочка для хранения"
+  ,"jade.revivalages.storage_barrel.sealed.true": "Запечатана"
+  ,"jade.revivalages.storage_barrel.sealed.false": "Открыта"
+  ,"jade.revivalages.storage_barrel.capacity": "Вместимость: %s ячеек"
+  ,"jade.revivalages.storage_barrel.preserved": "Сохранение еды активно"
+  ,"config.jade.plugin_revivalages.storage_barrel": "Сведения о бочке для хранения"
 }

@@ -1,0 +1,26 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "revivalages:content_enabled",
+      "content": "revivalages:storage_barrel",
+      "enabled": true
+    }
+  ],
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "rolls": 1,
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "revivalages:storage_barrel"
+        }
+      ]
+    }
+  ]
+}

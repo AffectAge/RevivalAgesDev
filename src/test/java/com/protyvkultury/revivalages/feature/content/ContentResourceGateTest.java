@@ -63,7 +63,7 @@ class ContentResourceGateTest {
                 count++;
             }
         }
-        assertEquals(59, count, "block loot table count");
+        assertEquals(60, count, "block loot table count");
     }
 
     @Test
@@ -105,7 +105,7 @@ class ContentResourceGateTest {
         while (matcher.find()) {
             keys.add(matcher.group(1));
         }
-        assertEquals(39, keys.size(), "content key declaration count");
+        assertEquals(40, keys.size(), "content key declaration count");
         return Set.copyOf(keys);
     }
 }

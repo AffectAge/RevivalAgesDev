@@ -1,13 +1,13 @@
 package com.protyvkultury.revivalages.feature.technology.ignition.item;
 
+import com.protyvkultury.revivalages.api.ignition.HeldIgnitableBlock;
+import com.protyvkultury.revivalages.api.ignition.HeldIgniter;
 import com.protyvkultury.revivalages.feature.content.ContentAvailability;
 import com.protyvkultury.revivalages.feature.content.ContentKey;
-import com.protyvkultury.revivalages.feature.technology.campfire.blockentity.CampfireBlockEntity;
-import com.protyvkultury.revivalages.feature.technology.ignition.blockentity.WoodTorchBlockEntity;
-import com.protyvkultury.revivalages.feature.technology.pitburn.PitBurnFeature;
-import com.protyvkultury.revivalages.feature.technology.pitkiln.blockentity.PitKilnBlockEntity;
 import com.protyvkultury.revivalages.feature.technology.primitive.config.PrimitiveTechnologyConfig;
 import com.protyvkultury.revivalages.feature.technology.ignition.IgnitionFeature;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
@@ -27,7 +27,10 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 
 /** Slow, low-durability igniter with a held-use interaction. */
-public final class FlintAndTinderItem extends Item {
+public final class FlintAndTinderItem extends Item implements HeldIgniter {
+
+    private static final String TARGET_POS = "revivalages:ignition_target_pos";
+    private static final String TARGET_DIMENSION = "revivalages:ignition_target_dimension";
 
     public FlintAndTinderItem(Properties properties) {
         super(properties);
@@ -42,6 +45,7 @@ public final class FlintAndTinderItem extends Item {
         if (hit.getType() == HitResult.Type.MISS) {
             return InteractionResultHolder.pass(player.getItemInHand(hand));
         }
+        rememberTarget(level, player, hit);
         player.startUsingItem(hand);
         return InteractionResultHolder.consume(player.getItemInHand(hand));
     }
@@ -59,11 +63,14 @@ public final class FlintAndTinderItem extends Item {
     @Override
     public void onUseTick(Level level, LivingEntity entity, ItemStack stack, int remainingUseDuration) {
         if (ContentAvailability.isEnabled(ContentKey.FLINT_AND_TINDER)
-                && level.isClientSide
-                && remainingUseDuration % 4 == 0
                 && entity instanceof Player player) {
             BlockHitResult hit = getPlayerPOVHitResult(level, player, ClipContext.Fluid.NONE);
-            if (hit.getType() == HitResult.Type.BLOCK) {
+            if (!matchesRememberedTarget(level, player, hit)) {
+                player.stopUsingItem();
+                clearTarget(player);
+                return;
+            }
+            if (level.isClientSide) {
                 level.addParticle(ParticleTypes.SMOKE,
                         hit.getLocation().x, hit.getLocation().y, hit.getLocation().z,
                         0.0D, 0.01D, 0.0D);
@@ -78,22 +85,22 @@ public final class FlintAndTinderItem extends Item {
             return stack;
         }
         BlockHitResult hit = getPlayerPOVHitResult(level, player, ClipContext.Fluid.NONE);
-        if (hit.getType() != HitResult.Type.BLOCK) {
+        if (!matchesRememberedTarget(level, player, hit)) {
+            clearTarget(player);
             return stack;
         }
+        clearTarget(player);
         BlockPos pos = hit.getBlockPos();
         boolean ignited = false;
         if (!level.isClientSide) {
-            if (level.getBlockEntity(pos) instanceof CampfireBlockEntity campfire && campfire.canIgnite()) {
-                campfire.ignite();
-                ignited = true;
-            } else if (level.getBlockEntity(pos) instanceof PitKilnBlockEntity kiln && kiln.canIgnite()) {
-                kiln.ignite();
-                ignited = true;
-            } else if (level.getBlockEntity(pos) instanceof WoodTorchBlockEntity torch) {
-                ignited = torch.ignite();
-            } else if (level.getBlockState(pos).is(PitBurnFeature.LOG_PILE.get())) {
-                ignited = PitBurnFeature.ignite(level, pos);
+            if (level.getBlockState(pos).getBlock() instanceof HeldIgnitableBlock target) {
+                ignited = target.igniteFromHeldItem(
+                        level,
+                        pos,
+                        level.getBlockState(pos),
+                        player,
+                        hit.getDirection()
+                );
             } else {
                 BlockPos firePos = pos.relative(hit.getDirection());
                 if (BaseFireBlock.canBePlacedAt(level, firePos, player.getDirection())) {
@@ -111,6 +118,37 @@ public final class FlintAndTinderItem extends Item {
             }
         }
         return stack;
+    }
+
+    @Override
+    public void releaseUsing(ItemStack stack, Level level, LivingEntity entity, int timeCharged) {
+        if (entity instanceof Player player) {
+            clearTarget(player);
+        }
+        super.releaseUsing(stack, level, entity, timeCharged);
+    }
+
+    private static void rememberTarget(Level level, Player player, BlockHitResult hit) {
+        CompoundTag data = player.getPersistentData();
+        data.putLong(TARGET_POS, hit.getBlockPos().asLong());
+        data.putString(TARGET_DIMENSION, level.dimension().location().toString());
+    }
+
+    private static boolean matchesRememberedTarget(Level level, Player player, BlockHitResult hit) {
+        if (hit.getType() != HitResult.Type.BLOCK) {
+            return false;
+        }
+        CompoundTag data = player.getPersistentData();
+        ResourceLocation dimension = ResourceLocation.tryParse(data.getString(TARGET_DIMENSION));
+        return data.contains(TARGET_POS)
+                && level.dimension().location().equals(dimension)
+                && BlockPos.of(data.getLong(TARGET_POS)).equals(hit.getBlockPos());
+    }
+
+    private static void clearTarget(Player player) {
+        CompoundTag data = player.getPersistentData();
+        data.remove(TARGET_POS);
+        data.remove(TARGET_DIMENSION);
     }
 
     private static void consumeUse(ItemStack stack) {

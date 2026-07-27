@@ -22,7 +22,6 @@ import java.util.Set;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.Recipe;
@@ -36,7 +35,6 @@ import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
-import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredItem;
@@ -147,7 +145,6 @@ public final class StoneMachineFeature implements FeatureModule {
         RECIPE_TYPES.register(modBus);
         RECIPE_SERIALIZERS.register(modBus);
         SOUND_EVENTS.register(modBus);
-        modBus.addListener(this::addCreativeItems);
         modBus.addListener(this::registerCapabilities);
         if (FMLEnvironment.dist == Dist.CLIENT) {
             StoneMachineClientEvents.register(modBus);
@@ -173,19 +170,6 @@ public final class StoneMachineFeature implements FeatureModule {
 
     private static DeferredHolder<SoundEvent, SoundEvent> sound(String id) {
         return SOUND_EVENTS.register(id, () -> SoundEvent.createVariableRangeEvent(RevivalAges.id(id)));
-    }
-
-    private void addCreativeItems(BuildCreativeModeTabContentsEvent event) {
-        if (event.getTabKey() == CreativeModeTabs.FUNCTIONAL_BLOCKS) {
-            event.accept(STONE_SAWMILL_ITEM.get());
-            event.accept(STONE_OVEN_ITEM.get());
-            event.accept(STONE_KILN_ITEM.get());
-            event.accept(STONE_CRUCIBLE_ITEM.get());
-        } else if (event.getTabKey() == CreativeModeTabs.TOOLS_AND_UTILITIES) {
-            event.accept(STONE_SAW_BLADE.get());
-            event.accept(FLINT_SAW_BLADE.get());
-            event.accept(BONE_SAW_BLADE.get());
-        }
     }
 
     private void registerCapabilities(RegisterCapabilitiesEvent event) {

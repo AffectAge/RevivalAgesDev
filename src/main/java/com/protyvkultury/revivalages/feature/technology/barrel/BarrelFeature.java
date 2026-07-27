@@ -10,12 +10,13 @@ import com.protyvkultury.revivalages.feature.technology.barrel.blockentity.Barre
 import com.protyvkultury.revivalages.feature.technology.barrel.item.BarrelBlockItem;
 import com.protyvkultury.revivalages.feature.technology.barrel.recipe.BarrelRecipe;
 import com.protyvkultury.revivalages.feature.technology.barrel.recipe.BarrelRecipeSerializer;
+import com.protyvkultury.revivalages.feature.technology.barrel.storage.StorageBarrelBlock;
+import com.protyvkultury.revivalages.feature.technology.barrel.storage.StorageBarrelBlockEntity;
 import com.protyvkultury.revivalages.feature.technology.primitive.config.PrimitiveTechnologyConfig;
 import java.util.function.Supplier;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -26,7 +27,6 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
-import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredItem;
@@ -51,10 +51,25 @@ public final class BarrelFeature implements FeatureModule {
             new Item.Properties()
     );
     public static final DeferredItem<Item> BARREL_LID = ITEMS.registerSimpleItem("barrel_lid", new Item.Properties().stacksTo(16));
+    public static final DeferredBlock<StorageBarrelBlock> STORAGE_BARREL = BLOCKS.registerBlock(
+            "storage_barrel",
+            StorageBarrelBlock::new,
+            BlockBehaviour.Properties.of().strength(1.5F).sound(SoundType.WOOD).noOcclusion()
+    );
+    public static final DeferredItem<BlockItem> STORAGE_BARREL_ITEM =
+            ITEMS.registerSimpleBlockItem(STORAGE_BARREL, new Item.Properties());
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<BarrelBlockEntity>> BLOCK_ENTITY = BLOCK_ENTITIES.register(
             "barrel",
             () -> BlockEntityType.Builder.of(BarrelBlockEntity::new, BARREL.get()).build(null)
     );
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<StorageBarrelBlockEntity>>
+            STORAGE_BARREL_BLOCK_ENTITY = BLOCK_ENTITIES.register(
+                    "storage_barrel",
+                    () -> BlockEntityType.Builder.of(
+                            StorageBarrelBlockEntity::new,
+                            STORAGE_BARREL.get()
+                    ).build(null)
+            );
     public static final DeferredHolder<RecipeType<?>, RecipeType<BarrelRecipe>> RECIPE_TYPE = RECIPE_TYPES.register(
             "barrel",
             simpleRecipeType("barrel")
@@ -80,7 +95,12 @@ public final class BarrelFeature implements FeatureModule {
                         ContentKey.BARREL,
                         () -> PrimitiveTechnologyConfig.contentEnabled(ContentKey.BARREL)
                 )
+                .define(
+                        ContentKey.STORAGE_BARREL,
+                        () -> PrimitiveTechnologyConfig.contentEnabled(ContentKey.STORAGE_BARREL)
+                )
                 .items(ContentKey.BARREL, "barrel", "barrel_lid")
+                .items(ContentKey.STORAGE_BARREL, "storage_barrel")
                 .build();
     }
 
@@ -91,16 +111,7 @@ public final class BarrelFeature implements FeatureModule {
         BLOCK_ENTITIES.register(modBus);
         RECIPE_TYPES.register(modBus);
         RECIPE_SERIALIZERS.register(modBus);
-        modBus.addListener(this::addCreativeItems);
         modBus.addListener(this::registerCapabilities);
-    }
-
-    private void addCreativeItems(BuildCreativeModeTabContentsEvent event) {
-        if (event.getTabKey() == CreativeModeTabs.FUNCTIONAL_BLOCKS) {
-            event.accept(BARREL_ITEM.get());
-        } else if (event.getTabKey() == CreativeModeTabs.INGREDIENTS) {
-            event.accept(BARREL_LID.get());
-        }
     }
 
     private void registerCapabilities(RegisterCapabilitiesEvent event) {
@@ -121,6 +132,15 @@ public final class BarrelFeature implements FeatureModule {
                         && PrimitiveTechnologyConfig.AUTOMATION_ENABLED.get()
                         && !barrel.getBlockState().getValue(BarrelBlock.SEALED)
                         ? barrel.fluidTank()
+                        : null
+        );
+        event.registerBlockEntity(
+                Capabilities.ItemHandler.BLOCK,
+                STORAGE_BARREL_BLOCK_ENTITY.get(),
+                (barrel, side) -> ContentAvailability.isEnabled(ContentKey.STORAGE_BARREL)
+                        && PrimitiveTechnologyConfig.STORAGE_BARREL_AUTOMATION.get()
+                        && !barrel.getBlockState().getValue(StorageBarrelBlock.SEALED)
+                        ? barrel.itemHandler()
                         : null
         );
     }

@@ -55,8 +55,7 @@ public final class ChoppingBlockEntity extends BlockEntity {
     }
 
     public void removeSawdust() {
-        sawdust = Math.max(0, sawdust - 1);
-        sync();
+        setSawdust(sawdust - 1);
     }
 
     public double progress() {
@@ -115,7 +114,7 @@ public final class ChoppingBlockEntity extends BlockEntity {
         axe.hurtAndBreak(1, player, LivingEntity.getSlotForHand(hand));
         durabilityUntilDamage--;
         if (level.random.nextDouble() < PrimitiveTechnologyConfig.CHOPPING_WOOD_CHIPS_CHANCE.get() * 2.0D) {
-            sawdust = Math.min(5, sawdust + 1);
+            setSawdust(sawdust + 1);
         }
         if (level.random.nextDouble() < PrimitiveTechnologyConfig.CHOPPING_WOOD_CHIPS_CHANCE.get() * 0.5D) {
             Direction direction = Direction.Plane.HORIZONTAL.getRandomDirection(level.random);
@@ -232,13 +231,31 @@ public final class ChoppingBlockEntity extends BlockEntity {
         }
     }
 
+    private void setSawdust(int value) {
+        int clamped = Math.clamp(value, 0, 5);
+        if (sawdust == clamped) {
+            return;
+        }
+        sawdust = clamped;
+        setChanged();
+        if (level != null && !level.isClientSide
+                && getBlockState().hasProperty(ChoppingBlock.SAWDUST)
+                && getBlockState().getValue(ChoppingBlock.SAWDUST) != clamped) {
+            level.setBlock(
+                    worldPosition,
+                    getBlockState().setValue(ChoppingBlock.SAWDUST, clamped),
+                    Block.UPDATE_ALL
+            );
+        }
+    }
+
     @Override
     protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.loadAdditional(tag, registries);
         input = ItemStack.parseOptional(registries, tag.getCompound("Input"));
         chops = tag.getInt("Chops");
         requiredChops = tag.getInt("RequiredChops");
-        sawdust = tag.getInt("Sawdust");
+        sawdust = Math.clamp(tag.getInt("Sawdust"), 0, 5);
         durabilityUntilDamage = tag.getInt("DurabilityUntilDamage");
         resolveRecipe();
     }
@@ -253,6 +270,21 @@ public final class ChoppingBlockEntity extends BlockEntity {
         tag.putInt("RequiredChops", requiredChops);
         tag.putInt("Sawdust", sawdust);
         tag.putInt("DurabilityUntilDamage", durabilityUntilDamage);
+    }
+
+    @Override
+    public void onLoad() {
+        super.onLoad();
+        resolveRecipe();
+        if (level != null && !level.isClientSide
+                && getBlockState().hasProperty(ChoppingBlock.SAWDUST)
+                && getBlockState().getValue(ChoppingBlock.SAWDUST) != sawdust) {
+            level.setBlock(
+                    worldPosition,
+                    getBlockState().setValue(ChoppingBlock.SAWDUST, sawdust),
+                    Block.UPDATE_ALL
+            );
+        }
     }
 
     @Override

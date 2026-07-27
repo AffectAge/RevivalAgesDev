@@ -14,7 +14,6 @@ import com.protyvkultury.revivalages.feature.technology.constructionframe.recipe
 import java.util.function.Supplier;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -27,7 +26,6 @@ import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.common.conditions.ICondition;
-import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredItem;
@@ -90,7 +88,6 @@ public final class ConstructionFrameFeature implements FeatureModule {
         RECIPE_TYPES.register(modBus);
         RECIPE_SERIALIZERS.register(modBus);
         CONDITIONS.register(modBus);
-        modBus.addListener(this::addCreativeItems);
         modContainer.registerConfig(
                 ModConfig.Type.SERVER,
                 ConstructionFrameConfig.SPEC,
@@ -103,12 +100,6 @@ public final class ConstructionFrameFeature implements FeatureModule {
 
     public static boolean visible(Item item) {
         return item != CONSTRUCTION_FRAME_ITEM.get() || ConstructionFrameConfig.enabled();
-    }
-
-    private void addCreativeItems(BuildCreativeModeTabContentsEvent event) {
-        if (ConstructionFrameConfig.enabled() && event.getTabKey() == CreativeModeTabs.FUNCTIONAL_BLOCKS) {
-            event.accept(CONSTRUCTION_FRAME_ITEM.get());
-        }
     }
 
     private static Supplier<RecipeType<FrameAssemblyRecipe>> simpleRecipeType() {

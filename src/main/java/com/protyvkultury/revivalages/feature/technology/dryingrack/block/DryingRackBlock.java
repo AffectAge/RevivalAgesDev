@@ -102,6 +102,11 @@ public final class DryingRackBlock extends AbstractDryingRackBlock {
     }
 
     @Override
+    protected boolean isInteractionFaceAllowed(BlockState state, Direction face) {
+        return face == Direction.UP;
+    }
+
+    @Override
     protected int slotFromHit(BlockState state, BlockHitResult hitResult) {
         Vec3 location = hitResult.getLocation();
         OrientedInteractionSpace.Point local = OrientedInteractionSpace.worldToLocal(

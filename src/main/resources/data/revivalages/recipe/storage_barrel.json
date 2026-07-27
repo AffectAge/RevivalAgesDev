@@ -1,0 +1,25 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "revivalages:content_enabled",
+      "content": "revivalages:storage_barrel",
+      "enabled": true
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PPP",
+    "P P",
+    "PPP"
+  ],
+  "key": {
+    "P": {
+      "tag": "minecraft:planks"
+    }
+  },
+  "result": {
+    "id": "revivalages:storage_barrel",
+    "count": 1
+  }
+}

@@ -388,6 +388,10 @@
       "replace": true,
       "value": "huge"
     },
+    "revivalages:storage_barrel": {
+      "replace": true,
+      "value": "huge"
+    },
     "revivalages:straw": {
       "replace": true,
       "value": "small"

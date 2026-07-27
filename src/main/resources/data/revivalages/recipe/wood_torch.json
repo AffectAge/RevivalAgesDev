@@ -7,5 +7,5 @@
     "S": { "item": "revivalages:straw" },
     "I": { "item": "minecraft:stick" }
   },
-  "result": { "id": "revivalages:wood_torch", "count": 2 }
+  "result": { "id": "revivalages:wood_torch", "count": 1 }
 }

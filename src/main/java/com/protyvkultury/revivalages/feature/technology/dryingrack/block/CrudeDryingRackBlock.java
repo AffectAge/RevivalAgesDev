@@ -104,6 +104,11 @@ public final class CrudeDryingRackBlock extends AbstractDryingRackBlock {
     }
 
     @Override
+    protected boolean isInteractionFaceAllowed(BlockState state, Direction face) {
+        return true;
+    }
+
+    @Override
     protected int slotFromHit(BlockState state, BlockHitResult hitResult) {
         return 0;
     }
