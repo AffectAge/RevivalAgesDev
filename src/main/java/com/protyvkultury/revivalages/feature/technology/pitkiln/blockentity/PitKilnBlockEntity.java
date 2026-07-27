@@ -112,24 +112,23 @@ public final class PitKilnBlockEntity extends BlockEntity {
 
     public static void clientTick(Level level, BlockPos pos, BlockState state, PitKilnBlockEntity kiln) {
         if (!ContentAvailability.isEnabled(ContentKey.PIT_KILN)
-                || state.getValue(PitKilnBlock.STAGE) != PitKilnStage.ACTIVE
-                || level.getGameTime() % 10L != 0L) {
+                || state.getValue(PitKilnBlock.STAGE) != PitKilnStage.ACTIVE) {
             return;
         }
-        level.addParticle(ParticleTypes.FLAME,
-                pos.getX() + 0.2D + level.random.nextDouble() * 0.6D,
-                pos.getY() + 1.0D,
-                pos.getZ() + 0.2D + level.random.nextDouble() * 0.6D,
-                0.0D, 0.03D, 0.0D);
-        level.addParticle(ParticleTypes.CAMPFIRE_COSY_SMOKE,
-                pos.getX() + 0.5D,
-                pos.getY() + 1.0D,
-                pos.getZ() + 0.5D,
-                0.0D, 0.04D, 0.0D);
-        if (PrimitiveTechnologyConfig.PROGRESS_PARTICLES.get()) {
-            level.addParticle(ParticleTypes.HAPPY_VILLAGER,
-                    pos.getX() + 0.5D, pos.getY() + 0.8D, pos.getZ() + 0.5D,
-                    0.0D, 0.02D, 0.0D);
+        double x = pos.getX() + 0.5D;
+        double z = pos.getZ() + 0.5D;
+        for (int index = 0; index < 4; index++) {
+            double y = pos.getY() + (index < 2 ? 2.0D : 1.0D);
+            double speed = (index & 1) == 0 ? 0.1D : 0.15D;
+            level.addParticle(
+                    ParticleTypes.SMOKE,
+                    x + level.random.nextDouble() - 0.5D,
+                    y,
+                    z + level.random.nextDouble() - 0.5D,
+                    0.0D,
+                    speed,
+                    0.0D
+            );
         }
     }
 

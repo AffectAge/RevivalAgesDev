@@ -13,6 +13,18 @@ public final class OrientedInteractionSpace {
         double z = worldZ - 0.5D;
         return switch (facing) {
             case SOUTH -> new Point(x + 0.5D, z + 0.5D);
+            case WEST -> new Point(z + 0.5D, -x + 0.5D);
+            case NORTH -> new Point(-x + 0.5D, -z + 0.5D);
+            case EAST -> new Point(-z + 0.5D, x + 0.5D);
+            default -> throw new IllegalArgumentException("Horizontal facing required: " + facing);
+        };
+    }
+
+    public static Point localToWorld(Direction facing, double localX, double localZ) {
+        double x = localX - 0.5D;
+        double z = localZ - 0.5D;
+        return switch (facing) {
+            case SOUTH -> new Point(x + 0.5D, z + 0.5D);
             case WEST -> new Point(-z + 0.5D, x + 0.5D);
             case NORTH -> new Point(-x + 0.5D, -z + 0.5D);
             case EAST -> new Point(z + 0.5D, -x + 0.5D);

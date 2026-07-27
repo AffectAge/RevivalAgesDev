@@ -161,11 +161,22 @@ public final class AnvilBlockEntity extends BlockEntity {
                     hitPosition.x,
                     hitPosition.y,
                     hitPosition.z,
-                    8,
-                    0.15D,
-                    0.05D,
-                    0.15D,
-                    0.04D
+                    1,
+                    0.0D,
+                    0.0D,
+                    0.0D,
+                    0.02D
+            );
+            server.sendParticles(
+                    ParticleTypes.HAPPY_VILLAGER,
+                    worldPosition.getX() + 0.5D,
+                    worldPosition.getY() + 0.8D,
+                    worldPosition.getZ() + 0.5D,
+                    2,
+                    0.25D,
+                    0.1D,
+                    0.25D,
+                    0.02D
             );
         }
 

@@ -100,7 +100,7 @@ public final class ChoppingBlock extends BaseEntityBlock {
                 return ItemInteractionResult.CONSUME;
             }
             if (!level.isClientSide) {
-                chopping.chop(player, stack, hand);
+                chopping.chop(player, stack, hand, hit);
             }
             return ItemInteractionResult.sidedSuccess(level.isClientSide);
         }
@@ -119,8 +119,10 @@ public final class ChoppingBlock extends BaseEntityBlock {
 
     @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
-        if (level.getBlockEntity(pos) instanceof ChoppingBlockEntity chopping && !chopping.input().isEmpty()) {
-            return ItemStackInteraction.extract(level, pos, player, chopping.input(), chopping::extract);
+        if (level.getBlockEntity(pos) instanceof ChoppingBlockEntity chopping
+                && (!chopping.output().isEmpty() || !chopping.input().isEmpty())) {
+            ItemStack shown = chopping.output().isEmpty() ? chopping.input() : chopping.output();
+            return ItemStackInteraction.extract(level, pos, player, shown, chopping::extract);
         }
         return InteractionResult.PASS;
     }
@@ -128,7 +130,11 @@ public final class ChoppingBlock extends BaseEntityBlock {
     @Override
     protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean moving) {
         if (!state.is(newState.getBlock()) && level.getBlockEntity(pos) instanceof ChoppingBlockEntity chopping) {
-            Containers.dropContents(level, pos, new net.minecraft.world.SimpleContainer(chopping.input()));
+            Containers.dropContents(
+                    level,
+                    pos,
+                    new net.minecraft.world.SimpleContainer(chopping.input(), chopping.output())
+            );
             if (chopping.sawdust() > 0) {
                 popResource(level, pos, new ItemStack(PrimitiveMaterialsFeature.WOOD_CHIPS.get(), chopping.sawdust()));
             }

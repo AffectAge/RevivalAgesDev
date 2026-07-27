@@ -1,6 +1,7 @@
 package com.protyvkultury.revivalages.feature.technology.tanningrack.blockentity;
 
 import com.protyvkultury.revivalages.api.food.FoodFreshnessApi;
+import com.protyvkultury.revivalages.core.particle.ProgressParticleHelper;
 import com.protyvkultury.revivalages.feature.content.ContentAvailability;
 import com.protyvkultury.revivalages.feature.content.ContentKey;
 import com.protyvkultury.revivalages.feature.technology.primitive.config.PrimitiveTechnologyConfig;
@@ -114,9 +115,15 @@ public final class TanningRackBlockEntity extends BlockEntity {
                 && time <= 12000L
                 && PrimitiveTechnologyConfig.PROGRESS_PARTICLES.get()
                 && level.getGameTime() % 40L == 0L) {
-            level.addParticle(ParticleTypes.HAPPY_VILLAGER,
-                    pos.getX() + 0.5D, pos.getY() + 0.85D, pos.getZ() + 0.5D,
-                    0.0D, 0.02D, 0.0D);
+            ProgressParticleHelper.spawn(
+                    level,
+                    pos.getX() + 0.5D,
+                    pos.getY() + 0.85D,
+                    pos.getZ() + 0.5D,
+                    0.5D,
+                    0.25D,
+                    0.5D
+            );
         }
     }
 

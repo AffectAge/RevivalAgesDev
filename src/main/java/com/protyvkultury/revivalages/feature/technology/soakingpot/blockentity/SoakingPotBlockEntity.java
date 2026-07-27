@@ -1,6 +1,7 @@
 package com.protyvkultury.revivalages.feature.technology.soakingpot.blockentity;
 
 import com.protyvkultury.revivalages.api.food.FoodFreshnessApi;
+import com.protyvkultury.revivalages.core.particle.ProgressParticleHelper;
 import com.protyvkultury.revivalages.feature.content.ContentAvailability;
 import com.protyvkultury.revivalages.feature.content.ContentKey;
 import com.protyvkultury.revivalages.feature.technology.campfire.CampfireFeature;
@@ -119,9 +120,15 @@ public final class SoakingPotBlockEntity extends BlockEntity {
                 && PrimitiveTechnologyConfig.PROGRESS_PARTICLES.get()
                 && level.getGameTime() % 40L == 0L) {
             double y = level.getBlockState(pos.below()).is(CampfireFeature.CAMPFIRE.get()) ? 0.5D : 0.75D;
-            level.addParticle(ParticleTypes.HAPPY_VILLAGER,
-                    pos.getX() + 0.5D, pos.getY() + y, pos.getZ() + 0.5D,
-                    0.0D, 0.02D, 0.0D);
+            ProgressParticleHelper.spawn(
+                    level,
+                    pos.getX() + 0.5D,
+                    pos.getY() + y,
+                    pos.getZ() + 0.5D,
+                    0.25D,
+                    0.25D,
+                    0.25D
+            );
         }
     }
 

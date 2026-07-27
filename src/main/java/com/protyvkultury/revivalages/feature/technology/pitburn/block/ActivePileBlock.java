@@ -52,12 +52,18 @@ public final class ActivePileBlock extends BaseEntityBlock {
 
     @Override
     public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource random) {
-        if (random.nextInt(3) == 0) {
-            level.addParticle(ParticleTypes.CAMPFIRE_COSY_SMOKE,
-                    pos.getX() + 0.2D + random.nextDouble() * 0.6D,
-                    pos.getY() + 1.0D,
-                    pos.getZ() + 0.2D + random.nextDouble() * 0.6D,
-                    0.0D, 0.035D, 0.0D);
+        double x = pos.getX() + 0.5D;
+        double z = pos.getZ() + 0.5D;
+        for (int index = 0; index < 4; index++) {
+            level.addParticle(
+                    ParticleTypes.SMOKE,
+                    x + random.nextDouble() - 0.5D,
+                    pos.getY() + (index < 2 ? 2.0D : 1.0D),
+                    z + random.nextDouble() - 0.5D,
+                    0.0D,
+                    (index & 1) == 0 ? 0.1D : 0.15D,
+                    0.0D
+            );
         }
     }
 

@@ -77,8 +77,20 @@ and retain remaining uses as item data. Filled wooden buckets wear over time;
 hot fluids accelerate wear and damage their holder. Clay buckets tolerate normal
 fluids indefinitely but hot fluids still wear the vessel and hurt its holder.
 When a vessel breaks, its source fluid is placed at the holder when possible.
-Both bucket types can milk cows and the resulting milk can be drunk. Clay buckets
-are first crafted unfired and then fired by the Pit Kiln or inherited Stone Kiln
+Both bucket types can milk adult cows when their material-specific milk setting
+is enabled, and the resulting milk uses the standard NeoForge milk cure path when
+drunk. Milking calves remains prohibited to preserve vanilla animal interaction;
+this is an intentional safety correction to the designated behavior. Creative
+players cannot obtain custom milk buckets by milking.
+
+Full water buckets fill empty or partial water cauldrons to level three, while
+empty buckets drain only a full cauldron. These operations preserve vessel wear,
+are atomic, award the corresponding vanilla statistics, and honor block and
+item-use permissions. Crafting remainders return an empty vessel with the same
+wear lifecycle. Lava-tagged contents provide the configured furnace burn time.
+World placement and break spills deliberately use NeoForge's transactional fluid
+API rather than recreating obsolete direct level manipulation. Clay buckets are
+first crafted unfired and then fired by the Pit Kiln or inherited Stone Kiln
 recipe.
 
 ## Campfire
@@ -114,9 +126,10 @@ inside recipes.
 The same file configures Pit Burn cluster size, duration, enclosure validation
 interval and failure grace; Flint and Tinder uses, use duration and cooldown;
 Wood Torch light, rain, lifetime, variance and collision damage; and primitive
-bucket uses, passive wear, hot-fluid wear, holder damage, and source placement on
-break. These controls are read at runtime and are not persisted as fixed balance
-values in world data.
+bucket uses, empty stack sizes, milk access, material-specific temperature
+thresholds, passive wear, hot-fluid wear, holder damage, source placement on
+break, and lava fuel time. These controls are read at runtime and are not
+persisted as fixed balance values in world data.
 
 The same server file configures stone-machine fuel limits and multiplier,
 airflow acceleration and drag, retained heat, Sawmill blade damage and chip

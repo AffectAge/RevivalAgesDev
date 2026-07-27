@@ -10,14 +10,16 @@ import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsE
 
 public final class PrimitiveFluidClientEvents {
 
-    private static final ResourceLocation WATER_STILL = ResourceLocation.withDefaultNamespace("block/water_still");
-    private static final ResourceLocation WATER_FLOW = ResourceLocation.withDefaultNamespace("block/water_flow");
-    private static final ResourceLocation WATER_OVERLAY = ResourceLocation.withDefaultNamespace("block/water_overlay");
+    private static final ResourceLocation TANNIN_STILL =
+            ResourceLocation.fromNamespaceAndPath("revivalages", "block/fluid_tannin_still");
+    private static final ResourceLocation TANNIN_FLOW =
+            ResourceLocation.fromNamespaceAndPath("revivalages", "block/fluid_tannin_flow");
 
     private PrimitiveFluidClientEvents() {
     }
 
     public static void register(IEventBus modBus) {
+        PrimitiveItemTooltipEvents.register();
         modBus.addListener(PrimitiveFluidClientEvents::registerExtensions);
         modBus.addListener(PrimitiveFluidClientEvents::clientSetup);
     }
@@ -26,22 +28,17 @@ public final class PrimitiveFluidClientEvents {
         event.registerFluidType(new IClientFluidTypeExtensions() {
             @Override
             public ResourceLocation getStillTexture() {
-                return WATER_STILL;
+                return TANNIN_STILL;
             }
 
             @Override
             public ResourceLocation getFlowingTexture() {
-                return WATER_FLOW;
-            }
-
-            @Override
-            public ResourceLocation getOverlayTexture() {
-                return WATER_OVERLAY;
+                return TANNIN_FLOW;
             }
 
             @Override
             public int getTintColor() {
-                return 0xFF6A4A20;
+                return 0xFFFFFFFF;
             }
         }, PrimitiveMaterialsFeature.TANNIN_TYPE.get());
     }

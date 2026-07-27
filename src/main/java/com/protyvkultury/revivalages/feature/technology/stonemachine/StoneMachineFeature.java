@@ -6,6 +6,7 @@ import com.protyvkultury.revivalages.feature.content.ContentAvailability;
 import com.protyvkultury.revivalages.feature.content.ContentKey;
 import com.protyvkultury.revivalages.feature.content.ContentPolicy;
 import com.protyvkultury.revivalages.feature.technology.primitive.config.PrimitiveTechnologyConfig;
+import com.protyvkultury.revivalages.feature.technology.primitive.item.DurabilityTooltipItem;
 import com.protyvkultury.revivalages.feature.technology.stonemachine.block.StoneCrucibleBlock;
 import com.protyvkultury.revivalages.feature.technology.stonemachine.block.StoneKilnBlock;
 import com.protyvkultury.revivalages.feature.technology.stonemachine.block.StoneMachineBlock;
@@ -71,12 +72,21 @@ public final class StoneMachineFeature implements FeatureModule {
     public static final DeferredItem<BlockItem> STONE_CRUCIBLE_ITEM =
             ITEMS.registerSimpleBlockItem(STONE_CRUCIBLE, new Item.Properties());
 
-    public static final DeferredItem<Item> STONE_SAW_BLADE = ITEMS.registerSimpleItem(
-            "stone_saw_blade", new Item.Properties().durability(64));
-    public static final DeferredItem<Item> FLINT_SAW_BLADE = ITEMS.registerSimpleItem(
-            "flint_saw_blade", new Item.Properties().durability(96));
-    public static final DeferredItem<Item> BONE_SAW_BLADE = ITEMS.registerSimpleItem(
-            "bone_saw_blade", new Item.Properties().durability(96));
+    public static final DeferredItem<DurabilityTooltipItem> STONE_SAW_BLADE = ITEMS.registerItem(
+            "stone_saw_blade",
+            DurabilityTooltipItem::new,
+            new Item.Properties().durability(64)
+    );
+    public static final DeferredItem<DurabilityTooltipItem> FLINT_SAW_BLADE = ITEMS.registerItem(
+            "flint_saw_blade",
+            DurabilityTooltipItem::new,
+            new Item.Properties().durability(96)
+    );
+    public static final DeferredItem<DurabilityTooltipItem> BONE_SAW_BLADE = ITEMS.registerItem(
+            "bone_saw_blade",
+            DurabilityTooltipItem::new,
+            new Item.Properties().durability(96)
+    );
 
     public static final DeferredHolder<SoundEvent, SoundEvent> SAWMILL_IDLE = sound("sawmill_idle");
     public static final DeferredHolder<SoundEvent, SoundEvent> SAWMILL_ACTIVE = sound("sawmill_active");

@@ -28,19 +28,8 @@ public enum AnvilComponentProvider implements IBlockComponentProvider {
         if (!(accessor.getBlockEntity() instanceof AnvilBlockEntity anvil)) {
             return;
         }
-        tooltip.add(Component.translatable(
-                "jade.revivalages.anvil.damage", accessor.getBlockState().getValue(AnvilBlock.DAMAGE) + 1));
         if (anvil.input().isEmpty()) {
             return;
-        }
-        if (anvil.requiredHits() > 0) {
-            tooltip.add(Component.translatable("jade.revivalages.anvil.hits", anvil.hits(), anvil.requiredHits()));
-            tooltip.add(Component.translatable(
-                    anvil.activeTool() == AnvilTool.HAMMER
-                            ? "gui.revivalages.recipe.tool.hammer"
-                            : "gui.revivalages.recipe.tool.pickaxe"));
-        } else {
-            tooltip.add(Component.translatable("jade.revivalages.anvil.select_tool"));
         }
         List<IElement> line = new ArrayList<>();
         IElementHelper elements = IElementHelper.get();
@@ -52,6 +41,15 @@ public enum AnvilComponentProvider implements IBlockComponentProvider {
             line.add(elements.item(anvil.recipeOutput()));
         }
         tooltip.add(line);
+        if (anvil.requiredHits() > 0) {
+            tooltip.add(Component.translatable("jade.revivalages.anvil.hits", anvil.hits(), anvil.requiredHits()));
+            tooltip.add(Component.translatable(
+                    anvil.activeTool() == AnvilTool.HAMMER
+                            ? "gui.revivalages.recipe.tool.hammer"
+                            : "gui.revivalages.recipe.tool.pickaxe"));
+        } else {
+            tooltip.add(Component.translatable("jade.revivalages.anvil.select_tool"));
+        }
     }
 
     @Override

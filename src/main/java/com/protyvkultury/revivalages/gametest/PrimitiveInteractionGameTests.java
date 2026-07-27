@@ -1,6 +1,7 @@
 package com.protyvkultury.revivalages.gametest;
 
 import com.protyvkultury.revivalages.RevivalAges;
+import com.protyvkultury.revivalages.core.interaction.OrientedInteractionSpace;
 import com.protyvkultury.revivalages.feature.content.ContentAvailability;
 import com.protyvkultury.revivalages.feature.content.ContentKey;
 import com.protyvkultury.revivalages.feature.technology.barrel.BarrelFeature;
@@ -8,10 +9,13 @@ import com.protyvkultury.revivalages.feature.technology.barrel.block.BarrelBlock
 import com.protyvkultury.revivalages.feature.technology.barrel.blockentity.BarrelBlockEntity;
 import com.protyvkultury.revivalages.feature.technology.barrel.storage.StorageBarrelBlock;
 import com.protyvkultury.revivalages.feature.technology.barrel.storage.StorageBarrelBlockEntity;
+import com.protyvkultury.revivalages.feature.technology.bucket.PrimitiveBucketFeature;
+import com.protyvkultury.revivalages.feature.technology.bucket.item.PrimitiveBucketItem;
 import com.protyvkultury.revivalages.feature.technology.ignition.IgnitionFeature;
 import com.protyvkultury.revivalages.feature.technology.campfire.CampfireFeature;
 import com.protyvkultury.revivalages.feature.technology.campfire.blockentity.CampfireBlockEntity;
 import com.protyvkultury.revivalages.feature.technology.dryingrack.DryingRackFeature;
+import com.protyvkultury.revivalages.feature.technology.dryingrack.block.AbstractDryingRackBlock;
 import com.protyvkultury.revivalages.feature.technology.dryingrack.blockentity.DryingRackBlockEntity;
 import com.protyvkultury.revivalages.feature.technology.pitkiln.PitKilnFeature;
 import com.protyvkultury.revivalages.feature.technology.pitkiln.blockentity.PitKilnBlockEntity;
@@ -19,6 +23,7 @@ import com.protyvkultury.revivalages.feature.technology.soakingpot.SoakingPotFea
 import com.protyvkultury.revivalages.feature.technology.soakingpot.blockentity.SoakingPotBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.InteractionHand;
@@ -27,11 +32,15 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.HorizontalDirectionalBlock;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.LayeredCauldronBlock;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.fluids.FluidStack;
 
 @GameTestHolder(RevivalAges.MOD_ID)
 @PrefixGameTestTemplate(false)
@@ -40,6 +49,66 @@ public final class PrimitiveInteractionGameTests {
     private static final BlockPos MACHINE = new BlockPos(4, 2, 4);
 
     private PrimitiveInteractionGameTests() {
+    }
+
+    @GameTest(template = "animal_power_empty")
+    public static void primitiveBucketTransfersWaterThroughFullCauldronLifecycle(GameTestHelper helper) {
+        if (!ContentAvailability.isEnabled(ContentKey.WOODEN_BUCKET)) {
+            helper.succeed();
+            return;
+        }
+        PrimitiveBucketItem bucket = PrimitiveBucketFeature.WOODEN_BUCKET.get();
+        Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+        ItemStack filled = bucket.filledWith(
+                new ItemStack(bucket),
+                new FluidStack(net.minecraft.world.level.material.Fluids.WATER, 1000)
+        );
+        player.setItemInHand(InteractionHand.MAIN_HAND, filled);
+        helper.setBlock(MACHINE, Blocks.CAULDRON);
+        BlockPos absolute = helper.absolutePos(MACHINE);
+
+        helper.getBlockState(MACHINE).useItemOn(
+                filled,
+                helper.getLevel(),
+                player,
+                InteractionHand.MAIN_HAND,
+                hit(absolute, Direction.UP)
+        );
+        helper.assertTrue(helper.getBlockState(MACHINE).is(Blocks.WATER_CAULDRON),
+                "full primitive bucket did not fill the cauldron");
+        helper.assertValueEqual(
+                helper.getBlockState(MACHINE).getValue(LayeredCauldronBlock.LEVEL),
+                3,
+                "primitive bucket did not fill the cauldron to level three"
+        );
+        ItemStack empty = player.getMainHandItem();
+        helper.assertTrue(bucket.fluid(empty).isEmpty(), "cauldron fill did not return an empty primitive bucket");
+        helper.assertValueEqual(
+                empty.getOrDefault(PrimitiveBucketFeature.BUCKET_USES.get(), bucket.maximumUses()),
+                bucket.maximumUses() - 1,
+                "cauldron fill did not preserve and decrement bucket uses"
+        );
+
+        helper.getBlockState(MACHINE).useItemOn(
+                empty,
+                helper.getLevel(),
+                player,
+                InteractionHand.MAIN_HAND,
+                hit(absolute, Direction.UP)
+        );
+        helper.assertTrue(helper.getBlockState(MACHINE).is(Blocks.CAULDRON),
+                "empty primitive bucket did not drain a full cauldron");
+        helper.assertTrue(bucket.fluid(player.getMainHandItem()).is(FluidTags.WATER),
+                "cauldron drain did not return a water-filled primitive bucket");
+        helper.assertValueEqual(
+                player.getMainHandItem().getOrDefault(
+                        PrimitiveBucketFeature.BUCKET_USES.get(),
+                        bucket.maximumUses()
+                ),
+                bucket.maximumUses() - 1,
+                "cauldron drain did not preserve bucket uses"
+        );
+        helper.succeed();
     }
 
     @GameTest(template = "animal_power_empty")
@@ -164,6 +233,48 @@ public final class PrimitiveInteractionGameTests {
                 cachedHandler.extractItem(0, 1, false).isEmpty(),
                 "cached automation extracted from a sealed storage barrel"
         );
+        helper.succeed();
+    }
+
+    @GameTest(template = "animal_power_empty")
+    public static void dryingRackSlotSelectionMatchesEveryHorizontalFacing(GameTestHelper helper) {
+        if (!ContentAvailability.isEnabled(ContentKey.DRYING_RACK)) {
+            helper.succeed();
+            return;
+        }
+        double[][] slotCenters = {
+                {0.25D, 0.25D},
+                {0.75D, 0.25D},
+                {0.25D, 0.75D},
+                {0.75D, 0.75D}
+        };
+        BlockPos absolute = helper.absolutePos(MACHINE);
+        AbstractDryingRackBlock block = DryingRackFeature.DRYING_RACK.get();
+        for (Direction facing : Direction.Plane.HORIZONTAL) {
+            BlockState state = block.defaultBlockState()
+                    .setValue(HorizontalDirectionalBlock.FACING, facing);
+            helper.setBlock(MACHINE, state);
+            for (int expected = 0; expected < slotCenters.length; expected++) {
+                double[] center = slotCenters[expected];
+                OrientedInteractionSpace.Point world =
+                        OrientedInteractionSpace.localToWorld(facing, center[0], center[1]);
+                BlockHitResult hit = new BlockHitResult(
+                        new Vec3(
+                                absolute.getX() + world.x(),
+                                absolute.getY() + 1.0D,
+                                absolute.getZ() + world.z()
+                        ),
+                        Direction.UP,
+                        absolute,
+                        false
+                );
+                helper.assertValueEqual(
+                        block.interactionSlot(state, hit),
+                        expected,
+                        "click and scroll selected the wrong oriented drying-rack slot"
+                );
+            }
+        }
         helper.succeed();
     }
 

@@ -7,6 +7,7 @@ public final class DryingRackClientConfig {
     public static final ModConfigSpec SPEC;
     public static final ModConfigSpec.BooleanValue SHOW_PROGRESS_PARTICLES;
     public static final ModConfigSpec.BooleanValue SHOW_ITEM_PREVIEW;
+    public static final ModConfigSpec.BooleanValue SHOW_ITEM_COUNTS;
     public static final ModConfigSpec.BooleanValue SHOW_INTERACTION_BOUNDS;
 
     static {
@@ -18,6 +19,9 @@ public final class DryingRackClientConfig {
         SHOW_ITEM_PREVIEW = builder
                 .comment("Shows a translucent preview of the item targeted for insertion or removal.")
                 .define("showItemPreview", true);
+        SHOW_ITEM_COUNTS = builder
+                .comment("Shows stack counts next to physical Drying Rack contents.")
+                .define("showItemCounts", true);
         SHOW_INTERACTION_BOUNDS = builder
                 .comment("Shows a green outline around the selected Drying Rack interaction area.")
                 .define("showInteractionBounds", true);

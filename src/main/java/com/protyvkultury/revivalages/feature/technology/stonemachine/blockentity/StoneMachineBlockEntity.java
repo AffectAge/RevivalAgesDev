@@ -2,6 +2,7 @@ package com.protyvkultury.revivalages.feature.technology.stonemachine.blockentit
 
 import com.protyvkultury.revivalages.api.food.FoodFreshnessApi;
 import com.protyvkultury.revivalages.core.interaction.ItemStackInteraction;
+import com.protyvkultury.revivalages.core.particle.ProgressParticleHelper;
 import com.protyvkultury.revivalages.feature.content.ContentAvailability;
 import com.protyvkultury.revivalages.feature.content.ContentKey;
 import com.protyvkultury.revivalages.feature.technology.primitive.PrimitiveMaterialsFeature;
@@ -18,6 +19,8 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.particles.BlockParticleOption;
+import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
@@ -137,22 +140,67 @@ public final class StoneMachineBlockEntity extends BlockEntity {
         if (level.random.nextInt(10) == 0) {
             level.playLocalSound(pos, SoundEvents.FURNACE_FIRE_CRACKLE, SoundSource.BLOCKS, 1.0F, 1.0F, false);
         }
-        if (level.getGameTime() % 10L == 0L) {
-            Direction facing = state.getValue(HorizontalDirectionalBlock.FACING);
-            double x = pos.getX() + 0.5D + facing.getStepX() * 0.32D;
-            double y = pos.getY() + 0.35D;
-            double z = pos.getZ() + 0.5D + facing.getStepZ() * 0.32D;
-            level.addParticle(ParticleTypes.SMOKE, x, y, z, 0.0D, 0.02D, 0.0D);
-            level.addParticle(ParticleTypes.FLAME, x, y, z, 0.0D, 0.01D, 0.0D);
-            if (PrimitiveTechnologyConfig.PROGRESS_PARTICLES.get() && !machine.input().isEmpty()) {
-                level.addParticle(ParticleTypes.HAPPY_VILLAGER,
-                        pos.getX() + 0.5D,
-                        pos.getY() + 1.55D,
-                        pos.getZ() + 0.5D,
-                        0.0D,
-                        0.02D,
-                        0.0D);
+        Direction facing = state.getValue(HorizontalDirectionalBlock.FACING);
+        double lateral = level.random.nextDouble() * 0.6D - 0.3D;
+        double x = pos.getX() + 0.5D + facing.getStepX() * 0.25D
+                + (facing.getAxis() == Direction.Axis.Z ? lateral : 0.0D);
+        double y = pos.getY() + level.random.nextDouble() * 6.0D / 16.0D;
+        double z = pos.getZ() + 0.5D + facing.getStepZ() * 0.25D
+                + (facing.getAxis() == Direction.Axis.X ? lateral : 0.0D);
+        level.addParticle(ParticleTypes.SMOKE, x, y, z, 0.0D, 0.0D, 0.0D);
+        level.addParticle(ParticleTypes.FLAME, x, y, z, 0.0D, 0.0D, 0.0D);
+
+        if (machine.kind == StoneMachineKind.SAWMILL || machine.kind == StoneMachineKind.CRUCIBLE) {
+            double exhaustX = pos.getX() + 0.5D - facing.getStepX() * 10.0D / 16.0D;
+            double exhaustZ = pos.getZ() + 0.5D - facing.getStepZ() * 10.0D / 16.0D;
+            level.addParticle(
+                    ParticleTypes.LARGE_SMOKE,
+                    exhaustX,
+                    pos.getY() + 0.8D,
+                    exhaustZ,
+                    0.0D,
+                    0.05D + (level.random.nextFloat() * 2.0F - 1.0F) * 0.05D,
+                    0.0D
+            );
+        }
+        if (machine.kind == StoneMachineKind.SAWMILL && !machine.input().isEmpty()) {
+            BlockState inputState = Block.byItem(machine.input().getItem()).defaultBlockState();
+            for (int index = 0; index < 8; index++) {
+                if (inputState.isAir()) {
+                    level.addParticle(
+                            new ItemParticleOption(ParticleTypes.ITEM, machine.input()),
+                            pos.getX() + 0.5D,
+                            pos.getY() + 1.25D,
+                            pos.getZ() + 0.5D,
+                            0.0D,
+                            0.0D,
+                            0.0D
+                    );
+                } else {
+                    level.addParticle(
+                            new BlockParticleOption(ParticleTypes.BLOCK, inputState),
+                            pos.getX() + 0.5D,
+                            pos.getY() + 1.25D,
+                            pos.getZ() + 0.5D,
+                            0.0D,
+                            0.0D,
+                            0.0D
+                    );
+                }
             }
+        }
+        if (PrimitiveTechnologyConfig.PROGRESS_PARTICLES.get()
+                && !machine.input().isEmpty()
+                && level.getGameTime() % ProgressParticleHelper.INTERVAL == 0L) {
+            ProgressParticleHelper.spawn(
+                    level,
+                    pos.getX() + 0.5D,
+                    pos.getY() + 1.55D,
+                    pos.getZ() + 0.5D,
+                    0.25D,
+                    0.1D,
+                    0.25D
+            );
         }
     }
 

@@ -1,6 +1,7 @@
 package com.protyvkultury.revivalages.feature.technology.campfire.blockentity;
 
 import com.protyvkultury.revivalages.api.food.FoodFreshnessApi;
+import com.protyvkultury.revivalages.core.particle.ProgressParticleHelper;
 import com.protyvkultury.revivalages.feature.content.ContentAvailability;
 import com.protyvkultury.revivalages.feature.content.ContentKey;
 import com.protyvkultury.revivalages.feature.technology.campfire.CampfireFeature;
@@ -38,7 +39,6 @@ public final class CampfireBlockEntity extends BlockEntity {
     private static final int COOKING_SLOT = 0;
     private static final int FIRST_LOG_SLOT = 1;
     private static final int LAST_LOG_SLOT = 8;
-    private static final int PARTICLE_INTERVAL = 20;
 
     private final NonNullList<ItemStack> items = NonNullList.withSize(9, ItemStack.EMPTY);
     private boolean hasTinder;
@@ -161,28 +161,32 @@ public final class CampfireBlockEntity extends BlockEntity {
             level.playLocalSound(pos, SoundEvents.FURNACE_FIRE_CRACKLE, SoundSource.BLOCKS,
                     1.0F, 1.0F, false);
         }
-        if (level.getGameTime() % PARTICLE_INTERVAL != 0L) {
-            return;
+        double centerX = pos.getX() + 0.5D;
+        double centerY = pos.getY() + 4.0D / 16.0D + level.random.nextDouble() * 2.0D / 16.0D;
+        double centerZ = pos.getZ() + 0.5D;
+        for (int index = 0; index < 4; index++) {
+            double x = centerX + (level.random.nextDouble() * 2.0D - 1.0D) * 0.2D;
+            double z = centerZ + (level.random.nextDouble() * 2.0D - 1.0D) * 0.2D;
+            level.addParticle(ParticleTypes.SMOKE, x, centerY, z, 0.0D, 0.0D, 0.0D);
+            level.addParticle(ParticleTypes.FLAME, x, centerY, z, 0.0D, 0.0D, 0.0D);
         }
-        level.addParticle(ParticleTypes.CAMPFIRE_COSY_SMOKE,
-                pos.getX() + 0.5D, pos.getY() + 0.45D, pos.getZ() + 0.5D,
-                0.0D, 0.035D, 0.0D);
-        if (PrimitiveTechnologyConfig.PROGRESS_PARTICLES.get() && campfire.isProcessing()) {
-            level.addParticle(ParticleTypes.HAPPY_VILLAGER,
-                    pos.getX() + 0.5D, pos.getY() + 0.55D, pos.getZ() + 0.5D,
-                    0.0D, 0.02D, 0.0D);
+        if (PrimitiveTechnologyConfig.PROGRESS_PARTICLES.get()
+                && campfire.isProcessing()
+                && level.getGameTime() % ProgressParticleHelper.INTERVAL == 0L) {
+            ProgressParticleHelper.spawn(level, centerX, pos.getY() + 0.55D, centerZ, 0.2D, 0.1D, 0.2D);
         }
-        if (campfire.completed && campfire.burnOutputTicks > PrimitiveTechnologyConfig.CAMPFIRE_BURNED_FOOD_TICKS.get() / 2) {
-            level.addParticle(ParticleTypes.LARGE_SMOKE,
-                    pos.getX() + 0.5D, pos.getY() + 0.55D, pos.getZ() + 0.5D,
-                    0.0D, 0.03D, 0.0D);
-        }
-        if (level.random.nextInt(3) == 0) {
-            level.addParticle(ParticleTypes.FLAME,
-                    pos.getX() + 0.35D + level.random.nextDouble() * 0.3D,
-                    pos.getY() + 0.45D,
-                    pos.getZ() + 0.35D + level.random.nextDouble() * 0.3D,
-                    0.0D, 0.01D, 0.0D);
+        if (campfire.completed) {
+            for (int index = 0; index < 8; index++) {
+                level.addParticle(
+                        ParticleTypes.LARGE_SMOKE,
+                        centerX + (level.random.nextDouble() * 2.0D - 1.0D) * 0.2D,
+                        centerY,
+                        centerZ + (level.random.nextDouble() * 2.0D - 1.0D) * 0.2D,
+                        0.0D,
+                        0.0D,
+                        0.0D
+                );
+            }
         }
     }
 

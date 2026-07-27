@@ -1,8 +1,8 @@
 package com.protyvkultury.revivalages.feature.technology.dryingrack.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
+import com.protyvkultury.revivalages.core.client.render.InteractionPreviewRenderer;
 import com.protyvkultury.revivalages.feature.content.ContentAvailability;
 import com.protyvkultury.revivalages.feature.technology.dryingrack.block.AbstractDryingRackBlock;
 import com.protyvkultury.revivalages.feature.technology.dryingrack.block.CrudeDryingRackBlock;
@@ -15,10 +15,8 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.core.Direction;
-import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
@@ -26,7 +24,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
-import net.neoforged.neoforge.client.ClientHooks;
 
 public final class DryingRackRenderer implements BlockEntityRenderer<DryingRackBlockEntity> {
 
@@ -74,6 +71,9 @@ public final class DryingRackRenderer implements BlockEntityRenderer<DryingRackB
             poseStack.mulPose(Axis.XP.rotationDegrees(-90.0F));
             poseStack.scale(0.25F, 0.25F, 0.25F);
             renderStack(rack, stack, slot, poseStack, bufferSource, packedLight, packedOverlay);
+            if (DryingRackClientConfig.SHOW_ITEM_COUNTS.get()) {
+                InteractionPreviewRenderer.renderCount(stack, poseStack, bufferSource, packedLight);
+            }
             poseStack.popPose();
         }
         renderInteractionFeedback(rack, poseStack, bufferSource, packedLight, packedOverlay);
@@ -97,6 +97,9 @@ public final class DryingRackRenderer implements BlockEntityRenderer<DryingRackB
             poseStack.translate(0.5D, 0.5D, 0.85D);
             poseStack.scale(0.75F, 0.75F, 0.75F);
             renderStack(rack, stack, 0, poseStack, bufferSource, packedLight, packedOverlay);
+            if (DryingRackClientConfig.SHOW_ITEM_COUNTS.get()) {
+                InteractionPreviewRenderer.renderCount(stack, poseStack, bufferSource, packedLight);
+            }
             poseStack.popPose();
         }
         renderInteractionFeedback(rack, poseStack, bufferSource, packedLight, packedOverlay);
@@ -136,9 +139,14 @@ public final class DryingRackRenderer implements BlockEntityRenderer<DryingRackB
                     0.9F);
         }
         ItemStack held = minecraft.player.getMainHandItem();
-        if (!DryingRackClientConfig.SHOW_ITEM_PREVIEW.get()
-                || held.isEmpty()
-                || !rack.canInsert(slot)) {
+        ItemStack stored = rack.getItem(slot);
+        ItemStack preview = ItemStack.EMPTY;
+        if (!held.isEmpty() && rack.canInsert(slot)) {
+            preview = held;
+        } else if (!stored.isEmpty() && (held.isEmpty() || minecraft.player.isShiftKeyDown())) {
+            preview = stored;
+        }
+        if (!DryingRackClientConfig.SHOW_ITEM_PREVIEW.get() || preview.isEmpty()) {
             return;
         }
         poseStack.pushPose();
@@ -152,7 +160,16 @@ public final class DryingRackRenderer implements BlockEntityRenderer<DryingRackB
             poseStack.mulPose(Axis.XP.rotationDegrees(-90.0F));
             poseStack.scale(0.25F, 0.25F, 0.25F);
         }
-        renderPreview(rack, held, slot, poseStack, bufferSource, packedLight, packedOverlay);
+        InteractionPreviewRenderer.renderItemPreview(
+                itemRenderer,
+                rack,
+                preview,
+                slot,
+                poseStack,
+                bufferSource,
+                packedLight,
+                packedOverlay
+        );
         poseStack.popPose();
     }
 
@@ -166,45 +183,6 @@ public final class DryingRackRenderer implements BlockEntityRenderer<DryingRackB
                 minX + 0.5D,
                 12.0D / 16.0D,
                 minZ + 0.5D);
-    }
-
-    private void renderPreview(
-            DryingRackBlockEntity rack,
-            ItemStack stack,
-            int seed,
-            PoseStack poseStack,
-            MultiBufferSource bufferSource,
-            int packedLight,
-            int packedOverlay
-    ) {
-        BakedModel model = itemRenderer.getModel(
-                stack,
-                rack.getLevel(),
-                Minecraft.getInstance().player,
-                rack.getBlockPos().hashCode() + seed);
-        if (model.isCustomRenderer()) {
-            return;
-        }
-        poseStack.pushPose();
-        model = ClientHooks.handleCameraTransforms(
-                poseStack,
-                model,
-                ItemDisplayContext.NONE,
-                false);
-        poseStack.translate(-0.5F, -0.5F, -0.5F);
-        for (BakedModel pass : model.getRenderPasses(stack, true)) {
-            VertexConsumer consumer = new AlphaVertexConsumer(
-                    bufferSource.getBuffer(RenderType.itemEntityTranslucentCull(InventoryMenu.BLOCK_ATLAS)),
-                    0.2F);
-            itemRenderer.renderModelLists(
-                    pass,
-                    stack,
-                    packedLight,
-                    packedOverlay,
-                    poseStack,
-                    consumer);
-        }
-        poseStack.popPose();
     }
 
     private void renderStack(
@@ -226,45 +204,6 @@ public final class DryingRackRenderer implements BlockEntityRenderer<DryingRackB
                 rack.getLevel(),
                 rack.getBlockPos().hashCode() + seed
         );
-    }
-
-    private record AlphaVertexConsumer(VertexConsumer delegate, float alpha) implements VertexConsumer {
-
-        @Override
-        public VertexConsumer addVertex(float x, float y, float z) {
-            delegate.addVertex(x, y, z);
-            return this;
-        }
-
-        @Override
-        public VertexConsumer setColor(int red, int green, int blue, int alpha) {
-            delegate.setColor(red, green, blue, Math.round(alpha * this.alpha));
-            return this;
-        }
-
-        @Override
-        public VertexConsumer setUv(float u, float v) {
-            delegate.setUv(u, v);
-            return this;
-        }
-
-        @Override
-        public VertexConsumer setUv1(int u, int v) {
-            delegate.setUv1(u, v);
-            return this;
-        }
-
-        @Override
-        public VertexConsumer setUv2(int u, int v) {
-            delegate.setUv2(u, v);
-            return this;
-        }
-
-        @Override
-        public VertexConsumer setNormal(float normalX, float normalY, float normalZ) {
-            delegate.setNormal(normalX, normalY, normalZ);
-            return this;
-        }
     }
 
 }

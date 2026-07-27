@@ -2,6 +2,7 @@ package com.protyvkultury.revivalages.feature.technology.barrel.blockentity;
 
 import com.protyvkultury.revivalages.core.interaction.ItemStackInteraction;
 import com.protyvkultury.revivalages.api.food.FoodFreshnessApi;
+import com.protyvkultury.revivalages.core.particle.ProgressParticleHelper;
 import com.protyvkultury.revivalages.feature.content.ContentAvailability;
 import com.protyvkultury.revivalages.feature.content.ContentKey;
 import com.protyvkultury.revivalages.feature.food.spoilage.FoodFreshnessService;
@@ -119,9 +120,15 @@ public final class BarrelBlockEntity extends BlockEntity {
                 && barrel.activeRecipe != null
                 && PrimitiveTechnologyConfig.PROGRESS_PARTICLES.get()
                 && level.getGameTime() % 40L == 0L) {
-            level.addParticle(ParticleTypes.HAPPY_VILLAGER,
-                    pos.getX() + 0.5D, pos.getY() + 1.1D, pos.getZ() + 0.5D,
-                    0.0D, 0.02D, 0.0D);
+            ProgressParticleHelper.spawn(
+                    level,
+                    pos.getX() + 0.5D,
+                    pos.getY() + 1.25D,
+                    pos.getZ() + 0.5D,
+                    0.5D,
+                    0.25D,
+                    0.5D
+            );
         }
     }
 
@@ -300,6 +307,14 @@ public final class BarrelBlockEntity extends BlockEntity {
         BlockState fluidState = resource.getFluid().defaultFluidState().createLegacyBlock();
         level.setBlock(worldPosition, fluidState.isAir() ? Blocks.AIR.defaultBlockState() : fluidState, Block.UPDATE_ALL);
         level.playSound(null, worldPosition, SoundEvents.ITEM_BREAK, SoundSource.PLAYERS, 1.0F, 1.0F);
+        if (level instanceof net.minecraft.server.level.ServerLevel server) {
+            double x = worldPosition.getX() + 0.5D;
+            double y = worldPosition.getY() + 0.5D;
+            double z = worldPosition.getZ() + 0.5D;
+            server.sendParticles(ParticleTypes.SMOKE, x, y, z, 16, 0.5D, 0.5D, 0.5D, 0.0D);
+            server.sendParticles(ParticleTypes.LARGE_SMOKE, x, y, z, 4, 0.5D, 0.5D, 0.5D, 0.0D);
+            server.sendParticles(ParticleTypes.FLAME, x, y, z, 16, 0.5D, 0.5D, 0.5D, 0.0D);
+        }
     }
 
     public void dropContents() {

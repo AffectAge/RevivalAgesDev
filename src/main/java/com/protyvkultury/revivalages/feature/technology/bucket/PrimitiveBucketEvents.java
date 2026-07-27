@@ -10,6 +10,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.common.NeoForgeMod;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.SimpleFluidContent;
@@ -29,6 +30,8 @@ public final class PrimitiveBucketEvents {
         ItemStack held = player.getItemInHand(event.getHand());
         if (!(held.getItem() instanceof PrimitiveBucketItem bucket)
                 || !ContentAvailability.isEnabled(bucket.contentKey())
+                || !bucket.milkEnabled()
+                || player.getAbilities().instabuild
                 || !held.getOrDefault(PrimitiveBucketFeature.BUCKET_FLUID.get(), SimpleFluidContent.EMPTY).isEmpty()) {
             return;
         }
@@ -37,9 +40,10 @@ public final class PrimitiveBucketEvents {
         if (player.level().isClientSide) {
             return;
         }
-        ItemStack filled = held.copyWithCount(1);
-        bucket.createHandler(filled).fill(
-                new FluidStack(NeoForgeMod.MILK.value(), 1000), IFluidHandler.FluidAction.EXECUTE);
+        ItemStack filled = bucket.filledWith(
+                held,
+                new FluidStack(NeoForgeMod.MILK.value(), 1000)
+        );
         if (held.getCount() == 1) {
             player.setItemInHand(event.getHand(), filled);
         } else {
@@ -49,5 +53,29 @@ public final class PrimitiveBucketEvents {
             }
         }
         player.level().playSound(null, cow.blockPosition(), SoundEvents.COW_MILK, SoundSource.PLAYERS, 1.0F, 1.0F);
+    }
+
+    @SubscribeEvent
+    public static void onItemCrafted(PlayerEvent.ItemCraftedEvent event) {
+        Player player = event.getEntity();
+        if (player.level().isClientSide) {
+            return;
+        }
+        for (int slot = 0; slot < event.getInventory().getContainerSize(); slot++) {
+            ItemStack ingredient = event.getInventory().getItem(slot);
+            if (ingredient.getItem() instanceof PrimitiveBucketItem bucket
+                    && !bucket.fluid(ingredient).isEmpty()
+                    && bucket.emptyAfterUse(ingredient).isEmpty()) {
+                player.level().playSound(
+                        null,
+                        player.blockPosition(),
+                        SoundEvents.ITEM_BREAK,
+                        SoundSource.PLAYERS,
+                        0.8F,
+                        1.0F
+                );
+                return;
+            }
+        }
     }
 }

@@ -4,12 +4,17 @@ import com.protyvkultury.revivalages.feature.content.ContentAvailability;
 import com.protyvkultury.revivalages.feature.content.ContentKey;
 import com.protyvkultury.revivalages.feature.technology.bucket.PrimitiveBucketFeature;
 import com.protyvkultury.revivalages.feature.technology.primitive.config.PrimitiveTechnologyConfig;
+import javax.annotation.Nullable;
+import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.ChatFormatting;
-import net.minecraft.network.chat.Component;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.stats.Stats;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
@@ -21,6 +26,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.item.TooltipFlag;
 import java.util.List;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -32,6 +38,7 @@ import net.neoforged.neoforge.fluids.FluidUtil;
 import net.neoforged.neoforge.fluids.SimpleFluidContent;
 import net.neoforged.neoforge.common.NeoForgeMod;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.common.EffectCures;
 
 /** Reusable universal bucket with material wear and heat damage. */
 public final class PrimitiveBucketItem extends Item {
@@ -51,8 +58,44 @@ public final class PrimitiveBucketItem extends Item {
 
     public int maximumUses() {
         return material == Material.WOODEN
-                ? PrimitiveTechnologyConfig.WOODEN_BUCKET_MAX_USES.get()
-                : PrimitiveTechnologyConfig.CLAY_BUCKET_MAX_USES.get();
+                ? PrimitiveTechnologyConfig.effective(PrimitiveTechnologyConfig.WOODEN_BUCKET_MAX_USES)
+                : PrimitiveTechnologyConfig.effective(PrimitiveTechnologyConfig.CLAY_BUCKET_MAX_USES);
+    }
+
+    public int emptyStackSize() {
+        return material == Material.WOODEN
+                ? PrimitiveTechnologyConfig.effective(PrimitiveTechnologyConfig.WOODEN_BUCKET_STACK_SIZE)
+                : PrimitiveTechnologyConfig.effective(PrimitiveTechnologyConfig.CLAY_BUCKET_STACK_SIZE);
+    }
+
+    public int hotTemperature() {
+        return material == Material.WOODEN
+                ? PrimitiveTechnologyConfig.effective(PrimitiveTechnologyConfig.WOODEN_BUCKET_HOT_TEMPERATURE)
+                : PrimitiveTechnologyConfig.effective(PrimitiveTechnologyConfig.CLAY_BUCKET_HOT_TEMPERATURE);
+    }
+
+    public boolean milkEnabled() {
+        return material == Material.WOODEN
+                ? PrimitiveTechnologyConfig.effective(PrimitiveTechnologyConfig.WOODEN_BUCKET_MILK_ENABLED)
+                : PrimitiveTechnologyConfig.effective(PrimitiveTechnologyConfig.CLAY_BUCKET_MILK_ENABLED);
+    }
+
+    private boolean dropsFluidWhenBroken() {
+        return material == Material.WOODEN
+                ? PrimitiveTechnologyConfig.effective(PrimitiveTechnologyConfig.WOODEN_BUCKET_DROP_FLUID_ON_BREAK)
+                : PrimitiveTechnologyConfig.effective(PrimitiveTechnologyConfig.CLAY_BUCKET_DROP_FLUID_ON_BREAK);
+    }
+
+    private int hotWearPerSecond() {
+        return material == Material.WOODEN
+                ? PrimitiveTechnologyConfig.effective(PrimitiveTechnologyConfig.WOODEN_BUCKET_HOT_DAMAGE_PER_SECOND)
+                : PrimitiveTechnologyConfig.effective(PrimitiveTechnologyConfig.CLAY_BUCKET_HOT_DAMAGE_PER_SECOND);
+    }
+
+    private int fullWearPerSecond() {
+        return material == Material.WOODEN
+                ? PrimitiveTechnologyConfig.effective(PrimitiveTechnologyConfig.WOODEN_BUCKET_FULL_DAMAGE_PER_SECOND)
+                : PrimitiveTechnologyConfig.effective(PrimitiveTechnologyConfig.CLAY_BUCKET_FULL_DAMAGE_PER_SECOND);
     }
 
     public ContentKey contentKey() {
@@ -60,7 +103,13 @@ public final class PrimitiveBucketItem extends Item {
     }
 
     public net.neoforged.neoforge.fluids.capability.IFluidHandlerItem createHandler(ItemStack stack) {
-        return new PrimitiveBucketFluidHandler(PrimitiveBucketFeature.BUCKET_FLUID, stack, CAPACITY, maximumUses());
+        return new PrimitiveBucketFluidHandler(
+                PrimitiveBucketFeature.BUCKET_FLUID,
+                stack,
+                CAPACITY,
+                maximumUses(),
+                emptyStackSize()
+        );
     }
 
     @Override
@@ -80,6 +129,9 @@ public final class PrimitiveBucketItem extends Item {
             return InteractionResultHolder.pass(held);
         }
         BlockPos pos = hit.getBlockPos();
+        if (!level.mayInteract(player, pos) || !player.mayUseItemAt(pos, hit.getDirection(), held)) {
+            return InteractionResultHolder.fail(held);
+        }
         FluidStack contained = heldFluid;
         if (contained.isEmpty()) {
             ItemStack single = held.copyWithCount(1);
@@ -95,12 +147,22 @@ public final class PrimitiveBucketItem extends Item {
 
         BlockState target = level.getBlockState(pos);
         BlockPos placement = target.canBeReplaced() ? pos : pos.relative(hit.getDirection());
+        if (!level.mayInteract(player, placement)
+                || !player.mayUseItemAt(placement, hit.getDirection(), held)) {
+            return InteractionResultHolder.fail(held);
+        }
         FluidActionResult result = FluidUtil.tryPlaceFluid(player, level, hand, placement, held, contained);
         if (!result.isSuccess()) {
             return InteractionResultHolder.fail(held);
         }
         if (!level.isClientSide) {
-            player.setItemInHand(hand, result.getResult());
+            if (!player.getAbilities().instabuild) {
+                player.setItemInHand(hand, result.getResult());
+                if (result.getResult().isEmpty()) {
+                    playBreakSound(level, player.blockPosition());
+                }
+            }
+            player.awardStat(Stats.ITEM_USED.get(this));
         }
         return InteractionResultHolder.sidedSuccess(player.getItemInHand(hand), level.isClientSide);
     }
@@ -123,12 +185,57 @@ public final class PrimitiveBucketItem extends Item {
         }
         FluidStack fluid = stack.getOrDefault(PrimitiveBucketFeature.BUCKET_FLUID.get(), SimpleFluidContent.EMPTY).copy();
         if (!fluid.isEmpty() && fluid.is(NeoForgeMod.MILK.value())) {
-            if (!level.isClientSide) {
-                entity.removeAllEffects();
-                createHandler(stack).drain(1000, IFluidHandler.FluidAction.EXECUTE);
+            if (entity instanceof ServerPlayer serverPlayer) {
+                CriteriaTriggers.CONSUME_ITEM.trigger(serverPlayer, stack);
+                serverPlayer.awardStat(Stats.ITEM_USED.get(this));
             }
+            if (!level.isClientSide) {
+                entity.removeEffectsCuredBy(EffectCures.MILK);
+            }
+            if (entity instanceof Player player && player.getAbilities().instabuild) {
+                return stack;
+            }
+            ItemStack result = emptyAfterUse(stack);
+            if (result.isEmpty() && !level.isClientSide) {
+                playBreakSound(level, entity.blockPosition());
+            }
+            return result;
         }
         return stack;
+    }
+
+    @Override
+    public Component getName(ItemStack stack) {
+        FluidStack fluid = fluid(stack);
+        return fluid.isEmpty()
+                ? super.getName(stack)
+                : Component.translatable(
+                        "item.revivalages.primitive_bucket.filled",
+                        super.getName(stack),
+                        fluid.getHoverName()
+                );
+    }
+
+    @Override
+    public int getMaxStackSize(ItemStack stack) {
+        return fluid(stack).isEmpty() ? emptyStackSize() : 1;
+    }
+
+    @Override
+    public boolean hasCraftingRemainingItem(ItemStack stack) {
+        return !fluid(stack).isEmpty();
+    }
+
+    @Override
+    public ItemStack getCraftingRemainingItem(ItemStack stack) {
+        return hasCraftingRemainingItem(stack) ? emptyAfterUse(stack) : ItemStack.EMPTY;
+    }
+
+    @Override
+    public int getBurnTime(ItemStack stack, @Nullable RecipeType<?> recipeType) {
+        return fluid(stack).is(FluidTags.LAVA)
+                ? PrimitiveTechnologyConfig.effective(PrimitiveTechnologyConfig.PRIMITIVE_BUCKET_LAVA_BURN_TIME)
+                : 0;
     }
 
     private static void replaceOne(Player player, InteractionHand hand, ItemStack original, ItemStack result) {
@@ -151,23 +258,22 @@ public final class PrimitiveBucketItem extends Item {
                 || !(entity instanceof LivingEntity living)) {
             return;
         }
-        FluidStack fluid = stack.getOrDefault(PrimitiveBucketFeature.BUCKET_FLUID.get(), SimpleFluidContent.EMPTY).copy();
+        FluidStack fluid = fluid(stack);
         if (fluid.isEmpty()) {
             return;
         }
-        boolean hot = fluid.getFluidType().getTemperature(fluid) >= PrimitiveTechnologyConfig.HOT_FLUID_TEMPERATURE.get();
-        int wear = material == Material.WOODEN
-                ? PrimitiveTechnologyConfig.WOODEN_BUCKET_FULL_DAMAGE_PER_SECOND.get()
-                : 0;
+        boolean hot = isHot(fluid);
+        int wear = fullWearPerSecond();
         if (hot) {
-            wear += material == Material.WOODEN
-                    ? PrimitiveTechnologyConfig.WOODEN_BUCKET_HOT_DAMAGE_PER_SECOND.get()
-                    : PrimitiveTechnologyConfig.CLAY_BUCKET_HOT_DAMAGE_PER_SECOND.get();
+            wear += hotWearPerSecond();
             double damage = material == Material.WOODEN
-                    ? PrimitiveTechnologyConfig.WOODEN_BUCKET_PLAYER_DAMAGE_PER_SECOND.get()
-                    : PrimitiveTechnologyConfig.CLAY_BUCKET_PLAYER_DAMAGE_PER_SECOND.get();
+                    ? PrimitiveTechnologyConfig.effective(
+                            PrimitiveTechnologyConfig.WOODEN_BUCKET_PLAYER_DAMAGE_PER_SECOND)
+                    : PrimitiveTechnologyConfig.effective(
+                            PrimitiveTechnologyConfig.CLAY_BUCKET_PLAYER_DAMAGE_PER_SECOND);
             if (damage > 0.0D) {
                 living.hurt(level.damageSources().onFire(), (float) damage);
+                living.setRemainingFireTicks(Math.max(living.getRemainingFireTicks(), 20));
             }
         }
         if (wear > 0) {
@@ -181,18 +287,22 @@ public final class PrimitiveBucketItem extends Item {
             stack.set(PrimitiveBucketFeature.BUCKET_USES.get(), uses);
             return;
         }
-        if (PrimitiveTechnologyConfig.PRIMITIVE_BUCKET_DROP_FLUID_ON_BREAK.get()) {
+        if (dropsFluidWhenBroken()) {
             BlockPos pos = holder.blockPosition();
-            BlockState current = level.getBlockState(pos);
-            if (current.canBeReplaced()
-                    && !fluid.is(NeoForgeMod.MILK.value())
+            if (!fluid.is(NeoForgeMod.MILK.value())
                     && fluid.getFluidType().canBePlacedInLevel(level, pos, fluid)) {
-                level.setBlock(pos, fluid.getFluidType().getBlockForFluidState(
-                        level, pos, fluid.getFluid().defaultFluidState()), 11);
+                FluidUtil.tryPlaceFluid(
+                        holder instanceof Player player ? player : null,
+                        level,
+                        InteractionHand.MAIN_HAND,
+                        pos,
+                        stack.copyWithCount(1),
+                        fluid
+                );
             }
         }
         stack.shrink(1);
-        level.playSound(null, holder.blockPosition(), SoundEvents.ITEM_BREAK, SoundSource.PLAYERS, 0.8F, 1.0F);
+        playBreakSound(level, holder.blockPosition());
     }
 
     @Override
@@ -218,14 +328,50 @@ public final class PrimitiveBucketItem extends Item {
             ItemStack stack, Item.TooltipContext context, List<Component> tooltip, TooltipFlag flag
     ) {
         super.appendHoverText(stack, context, tooltip, flag);
-        FluidStack fluid = stack.getOrDefault(PrimitiveBucketFeature.BUCKET_FLUID.get(), SimpleFluidContent.EMPTY).copy();
-        if (!fluid.isEmpty()) {
-            tooltip.add(Component.translatable("tooltip.revivalages.primitive_bucket.fluid", fluid.getHoverName())
-                    .withStyle(ChatFormatting.GRAY));
-        }
+        int uses = stack.getOrDefault(PrimitiveBucketFeature.BUCKET_USES.get(), maximumUses());
         tooltip.add(Component.translatable(
-                        "tooltip.revivalages.primitive_bucket.uses",
-                        stack.getOrDefault(PrimitiveBucketFeature.BUCKET_USES.get(), maximumUses()), maximumUses())
+                        uses == maximumUses()
+                                ? "tooltip.revivalages.primitive_bucket.uses.full"
+                                : "tooltip.revivalages.primitive_bucket.uses",
+                        uses,
+                        maximumUses())
                 .withStyle(ChatFormatting.GRAY));
+        tooltip.add(Component.translatable(
+                        "tooltip.revivalages.primitive_bucket.hot_fluids." + (hotWearPerSecond() <= 0))
+                .withStyle(hotWearPerSecond() <= 0 ? ChatFormatting.GREEN : ChatFormatting.RED));
+    }
+
+    public FluidStack fluid(ItemStack stack) {
+        return stack.getOrDefault(
+                PrimitiveBucketFeature.BUCKET_FLUID.get(),
+                SimpleFluidContent.EMPTY
+        ).copy();
+    }
+
+    public ItemStack emptyAfterUse(ItemStack stack) {
+        ItemStack result = stack.copyWithCount(1);
+        result.remove(PrimitiveBucketFeature.BUCKET_FLUID.get());
+        result.set(DataComponents.MAX_STACK_SIZE, emptyStackSize());
+        int uses = stack.getOrDefault(PrimitiveBucketFeature.BUCKET_USES.get(), maximumUses()) - 1;
+        if (uses <= 0) {
+            return ItemStack.EMPTY;
+        }
+        result.set(PrimitiveBucketFeature.BUCKET_USES.get(), uses);
+        return result;
+    }
+
+    public ItemStack filledWith(ItemStack empty, FluidStack fluid) {
+        ItemStack result = empty.copyWithCount(1);
+        result.set(PrimitiveBucketFeature.BUCKET_FLUID.get(), SimpleFluidContent.copyOf(fluid));
+        result.set(DataComponents.MAX_STACK_SIZE, 1);
+        return result;
+    }
+
+    public boolean isHot(FluidStack fluid) {
+        return !fluid.isEmpty() && fluid.getFluidType().getTemperature(fluid) >= hotTemperature();
+    }
+
+    private static void playBreakSound(Level level, BlockPos pos) {
+        level.playSound(null, pos, SoundEvents.ITEM_BREAK, SoundSource.PLAYERS, 0.8F, 1.0F);
     }
 }

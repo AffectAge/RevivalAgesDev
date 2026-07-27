@@ -16,6 +16,7 @@ import net.minecraft.world.item.Item;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
@@ -73,10 +74,15 @@ public final class PrimitiveBucketFeature implements FeatureModule {
         DATA_COMPONENTS.register(modBus);
         ITEMS.register(modBus);
         modBus.addListener(this::registerCapabilities);
+        modBus.addListener(this::commonSetup);
         NeoForge.EVENT_BUS.register(PrimitiveBucketEvents.class);
         if (FMLEnvironment.dist == Dist.CLIENT) {
             PrimitiveBucketClientEvents.register(modBus);
         }
+    }
+
+    private void commonSetup(FMLCommonSetupEvent event) {
+        event.enqueueWork(PrimitiveBucketCauldronInteractions::register);
     }
 
     private void registerCapabilities(RegisterCapabilitiesEvent event) {

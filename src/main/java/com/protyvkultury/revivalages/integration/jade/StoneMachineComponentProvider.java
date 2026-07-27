@@ -16,6 +16,7 @@ import snownee.jade.api.ITooltip;
 import snownee.jade.api.config.IPluginConfig;
 import snownee.jade.api.ui.IElement;
 import snownee.jade.api.ui.IElementHelper;
+import snownee.jade.api.fluid.JadeFluidObject;
 
 public enum StoneMachineComponentProvider implements IBlockComponentProvider {
     INSTANCE;
@@ -30,6 +31,7 @@ public enum StoneMachineComponentProvider implements IBlockComponentProvider {
         if (!(accessor.getBlockEntity() instanceof StoneMachineBlockEntity machine)) {
             return;
         }
+        appendProcess(tooltip, machine);
         tooltip.add(Component.translatable("jade.revivalages.stone_machine.state."
                 + (machine.isLit() ? "lit" : "unlit")));
         tooltip.add(Component.translatable(
@@ -77,7 +79,6 @@ public enum StoneMachineComponentProvider implements IBlockComponentProvider {
                     String.format(Locale.ROOT, "%.0f%%",
                             machine.woodChipChanceForView() * 100.0D)));
         }
-        appendProcess(tooltip, machine);
         if (machine.kind() == StoneMachineKind.CRUCIBLE) {
             appendFluid(tooltip, machine.fluidTank().getFluid(), machine.fluidTank().getCapacity());
         }
@@ -91,14 +92,23 @@ public enum StoneMachineComponentProvider implements IBlockComponentProvider {
         IElementHelper elements = IElementHelper.get();
         List<IElement> line = new ArrayList<>();
         line.add(elements.item(input));
+        if (machine.kind() == StoneMachineKind.SAWMILL && !machine.blade().isEmpty()) {
+            line.add(elements.item(machine.blade()));
+        }
+        if (!machine.fuel().isEmpty()) {
+            line.add(elements.item(machine.fuel()));
+        }
         line.add(elements.spacer(2, 0));
         line.add(elements.progress((float) Math.clamp(machine.progress(), 0.0D, 1.0D)));
         line.add(elements.spacer(2, 0));
         if (machine.kind() == StoneMachineKind.CRUCIBLE) {
             FluidStack result = machine.recipeFluidResult();
             if (!result.isEmpty()) {
-                tooltip.add(Component.translatable(
-                        "jade.revivalages.barrel.result", result.getHoverName(), result.getAmount()));
+                line.add(elements.fluid(JadeFluidObject.of(
+                        result.getFluid(),
+                        result.getAmount(),
+                        result.getComponentsPatch()
+                )));
             }
         } else {
             ItemStack result = machine.recipeItemResult();

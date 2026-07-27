@@ -30,12 +30,14 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
 import net.neoforged.neoforge.items.IItemHandler;
 import org.jetbrains.annotations.Nullable;
 
 public final class ChoppingBlockEntity extends BlockEntity {
 
     private ItemStack input = ItemStack.EMPTY;
+    private ItemStack output = ItemStack.EMPTY;
     private int chops;
     private int requiredChops;
     private int sawdust;
@@ -48,6 +50,10 @@ public final class ChoppingBlockEntity extends BlockEntity {
 
     public ItemStack input() {
         return input;
+    }
+
+    public ItemStack output() {
+        return output;
     }
 
     public int sawdust() {
@@ -63,11 +69,13 @@ public final class ChoppingBlockEntity extends BlockEntity {
     }
 
     public ItemStack recipeOutput() {
-        return activeRecipe == null ? ItemStack.EMPTY : activeRecipe.result();
+        return output.isEmpty()
+                ? activeRecipe == null ? ItemStack.EMPTY : activeRecipe.result()
+                : output.copy();
     }
 
     public boolean canInsert(ItemStack stack) {
-        return input.isEmpty() && findRecipe(stack).isPresent();
+        return input.isEmpty() && output.isEmpty() && findRecipe(stack).isPresent();
     }
 
     public void insert(ItemStack source, boolean infinite) {
@@ -84,6 +92,13 @@ public final class ChoppingBlockEntity extends BlockEntity {
     }
 
     public ItemStack extract() {
+        if (!output.isEmpty()) {
+            output = FoodFreshnessApi.materialize(output);
+            ItemStack result = output;
+            output = ItemStack.EMPTY;
+            sync();
+            return result;
+        }
         input = FoodFreshnessApi.materialize(input);
         ItemStack result = input;
         input = ItemStack.EMPTY;
@@ -94,7 +109,7 @@ public final class ChoppingBlockEntity extends BlockEntity {
         return result;
     }
 
-    public void chop(Player player, ItemStack axe, InteractionHand hand) {
+    public void chop(Player player, ItemStack axe, InteractionHand hand, BlockHitResult hit) {
         ItemStack materialized = FoodFreshnessApi.materialize(input);
         if (materialized != input) {
             input = materialized;
@@ -129,14 +144,25 @@ public final class ChoppingBlockEntity extends BlockEntity {
             }
             server.sendParticles(
                     new BlockParticleOption(ParticleTypes.BLOCK, particleState),
+                    hit.getLocation().x,
+                    hit.getLocation().y,
+                    hit.getLocation().z,
+                    1,
+                    0.0D,
+                    0.0D,
+                    0.0D,
+                    0.02D
+            );
+            server.sendParticles(
+                    ParticleTypes.HAPPY_VILLAGER,
                     worldPosition.getX() + 0.5D,
                     worldPosition.getY() + 0.8D,
                     worldPosition.getZ() + 0.5D,
-                    8,
+                    2,
                     0.25D,
                     0.1D,
                     0.25D,
-                    0.05D
+                    0.02D
             );
         }
         level.playSound(null, worldPosition, SoundEvents.WOOD_PLACE, SoundSource.BLOCKS, 0.75F,
@@ -154,14 +180,13 @@ public final class ChoppingBlockEntity extends BlockEntity {
 
         if (chops >= requiredChops) {
             player.causeFoodExhaustion(PrimitiveTechnologyConfig.CHOPPING_EXHAUSTION_PER_CRAFT.get().floatValue());
-            ItemStack output = activeRecipe.result();
+            output = activeRecipe.result();
             output.setCount(activeRecipe.quantityForTier(tier, defaultQuantity(tier)));
             FoodFreshnessApi.copyOldest(output, java.util.List.of(input.copy()));
             input = ItemStack.EMPTY;
             chops = 0;
             requiredChops = 0;
             activeRecipe = null;
-            Block.popResource(level, worldPosition.above(), output);
             level.playSound(null, worldPosition, SoundEvents.WOOD_BREAK, SoundSource.BLOCKS, 1.0F, 1.0F);
         }
         sync();
@@ -253,6 +278,7 @@ public final class ChoppingBlockEntity extends BlockEntity {
     protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.loadAdditional(tag, registries);
         input = ItemStack.parseOptional(registries, tag.getCompound("Input"));
+        output = ItemStack.parseOptional(registries, tag.getCompound("Output"));
         chops = tag.getInt("Chops");
         requiredChops = tag.getInt("RequiredChops");
         sawdust = Math.clamp(tag.getInt("Sawdust"), 0, 5);
@@ -265,6 +291,9 @@ public final class ChoppingBlockEntity extends BlockEntity {
         super.saveAdditional(tag, registries);
         if (!input.isEmpty()) {
             tag.put("Input", input.save(registries));
+        }
+        if (!output.isEmpty()) {
+            tag.put("Output", output.save(registries));
         }
         tag.putInt("Chops", chops);
         tag.putInt("RequiredChops", requiredChops);
@@ -301,12 +330,16 @@ public final class ChoppingBlockEntity extends BlockEntity {
 
         @Override
         public int getSlots() {
-            return 1;
+            return 2;
         }
 
         @Override
         public ItemStack getStackInSlot(int slot) {
-            return slot == 0 ? input.copy() : ItemStack.EMPTY;
+            return switch (slot) {
+                case 0 -> input.copy();
+                case 1 -> output.copy();
+                default -> ItemStack.EMPTY;
+            };
         }
 
         @Override
@@ -325,19 +358,28 @@ public final class ChoppingBlockEntity extends BlockEntity {
 
         @Override
         public ItemStack extractItem(int slot, int amount, boolean simulate) {
-            if (slot != 0 || amount <= 0 || input.isEmpty()) {
+            ItemStack stored = slot == 0 ? input : slot == 1 ? output : ItemStack.EMPTY;
+            if (amount <= 0 || stored.isEmpty()) {
                 return ItemStack.EMPTY;
             }
-            ItemStack result = input.copyWithCount(1);
+            ItemStack result = stored.copyWithCount(Math.min(amount, stored.getCount()));
             if (!simulate) {
-                extract();
+                if (slot == 0) {
+                    extract();
+                } else {
+                    output.shrink(result.getCount());
+                    if (output.isEmpty()) {
+                        output = ItemStack.EMPTY;
+                    }
+                    sync();
+                }
             }
             return result;
         }
 
         @Override
         public int getSlotLimit(int slot) {
-            return 1;
+            return slot == 0 ? 1 : 64;
         }
 
         @Override

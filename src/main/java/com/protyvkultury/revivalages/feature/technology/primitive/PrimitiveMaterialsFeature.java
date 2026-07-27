@@ -8,6 +8,7 @@ import com.protyvkultury.revivalages.feature.content.ContentPolicy;
 import com.protyvkultury.revivalages.feature.technology.primitive.client.PrimitiveFluidClientEvents;
 import com.protyvkultury.revivalages.feature.technology.primitive.client.PrimitiveDeviceClientEvents;
 import com.protyvkultury.revivalages.feature.technology.primitive.config.PrimitiveTechnologyConfig;
+import com.protyvkultury.revivalages.feature.technology.primitive.config.PrimitiveTechnologyClientConfig;
 import java.util.function.Supplier;
 import java.util.Set;
 import net.minecraft.core.registries.Registries;
@@ -187,6 +188,11 @@ public final class PrimitiveMaterialsFeature implements FeatureModule {
                 ModConfig.Type.SERVER,
                 PrimitiveTechnologyConfig.SPEC,
                 "revivalages-primitive-server.toml"
+        );
+        modContainer.registerConfig(
+                ModConfig.Type.CLIENT,
+                PrimitiveTechnologyClientConfig.SPEC,
+                "revivalages-primitive-client.toml"
         );
     }
 

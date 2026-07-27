@@ -109,10 +109,11 @@ public final class DryingRackBlock extends AbstractDryingRackBlock {
     @Override
     protected int slotFromHit(BlockState state, BlockHitResult hitResult) {
         Vec3 location = hitResult.getLocation();
+        BlockPos pos = hitResult.getBlockPos();
         OrientedInteractionSpace.Point local = OrientedInteractionSpace.worldToLocal(
                 state.getValue(HorizontalDirectionalBlock.FACING),
-                location.x - Math.floor(location.x),
-                location.z - Math.floor(location.z)
+                location.x - pos.getX(),
+                location.z - pos.getZ()
         );
         int x = local.x() >= 0.5D ? 1 : 0;
         int z = local.z() >= 0.5D ? 1 : 0;

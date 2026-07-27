@@ -1,6 +1,7 @@
 package com.protyvkultury.revivalages.feature.technology.dryingrack.blockentity;
 
 import com.protyvkultury.revivalages.api.food.FoodFreshnessApi;
+import com.protyvkultury.revivalages.core.particle.ProgressParticleHelper;
 import com.protyvkultury.revivalages.feature.food.spoilage.FoodFreshnessService;
 import com.protyvkultury.revivalages.feature.content.ContentAvailability;
 import com.protyvkultury.revivalages.feature.content.ContentKey;
@@ -363,18 +364,7 @@ public final class DryingRackBlockEntity extends BlockEntity {
             double rangeY,
             double rangeZ
     ) {
-        double velocityX = level.getRandom().nextGaussian() * 0.02D;
-        double velocityY = level.getRandom().nextGaussian() * 0.02D;
-        double velocityZ = level.getRandom().nextGaussian() * 0.02D;
-        level.addParticle(
-                ParticleTypes.HAPPY_VILLAGER,
-                x + (level.getRandom().nextDouble() * 2.0D - 1.0D) * rangeX,
-                y + (level.getRandom().nextDouble() * 2.0D - 1.0D) * rangeY,
-                z + (level.getRandom().nextDouble() * 2.0D - 1.0D) * rangeZ,
-                velocityX,
-                velocityY,
-                velocityZ
-        );
+        ProgressParticleHelper.spawn(level, x, y, z, rangeX, rangeY, rangeZ);
     }
 
     private boolean validSlot(int slot) {

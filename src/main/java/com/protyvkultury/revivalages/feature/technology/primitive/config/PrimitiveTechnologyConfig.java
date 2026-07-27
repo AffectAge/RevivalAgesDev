@@ -133,13 +133,22 @@ public final class PrimitiveTechnologyConfig {
     public static final ModConfigSpec.IntValue WOOD_TORCH_FIRE_DAMAGE;
     public static final ModConfigSpec.IntValue WOOD_TORCH_LIGHT;
     public static final ModConfigSpec.IntValue WOODEN_BUCKET_MAX_USES;
+    public static final ModConfigSpec.IntValue WOODEN_BUCKET_STACK_SIZE;
+    public static final ModConfigSpec.IntValue WOODEN_BUCKET_HOT_TEMPERATURE;
     public static final ModConfigSpec.IntValue WOODEN_BUCKET_HOT_DAMAGE_PER_SECOND;
     public static final ModConfigSpec.IntValue WOODEN_BUCKET_FULL_DAMAGE_PER_SECOND;
     public static final ModConfigSpec.DoubleValue WOODEN_BUCKET_PLAYER_DAMAGE_PER_SECOND;
+    public static final ModConfigSpec.BooleanValue WOODEN_BUCKET_MILK_ENABLED;
+    public static final ModConfigSpec.BooleanValue WOODEN_BUCKET_DROP_FLUID_ON_BREAK;
     public static final ModConfigSpec.IntValue CLAY_BUCKET_MAX_USES;
+    public static final ModConfigSpec.IntValue CLAY_BUCKET_STACK_SIZE;
+    public static final ModConfigSpec.IntValue CLAY_BUCKET_HOT_TEMPERATURE;
     public static final ModConfigSpec.IntValue CLAY_BUCKET_HOT_DAMAGE_PER_SECOND;
+    public static final ModConfigSpec.IntValue CLAY_BUCKET_FULL_DAMAGE_PER_SECOND;
     public static final ModConfigSpec.DoubleValue CLAY_BUCKET_PLAYER_DAMAGE_PER_SECOND;
-    public static final ModConfigSpec.BooleanValue PRIMITIVE_BUCKET_DROP_FLUID_ON_BREAK;
+    public static final ModConfigSpec.BooleanValue CLAY_BUCKET_MILK_ENABLED;
+    public static final ModConfigSpec.BooleanValue CLAY_BUCKET_DROP_FLUID_ON_BREAK;
+    public static final ModConfigSpec.IntValue PRIMITIVE_BUCKET_LAVA_BURN_TIME;
 
     public static final ModConfigSpec.BooleanValue CAMPFIRE_EFFECTS_ENABLED;
     public static final ModConfigSpec.IntValue CAMPFIRE_EFFECT_START_TIME;
@@ -348,13 +357,22 @@ public final class PrimitiveTechnologyConfig {
         WOODEN_BUCKET_ENABLED = restartToggle(builder, "woodenBucketEnabled", "Enables Wooden Buckets.");
         CLAY_BUCKET_ENABLED = restartToggle(builder, "clayBucketEnabled", "Enables Clay Buckets.");
         WOODEN_BUCKET_MAX_USES = positive(builder, "woodenBucketMaxUses", 8);
+        WOODEN_BUCKET_STACK_SIZE = builder.defineInRange("woodenBucketStackSize", 1, 1, 64);
+        WOODEN_BUCKET_HOT_TEMPERATURE = nonNegativeInt(builder, "woodenBucketHotTemperature", 450);
         WOODEN_BUCKET_HOT_DAMAGE_PER_SECOND = nonNegativeInt(builder, "woodenBucketHotWearPerSecond", 8);
         WOODEN_BUCKET_FULL_DAMAGE_PER_SECOND = nonNegativeInt(builder, "woodenBucketFullWearPerSecond", 1);
         WOODEN_BUCKET_PLAYER_DAMAGE_PER_SECOND = nonNegative(builder, "woodenBucketHotPlayerDamagePerSecond", 2.0D);
+        WOODEN_BUCKET_MILK_ENABLED = builder.define("woodenBucketMilkEnabled", true);
+        WOODEN_BUCKET_DROP_FLUID_ON_BREAK = builder.define("woodenBucketDropFluidSourceWhenBroken", true);
         CLAY_BUCKET_MAX_USES = positive(builder, "clayBucketMaxUses", 12);
+        CLAY_BUCKET_STACK_SIZE = builder.defineInRange("clayBucketStackSize", 4, 1, 64);
+        CLAY_BUCKET_HOT_TEMPERATURE = nonNegativeInt(builder, "clayBucketHotTemperature", 450);
         CLAY_BUCKET_HOT_DAMAGE_PER_SECOND = nonNegativeInt(builder, "clayBucketHotWearPerSecond", 4);
+        CLAY_BUCKET_FULL_DAMAGE_PER_SECOND = nonNegativeInt(builder, "clayBucketFullWearPerSecond", 0);
         CLAY_BUCKET_PLAYER_DAMAGE_PER_SECOND = nonNegative(builder, "clayBucketHotPlayerDamagePerSecond", 2.0D);
-        PRIMITIVE_BUCKET_DROP_FLUID_ON_BREAK = builder.define("dropFluidSourceWhenBroken", true);
+        CLAY_BUCKET_MILK_ENABLED = builder.define("clayBucketMilkEnabled", true);
+        CLAY_BUCKET_DROP_FLUID_ON_BREAK = builder.define("clayBucketDropFluidSourceWhenBroken", true);
+        PRIMITIVE_BUCKET_LAVA_BURN_TIME = nonNegativeInt(builder, "lavaFuelBurnTime", 20_000);
         builder.pop();
 
         builder.push("campfireEffects");
@@ -416,6 +434,18 @@ public final class PrimitiveTechnologyConfig {
     }
 
     private static boolean value(ModConfigSpec.BooleanValue value) {
+        return SPEC.isLoaded() ? value.get() : value.getDefault();
+    }
+
+    public static int effective(ModConfigSpec.IntValue value) {
+        return SPEC.isLoaded() ? value.get() : value.getDefault();
+    }
+
+    public static double effective(ModConfigSpec.DoubleValue value) {
+        return SPEC.isLoaded() ? value.get() : value.getDefault();
+    }
+
+    public static boolean effective(ModConfigSpec.BooleanValue value) {
         return SPEC.isLoaded() ? value.get() : value.getDefault();
     }
 

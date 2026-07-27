@@ -12,15 +12,18 @@ import net.neoforged.neoforge.fluids.capability.templates.FluidHandlerItemStackS
 final class PrimitiveBucketFluidHandler extends FluidHandlerItemStackSimple {
 
     private final int maximumUses;
+    private final int emptyStackSize;
 
     PrimitiveBucketFluidHandler(
             Supplier<DataComponentType<SimpleFluidContent>> componentType,
             ItemStack container,
             int capacity,
-            int maximumUses
+            int maximumUses,
+            int emptyStackSize
     ) {
         super(componentType, container, capacity);
         this.maximumUses = maximumUses;
+        this.emptyStackSize = emptyStackSize;
     }
 
     @Override
@@ -40,6 +43,6 @@ final class PrimitiveBucketFluidHandler extends FluidHandlerItemStackSimple {
             return;
         }
         container.set(PrimitiveBucketFeature.BUCKET_USES.get(), uses);
-        container.remove(DataComponents.MAX_STACK_SIZE);
+        container.set(DataComponents.MAX_STACK_SIZE, emptyStackSize);
     }
 }

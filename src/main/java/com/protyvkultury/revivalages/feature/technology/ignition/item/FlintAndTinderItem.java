@@ -5,7 +5,11 @@ import com.protyvkultury.revivalages.api.ignition.HeldIgniter;
 import com.protyvkultury.revivalages.feature.content.ContentAvailability;
 import com.protyvkultury.revivalages.feature.content.ContentKey;
 import com.protyvkultury.revivalages.feature.technology.primitive.config.PrimitiveTechnologyConfig;
+import com.protyvkultury.revivalages.feature.technology.primitive.config.PrimitiveTechnologyClientConfig;
 import com.protyvkultury.revivalages.feature.technology.ignition.IgnitionFeature;
+import java.util.List;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
@@ -20,6 +24,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.UseAnim;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseFireBlock;
@@ -73,7 +78,7 @@ public final class FlintAndTinderItem extends Item implements HeldIgniter {
             if (level.isClientSide) {
                 level.addParticle(ParticleTypes.SMOKE,
                         hit.getLocation().x, hit.getLocation().y, hit.getLocation().z,
-                        0.0D, 0.01D, 0.0D);
+                        0.0D, 0.0D, 0.0D);
             }
         }
     }
@@ -180,5 +185,28 @@ public final class FlintAndTinderItem extends Item implements HeldIgniter {
         int maximum = PrimitiveTechnologyConfig.FLINT_AND_TINDER_MAX_USES.get();
         float fraction = stack.getOrDefault(IgnitionFeature.IGNITER_USES.get(), maximum) / (float) Math.max(1, maximum);
         return Mth.hsvToRgb(fraction / 3.0F, 1.0F, 1.0F);
+    }
+
+    @Override
+    public void appendHoverText(
+            ItemStack stack,
+            TooltipContext context,
+            List<Component> tooltip,
+            TooltipFlag flag
+    ) {
+        super.appendHoverText(stack, context, tooltip, flag);
+        if (!PrimitiveTechnologyClientConfig.SHOW_DURABILITY_TOOLTIPS.get()) {
+            return;
+        }
+        int maximum = PrimitiveTechnologyConfig.FLINT_AND_TINDER_MAX_USES.get();
+        int remaining = stack.getOrDefault(IgnitionFeature.IGNITER_USES.get(), maximum);
+        tooltip.add(Component.translatable(
+                        remaining == maximum
+                                ? "tooltip.revivalages.durability.full"
+                                : "tooltip.revivalages.durability",
+                        remaining,
+                        maximum
+                )
+                .withStyle(ChatFormatting.GRAY));
     }
 }

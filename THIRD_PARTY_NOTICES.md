@@ -211,6 +211,27 @@ The block tinder texture was renamed from
 ash textures are reused. Model resource locations and the animated vanilla fire
 texture reference were updated for Minecraft 1.21.1.
 
+The functional tannin fluid textures were renamed from
+`assets/pyrotech/textures/blocks/fluid_tannin_still.png` and
+`assets/pyrotech/textures/blocks/fluid_tannin_flow.png` to
+`assets/revivalages/textures/block/fluid_tannin_still.png` and
+`assets/revivalages/textures/block/fluid_tannin_flow.png`. Their animation
+metadata is shipped beside the renamed textures and their fluid model bindings
+were adapted for NeoForge 1.21.1.
+
+The primitive bucket lifecycle and material configuration were adapted from
+`src/main/java/com/codetaylor/mc/pyrotech/modules/bucket/item/ItemBucketBase.java`
+and
+`src/main/java/com/codetaylor/mc/pyrotech/modules/bucket/ModuleBucketConfig.java`
+into
+`src/main/java/com/protyvkultury/revivalages/feature/technology/bucket/item/PrimitiveBucketItem.java`,
+`src/main/java/com/protyvkultury/revivalages/feature/technology/bucket/item/PrimitiveBucketFluidHandler.java`,
+`src/main/java/com/protyvkultury/revivalages/feature/technology/bucket/PrimitiveBucketCauldronInteractions.java`,
+and
+`src/main/java/com/protyvkultury/revivalages/feature/technology/primitive/config/PrimitiveTechnologyConfig.java`.
+Platform-specific fluid interactions were rewritten around NeoForge's
+transactional fluid APIs.
+
 The lowered Soaking Pot geometry and its functional combined texture were
 adapted from
 `assets/pyrotech/models/block/soaking_pot_campfire.json` and
@@ -244,6 +265,13 @@ codetaylor, the library used by Pyrotech. The source project is available at
 Athenaeum is licensed under the Apache License 2.0. A copy is included at
 `licenses/Athenaeum-LICENSE.txt`. The implementations were rewritten for the
 Minecraft 1.21.1 and NeoForge APIs and live in Revival Ages' internal core layer.
+In particular,
+`src/main/java/com/codetaylor/mc/athenaeum/interaction/api/InteractionRenderers.java`
+and `src/main/java/com/codetaylor/mc/athenaeum/util/ParticleHelper.java` were
+adapted into
+`src/main/java/com/protyvkultury/revivalages/core/client/render/InteractionPreviewRenderer.java`
+and
+`src/main/java/com/protyvkultury/revivalages/core/particle/ProgressParticleHelper.java`.
 
 ## This Rocks!
 
