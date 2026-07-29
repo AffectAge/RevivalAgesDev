@@ -87,6 +87,7 @@
   "gui.revivalages.recipe.requires_campfire": "Requires a lit campfire",
   "gui.revivalages.recipe.requires_sun": "Requires daylight and open sky",
   "gui.revivalages.recipe.rain_failure": "Rain can ruin this recipe",
+  "gui.revivalages.recipe.rain_failure_tooltip": "Rain may produce: %s",
   "config.jade.plugin_revivalages.drying_rack": "Drying Rack Details",
   "config.jade.plugin_revivalages.primitive_devices": "Primitive Device Details",
   "jade.revivalages.primitive.ready": "Ready to collect",

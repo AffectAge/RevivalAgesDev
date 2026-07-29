@@ -5,6 +5,7 @@ import com.protyvkultury.revivalages.feature.technology.campfire.CampfireFeature
 import com.protyvkultury.revivalages.feature.technology.primitive.view.PrimitiveRecipeView;
 import java.util.Locale;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
+import mezz.jei.api.gui.builder.ITooltipBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.drawable.IDrawableAnimated;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
@@ -31,6 +32,7 @@ final class PrimitiveJeiCategory implements IRecipeCategory<PrimitiveRecipeView>
     private final IDrawable background;
     private final IDrawable arrow;
     private final IDrawable flame;
+    private final IDrawable rainIcon;
 
     PrimitiveJeiCategory(
             IGuiHelper helper,
@@ -59,6 +61,9 @@ final class PrimitiveJeiCategory implements IRecipeCategory<PrimitiveRecipeView>
                         IDrawableAnimated.StartDirection.TOP,
                         true)
                 : null;
+        this.rainIcon = layout == Layout.TANNING_RACK
+                ? helper.createDrawable(texture, 101, 0, 18, 11)
+                : null;
     }
 
     public RecipeType<PrimitiveRecipeView> getRecipeType() {
@@ -78,6 +83,9 @@ final class PrimitiveJeiCategory implements IRecipeCategory<PrimitiveRecipeView>
     }
 
     public int getHeight() {
+        if (this.layout == Layout.TANNING_RACK) {
+            return this.layout.backgroundHeight;
+        }
         return this.layout.backgroundHeight + (this.layout == Layout.SOAKING_POT ? 24 : 13);
     }
 
@@ -136,8 +144,8 @@ final class PrimitiveJeiCategory implements IRecipeCategory<PrimitiveRecipeView>
                 }
             case TANNING_RACK:
                 {
-                    PrimitiveJeiCategory.addItemInputs(builder, recipe, new int[][] {{0, 3}});
-                    PrimitiveJeiCategory.addItemOutputs(builder, recipe, new int[][] {{60, 4}, {83, 4}});
+                    PrimitiveJeiCategory.addItemInputs(builder, recipe, new int[][] {{1, 9}});
+                    PrimitiveJeiCategory.addItemOutputs(builder, recipe, new int[][] {{53, 9}, {77, 9}});
                     break;
                 }
             case STONE_SAWMILL:
@@ -204,14 +212,18 @@ final class PrimitiveJeiCategory implements IRecipeCategory<PrimitiveRecipeView>
         if (this.arrow != null) {
             this.arrow.draw(graphics, this.layout.arrowX, this.layout.arrowY);
         }
+        if (this.layout == Layout.TANNING_RACK) {
+            if (hasRainFailure(recipe) && this.rainIcon != null) {
+                this.rainIcon.draw(graphics, 1, 34);
+            }
+            if (recipe.processingTime() > 0) {
+                drawCenteredAt(graphics, processingTimeText(recipe), 36, 35);
+            }
+            return;
+        }
         int textY = this.layout.backgroundHeight + 2;
         if (recipe.processingTime() > 0) {
-            drawCentered(
-                    graphics,
-                    Component.translatable(
-                            "gui.revivalages.recipe.time",
-                            String.format(Locale.ROOT, "%.1f", (double) recipe.processingTime() / 20.0)),
-                    textY);
+            drawCentered(graphics, processingTimeText(recipe), textY);
             textY += 10;
         }
         Component detail = recipe.detail();
@@ -220,8 +232,43 @@ final class PrimitiveJeiCategory implements IRecipeCategory<PrimitiveRecipeView>
         }
     }
 
+    @Override
+    public void getTooltip(
+            ITooltipBuilder tooltip,
+            PrimitiveRecipeView recipe,
+            IRecipeSlotsView slots,
+            double mouseX,
+            double mouseY
+    ) {
+        if (this.layout == Layout.TANNING_RACK
+                && hasRainFailure(recipe)
+                && mouseX >= 1
+                && mouseX < 19
+                && mouseY >= 34
+                && mouseY < 45) {
+            tooltip.add(
+                    Component.translatable(
+                            "gui.revivalages.recipe.rain_failure_tooltip",
+                            recipe.itemOutputs().get(1).getHoverName()));
+        }
+    }
+
+    private static boolean hasRainFailure(PrimitiveRecipeView recipe) {
+        return recipe.itemOutputs().size() > 1;
+    }
+
+    private static Component processingTimeText(PrimitiveRecipeView recipe) {
+        return Component.translatable(
+                "gui.revivalages.recipe.time",
+                String.format(Locale.ROOT, "%.1f", (double) recipe.processingTime() / 20.0));
+    }
+
     private void drawCentered(GuiGraphics graphics, Component text, int y) {
-        int x = (this.getWidth() - Minecraft.getInstance().font.width((FormattedText) text)) / 2;
+        drawCenteredAt(graphics, text, this.getWidth() / 2, y);
+    }
+
+    private static void drawCenteredAt(GuiGraphics graphics, Component text, int centerX, int y) {
+        int x = centerX - Minecraft.getInstance().font.width((FormattedText) text) / 2;
         graphics.drawString(
                 Minecraft.getInstance().font,
                 text,
@@ -241,7 +288,7 @@ final class PrimitiveJeiCategory implements IRecipeCategory<PrimitiveRecipeView>
         PIT_KILN("pit_kiln", 101, 54, 101, 14, 24, 17, 24, 18, true, 101, 0, 1, 27),
         BARREL("barrel", 97, 51, 101, 0, 24, 17, 42, 19, false, 0, 0, 0, 0),
         SOAKING_POT("soaking_pot", 82, 56, 82, 0, 24, 17, 24, 19, false, 0, 0, 0, 0),
-        TANNING_RACK("tanning_rack", 101, 26, 82, 0, 24, 17, 24, 4, false, 0, 0, 0, 0),
+        TANNING_RACK("tanning_rack", 95, 45, 119, 0, 24, 17, 24, 10, false, 0, 0, 0, 0),
         STONE_SAWMILL("stone_sawmill", 101, 38, 101, 0, 24, 17, 24, 16, false, 0, 0, 0, 0),
         STONE_OVEN("stone_oven", 82, 33, 82, 14, 24, 17, 24, 10, true, 82, 0, 1, 19),
         STONE_KILN("stone_kiln", 101, 46, 101, 14, 24, 17, 24, 10, true, 101, 0, 1, 19),

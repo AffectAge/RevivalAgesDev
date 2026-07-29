@@ -210,9 +210,7 @@ public final class PrimitiveRecipeCatalog {
                                     outputs,
                                     FluidStack.EMPTY,
                                     recipe.processingTime(),
-                                    recipe.rainFailure().isEmpty()
-                                            ? Component.translatable("gui.revivalages.recipe.requires_sun")
-                                            : Component.translatable("gui.revivalages.recipe.rain_failure"),
+                                    Component.empty(),
                                     holder);
                         })
                 .toList();

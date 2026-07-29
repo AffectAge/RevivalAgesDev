@@ -75,6 +75,7 @@
   "gui.revivalages.recipe.requires_campfire": "Требуется горящий костёр",
   "gui.revivalages.recipe.requires_sun": "Нужны день и открытое небо",
   "gui.revivalages.recipe.rain_failure": "Дождь может испортить рецепт",
+  "gui.revivalages.recipe.rain_failure_tooltip": "Дождь может привести к результату: %s",
   "config.jade.plugin_revivalages.drying_rack": "Сведения о сушилке",
   "config.jade.plugin_revivalages.primitive_devices": "Сведения о примитивных устройствах",
   "jade.revivalages.primitive.ready": "Можно забрать",

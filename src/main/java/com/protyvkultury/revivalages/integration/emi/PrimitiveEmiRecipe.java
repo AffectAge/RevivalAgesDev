@@ -12,6 +12,7 @@ import dev.emi.emi.api.widget.WidgetHolder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -76,6 +77,9 @@ final class PrimitiveEmiRecipe implements EmiRecipe {
     }
 
     public int getDisplayHeight() {
+        if (this.layout == Layout.TANNING_RACK) {
+            return this.layout.backgroundHeight;
+        }
         return this.layout.backgroundHeight
                 + (this.view.processingTime() > 0 && !this.view.detail().getString().isEmpty() ? 24 : 13);
     }
@@ -191,8 +195,23 @@ final class PrimitiveEmiRecipe implements EmiRecipe {
                 }
             case TANNING_RACK:
                 {
-                    this.addItemInputs(widgets, new int[][] {{0, 3}});
-                    this.addItemOutputs(widgets, new int[][] {{60, 4}, {83, 4}});
+                    this.addItemInputs(widgets, new int[][] {{1, 9}});
+                    this.addItemOutputs(widgets, new int[][] {{53, 9}, {77, 9}});
+                    if (this.hasRainFailure()) {
+                        widgets
+                                .addTexture(texture, 1, 34, 18, 11, 101, 0)
+                                .tooltip(
+                                        (mouseX, mouseY) ->
+                                                List.of(
+                                                        ClientTooltipComponent.create(
+                                                                this.rainFailureTooltip()
+                                                                        .getVisualOrderText())));
+                    }
+                    if (this.view.processingTime() > 0) {
+                        widgets
+                                .addText(this.processingTimeText(), 36, 35, -8355712, false)
+                                .horizontalAlign(TextWidget.Alignment.CENTER);
+                    }
                     break;
                 }
             case STONE_SAWMILL:
@@ -218,19 +237,9 @@ final class PrimitiveEmiRecipe implements EmiRecipe {
                 break;
         }
         int textY = this.layout.backgroundHeight + 2;
-        if (this.view.processingTime() > 0) {
+        if (this.layout != Layout.TANNING_RACK && this.view.processingTime() > 0) {
             widgets
-                    .addText(
-                            Component.translatable(
-                                    "gui.revivalages.recipe.time",
-                                    String.format(
-                                            Locale.ROOT,
-                                            "%.1f",
-                                            (double) this.view.processingTime() / 20.0)),
-                            this.layout.width / 2,
-                            textY,
-                            -1,
-                            true)
+                    .addText(this.processingTimeText(), this.layout.width / 2, textY, -1, true)
                     .horizontalAlign(TextWidget.Alignment.CENTER);
             textY += 10;
         }
@@ -240,6 +249,25 @@ final class PrimitiveEmiRecipe implements EmiRecipe {
                     .addText(detail, this.layout.width / 2, textY, -1, true)
                     .horizontalAlign(TextWidget.Alignment.CENTER);
         }
+    }
+
+    private boolean hasRainFailure() {
+        return this.layout == Layout.TANNING_RACK && this.view.itemOutputs().size() > 1;
+    }
+
+    private Component processingTimeText() {
+        return Component.translatable(
+                "gui.revivalages.recipe.time",
+                String.format(
+                        Locale.ROOT,
+                        "%.1f",
+                        (double) this.view.processingTime() / 20.0));
+    }
+
+    private Component rainFailureTooltip() {
+        return Component.translatable(
+                "gui.revivalages.recipe.rain_failure_tooltip",
+                this.view.itemOutputs().get(1).getHoverName());
     }
 
     private void addItemInputs(WidgetHolder widgets, int[][] positions) {
@@ -274,7 +302,7 @@ final class PrimitiveEmiRecipe implements EmiRecipe {
         PIT_KILN("pit_kiln", 101, 54, 101, 14, 24, 18, true, 101, 0, 1, 27),
         BARREL("barrel", 97, 51, 101, 0, 42, 19, false, 0, 0, 0, 0),
         SOAKING_POT("soaking_pot", 82, 56, 82, 0, 24, 19, false, 0, 0, 0, 0),
-        TANNING_RACK("tanning_rack", 101, 26, 82, 0, 24, 4, false, 0, 0, 0, 0),
+        TANNING_RACK("tanning_rack", 95, 45, 119, 0, 24, 10, false, 0, 0, 0, 0),
         STONE_SAWMILL("stone_sawmill", 101, 38, 101, 0, 24, 16, false, 0, 0, 0, 0),
         STONE_OVEN("stone_oven", 82, 33, 82, 14, 24, 10, true, 82, 0, 1, 19),
         STONE_KILN("stone_kiln", 101, 46, 101, 14, 24, 10, true, 101, 0, 1, 19),
