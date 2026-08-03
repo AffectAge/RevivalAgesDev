@@ -1,17 +1,17 @@
 package com.protyvkultury.revivalages.integration.jade;
 
 import com.protyvkultury.revivalages.RevivalAges;
+import com.protyvkultury.revivalages.core.process.ProcessRulePresentation;
+import com.protyvkultury.revivalages.core.process.ProcessRuleType;
 import com.protyvkultury.revivalages.feature.technology.animalpower.block.AnimalMachineBlock;
 import com.protyvkultury.revivalages.feature.technology.animalpower.blockentity.AnimalMachineBlockEntity;
 import com.protyvkultury.revivalages.feature.technology.animalpower.blockentity.HandGrindstoneBlockEntity;
 import java.util.List;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.Mob;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
-import net.minecraft.world.phys.AABB;
 import snownee.jade.api.BlockAccessor;
 import snownee.jade.api.IBlockComponentProvider;
 import snownee.jade.api.ITooltip;
@@ -43,21 +43,19 @@ public enum AnimalPowerComponentProvider implements IBlockComponentProvider {
             return;
         }
         if (machine.workerId().isPresent()) {
-            Component workerName = accessor.getLevel()
-                    .getEntitiesOfClass(
-                            Mob.class,
-                            new AABB(machine.getBlockPos()).inflate(64.0D),
-                            mob -> mob.getUUID().equals(machine.workerId().orElse(null)))
-                    .stream()
-                    .findFirst()
-                    .map(Mob::getDisplayName)
-                    .orElse(Component.translatable("jade.revivalages.animal_power.worker.unloaded"));
+            Component workerName = machine.workerLoaded()
+                    ? Component.literal(machine.workerDisplayName())
+                    : Component.translatable("jade.revivalages.animal_power.worker.unloaded");
             tooltip.add(Component.translatable(
                     "jade.revivalages.animal_power.worker.attached",
                     workerName
             ));
         } else {
+            tooltip.add(Component.translatable(ProcessRulePresentation.of(ProcessRuleType.ATTACHED_WORKER).statusKey()));
             tooltip.add(Component.translatable("jade.revivalages.animal_power.worker.missing"));
+        }
+        if (!machine.workAreaValid()) {
+            tooltip.add(Component.translatable(ProcessRulePresentation.of(ProcessRuleType.VALID_WORK_AREA).statusKey()));
         }
         tooltip.add(Component.translatable(
                 machine.workAreaValid()

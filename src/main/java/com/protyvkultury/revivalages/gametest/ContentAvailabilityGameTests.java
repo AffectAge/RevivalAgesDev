@@ -1,6 +1,8 @@
 package com.protyvkultury.revivalages.gametest;
 
 import com.protyvkultury.revivalages.RevivalAges;
+import com.protyvkultury.revivalages.core.process.ProcessOutcomeMode;
+import com.protyvkultury.revivalages.core.process.ProcessRuleType;
 import com.protyvkultury.revivalages.feature.content.ContentAvailability;
 import com.protyvkultury.revivalages.feature.content.ContentEnabledCondition;
 import com.protyvkultury.revivalages.feature.content.ContentKey;
@@ -18,6 +20,7 @@ import com.protyvkultury.revivalages.feature.technology.stonemachine.view.StoneT
 import com.protyvkultury.revivalages.feature.world.structuralintegrity.StructuralEnabledCondition;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
@@ -293,22 +296,59 @@ public final class ContentAvailabilityGameTests {
         helper.assertFalse(DryingRecipeCatalog.crude(manager).isEmpty(), "crude drying viewer catalog is empty");
         helper.assertFalse(DryingRecipeCatalog.normal(manager).isEmpty(), "drying viewer catalog is empty");
         helper.assertFalse(PrimitiveRecipeCatalog.campfire(manager, registries).isEmpty(), "campfire viewer catalog is empty");
-        helper.assertFalse(PrimitiveRecipeCatalog.chopping(manager).isEmpty(), "chopping viewer catalog is empty");
+        var manualChopping = PrimitiveRecipeCatalog.choppingBlock(manager);
+        var animalChopping = AnimalPowerRecipeCatalog.animalChopping(manager);
+        helper.assertFalse(manualChopping.isEmpty(), "chopping-block viewer catalog is empty");
+        helper.assertFalse(animalChopping.isEmpty(), "animal-chopping viewer catalog is empty");
+        helper.assertTrue(manualChopping.stream().allMatch(view -> view.processRules().isEmpty()
+                && view.toolRequirements().size() == 1), "manual chopping presentation leaked animal rules");
+        helper.assertTrue(animalChopping.stream().allMatch(view -> hasAnimalRules(view.processRules())
+                && view.toolRequirements().isEmpty()
+                && view.detail().getString().isEmpty()), "animal chopping presentation leaked manual tools or details");
+        helper.assertValueEqual(recipeIds(manualChopping), recipeIds(animalChopping),
+                "chopping presentations use different canonical recipes");
         helper.assertFalse(PrimitiveRecipeCatalog.pitKiln(manager).isEmpty(), "pit kiln viewer catalog is empty");
         helper.assertFalse(PrimitiveRecipeCatalog.pitBurn(manager).isEmpty(), "pit burn viewer catalog is empty");
         helper.assertFalse(PrimitiveRecipeCatalog.barrel(manager).isEmpty(), "barrel viewer catalog is empty");
         helper.assertFalse(PrimitiveRecipeCatalog.soakingPot(manager).isEmpty(), "soaking viewer catalog is empty");
         helper.assertFalse(PrimitiveRecipeCatalog.tanningRack(manager).isEmpty(), "tanning viewer catalog is empty");
-        helper.assertFalse(StoneTechnologyRecipeCatalog.sawmill(manager).isEmpty(), "sawmill viewer catalog is empty");
+        var sawmill = StoneTechnologyRecipeCatalog.sawmill(manager);
+        helper.assertFalse(sawmill.isEmpty(), "sawmill viewer catalog is empty");
+        helper.assertTrue(sawmill.stream().allMatch(view -> view.detail().getString().isEmpty()
+                && view.itemOutputs().size() == 2
+                && hasChanceRule(view.processRules(), ProcessOutcomeMode.PER_ATTEMPT)),
+                "sawmill presentations do not describe wood chips as a chance outcome");
         helper.assertFalse(StoneTechnologyRecipeCatalog.oven(helper.getLevel()).isEmpty(), "oven viewer catalog is empty");
-        helper.assertFalse(StoneTechnologyRecipeCatalog.kiln(helper.getLevel()).isEmpty(), "kiln viewer catalog is empty");
+        var kiln = StoneTechnologyRecipeCatalog.kiln(helper.getLevel());
+        helper.assertFalse(kiln.isEmpty(), "kiln viewer catalog is empty");
+        var chanceKiln = kiln.stream().filter(view -> hasChanceRule(view.processRules(), ProcessOutcomeMode.PER_ITEM)).toList();
+        helper.assertFalse(chanceKiln.isEmpty(), "kiln viewer catalog has no failure-chance presentation");
+        helper.assertTrue(chanceKiln.stream().allMatch(view -> view.detail().getString().isEmpty()
+                        && view.itemOutputs().size() > 1),
+                "kiln failure outcomes are not represented by a chance rule and secondary output");
         helper.assertFalse(
                 StoneTechnologyRecipeCatalog.crucible(helper.getLevel()).isEmpty(),
                 "crucible viewer catalog is empty"
         );
         helper.assertFalse(StoneTechnologyRecipeCatalog.anvil(manager).isEmpty(), "anvil viewer catalog is empty");
-        helper.assertFalse(AnimalPowerRecipeCatalog.grinding(manager).isEmpty(), "grinding viewer catalog is empty");
-        helper.assertFalse(AnimalPowerRecipeCatalog.pressing(manager).isEmpty(), "pressing viewer catalog is empty");
+        var handGrinding = AnimalPowerRecipeCatalog.handGrinding(manager);
+        var animalGrinding = AnimalPowerRecipeCatalog.animalGrinding(manager);
+        helper.assertFalse(handGrinding.isEmpty(), "hand-grinding viewer catalog is empty");
+        helper.assertFalse(animalGrinding.isEmpty(), "animal-grinding viewer catalog is empty");
+        helper.assertTrue(handGrinding.stream().allMatch(view -> view.processRules().stream().noneMatch(rule ->
+                rule.rule().type() == ProcessRuleType.ATTACHED_WORKER
+                        || rule.rule().type() == ProcessRuleType.VALID_WORK_AREA)
+                && view.detail().getString().isEmpty()),
+                "hand grinding presentation leaked animal rules");
+        helper.assertTrue(animalGrinding.stream().allMatch(view -> hasAnimalRules(view.processRules())
+                && view.detail().getString().isEmpty()),
+                "animal grinding presentation is missing animal rules");
+        helper.assertValueEqual(recipeIds(handGrinding), recipeIds(animalGrinding),
+                "grinding presentations use different canonical recipes");
+        var pressing = AnimalPowerRecipeCatalog.pressing(manager);
+        helper.assertFalse(pressing.isEmpty(), "pressing viewer catalog is empty");
+        helper.assertTrue(pressing.stream().allMatch(view -> view.detail().getString().isEmpty()),
+                "pressing presentation still exposes work-point detail text");
         helper.assertFalse(FrameAssemblyRecipeCatalog.recipes(manager).isEmpty(), "frame viewer catalog is empty");
         helper.assertFalse(KnappingRecipeCatalog.recipes(manager, registries).isEmpty(), "knapping viewer catalog is empty");
     }
@@ -319,7 +359,8 @@ public final class ContentAvailabilityGameTests {
         helper.assertTrue(DryingRecipeCatalog.crude(manager).isEmpty(), "crude drying viewer recipes leaked");
         helper.assertTrue(DryingRecipeCatalog.normal(manager).isEmpty(), "drying viewer recipes leaked");
         helper.assertTrue(PrimitiveRecipeCatalog.campfire(manager, registries).isEmpty(), "campfire viewer recipes leaked");
-        helper.assertTrue(PrimitiveRecipeCatalog.chopping(manager).isEmpty(), "chopping viewer recipes leaked");
+        helper.assertTrue(PrimitiveRecipeCatalog.choppingBlock(manager).isEmpty(), "chopping-block viewer recipes leaked");
+        helper.assertTrue(AnimalPowerRecipeCatalog.animalChopping(manager).isEmpty(), "animal-chopping viewer recipes leaked");
         helper.assertTrue(PrimitiveRecipeCatalog.pitKiln(manager).isEmpty(), "pit kiln viewer recipes leaked");
         helper.assertTrue(PrimitiveRecipeCatalog.pitBurn(manager).isEmpty(), "pit burn viewer recipes leaked");
         helper.assertTrue(PrimitiveRecipeCatalog.barrel(manager).isEmpty(), "barrel viewer recipes leaked");
@@ -333,9 +374,25 @@ public final class ContentAvailabilityGameTests {
                 "crucible viewer recipes leaked"
         );
         helper.assertTrue(StoneTechnologyRecipeCatalog.anvil(manager).isEmpty(), "anvil viewer recipes leaked");
-        helper.assertTrue(AnimalPowerRecipeCatalog.grinding(manager).isEmpty(), "grinding viewer recipes leaked");
+        helper.assertTrue(AnimalPowerRecipeCatalog.handGrinding(manager).isEmpty(), "hand-grinding viewer recipes leaked");
+        helper.assertTrue(AnimalPowerRecipeCatalog.animalGrinding(manager).isEmpty(), "animal-grinding viewer recipes leaked");
         helper.assertTrue(AnimalPowerRecipeCatalog.pressing(manager).isEmpty(), "pressing viewer recipes leaked");
         helper.assertTrue(FrameAssemblyRecipeCatalog.recipes(manager).isEmpty(), "frame viewer recipes leaked");
         helper.assertTrue(KnappingRecipeCatalog.recipes(manager, registries).isEmpty(), "knapping viewer recipes leaked");
+    }
+
+    private static boolean hasAnimalRules(List<com.protyvkultury.revivalages.core.process.ProcessRuleView> rules) {
+        Set<ProcessRuleType> types = rules.stream().map(rule -> rule.rule().type()).collect(java.util.stream.Collectors.toSet());
+        return types.contains(ProcessRuleType.ATTACHED_WORKER) && types.contains(ProcessRuleType.VALID_WORK_AREA);
+    }
+
+    private static boolean hasChanceRule(
+            List<com.protyvkultury.revivalages.core.process.ProcessRuleView> rules, ProcessOutcomeMode mode) {
+        return rules.stream().anyMatch(rule -> rule.hasChanceOutcome() && rule.outcomeMode() == mode);
+    }
+
+    private static Set<net.minecraft.resources.ResourceLocation> recipeIds(
+            List<com.protyvkultury.revivalages.feature.technology.primitive.view.PrimitiveRecipeView> views) {
+        return views.stream().map(view -> view.id()).collect(java.util.stream.Collectors.toSet());
     }
 }

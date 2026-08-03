@@ -1,5 +1,7 @@
 package com.protyvkultury.revivalages.feature.technology.primitive.view;
 
+import com.protyvkultury.revivalages.core.process.ProcessRuleView;
+import com.protyvkultury.revivalages.core.process.ToolRequirementView;
 import java.util.List;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -17,7 +19,8 @@ public record PrimitiveRecipeView(
         int processingTime,
         Component detail,
         RecipeHolder<?> backingRecipe,
-        boolean requiresCampfire) {
+        List<ProcessRuleView> processRules,
+        List<ToolRequirementView> toolRequirements) {
 
     public PrimitiveRecipeView(
             ResourceLocation id,
@@ -38,8 +41,17 @@ public record PrimitiveRecipeView(
                 processingTime,
                 detail,
                 backingRecipe,
-                false
+                List.of(),
+                List.of()
         );
+    }
+
+    public PrimitiveRecipeView(
+            ResourceLocation id, List<Ingredient> itemInputs, FluidStack fluidInput, List<ItemStack> itemOutputs,
+            FluidStack fluidOutput, int processingTime, Component detail, RecipeHolder<?> backingRecipe,
+            List<ProcessRuleView> processRules) {
+        this(id, itemInputs, fluidInput, itemOutputs, fluidOutput, processingTime, detail, backingRecipe,
+                processRules, List.of());
     }
 
     public PrimitiveRecipeView {
@@ -47,5 +59,7 @@ public record PrimitiveRecipeView(
         fluidInput = fluidInput.copy();
         itemOutputs = itemOutputs.stream().map(ItemStack::copy).toList();
         fluidOutput = fluidOutput.copy();
+        processRules = List.copyOf(processRules);
+        toolRequirements = List.copyOf(toolRequirements);
     }
 }

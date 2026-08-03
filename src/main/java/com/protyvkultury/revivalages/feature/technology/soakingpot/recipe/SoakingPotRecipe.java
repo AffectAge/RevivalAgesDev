@@ -1,6 +1,8 @@
 package com.protyvkultury.revivalages.feature.technology.soakingpot.recipe;
 
+import com.protyvkultury.revivalages.core.process.ProcessRule;
 import com.protyvkultury.revivalages.feature.technology.soakingpot.SoakingPotFeature;
+import java.util.List;
 import java.util.Objects;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
@@ -17,20 +19,20 @@ public final class SoakingPotRecipe implements Recipe<SoakingRecipeInput> {
     private final Ingredient ingredient;
     private final FluidStack inputFluid;
     private final ItemStack result;
-    private final boolean requiresCampfire;
+    private final List<ProcessRule> processRules;
     private final int processingTime;
 
     public SoakingPotRecipe(
             Ingredient ingredient,
             FluidStack inputFluid,
             ItemStack result,
-            boolean requiresCampfire,
+            List<ProcessRule> processRules,
             int processingTime
     ) {
         this.ingredient = Objects.requireNonNull(ingredient);
         this.inputFluid = Objects.requireNonNull(inputFluid).copy();
         this.result = Objects.requireNonNull(result).copy();
-        this.requiresCampfire = requiresCampfire;
+        this.processRules = List.copyOf(processRules);
         this.processingTime = Math.max(1, processingTime);
     }
 
@@ -46,8 +48,8 @@ public final class SoakingPotRecipe implements Recipe<SoakingRecipeInput> {
         return result.copy();
     }
 
-    public boolean requiresCampfire() {
-        return requiresCampfire;
+    public List<ProcessRule> processRules() {
+        return processRules;
     }
 
     public int processingTime() {

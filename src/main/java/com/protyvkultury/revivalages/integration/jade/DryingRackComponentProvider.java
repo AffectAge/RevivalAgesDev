@@ -1,6 +1,8 @@
 package com.protyvkultury.revivalages.integration.jade;
 
 import com.protyvkultury.revivalages.RevivalAges;
+import com.protyvkultury.revivalages.core.process.ProcessRulePresentation;
+import com.protyvkultury.revivalages.core.process.ProcessRuleType;
 import com.protyvkultury.revivalages.feature.technology.dryingrack.blockentity.DryingRackBlockEntity;
 import com.protyvkultury.revivalages.feature.technology.dryingrack.environment.DryingEnvironmentModifier;
 import com.protyvkultury.revivalages.feature.technology.dryingrack.view.DryingRackView;
@@ -32,6 +34,7 @@ public enum DryingRackComponentProvider implements IBlockComponentProvider {
         }
 
         DryingRackView view = rack.view();
+        tooltip.add(Component.translatable(ProcessRulePresentation.of(ProcessRuleType.DRYING_ENVIRONMENT).tooltipKey()));
         tooltip.add(Component.translatable(
                 "jade.revivalages.drying_rack.speed",
                 formatPercent(view.speed(), false)

@@ -3,6 +3,7 @@ package com.protyvkultury.revivalages.feature.technology.constructionframe.view;
 import com.protyvkultury.revivalages.feature.content.ContentAvailability;
 import com.protyvkultury.revivalages.feature.technology.constructionframe.ConstructionFrameConfig;
 import com.protyvkultury.revivalages.feature.technology.constructionframe.ConstructionFrameFeature;
+import com.protyvkultury.revivalages.core.process.ToolRequirementView;
 import java.util.List;
 import net.minecraft.world.item.crafting.RecipeManager;
 
@@ -21,7 +22,11 @@ public final class FrameAssemblyRecipeCatalog {
                 .map(holder -> new FrameAssemblyRecipeView(
                         holder.id(),
                         holder.value().getIngredients(),
-                        holder.value().tool(),
+                        new ToolRequirementView(holder.value().tool(), List.of(
+                                net.minecraft.network.chat.Component.translatable("gui.revivalages.tool_requirement.frame"),
+                                net.minecraft.network.chat.Component.translatable(
+                                        "gui.revivalages.tool_requirement.frame_durability",
+                                        ConstructionFrameConfig.toolDurabilityCost()))),
                         holder.value().result(),
                         holder
                 ))

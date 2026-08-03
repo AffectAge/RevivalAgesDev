@@ -2,7 +2,7 @@ package com.protyvkultury.revivalages.feature.technology.anvil.blockentity;
 
 import com.protyvkultury.revivalages.api.food.FoodFreshnessApi;
 import com.protyvkultury.revivalages.feature.technology.anvil.AnvilFeature;
-import com.protyvkultury.revivalages.feature.technology.anvil.AnvilTags;
+import com.protyvkultury.revivalages.feature.technology.anvil.AnvilToolPolicy;
 import com.protyvkultury.revivalages.feature.technology.anvil.block.AnvilBlock;
 import com.protyvkultury.revivalages.feature.technology.anvil.recipe.AnvilRecipe;
 import com.protyvkultury.revivalages.feature.technology.anvil.recipe.AnvilTool;
@@ -21,7 +21,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.tags.ItemTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -114,7 +113,8 @@ public final class AnvilBlockEntity extends BlockEntity {
     }
 
     public boolean isValidTool(ItemStack tool) {
-        return tool.is(AnvilTags.HAMMERS) || tool.is(ItemTags.PICKAXES);
+        return AnvilToolPolicy.matches(tool, AnvilTool.HAMMER)
+                || AnvilToolPolicy.matches(tool, AnvilTool.PICKAXE);
     }
 
     public void hit(Player player, ItemStack tool, InteractionHand hand, Vec3 hitPosition) {
@@ -131,7 +131,7 @@ public final class AnvilBlockEntity extends BlockEntity {
             player.displayClientMessage(Component.translatable("message.revivalages.anvil.not_enough_hunger"), true);
             return;
         }
-        AnvilTool type = tool.is(AnvilTags.HAMMERS) ? AnvilTool.HAMMER : AnvilTool.PICKAXE;
+        AnvilTool type = AnvilToolPolicy.typeFor(tool);
         Optional<RecipeHolder<AnvilRecipe>> found = findRecipe(input, type);
         if (found.isEmpty()) {
             return;

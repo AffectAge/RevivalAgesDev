@@ -51,8 +51,14 @@ public final class PressingRecipeSerializer implements RecipeSerializer<Pressing
     }
 
     private static DataResult<PressingRecipe> create(Payload payload) {
-        if (payload.itemResult().isPresent() == payload.fluidResult().isPresent()) {
-            return DataResult.error(() -> "Pressing recipes require exactly one result field");
+        if (payload.itemResult().isPresent() && payload.itemResult().get().isEmpty()) {
+            return DataResult.error(() -> "Pressing result must be non-empty when present");
+        }
+        if (payload.fluidResult().isPresent() && payload.fluidResult().get().isEmpty()) {
+            return DataResult.error(() -> "Pressing fluid_result must be non-empty when present");
+        }
+        if (payload.itemResult().isEmpty() && payload.fluidResult().isEmpty()) {
+            return DataResult.error(() -> "Pressing recipes require at least one result field");
         }
         return DataResult.success(new PressingRecipe(
                 payload.ingredient(),
@@ -75,11 +81,14 @@ public final class PressingRecipeSerializer implements RecipeSerializer<Pressing
     private static void encode(PressingRecipe recipe, RegistryFriendlyByteBuf buffer) {
         Ingredient.CONTENTS_STREAM_CODEC.encode(buffer, recipe.ingredient());
         ByteBufCodecs.VAR_INT.encode(buffer, recipe.inputCount());
-        boolean item = !recipe.itemResult().isEmpty();
+        boolean item = recipe.hasItemResult();
+        boolean fluid = recipe.hasFluidResult();
         buffer.writeBoolean(item);
         if (item) {
             ItemStack.STREAM_CODEC.encode(buffer, recipe.itemResult());
-        } else {
+        }
+        buffer.writeBoolean(fluid);
+        if (fluid) {
             FluidStack.STREAM_CODEC.encode(buffer, recipe.fluidResult());
         }
     }
@@ -87,12 +96,9 @@ public final class PressingRecipeSerializer implements RecipeSerializer<Pressing
     private static PressingRecipe decode(RegistryFriendlyByteBuf buffer) {
         Ingredient ingredient = Ingredient.CONTENTS_STREAM_CODEC.decode(buffer);
         int inputCount = ByteBufCodecs.VAR_INT.decode(buffer);
-        if (buffer.readBoolean()) {
-            return new PressingRecipe(
-                    ingredient, inputCount, ItemStack.STREAM_CODEC.decode(buffer), FluidStack.EMPTY);
-        }
-        return new PressingRecipe(
-                ingredient, inputCount, ItemStack.EMPTY, FluidStack.STREAM_CODEC.decode(buffer));
+        ItemStack itemResult = buffer.readBoolean() ? ItemStack.STREAM_CODEC.decode(buffer) : ItemStack.EMPTY;
+        FluidStack fluidResult = buffer.readBoolean() ? FluidStack.STREAM_CODEC.decode(buffer) : FluidStack.EMPTY;
+        return new PressingRecipe(ingredient, inputCount, itemResult, fluidResult);
     }
 
     private record Payload(

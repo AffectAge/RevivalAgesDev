@@ -68,26 +68,75 @@
   "emi.category.revivalages.crude_drying": "Crude Drying",
   "emi.category.revivalages.drying": "Drying",
   "jei.revivalages.category.campfire": "Campfire Cooking",
-  "jei.revivalages.category.chopping": "Chopping",
+  "jei.revivalages.category.chopping_block": "Chopping Block",
+  "jei.revivalages.category.animal_chopping": "Animal Chopping",
   "jei.revivalages.category.pit_kiln": "Pit Kiln",
   "jei.revivalages.category.barrel": "Barrel",
   "jei.revivalages.category.soaking_pot": "Soaking Pot",
   "jei.revivalages.category.tanning_rack": "Tanning Rack",
   "emi.category.revivalages.campfire": "Campfire Cooking",
-  "emi.category.revivalages.chopping": "Chopping",
+  "emi.category.revivalages.chopping_block": "Chopping Block",
+  "emi.category.revivalages.animal_chopping": "Animal Chopping",
   "emi.category.revivalages.pit_kiln": "Pit Kiln",
   "emi.category.revivalages.barrel": "Barrel",
   "emi.category.revivalages.soaking_pot": "Soaking Pot",
   "emi.category.revivalages.tanning_rack": "Tanning Rack",
   "gui.revivalages.recipe.time": "%s s",
-  "gui.revivalages.recipe.inherited_smelting": "Inherited smelting recipe",
-  "gui.revivalages.recipe.chopping_detail": "Chops %s; yields %s",
-  "gui.revivalages.recipe.failure_chance": "Failure chance: %s",
   "gui.revivalages.recipe.requires_lid": "Seal with a barrel lid",
-  "gui.revivalages.recipe.requires_campfire": "Requires a lit campfire",
   "gui.revivalages.recipe.requires_sun": "Requires daylight and open sky",
   "gui.revivalages.recipe.rain_failure": "Rain can ruin this recipe",
   "gui.revivalages.recipe.rain_failure_tooltip": "Rain may produce: %s",
+  "gui.revivalages.process_rule.fuelled_and_lit": "Requires fuel and ignition",
+  "gui.revivalages.process_rule.valid_work_area": "Requires a valid work area",
+  "gui.revivalages.process_rule.attached_worker": "Requires an attached worker",
+  "gui.revivalages.process_rule.lit_block_below": "Requires a lit campfire directly below",
+  "gui.revivalages.process_rule.lit_block_below.status": "Blocked: no lit campfire below",
+  "gui.revivalages.process_rule.open_sky": "Requires open sky",
+  "gui.revivalages.process_rule.open_sky.status": "Blocked: sky is obstructed",
+  "gui.revivalages.process_rule.weather_exposure": "Rain exposure can spoil this process",
+  "gui.revivalages.process_rule.weather_exposure.status": "Hazard: currently exposed to rain",
+  "gui.revivalages.process_rule.weather_exposure.failure": "Rain failure produces: %s",
+  "gui.revivalages.process_rule.drying_environment": "Drying speed varies with the environment",
+  "gui.revivalages.process_rule.drying_environment.status": "Drying environment is limiting progress",
+  "gui.revivalages.process_rule.sealed_machine": "Machine must be sealed",
+  "gui.revivalages.process_rule.sealed_machine.status": "Blocked: machine is not sealed",
+  "gui.revivalages.process_rule.installed_tool": "Requires an installed tool",
+  "gui.revivalages.process_rule.installed_tool.status": "Blocked: tool is missing",
+  "gui.revivalages.process_rule.fuelled_and_lit.status": "Blocked: fuel or ignition is missing",
+  "gui.revivalages.process_rule.attached_worker.status": "Blocked: no worker is attached",
+  "gui.revivalages.process_rule.attached_worker.animals": "Accepted workers: horse, donkey, mule, llama, or camel",
+  "gui.revivalages.process_rule.attached_worker.lead": "Attach a worker by leading it to the machine with a lead",
+  "gui.revivalages.process_rule.valid_work_area.status": "Blocked: work area is invalid",
+  "gui.revivalages.process_rule.valid_work_area.square": "Requires a clear 7×7 area centered on the machine",
+  "gui.revivalages.process_rule.valid_work_area.floor": "Every position needs a solid floor",
+  "gui.revivalages.process_rule.valid_work_area.headroom": "Every route position needs two clear blocks of headroom",
+  "gui.revivalages.process_rule.valid_structure": "Requires a valid structure",
+  "gui.revivalages.process_rule.valid_structure.status": "Blocked: structure is invalid",
+  "gui.revivalages.process_rule.required_manual_tool": "Requires the specified manual tool",
+  "gui.revivalages.process_rule.required_manual_tool.status": "Blocked: required manual tool is missing",
+  "gui.revivalages.process_rule.random_outcome": "This process can produce a random alternative outcome",
+  "gui.revivalages.process_rule.random_outcome.status": "Random outcome is being resolved",
+  "gui.revivalages.process_rule.random_outcome.chance": "Chance: %s",
+  "gui.revivalages.process_rule.random_outcome.additional": "Rolled once as an additional output",
+  "gui.revivalages.process_rule.random_outcome.per_input": "Rolled separately for every input item; refractory blocks reduce this chance",
+  "gui.revivalages.process_rule.random_outcome.per_stage": "Rolled separately for each of %s stages; failure results are equally likely",
+  "gui.revivalages.process_rule.random_outcome.per_attempt": "Rolled separately for each of %s cutting attempts",
+  "gui.revivalages.process_rule.random_outcome.per_item": "Rolled separately for every input item; one listed alternative is selected on failure",
+  "gui.revivalages.process_rule.random_outcome.results": "Possible result: %s",
+  "gui.revivalages.tool_requirement.chopping": "Required tool: a valid chopping axe (excluded axes do not work)",
+  "gui.revivalages.tool_requirement.chopping_tier": "%s: %s chops, yields %s",
+  "gui.revivalages.tool_requirement.frame": "Required tool: completes this frame assembly",
+  "gui.revivalages.tool_requirement.frame_durability": "Durability consumed on success: %s",
+  "gui.revivalages.tool_requirement.anvil": "Required tool: %s",
+  "gui.revivalages.tool_requirement.anvil_hits": "Required hits: %s",
+  "gui.revivalages.tool_requirement.anvil_durability_enabled": "Tool durability is consumed by each valid hit",
+  "gui.revivalages.tool_requirement.anvil_durability_disabled": "Tool durability is not consumed by this configuration",
+  "gui.revivalages.tool_requirement.anvil_hunger": "Each valid hit consumes hunger",
+  "gui.revivalages.tool_tier.0": "Wood tier",
+  "gui.revivalages.tool_tier.1": "Stone tier",
+  "gui.revivalages.tool_tier.2": "Iron tier",
+  "gui.revivalages.tool_tier.3": "Diamond tier",
+  "jade.revivalages.pit_kiln.rain": "Rain exposure: %s/%s",
   "config.jade.plugin_revivalages.drying_rack": "Drying Rack Details",
   "config.jade.plugin_revivalages.primitive_devices": "Primitive Device Details",
   "jade.revivalages.primitive.ready": "Ready to collect",
@@ -181,7 +230,6 @@
   ,"message.revivalages.anvil.not_enough_hunger": "You are too hungry to use the anvil"
   ,"gui.revivalages.recipe.tool.hammer": "Tool: Hammer"
   ,"gui.revivalages.recipe.tool.pickaxe": "Tool: Pickaxe"
-  ,"gui.revivalages.recipe.sawmill_chips": "Wood chips chance: %s"
   ,"gui.revivalages.recipe.anvil_detail": "%s; %s hits"
   ,"jade.revivalages.stone_machine.output_ready": "Output ready"
   ,"jade.revivalages.stone_machine.speed": "Work speed: x%s"
@@ -202,7 +250,6 @@
   ,"item.revivalages.primitive_bucket.filled": "%1$s of %2$s"
   ,"jei.revivalages.category.pit_burn": "Pit Burn"
   ,"emi.category.revivalages.pit_burn": "Pit Burn"
-  ,"gui.revivalages.recipe.pit_burn_detail": "%s stages; %s failure chance per stage"
   ,"jade.revivalages.pit_burn.structure.valid": "Enclosure: valid"
   ,"jade.revivalages.pit_burn.structure.invalid": "Enclosure: invalid"
   ,"jade.revivalages.pit_burn.invalid_grace": "Enclosure failure: %s/%s ticks"
@@ -274,11 +321,12 @@
   ,"jade.revivalages.animal_power.state.no_recipe": "Blocked: No matching recipe"
   ,"jade.revivalages.animal_power.state.output_blocked": "Blocked: Collect the output"
   ,"jade.revivalages.animal_power.fluid": "Fluid: %s (%s/%s mB)"
-  ,"jei.revivalages.category.grinding": "Grinding"
+  ,"jei.revivalages.category.hand_grinding": "Hand Grinding"
+  ,"jei.revivalages.category.animal_grinding": "Animal Grinding"
   ,"jei.revivalages.category.pressing": "Pressing"
-  ,"emi.category.revivalages.grinding": "Grinding"
+  ,"emi.category.revivalages.hand_grinding": "Hand Grinding"
+  ,"emi.category.revivalages.animal_grinding": "Animal Grinding"
   ,"emi.category.revivalages.pressing": "Pressing"
-  ,"gui.revivalages.recipe.work_points": "Work points: %s"
   ,"container.revivalages.knapping": "Knapping"
   ,"jei.revivalages.category.knapping": "Knapping"
   ,"emi.category.revivalages.knapping": "Knapping"

@@ -277,8 +277,8 @@ public final class PrimitiveTechnologyConfig {
         builder.pop();
 
         builder.push("stoneMachines");
-        STONE_MACHINE_INPUT_LIMIT = builder.defineInRange("inputLimit", 8, 1, 64);
-        STONE_MACHINE_FUEL_LIMIT = builder.defineInRange("fuelLimit", 16, 1, 64);
+        STONE_MACHINE_INPUT_LIMIT = builder.defineInRange("inputLimit", 64, 1, 64);
+        STONE_MACHINE_FUEL_LIMIT = builder.defineInRange("fuelLimit", 64, 1, 64);
         STONE_MACHINE_FUEL_MULTIPLIER = nonNegative(builder, "fuelBurnTimeMultiplier", 1.0D);
         STONE_MACHINE_AIRFLOW_MULTIPLIER = nonNegative(builder, "airflowMultiplier", 1.0D);
         STONE_MACHINE_AIRFLOW_DRAG = builder.defineInRange("airflowDrag", 0.02D, 0.0D, 1.0D);

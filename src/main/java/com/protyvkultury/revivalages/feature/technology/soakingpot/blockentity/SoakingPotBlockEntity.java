@@ -2,6 +2,10 @@ package com.protyvkultury.revivalages.feature.technology.soakingpot.blockentity;
 
 import com.protyvkultury.revivalages.api.food.FoodFreshnessApi;
 import com.protyvkultury.revivalages.core.particle.ProgressParticleHelper;
+import com.protyvkultury.revivalages.core.process.ProcessRule;
+import com.protyvkultury.revivalages.core.process.ProcessRuleEngine;
+import com.protyvkultury.revivalages.core.process.ProcessRuleEvaluation;
+import com.protyvkultury.revivalages.core.process.ProcessRuleType;
 import com.protyvkultury.revivalages.feature.content.ContentAvailability;
 import com.protyvkultury.revivalages.feature.content.ContentKey;
 import com.protyvkultury.revivalages.feature.technology.campfire.CampfireFeature;
@@ -10,6 +14,7 @@ import com.protyvkultury.revivalages.feature.technology.soakingpot.SoakingPotFea
 import com.protyvkultury.revivalages.feature.technology.soakingpot.recipe.SoakingPotRecipe;
 import com.protyvkultury.revivalages.feature.technology.soakingpot.recipe.SoakingRecipeInput;
 import com.protyvkultury.revivalages.feature.technology.primitive.config.PrimitiveTechnologyConfig;
+import java.util.List;
 import java.util.Optional;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -66,6 +71,8 @@ public final class SoakingPotBlockEntity extends BlockEntity {
     };
     private int elapsedTicks;
     private int totalTicks;
+    /** Server-evaluated rule snapshot for clients and probe integrations. */
+    private boolean litBlockBelowSatisfied = true;
     private SoakingPotRecipe activeRecipe;
 
     public SoakingPotBlockEntity(BlockPos pos, BlockState state) {
@@ -94,11 +101,22 @@ public final class SoakingPotBlockEntity extends BlockEntity {
         if (pot.tank.getFluidAmount() < required) {
             return;
         }
-        if (pot.activeRecipe.requiresCampfire()) {
-            BlockState below = level.getBlockState(pos.below());
-            if (!below.is(CampfireFeature.CAMPFIRE.get()) || !below.getValue(CampfireBlock.LIT)) {
-                return;
+        boolean litBelow = pot.hasLitBlockBelow(level, pos);
+        if (pot.litBlockBelowSatisfied != litBelow) {
+            pot.litBlockBelowSatisfied = litBelow;
+            pot.sync();
+        }
+        ProcessRuleEvaluation rules = ProcessRuleEngine.evaluate(
+                pot.activeRecipe.processRules(),
+                type -> type != ProcessRuleType.LIT_BLOCK_BELOW || pot.litBlockBelowSatisfied,
+                ignored -> 1.0D
+        );
+        if (!rules.canAdvance()) {
+            if (rules.resetProgress()) {
+                pot.elapsedTicks = 0;
+                pot.totalTicks = 0;
             }
+            return;
         }
         pot.totalTicks = Math.max(1, (int) Math.round(pot.activeRecipe.processingTime()
                 * PrimitiveTechnologyConfig.SOAKING_POT_DURATION_MULTIPLIER.get()));
@@ -114,9 +132,11 @@ public final class SoakingPotBlockEntity extends BlockEntity {
         if (ContentAvailability.isEnabled(ContentKey.SOAKING_POT)
                 && pot.activeRecipe != null
                 && !pot.input.isEmpty()
-                && (!pot.activeRecipe.requiresCampfire()
-                || (level.getBlockState(pos.below()).is(CampfireFeature.CAMPFIRE.get())
-                && level.getBlockState(pos.below()).getValue(CampfireBlock.LIT)))
+                && ProcessRuleEngine.evaluate(
+                        pot.activeRecipe.processRules(),
+                        type -> type != ProcessRuleType.LIT_BLOCK_BELOW || pot.litBlockBelowSatisfied,
+                        ignored -> 1.0D
+                ).canAdvance()
                 && PrimitiveTechnologyConfig.PROGRESS_PARTICLES.get()
                 && level.getGameTime() % 40L == 0L) {
             double y = level.getBlockState(pos.below()).is(CampfireFeature.CAMPFIRE.get()) ? 0.5D : 0.75D;
@@ -154,8 +174,17 @@ public final class SoakingPotBlockEntity extends BlockEntity {
         return activeRecipe == null ? ItemStack.EMPTY : activeRecipe.result();
     }
 
-    public boolean requiresCampfire() {
-        return activeRecipe != null && activeRecipe.requiresCampfire();
+    public List<ProcessRule> processRules() {
+        return activeRecipe == null ? List.of() : activeRecipe.processRules();
+    }
+
+    public boolean isRuleSatisfied(ProcessRuleType type) {
+        return type != ProcessRuleType.LIT_BLOCK_BELOW || litBlockBelowSatisfied;
+    }
+
+    private boolean hasLitBlockBelow(Level level, BlockPos pos) {
+        BlockState below = level.getBlockState(pos.below());
+        return below.is(CampfireFeature.CAMPFIRE.get()) && below.getValue(CampfireBlock.LIT);
     }
 
     public boolean canInsert(ItemStack stack) {
@@ -346,6 +375,7 @@ public final class SoakingPotBlockEntity extends BlockEntity {
         tank.readFromNBT(registries, tag.getCompound("Tank"));
         elapsedTicks = tag.getInt("ElapsedTicks");
         totalTicks = tag.getInt("TotalTicks");
+        litBlockBelowSatisfied = tag.getBoolean("LitBlockBelowSatisfied");
         resolveRecipe();
     }
 
@@ -362,6 +392,7 @@ public final class SoakingPotBlockEntity extends BlockEntity {
         tag.put("Tank", tank.writeToNBT(registries, new CompoundTag()));
         tag.putInt("ElapsedTicks", elapsedTicks);
         tag.putInt("TotalTicks", totalTicks);
+        tag.putBoolean("LitBlockBelowSatisfied", litBlockBelowSatisfied);
     }
 
     @Override

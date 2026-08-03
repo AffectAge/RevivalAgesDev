@@ -2,12 +2,18 @@ package com.protyvkultury.revivalages.feature.technology.tanningrack.blockentity
 
 import com.protyvkultury.revivalages.api.food.FoodFreshnessApi;
 import com.protyvkultury.revivalages.core.particle.ProgressParticleHelper;
+import com.protyvkultury.revivalages.core.process.ProcessRule;
+import com.protyvkultury.revivalages.core.process.ProcessRuleEngine;
+import com.protyvkultury.revivalages.core.process.ProcessRuleEvaluation;
+import com.protyvkultury.revivalages.core.process.ProcessRuleState;
+import com.protyvkultury.revivalages.core.process.ProcessRuleType;
 import com.protyvkultury.revivalages.feature.content.ContentAvailability;
 import com.protyvkultury.revivalages.feature.content.ContentKey;
 import com.protyvkultury.revivalages.feature.technology.primitive.config.PrimitiveTechnologyConfig;
 import com.protyvkultury.revivalages.feature.technology.tanningrack.TanningRackFeature;
 import com.protyvkultury.revivalages.feature.technology.tanningrack.recipe.TanningRackRecipe;
 import java.util.Optional;
+import java.util.List;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.particles.ParticleTypes;
@@ -25,11 +31,20 @@ import net.minecraft.world.level.block.state.BlockState;
 
 public final class TanningRackBlockEntity extends BlockEntity {
 
+    private static final List<ProcessRule> PROCESS_RULES = List.of(
+            ProcessRule.of(ProcessRuleType.OPEN_SKY),
+            ProcessRule.of(ProcessRuleType.WEATHER_EXPOSURE)
+    );
+
     private ItemStack input = ItemStack.EMPTY;
     private ItemStack output = ItemStack.EMPTY;
     private int elapsedTicks;
     private int totalTicks;
-    private int rainTicks;
+    private final ProcessRuleState ruleState = new ProcessRuleState();
+    /** Server-evaluated environmental snapshot used by client presentation only. */
+    private boolean openSky = true;
+    private boolean raining;
+    private boolean daytime = true;
     private TanningRackRecipe activeRecipe;
 
     public TanningRackBlockEntity(BlockPos pos, BlockState state) {
@@ -49,7 +64,7 @@ public final class TanningRackBlockEntity extends BlockEntity {
             if (inputChanged) {
                 rack.elapsedTicks = 0;
                 rack.totalTicks = 0;
-                rack.rainTicks = 0;
+                rack.ruleState.clear();
             }
             rack.resolveRecipe();
             rack.sync();
@@ -60,8 +75,22 @@ public final class TanningRackBlockEntity extends BlockEntity {
         if (rack.activeRecipe == null || rack.input.isEmpty() || !rack.output.isEmpty()) {
             return;
         }
-        if (!level.canSeeSky(pos)) {
-            if (rack.elapsedTicks != 0 || rack.totalTicks != 0) {
+        boolean currentOpenSky = level.canSeeSky(pos);
+        boolean currentRaining = level.isRainingAt(pos.above());
+        boolean currentDaytime = level.isDay();
+        if (rack.openSky != currentOpenSky || rack.raining != currentRaining || rack.daytime != currentDaytime) {
+            rack.openSky = currentOpenSky;
+            rack.raining = currentRaining;
+            rack.daytime = currentDaytime;
+            rack.sync();
+        }
+        ProcessRuleEvaluation rules = ProcessRuleEngine.evaluate(
+                PROCESS_RULES,
+                type -> type != ProcessRuleType.OPEN_SKY || rack.openSky,
+                ignored -> 1.0D
+        );
+        if (!rules.canAdvance()) {
+            if (rules.resetProgress() && (rack.elapsedTicks != 0 || rack.totalTicks != 0)) {
                 rack.elapsedTicks = 0;
                 rack.totalTicks = 0;
                 rack.sync();
@@ -69,23 +98,16 @@ public final class TanningRackBlockEntity extends BlockEntity {
             return;
         }
         int rainLimit = PrimitiveTechnologyConfig.TANNING_RACK_RAIN_RUIN_TICKS.get();
-        boolean raining = level.isRainingAt(pos.above());
-        if (rainLimit >= 0 && raining) {
+        if (rainLimit >= 0 && rack.raining) {
             boolean hasRainFailure = !rack.activeRecipe.rainFailure().isEmpty();
-            int nextRainTicks = TanningRackRainExposure.next(
-                    rack.rainTicks,
-                    rainLimit,
-                    raining,
-                    hasRainFailure
-            );
             if (hasRainFailure) {
-                rack.rainTicks = nextRainTicks;
-                if (rack.rainTicks >= rainLimit) {
+                int rainTicks = rack.ruleState.incrementUntil(ProcessRuleType.WEATHER_EXPOSURE, rainLimit);
+                if (rainTicks >= rainLimit) {
                     rack.output = rack.activeRecipe.rainFailure();
                     rack.input = ItemStack.EMPTY;
                     rack.elapsedTicks = 0;
                     rack.totalTicks = 0;
-                    rack.rainTicks = 0;
+                    rack.ruleState.clear();
                     rack.activeRecipe = null;
                     rack.sync();
                 } else {
@@ -120,9 +142,9 @@ public final class TanningRackBlockEntity extends BlockEntity {
         if (ContentAvailability.isEnabled(ContentKey.TANNING_RACK)
                 && rack.activeRecipe != null
                 && !rack.input.isEmpty()
-                && level.canSeeSky(pos)
+                && rack.openSky
                 && (PrimitiveTechnologyConfig.TANNING_RACK_RAIN_RUIN_TICKS.get() < 0
-                || !level.isRainingAt(pos.above()))
+                || !rack.raining)
                 && time <= 12000L
                 && PrimitiveTechnologyConfig.PROGRESS_PARTICLES.get()
                 && level.getGameTime() % 40L == 0L) {
@@ -150,12 +172,28 @@ public final class TanningRackBlockEntity extends BlockEntity {
         return activeRecipe == null ? ItemStack.EMPTY : activeRecipe.result();
     }
 
+    public ItemStack rainFailureOutput() {
+        return activeRecipe == null ? ItemStack.EMPTY : activeRecipe.rainFailure();
+    }
+
     public double progress() {
         return totalTicks <= 0 ? 0.0D : Math.min(1.0D, elapsedTicks / (double) totalTicks);
     }
 
     public int rainTicks() {
-        return rainTicks;
+        return ruleState.counter(ProcessRuleType.WEATHER_EXPOSURE);
+    }
+
+    public boolean openSky() {
+        return openSky;
+    }
+
+    public boolean raining() {
+        return raining;
+    }
+
+    public boolean daytime() {
+        return daytime;
     }
 
     public boolean canInsert(ItemStack stack) {
@@ -172,7 +210,7 @@ public final class TanningRackBlockEntity extends BlockEntity {
         }
         elapsedTicks = 0;
         totalTicks = 0;
-        rainTicks = 0;
+        ruleState.clear();
         resolveRecipe();
         sync();
     }
@@ -182,7 +220,7 @@ public final class TanningRackBlockEntity extends BlockEntity {
         input = ItemStack.EMPTY;
         elapsedTicks = 0;
         totalTicks = 0;
-        rainTicks = 0;
+        ruleState.clear();
         activeRecipe = null;
         sync();
         return result;
@@ -215,10 +253,10 @@ public final class TanningRackBlockEntity extends BlockEntity {
         if (level != null
                 && !input.isEmpty()
                 && activeRecipe == null
-                && (elapsedTicks != 0 || totalTicks != 0 || rainTicks != 0)) {
+                && (elapsedTicks != 0 || totalTicks != 0 || rainTicks() != 0)) {
             elapsedTicks = 0;
             totalTicks = 0;
-            rainTicks = 0;
+            ruleState.clear();
             return true;
         }
         return false;
@@ -238,7 +276,14 @@ public final class TanningRackBlockEntity extends BlockEntity {
         output = ItemStack.parseOptional(registries, tag.getCompound("Output"));
         elapsedTicks = tag.getInt("ElapsedTicks");
         totalTicks = tag.getInt("TotalTicks");
-        rainTicks = tag.getInt("RainTicks");
+        if (tag.contains("ProcessRules")) {
+            ruleState.load(tag.getCompound("ProcessRules"));
+        } else {
+            ruleState.setCounter(ProcessRuleType.WEATHER_EXPOSURE, tag.getInt("RainTicks"));
+        }
+        openSky = tag.getBoolean("OpenSky");
+        raining = tag.getBoolean("Raining");
+        daytime = tag.getBoolean("Daytime");
         resolveRecipe();
     }
 
@@ -253,7 +298,10 @@ public final class TanningRackBlockEntity extends BlockEntity {
         }
         tag.putInt("ElapsedTicks", elapsedTicks);
         tag.putInt("TotalTicks", totalTicks);
-        tag.putInt("RainTicks", rainTicks);
+        tag.put("ProcessRules", ruleState.save());
+        tag.putBoolean("OpenSky", openSky);
+        tag.putBoolean("Raining", raining);
+        tag.putBoolean("Daytime", daytime);
     }
 
     @Override

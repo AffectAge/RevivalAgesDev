@@ -68,17 +68,72 @@ public final class InteractionPreviewRenderer {
             MultiBufferSource buffers,
             int light
     ) {
+        renderCount(stack, poseStack, buffers, light, 0.55D, 0.55D, 0.02D);
+    }
+
+    /** Renders a physical-stack count at an explicit position in the caller's interaction space. */
+    public static void renderCount(
+            ItemStack stack,
+            PoseStack poseStack,
+            MultiBufferSource buffers,
+            int light,
+            double x,
+            double y,
+            double z
+    ) {
+        renderCount(stack, poseStack, buffers, light, x, y, z, 0.04F);
+    }
+
+    /** Renders a physical-stack count with an explicit position and text scale. */
+    public static void renderCount(
+            ItemStack stack,
+            PoseStack poseStack,
+            MultiBufferSource buffers,
+            int light,
+            double x,
+            double y,
+            double z,
+            float scale
+    ) {
+        renderCount(stack, poseStack, buffers, light, x, y, z, scale, false);
+    }
+
+    /** Renders a physical-stack count centered horizontally on its explicit anchor. */
+    public static void renderCenteredCount(
+            ItemStack stack,
+            PoseStack poseStack,
+            MultiBufferSource buffers,
+            int light,
+            double x,
+            double y,
+            double z,
+            float scale
+    ) {
+        renderCount(stack, poseStack, buffers, light, x, y, z, scale, true);
+    }
+
+    private static void renderCount(
+            ItemStack stack,
+            PoseStack poseStack,
+            MultiBufferSource buffers,
+            int light,
+            double x,
+            double y,
+            double z,
+            float scale,
+            boolean centered
+    ) {
         if (stack.getCount() <= 1) {
             return;
         }
         Font font = Minecraft.getInstance().font;
         String text = Integer.toString(stack.getCount());
         poseStack.pushPose();
-        poseStack.translate(0.55D, 0.55D, 0.02D);
-        poseStack.scale(0.04F, -0.04F, 0.04F);
+        poseStack.translate(x, y, z);
+        poseStack.scale(scale, -scale, scale);
         font.drawInBatch(
                 text,
-                -font.width(text),
+                centered ? -font.width(text) / 2.0F : -font.width(text),
                 0.0F,
                 0xFFFFFFFF,
                 true,

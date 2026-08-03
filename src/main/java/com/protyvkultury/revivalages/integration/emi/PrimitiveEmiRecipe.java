@@ -1,7 +1,11 @@
 package com.protyvkultury.revivalages.integration.emi;
 
 import com.protyvkultury.revivalages.RevivalAges;
-import com.protyvkultury.revivalages.feature.technology.campfire.CampfireFeature;
+import com.protyvkultury.revivalages.core.process.ProcessRuleType;
+import com.protyvkultury.revivalages.core.process.ProcessRuleView;
+import com.protyvkultury.revivalages.core.process.ProcessRulePresentation;
+import com.protyvkultury.revivalages.core.process.ProcessRuleLayout;
+import com.protyvkultury.revivalages.feature.technology.primitive.view.PrimitiveFluidSlotGeometry;
 import com.protyvkultury.revivalages.feature.technology.primitive.view.PrimitiveRecipeView;
 import dev.emi.emi.api.recipe.EmiRecipe;
 import dev.emi.emi.api.recipe.EmiRecipeCategory;
@@ -19,6 +23,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.material.Fluid;
+import net.neoforged.neoforge.fluids.FluidStack;
 
 final class PrimitiveEmiRecipe implements EmiRecipe {
     private final EmiRecipeCategory category;
@@ -29,12 +34,16 @@ final class PrimitiveEmiRecipe implements EmiRecipe {
     private final List<EmiStack> outputs;
 
     PrimitiveEmiRecipe(EmiRecipeCategory category, Layout layout, PrimitiveRecipeView view) {
+        this(category, layout, layout.texture, view);
+    }
+
+    PrimitiveEmiRecipe(EmiRecipeCategory category, Layout layout, String presentationId, PrimitiveRecipeView view) {
         this.category = category;
         this.layout = layout;
         this.view = view;
         this.id =
                 RevivalAges.id(
-            "/emi/" + layout.texture + "/" + view.id().getNamespace() + "/" + view.id().getPath());
+            "/emi/" + presentationId + "/" + view.id().getNamespace() + "/" + view.id().getPath());
         this.inputs = new ArrayList<EmiIngredient>();
         view.itemInputs()
                 .forEach(ingredient -> this.inputs.add(EmiIngredient.of((Ingredient) ingredient)));
@@ -43,9 +52,6 @@ final class PrimitiveEmiRecipe implements EmiRecipe {
                     (EmiIngredient)
                             EmiStack.of(
                                     (Fluid) view.fluidInput().getFluid(), (long) view.fluidInput().getAmount()));
-        }
-        if (view.requiresCampfire()) {
-            this.inputs.add(EmiStack.of(CampfireFeature.TINDER.get()));
         }
         this.outputs = new ArrayList<EmiStack>();
         view.itemOutputs().forEach(stack -> this.outputs.add(EmiStack.of((ItemStack) stack)));
@@ -77,11 +83,7 @@ final class PrimitiveEmiRecipe implements EmiRecipe {
     }
 
     public int getDisplayHeight() {
-        if (this.layout == Layout.TANNING_RACK) {
-            return this.layout.backgroundHeight;
-        }
-        return this.layout.backgroundHeight
-                + (this.view.processingTime() > 0 && !this.view.detail().getString().isEmpty() ? 24 : 13);
+        return this.layout.backgroundHeight + toolRequirementHeight() + ruleLayout().height() + 26;
     }
 
     public void addWidgets(WidgetHolder widgets) {
@@ -135,124 +137,63 @@ final class PrimitiveEmiRecipe implements EmiRecipe {
             case PRESSING:
                 this.addItemInputs(widgets, new int[][] {{34, 32}});
                 this.addItemOutputs(widgets, new int[][] {{90, 32}});
-                if (!this.view.fluidOutput().isEmpty()) {
-                    widgets.addTank(
-                                    this.outputs.getFirst(),
-                                    95,
-                                    23,
-                                    16,
-                                    27,
-                                    this.view.fluidOutput().getAmount())
-                            .recipeContext(this);
-                }
+                this.addFluidTank(widgets, this.view.fluidOutput(), PrimitiveFluidSlotGeometry.PRESSING_OUTPUT);
                 break;
-            case PIT_KILN:
+            case PIT_KILN, PIT_BURN:
                 {
                     this.addItemInputs(widgets, new int[][] {{0, 22}});
-                    this.addItemOutputs(widgets, new int[][] {{60, 18}, {83, 22}});
+                    this.addChanceOutputs(widgets, 60, 18, 83, 22);
                     break;
                 }
             case BARREL:
                 {
                     this.addItemInputs(widgets, new int[][] {{0, 0}, {19, 0}, {0, 19}, {19, 19}});
-                    widgets.addTank(
-                            this.inputs.get(this.view.itemInputs().size()),
-                            1,
-                            39,
-                            35,
-                            11,
-                            this.view.fluidInput().getAmount());
-                    widgets
-                            .addTank(
-                                    (EmiIngredient) this.outputs.getFirst(),
-                                    72,
-                                    1,
-                                    24,
-                                    49,
-                                    this.view.fluidOutput().getAmount())
-                            .recipeContext((EmiRecipe) this);
+                    this.addFluidTank(widgets, this.view.fluidInput(), PrimitiveFluidSlotGeometry.BARREL_INPUT);
+                    this.addFluidTank(widgets, this.view.fluidOutput(), PrimitiveFluidSlotGeometry.BARREL_OUTPUT);
                     break;
                 }
             case SOAKING_POT:
                 {
                     this.addItemInputs(widgets, new int[][] {{0, 0}});
-                    widgets.addTank(
-                            this.inputs.get(this.view.itemInputs().size()),
-                            1,
-                            20,
-                            16,
-                            16,
-                            this.view.fluidInput().getAmount());
+                    this.addFluidTank(widgets, this.view.fluidInput(), PrimitiveFluidSlotGeometry.SOAKING_POT_INPUT);
                     this.addItemOutputs(widgets, new int[][] {{60, 19}});
-                    if (this.view.requiresCampfire()) {
-                        widgets.addSlot(
-                                        EmiStack.of(CampfireFeature.TINDER.get()),
-                                        25,
-                                        37)
-                                .drawBack(false);
-                    }
                     break;
                 }
             case TANNING_RACK:
                 {
                     this.addItemInputs(widgets, new int[][] {{1, 9}});
                     this.addItemOutputs(widgets, new int[][] {{53, 9}, {77, 9}});
-                    if (this.hasRainFailure()) {
-                        widgets
-                                .addTexture(texture, 1, 34, 18, 11, 101, 0)
-                                .tooltip(
-                                        (mouseX, mouseY) ->
-                                                List.of(
-                                                        ClientTooltipComponent.create(
-                                                                this.rainFailureTooltip()
-                                                                        .getVisualOrderText())));
-                    }
-                    if (this.view.processingTime() > 0) {
-                        widgets
-                                .addText(this.processingTimeText(), 36, 35, -8355712, false)
-                                .horizontalAlign(TextWidget.Alignment.CENTER);
-                    }
                     break;
                 }
             case STONE_SAWMILL:
                 this.addItemInputs(widgets, new int[][] {{0, 0}, {0, 19}});
-                this.addItemOutputs(widgets, new int[][] {{60, 16}, {83, 20}});
+                this.addChanceOutputs(widgets, 60, 16, 83, 20);
                 break;
             case STONE_KILN:
                 this.addItemInputs(widgets, new int[][] {{0, 0}});
-                this.addItemOutputs(widgets, new int[][] {{60, 10}, {83, 14}});
+                this.addChanceOutputs(widgets, 60, 10, 83, 14);
                 break;
             case STONE_CRUCIBLE:
                 this.addItemInputs(widgets, new int[][] {{0, 0}});
-                if (!this.outputs.isEmpty()) {
-                    widgets.addTank(
-                                    this.outputs.getFirst(),
-                                    61,
-                                    11,
-                                    16,
-                                    16,
-                                    this.view.fluidOutput().getAmount())
-                            .recipeContext(this);
-                }
+                this.addFluidTank(
+                        widgets, this.view.fluidOutput(), PrimitiveFluidSlotGeometry.STONE_CRUCIBLE_OUTPUT);
                 break;
         }
-        int textY = this.layout.backgroundHeight + 2;
-        if (this.layout != Layout.TANNING_RACK && this.view.processingTime() > 0) {
+        addToolRequirementWidgets(widgets);
+        addConditionWidgets(widgets, texture);
+        int textY = conditionY() + ruleLayout().height() + 2;
+        if (this.view.processingTime() > 0) {
             widgets
-                    .addText(this.processingTimeText(), this.layout.width / 2, textY, -1, true)
+                    .addText(this.processingTimeText(), this.layout.width / 2, textY, -8355712, false)
                     .horizontalAlign(TextWidget.Alignment.CENTER);
             textY += 10;
         }
         Component detail = this.view.detail();
         if (!detail.getString().isEmpty()) {
             widgets
-                    .addText(detail, this.layout.width / 2, textY, -1, true)
+                    .addText(detail, this.layout.width / 2, textY, -8355712, false)
                     .horizontalAlign(TextWidget.Alignment.CENTER);
         }
-    }
-
-    private boolean hasRainFailure() {
-        return this.layout == Layout.TANNING_RACK && this.view.itemOutputs().size() > 1;
     }
 
     private Component processingTimeText() {
@@ -264,10 +205,57 @@ final class PrimitiveEmiRecipe implements EmiRecipe {
                         (double) this.view.processingTime() / 20.0));
     }
 
-    private Component rainFailureTooltip() {
-        return Component.translatable(
-                "gui.revivalages.recipe.rain_failure_tooltip",
-                this.view.itemOutputs().get(1).getHoverName());
+    private void addConditionWidgets(WidgetHolder widgets, ResourceLocation texture) {
+        int y = conditionY();
+        ProcessRuleLayout ruleLayout = ruleLayout();
+        for (int index = 0; index < this.view.processRules().size(); index++) {
+            ProcessRuleView condition = this.view.processRules().get(index);
+            int iconX = ruleLayout.x(index);
+            ProcessRulePresentation presentation = condition.presentation();
+            widgets.addTexture(
+                            ProcessRulePresentation.ATLAS,
+                            iconX,
+                            ruleLayout.y(y, index),
+                            ProcessRulePresentation.ICON_SIZE,
+                            ProcessRulePresentation.ICON_SIZE,
+                            presentation.u(),
+                            presentation.v(),
+                            ProcessRulePresentation.ICON_SIZE,
+                            ProcessRulePresentation.ICON_SIZE,
+                            ProcessRulePresentation.ATLAS_WIDTH,
+                            ProcessRulePresentation.ATLAS_HEIGHT)
+                    .tooltip((mouseX, mouseY) -> ruleTooltip(condition));
+        }
+    }
+
+    private int conditionY() {
+        return this.layout.backgroundHeight + 2 + toolRequirementHeight();
+    }
+
+    private int toolRequirementHeight() {
+        return this.view.toolRequirements().isEmpty() ? 0 : 20;
+    }
+
+    private void addToolRequirementWidgets(WidgetHolder widgets) {
+        int x = Math.max(0, (this.layout.width - this.view.toolRequirements().size() * 18 + 2) / 2);
+        int y = this.layout.backgroundHeight + 2;
+        for (int index = 0; index < this.view.toolRequirements().size(); index++) {
+            var requirement = this.view.toolRequirements().get(index);
+            var slot = widgets.addSlot(EmiIngredient.of(requirement.ingredient()), x + index * 18, y)
+                    .catalyst(true);
+            requirement.tooltip().forEach(slot::appendTooltip);
+        }
+    }
+
+    private ProcessRuleLayout ruleLayout() {
+        return ProcessRuleLayout.of(this.layout.width, this.view.processRules().size());
+    }
+
+    private static List<ClientTooltipComponent> ruleTooltip(ProcessRuleView rule) {
+        return ProcessRulePresentation.viewerTooltip(rule).stream()
+                .map(Component::getVisualOrderText)
+                .map(ClientTooltipComponent::create)
+                .toList();
     }
 
     private void addItemInputs(WidgetHolder widgets, int[][] positions) {
@@ -275,7 +263,10 @@ final class PrimitiveEmiRecipe implements EmiRecipe {
                 index < this.view.itemInputs().size() && index < positions.length;
                 ++index) {
             widgets
-                    .addSlot(this.inputs.get(index), positions[index][0], positions[index][1])
+                    .addSlot(
+                            EmiIngredient.of(this.view.itemInputs().get(index)),
+                            positions[index][0],
+                            positions[index][1])
                     .drawBack(false);
         }
     }
@@ -286,10 +277,42 @@ final class PrimitiveEmiRecipe implements EmiRecipe {
                 ++index) {
             widgets
                     .addSlot(
-                            (EmiIngredient) this.outputs.get(index), positions[index][0], positions[index][1])
+                            EmiStack.of(this.view.itemOutputs().get(index)),
+                            positions[index][0],
+                            positions[index][1])
                     .drawBack(false)
                     .recipeContext((EmiRecipe) this);
         }
+    }
+
+    private void addChanceOutputs(WidgetHolder widgets, int resultX, int resultY, int chanceX, int chanceY) {
+        if (this.view.itemOutputs().isEmpty()) {
+            return;
+        }
+        widgets.addSlot(EmiStack.of(this.view.itemOutputs().getFirst()), resultX, resultY).drawBack(false).recipeContext(this);
+        if (this.view.itemOutputs().size() > 1) {
+            List<EmiIngredient> chanceOutputs = this.view.itemOutputs().subList(1, this.view.itemOutputs().size()).stream()
+                    .map(EmiStack::of)
+                    .map(output -> (EmiIngredient) output)
+                    .toList();
+            widgets.addSlot(EmiIngredient.of(chanceOutputs), chanceX, chanceY).drawBack(false).recipeContext(this);
+        }
+    }
+
+    private void addFluidTank(
+            WidgetHolder widgets, FluidStack fluid, PrimitiveFluidSlotGeometry geometry) {
+        if (fluid.isEmpty()) {
+            return;
+        }
+        PrimitiveFluidSlotGeometry.EmiTankBounds bounds = geometry.emiTankBounds();
+        widgets.addTank(
+                        EmiStack.of(fluid.getFluid(), fluid.getAmount()),
+                        bounds.x(),
+                        bounds.y(),
+                        bounds.width(),
+                        bounds.height(),
+                        fluid.getAmount())
+                .recipeContext(this);
     }
 
     public RecipeHolder<?> getBackingRecipe() {
@@ -299,7 +322,8 @@ final class PrimitiveEmiRecipe implements EmiRecipe {
     static enum Layout {
         CAMPFIRE("campfire", 82, 33, 82, 14, 24, 10, true, 82, 0, 1, 19),
         CHOPPING("chopping", 82, 40, 82, 0, 24, 18, false, 0, 0, 0, 0),
-        PIT_KILN("pit_kiln", 101, 54, 101, 14, 24, 18, true, 101, 0, 1, 27),
+        PIT_KILN("pit_kiln", 101, 54, 101, 14, 24, 18, true, 101, 0, 1, 7),
+        PIT_BURN("pit_kiln", 101, 54, 101, 14, 24, 18, true, 101, 0, 1, 6),
         BARREL("barrel", 97, 51, 101, 0, 42, 19, false, 0, 0, 0, 0),
         SOAKING_POT("soaking_pot", 82, 56, 82, 0, 24, 19, false, 0, 0, 0, 0),
         TANNING_RACK("tanning_rack", 95, 45, 119, 0, 24, 10, false, 0, 0, 0, 0),

@@ -1,15 +1,17 @@
 {
-  "parent": "block/block",
-  "textures": {
-    "lit": "revivalages:block/active_pile"
-  },
-  "elements": [
-    {
-      "from": [2, 1, 2],
-      "to": [14, 3, 14],
-      "faces": {
-        "up": {"uv": [2, 2, 14, 14], "texture": "#lit"}
-      }
-    }
-  ]
+	"format_version": "1.21.11",
+	"credit": "Made with Blockbench",
+	"parent": "block/block",
+	"textures": {
+		"lit": "revivalages:block/active_pile"
+	},
+	"elements": [
+		{
+			"from": [2, 4.01, 2],
+			"to": [14, 4.02, 14],
+			"faces": {
+				"up": {"uv": [2, 2, 14, 14], "texture": "#lit"}
+			}
+		}
+	]
 }

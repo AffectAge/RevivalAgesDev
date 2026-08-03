@@ -2,6 +2,9 @@ package com.protyvkultury.revivalages.feature.technology.dryingrack.blockentity;
 
 import com.protyvkultury.revivalages.api.food.FoodFreshnessApi;
 import com.protyvkultury.revivalages.core.particle.ProgressParticleHelper;
+import com.protyvkultury.revivalages.core.process.ProcessRule;
+import com.protyvkultury.revivalages.core.process.ProcessRuleEngine;
+import com.protyvkultury.revivalages.core.process.ProcessRuleType;
 import com.protyvkultury.revivalages.feature.food.spoilage.FoodFreshnessService;
 import com.protyvkultury.revivalages.feature.content.ContentAvailability;
 import com.protyvkultury.revivalages.feature.content.ContentKey;
@@ -51,6 +54,7 @@ public final class DryingRackBlockEntity extends BlockEntity {
     private static final int ENVIRONMENT_UPDATE_INTERVAL = 20;
     private static final int PARTICLE_INTERVAL = 40;
     private static final String CLIENT_ENVIRONMENT_TAG = "ClientEnvironment";
+    private static final List<ProcessRule> PROCESS_RULES = List.of(ProcessRule.of(ProcessRuleType.DRYING_ENVIRONMENT));
 
     private final NonNullList<ItemStack> items;
     private final int[] totalTimes;
@@ -127,7 +131,11 @@ public final class DryingRackBlockEntity extends BlockEntity {
                     rack.normalRack,
                     DryingRackSeasonService.provider()
             );
-            rack.speed = rack.environment.speed();
+            rack.speed = ProcessRuleEngine.evaluate(
+                    PROCESS_RULES,
+                    ignored -> true,
+                    type -> type == ProcessRuleType.DRYING_ENVIRONMENT ? rack.environment.speed() : 1.0D
+            ).speedMultiplier();
             rack.refreshRecipes(level);
             rack.sync();
         }

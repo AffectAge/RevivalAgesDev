@@ -3,6 +3,9 @@ package com.protyvkultury.revivalages.feature.technology.soakingpot.recipe;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.protyvkultury.revivalages.core.process.ProcessRule;
+import java.util.ArrayList;
+import java.util.List;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -17,7 +20,8 @@ public final class SoakingPotRecipeSerializer implements RecipeSerializer<Soakin
             Ingredient.CODEC_NONEMPTY.fieldOf("ingredient").forGetter(SoakingPotRecipe::ingredient),
             FluidStack.CODEC.fieldOf("input_fluid").forGetter(SoakingPotRecipe::inputFluid),
             ItemStack.STRICT_CODEC.fieldOf("result").forGetter(SoakingPotRecipe::result),
-            Codec.BOOL.optionalFieldOf("requires_campfire", false).forGetter(SoakingPotRecipe::requiresCampfire),
+            ProcessRule.CODEC.listOf().fieldOf("process_rules")
+                    .forGetter(SoakingPotRecipe::processRules),
             Codec.INT.validate(value -> value > 0
                             ? com.mojang.serialization.DataResult.success(value)
                             : com.mojang.serialization.DataResult.error(() -> "processing_time must be positive"))
@@ -30,11 +34,12 @@ public final class SoakingPotRecipeSerializer implements RecipeSerializer<Soakin
             SoakingPotRecipe::inputFluid,
             ItemStack.STREAM_CODEC,
             SoakingPotRecipe::result,
-            ByteBufCodecs.BOOL,
-            SoakingPotRecipe::requiresCampfire,
+            ByteBufCodecs.collection(ArrayList::new, ProcessRule.STREAM_CODEC),
+            SoakingPotRecipe::processRules,
             ByteBufCodecs.VAR_INT,
             SoakingPotRecipe::processingTime,
-            SoakingPotRecipe::new
+            (ingredient, inputFluid, result, processRules, processingTime) -> new SoakingPotRecipe(
+                    ingredient, inputFluid, result, processRules, processingTime)
     );
 
     @Override

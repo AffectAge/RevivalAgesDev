@@ -2,12 +2,18 @@ package com.protyvkultury.revivalages.feature.technology.primitive.view;
 
 import com.protyvkultury.revivalages.feature.content.ContentAvailability;
 import com.protyvkultury.revivalages.feature.content.ContentKey;
+import com.protyvkultury.revivalages.core.process.ProcessRule;
+import com.protyvkultury.revivalages.core.process.ProcessRuleType;
+import com.protyvkultury.revivalages.core.process.ProcessRuleView;
+import com.protyvkultury.revivalages.core.process.ProcessOutcomeMode;
+import com.protyvkultury.revivalages.core.process.ToolRequirementView;
 import com.protyvkultury.revivalages.feature.technology.barrel.BarrelFeature;
 import com.protyvkultury.revivalages.feature.technology.barrel.recipe.BarrelRecipe;
 import com.protyvkultury.revivalages.feature.technology.campfire.CampfireFeature;
 import com.protyvkultury.revivalages.feature.technology.campfire.recipe.CampfireRecipe;
 import com.protyvkultury.revivalages.feature.technology.choppingblock.ChoppingBlockFeature;
 import com.protyvkultury.revivalages.feature.technology.choppingblock.recipe.ChoppingRecipe;
+import com.protyvkultury.revivalages.feature.technology.choppingblock.ChoppingToolPolicy;
 import com.protyvkultury.revivalages.feature.technology.pitkiln.PitKilnFeature;
 import com.protyvkultury.revivalages.feature.technology.pitkiln.recipe.PitKilnRecipe;
 import com.protyvkultury.revivalages.feature.technology.pitburn.PitBurnFeature;
@@ -18,7 +24,6 @@ import com.protyvkultury.revivalages.feature.technology.tanningrack.TanningRackF
 import com.protyvkultury.revivalages.feature.technology.tanningrack.recipe.TanningRackRecipe;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
@@ -62,24 +67,20 @@ public final class PrimitiveRecipeCatalog {
                             List.of(recipe.getResultItem(registries)),
                             FluidStack.EMPTY,
                             1800,
-                            Component.translatable("gui.revivalages.recipe.inherited_smelting"),
+                            Component.empty(),
                             holder));
         }
         return result;
     }
 
-    public static List<PrimitiveRecipeView> chopping(RecipeManager manager) {
-        if (!ContentAvailability.isEnabled(ContentKey.CHOPPING_BLOCK)
-                && !ContentAvailability.isEnabled(ContentKey.HORSE_CHOPPING_BLOCK)) {
+    public static List<PrimitiveRecipeView> choppingBlock(RecipeManager manager) {
+        if (!ContentAvailability.isEnabled(ContentKey.CHOPPING_BLOCK)) {
             return List.of();
         }
         return manager.getAllRecipesFor(ChoppingBlockFeature.RECIPE_TYPE.get()).stream()
                 .map(
                         holder -> {
                             ChoppingRecipe recipe = holder.value();
-                            String chops = recipe.chops().isEmpty() ? "configured" : recipe.chops().toString();
-                            String quantities =
-                                    recipe.quantities().isEmpty() ? "configured" : recipe.quantities().toString();
                             return new PrimitiveRecipeView(
                                     holder.id(),
                                     List.of(recipe.ingredient()),
@@ -87,9 +88,10 @@ public final class PrimitiveRecipeCatalog {
                                     List.of(recipe.result()),
                                     FluidStack.EMPTY,
                                     0,
-                                    Component.translatable(
-                                            "gui.revivalages.recipe.chopping_detail", chops, quantities),
-                                    holder);
+                                    Component.empty(),
+                                    holder,
+                                    List.of(),
+                                    List.of(choppingToolRequirement(recipe)));
                         })
                 .toList();
     }
@@ -102,20 +104,18 @@ public final class PrimitiveRecipeCatalog {
                 .map(
                         holder -> {
                             PitKilnRecipe recipe = holder.value();
-                            List<ItemStack> outputs = new ArrayList<>();
-                            outputs.add(recipe.result());
-                            outputs.addAll(recipe.failureResults());
                             return new PrimitiveRecipeView(
                                     holder.id(),
                                     List.of(recipe.ingredient()),
                                     FluidStack.EMPTY,
-                                    outputs,
+                                    failureOutputs(recipe.result(), recipe.failureChance(), recipe.failureResults()),
                                     FluidStack.EMPTY,
                                     recipe.burnTime(),
-                                    Component.translatable(
-                                            "gui.revivalages.recipe.failure_chance",
-                                            String.format(Locale.ROOT, "%.0f%%", recipe.failureChance() * 100.0F)),
-                                    holder);
+                                    Component.empty(),
+                                    holder,
+                                    recipe.failureChance() <= 0.0F ? List.of() : List.of(ProcessRuleView.chance(
+                                            recipe.failureChance(), ProcessOutcomeMode.PER_INPUT, 0,
+                                            recipe.failureResults())));
                         })
                 .toList();
     }
@@ -127,21 +127,18 @@ public final class PrimitiveRecipeCatalog {
         return manager.getAllRecipesFor(PitBurnFeature.RECIPE_TYPE.get()).stream()
                 .map(holder -> {
                     PitBurnRecipe recipe = holder.value();
-                    List<ItemStack> outputs = new ArrayList<>();
-                    outputs.add(recipe.result());
-                    outputs.addAll(recipe.failureResults());
                     return new PrimitiveRecipeView(
                             holder.id(),
                             List.of(recipe.ingredient()),
                             FluidStack.EMPTY,
-                            outputs,
+                            failureOutputs(recipe.result(), recipe.failureChance(), recipe.failureResults()),
                             FluidStack.EMPTY,
                             recipe.burnTime(),
-                            Component.translatable(
-                                    "gui.revivalages.recipe.pit_burn_detail",
-                                    recipe.stages(),
-                                    String.format(Locale.ROOT, "%.0f%%", recipe.failureChance() * 100.0F)),
-                            holder);
+                            Component.empty(),
+                            holder,
+                            recipe.failureChance() <= 0.0F ? List.of() : List.of(ProcessRuleView.chance(
+                                    recipe.failureChance(), ProcessOutcomeMode.PER_STAGE, recipe.stages(),
+                                    recipe.failureResults())));
                 })
                 .toList();
     }
@@ -161,8 +158,9 @@ public final class PrimitiveRecipeCatalog {
                                     List.of(),
                                     recipe.resultFluid(),
                                     recipe.processingTime(),
-                                    Component.translatable("gui.revivalages.recipe.requires_lid"),
-                                    holder);
+                                    Component.empty(),
+                                    holder,
+                                    List.of(new ProcessRuleView(ProcessRule.of(ProcessRuleType.SEALED_MACHINE))));
                         })
                 .toList();
     }
@@ -182,11 +180,9 @@ public final class PrimitiveRecipeCatalog {
                                     List.of(recipe.result()),
                                     FluidStack.EMPTY,
                                     recipe.processingTime(),
-                                    recipe.requiresCampfire()
-                                            ? Component.translatable("gui.revivalages.recipe.requires_campfire")
-                                            : Component.empty(),
+                                    Component.empty(),
                                     holder,
-                                    recipe.requiresCampfire());
+                                    recipe.processRules().stream().map(ProcessRuleView::new).toList());
                         })
                 .toList();
     }
@@ -202,7 +198,13 @@ public final class PrimitiveRecipeCatalog {
                             List<ItemStack> outputs =
                                     recipe.rainFailure().isEmpty()
                                             ? List.of(recipe.result())
-                                            : List.of(recipe.result(), recipe.rainFailure());
+                                    : List.of(recipe.result(), recipe.rainFailure());
+                            List<ProcessRuleView> processRules = new ArrayList<>();
+                            processRules.add(new ProcessRuleView(ProcessRule.of(ProcessRuleType.OPEN_SKY)));
+                            if (!recipe.rainFailure().isEmpty()) {
+                                processRules.add(new ProcessRuleView(
+                                        ProcessRule.of(ProcessRuleType.WEATHER_EXPOSURE), recipe.rainFailure()));
+                            }
                             return new PrimitiveRecipeView(
                                     holder.id(),
                                     List.of(recipe.ingredient()),
@@ -211,7 +213,8 @@ public final class PrimitiveRecipeCatalog {
                                     FluidStack.EMPTY,
                                     recipe.processingTime(),
                                     Component.empty(),
-                                    holder);
+                                    holder,
+                                    processRules);
                         })
                 .toList();
     }
@@ -227,6 +230,29 @@ public final class PrimitiveRecipeCatalog {
                 time,
                 Component.empty(),
                 holder);
+    }
+
+    private static ToolRequirementView choppingToolRequirement(ChoppingRecipe recipe) {
+        List<Component> tooltip = new ArrayList<>();
+        tooltip.add(Component.translatable("gui.revivalages.tool_requirement.chopping"));
+        for (int tier = 0; tier < 4; tier++) {
+            tooltip.add(Component.translatable(
+                    "gui.revivalages.tool_requirement.chopping_tier",
+                    Component.translatable("gui.revivalages.tool_tier." + tier),
+                    ChoppingToolPolicy.requiredChops(recipe, tier),
+                    ChoppingToolPolicy.outputQuantity(recipe, tier)));
+        }
+        return new ToolRequirementView(ChoppingToolPolicy.displayIngredient(), tooltip);
+    }
+
+    private static List<ItemStack> failureOutputs(ItemStack result, float chance, List<ItemStack> failures) {
+        if (chance <= 0.0F || failures.isEmpty()) {
+            return List.of(result);
+        }
+        List<ItemStack> outputs = new ArrayList<>(failures.size() + 1);
+        outputs.add(result);
+        outputs.addAll(failures);
+        return List.copyOf(outputs);
     }
 
     private static boolean shadowedByCustom(

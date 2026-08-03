@@ -40,8 +40,9 @@ remain server-authoritative.
 defines an ingredient, input count, primary result, optional secondary result and
 chance, positive work-point requirement, and supported machine variants.
 
-`revivalages:pressing` defines an ingredient, input count, and exactly one item or
-fluid result. The press exposes its output-only fluid tank from the bottom.
+`revivalages:pressing` defines an ingredient, input count, and at least one item
+or fluid result. A recipe may produce both outputs atomically; the press exposes
+its output-only fluid tank from the bottom.
 Animal-machine item automation inserts into the input from non-bottom sides and
 extracts result slots. The automation policy is server-configurable.
 
@@ -67,7 +68,9 @@ Jade presents worker attachment, area validity, the active blocking state,
 progress, item result, and tank contents. JEI and EMI have independent
 presentation adapters, but both enumerate `grinding`, `pressing`, and the
 existing `chopping` type through `RecipeManager` and the shared
-`AnimalPowerRecipeCatalog`. Recipe codecs remain the only validation source.
+`AnimalPowerRecipeCatalog`. The press layout always contains an item-output slot
+and fluid-output tank; each viewer fills only the outputs present in the
+canonical recipe. Recipe codecs remain the only validation source.
 
 ## Optional integration assessment
 

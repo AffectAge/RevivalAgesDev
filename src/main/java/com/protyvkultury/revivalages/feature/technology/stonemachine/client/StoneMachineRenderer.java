@@ -22,6 +22,26 @@ import net.minecraft.world.phys.BlockHitResult;
 
 public final class StoneMachineRenderer implements BlockEntityRenderer<StoneMachineBlockEntity> {
 
+    private static final double FUEL_ITEM_Y = 0.25D;
+    private static final double FUEL_COUNT_X = 0.5D;
+    private static final double FUEL_COUNT_Y = 0.95D;
+    private static final double FUEL_COUNT_Z = 0.95D;
+    private static final float FUEL_COUNT_SCALE = 0.01F;
+    private static final double PROCESS_COUNT_X = 0.5D;
+    private static final double PROCESS_COUNT_Y = 1.45D;
+    private static final double PROCESS_COUNT_Z = 0.91D;
+    private static final float PROCESS_COUNT_SCALE = 0.01F;
+    private static final double STANDARD_INPUT_Y = 1.2D;
+    private static final double CRUCIBLE_INPUT_Y = 23.01D / 16.0D;
+    private static final float STANDARD_INPUT_SCALE = 0.5F;
+    private static final float CRUCIBLE_INPUT_SCALE = 0.30F;
+    private static final float CRUCIBLE_FLUID_MIN_X = 5.0F / 16.0F;
+    private static final float CRUCIBLE_FLUID_MAX_X = 11.0F / 16.0F;
+    private static final float CRUCIBLE_FLUID_MIN_Z = 4.0F / 16.0F;
+    private static final float CRUCIBLE_FLUID_MAX_Z = 12.0F / 16.0F;
+    private static final float CRUCIBLE_FLUID_MIN_Y = 20.01F / 16.0F;
+    private static final float CRUCIBLE_FLUID_MAX_Y = 23.99F / 16.0F;
+
     private final ItemRenderer items;
 
     public StoneMachineRenderer(BlockEntityRendererProvider.Context context) {
@@ -53,13 +73,21 @@ public final class StoneMachineRenderer implements BlockEntityRenderer<StoneMach
         ItemStack display = machine.input().isEmpty() ? machine.firstOutput() : machine.input();
         if (!display.isEmpty()) {
             pose.pushPose();
-            pose.translate(0.5D, 1.2D, 0.5D);
-            pose.scale(0.5F, 0.5F, 0.5F);
+            transformInput(machine, pose);
             PrimitiveRenderHelper.renderItem(items, machine, display, pose, buffers, light, overlay, 0);
-            if (PrimitiveTechnologyClientConfig.SHOW_PHYSICAL_ITEM_COUNTS.get()) {
-                InteractionPreviewRenderer.renderCount(display, pose, buffers, light);
-            }
             pose.popPose();
+            if (PrimitiveTechnologyClientConfig.SHOW_PHYSICAL_ITEM_COUNTS.get()) {
+                InteractionPreviewRenderer.renderCenteredCount(
+                        display,
+                        pose,
+                        buffers,
+                        light,
+                        PROCESS_COUNT_X,
+                        PROCESS_COUNT_Y,
+                        PROCESS_COUNT_Z,
+                        PROCESS_COUNT_SCALE
+                );
+            }
         }
         renderPreview(machine, pose, buffers, light, overlay);
         pose.popPose();
@@ -116,7 +144,7 @@ public final class StoneMachineRenderer implements BlockEntityRenderer<StoneMach
             return;
         }
         pose.pushPose();
-        transformPreview(previewSlot, pose);
+        transformPreview(machine, previewSlot, pose);
         InteractionPreviewRenderer.renderItemPreview(
                 items, machine, preview, previewSlot.seed, pose, buffers, light, overlay
         );
@@ -158,18 +186,42 @@ public final class StoneMachineRenderer implements BlockEntityRenderer<StoneMach
             return;
         }
         pose.pushPose();
-        transformPreview(PreviewSlot.FUEL, pose);
+        transformPreview(machine, PreviewSlot.FUEL, pose);
         PrimitiveRenderHelper.renderItem(items, machine, machine.fuel(), pose, buffers, light, overlay, 2);
-        if (PrimitiveTechnologyClientConfig.SHOW_PHYSICAL_ITEM_COUNTS.get()) {
-            InteractionPreviewRenderer.renderCount(machine.fuel(), pose, buffers, light);
-        }
         pose.popPose();
+        if (PrimitiveTechnologyClientConfig.SHOW_PHYSICAL_ITEM_COUNTS.get()) {
+            InteractionPreviewRenderer.renderCenteredCount(
+                    machine.fuel(),
+                    pose,
+                    buffers,
+                    light,
+                    FUEL_COUNT_X,
+                    FUEL_COUNT_Y,
+                    FUEL_COUNT_Z,
+                    FUEL_COUNT_SCALE
+            );
+        }
     }
 
-    private static void transformPreview(PreviewSlot slot, PoseStack pose) {
+    private static void transformInput(StoneMachineBlockEntity machine, PoseStack pose) {
+        boolean crucible = machine.kind() == StoneMachineKind.CRUCIBLE;
+        pose.translate(0.5D, crucible ? CRUCIBLE_INPUT_Y : STANDARD_INPUT_Y, 0.5D);
+        float scale = crucible ? CRUCIBLE_INPUT_SCALE : STANDARD_INPUT_SCALE;
+        pose.scale(scale, scale, scale);
+    }
+
+    private static void transformPreview(
+            StoneMachineBlockEntity machine,
+            PreviewSlot slot,
+            PoseStack pose
+    ) {
+        if (slot == PreviewSlot.INPUT) {
+            transformInput(machine, pose);
+            return;
+        }
         pose.translate(
                 0.5D,
-                slot == PreviewSlot.FUEL ? 0.2D : slot == PreviewSlot.BLADE ? 1.0D : 1.2D,
+                slot == PreviewSlot.FUEL ? FUEL_ITEM_Y : 1.0D,
                 0.5D
         );
         if (slot == PreviewSlot.BLADE) {
@@ -191,15 +243,19 @@ public final class StoneMachineRenderer implements BlockEntityRenderer<StoneMach
         if (fluid.isEmpty()) {
             return;
         }
-        float ratio = fluid.getAmount() / (float) machine.fluidTank().getCapacity();
-        float y = 14.0F / 16.0F + ratio * 9.0F / 16.0F;
+        float ratio = Math.clamp(
+                fluid.getAmount() / (float) machine.fluidTank().getCapacity(),
+                0.0F,
+                1.0F
+        );
+        float y = CRUCIBLE_FLUID_MIN_Y + ratio * (CRUCIBLE_FLUID_MAX_Y - CRUCIBLE_FLUID_MIN_Y);
         PrimitiveRenderHelper.renderFluidSurface(
                 fluid,
-                2.0F / 16.0F,
-                14.0F / 16.0F,
+                CRUCIBLE_FLUID_MIN_X,
+                CRUCIBLE_FLUID_MAX_X,
                 y,
-                2.0F / 16.0F,
-                14.0F / 16.0F,
+                CRUCIBLE_FLUID_MIN_Z,
+                CRUCIBLE_FLUID_MAX_Z,
                 pose, buffers, light, overlay);
     }
 

@@ -3,6 +3,6 @@
   "type": "revivalages:soaking_pot", "ingredient": { "item": "revivalages:scraped_hide" },
   "input_fluid": { "id": "minecraft:water", "amount": 250 },
   "result": { "id": "revivalages:washed_hide", "count": 1 },
-  "requires_campfire": true,
+  "process_rules": [{ "type": "lit_block_below" }],
   "processing_time": 2400
 }

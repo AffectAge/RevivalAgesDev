@@ -199,7 +199,8 @@ stacks use `{"id":"namespace:fluid","amount":1000}`.
 - `revivalages:barrel`: one to four `items`, `input_fluid`, `result_fluid`, and
   `processing_time`.
 - `revivalages:soaking_pot`: `ingredient`, `input_fluid`, `result`, optional
-  `requires_campfire`, and `processing_time`. The built-in scraped-hide recipe
+  `process_rules`, and `processing_time`. `process_rules` is an ordered list of
+  shared process conditions such as `{"type":"lit_block_below"}`. The built-in scraped-hide recipe
   requires a lit Campfire, 250 mB of water, and 2,400 ticks. The tannin recipe
   consumes 500 mB and takes 12,000 ticks without a Campfire requirement.
 - `revivalages:tanning_rack`: `ingredient`, `result`, optional `rain_failure`, and
@@ -224,15 +225,23 @@ fuel, blade, tank and output-blocking state, and Anvil hits and damage. JEI and
 EMI use separate presentation adapters, enumerate the same gameplay recipe types
 from `RecipeManager`, and use licensed functional UI textures. Categories include
 item and fluid inputs, outputs, duration,
-failure outcomes, and required environmental conditions. All three integrations
-are optional and client-only; a dedicated server and the base mod load without
-them.
+failure outcomes, and required environmental conditions. Environmental and
+machine requirements are presented in a dedicated bottom row of 16x16 icons,
+ordered from left to right, with the same order and tooltip text in both viewers:
+Soaking Pot heat uses the fire icon, Barrel sealing uses the lid icon, and Tanning
+Rack uses open-sky and rain icons. All three integrations are optional and
+client-only; a dedicated server and the base mod load without them.
+
+Viewer-only chance outcomes use the same atlas row. They state whether a roll
+is made for an additional output, for every input, or for every Pit Burn stage,
+and list the canonical alternate results. Required tools use a real cycling
+Ingredient slot rather than a generic icon; primitive recipes and Construction
+Frame use the same `ToolRequirementView` contract.
 
 Soaking Pot recipes expose the Campfire requirement through the same canonical
-recipe field used by gameplay. JEI and EMI show it in a separate clickable
-catalyst slot and display the processing time and requirement text
-simultaneously; neither viewer maintains a private rule for deciding which
-recipes need heat.
+recipe field used by gameplay. JEI and EMI show it in the shared condition row
+and keep the processing time below that row; neither viewer maintains a private
+rule for deciding which recipes need heat.
 
 Pit Burn adds its staged success/failure recipe to the same JEI/EMI catalog. Jade
 shows enclosure validity, grace countdown, completed stages, progress, and the

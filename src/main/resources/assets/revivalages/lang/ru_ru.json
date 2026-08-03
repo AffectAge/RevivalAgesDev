@@ -56,26 +56,75 @@
   "emi.category.revivalages.crude_drying": "Примитивная сушка",
   "emi.category.revivalages.drying": "Сушка",
   "jei.revivalages.category.campfire": "Готовка на костре",
-  "jei.revivalages.category.chopping": "Рубка",
+  "jei.revivalages.category.chopping_block": "Рубочный блок",
+  "jei.revivalages.category.animal_chopping": "Рубка животной тягой",
   "jei.revivalages.category.pit_kiln": "Ямная печь",
   "jei.revivalages.category.barrel": "Бочка",
   "jei.revivalages.category.soaking_pot": "Замачивание",
   "jei.revivalages.category.tanning_rack": "Дубление",
   "emi.category.revivalages.campfire": "Готовка на костре",
-  "emi.category.revivalages.chopping": "Рубка",
+  "emi.category.revivalages.chopping_block": "Рубочный блок",
+  "emi.category.revivalages.animal_chopping": "Рубка животной тягой",
   "emi.category.revivalages.pit_kiln": "Ямная печь",
   "emi.category.revivalages.barrel": "Бочка",
   "emi.category.revivalages.soaking_pot": "Замачивание",
   "emi.category.revivalages.tanning_rack": "Дубление",
   "gui.revivalages.recipe.time": "%s с",
-  "gui.revivalages.recipe.inherited_smelting": "Унаследованный рецепт плавки",
-  "gui.revivalages.recipe.chopping_detail": "Удары %s; выход %s",
-  "gui.revivalages.recipe.failure_chance": "Вероятность неудачи: %s",
   "gui.revivalages.recipe.requires_lid": "Закройте крышкой бочки",
-  "gui.revivalages.recipe.requires_campfire": "Требуется горящий костёр",
   "gui.revivalages.recipe.requires_sun": "Нужны день и открытое небо",
   "gui.revivalages.recipe.rain_failure": "Дождь может испортить рецепт",
   "gui.revivalages.recipe.rain_failure_tooltip": "Дождь может привести к результату: %s",
+  "gui.revivalages.process_rule.fuelled_and_lit": "Требуется топливо и розжиг",
+  "gui.revivalages.process_rule.installed_tool": "Требуется установленный инструмент",
+  "gui.revivalages.process_rule.valid_work_area": "Требуется подходящая рабочая область",
+  "gui.revivalages.process_rule.attached_worker": "Требуется привязанный работник",
+  "gui.revivalages.process_rule.lit_block_below": "Требуется горящий костёр непосредственно снизу",
+  "gui.revivalages.process_rule.lit_block_below.status": "Остановка: снизу нет горящего костра",
+  "gui.revivalages.process_rule.open_sky": "Требуется открытое небо",
+  "gui.revivalages.process_rule.open_sky.status": "Остановка: небо перекрыто",
+  "gui.revivalages.process_rule.weather_exposure": "Дождь может испортить процесс",
+  "gui.revivalages.process_rule.weather_exposure.status": "Риск: процесс находится под дождём",
+  "gui.revivalages.process_rule.weather_exposure.failure": "При провале из-за дождя получится: %s",
+  "gui.revivalages.process_rule.drying_environment": "Скорость сушки зависит от окружения",
+  "gui.revivalages.process_rule.drying_environment.status": "Окружение замедляет сушку",
+  "gui.revivalages.process_rule.sealed_machine": "Устройство должно быть запечатано",
+  "gui.revivalages.process_rule.sealed_machine.status": "Остановка: устройство не запечатано",
+  "gui.revivalages.process_rule.installed_tool.status": "Остановка: инструмент отсутствует",
+  "gui.revivalages.process_rule.fuelled_and_lit.status": "Остановка: нет топлива или розжига",
+  "gui.revivalages.process_rule.attached_worker.status": "Остановка: работник не привязан",
+  "gui.revivalages.process_rule.attached_worker.animals": "Подходят: лошадь, осёл, мул, лама или верблюд",
+  "gui.revivalages.process_rule.attached_worker.lead": "Приведите работника к механизму на поводке, чтобы привязать его",
+  "gui.revivalages.process_rule.valid_work_area.status": "Остановка: рабочая область неверна",
+  "gui.revivalages.process_rule.valid_work_area.square": "Нужна свободная область 7×7 с механизмом в центре",
+  "gui.revivalages.process_rule.valid_work_area.floor": "В каждой позиции нужен прочный пол",
+  "gui.revivalages.process_rule.valid_work_area.headroom": "Над каждой позицией маршрута нужно два свободных блока",
+  "gui.revivalages.process_rule.valid_structure": "Требуется правильная структура",
+  "gui.revivalages.process_rule.valid_structure.status": "Остановка: структура неверна",
+  "gui.revivalages.process_rule.required_manual_tool": "Требуется указанный ручной инструмент",
+  "gui.revivalages.process_rule.required_manual_tool.status": "Остановка: нужный ручной инструмент отсутствует",
+  "gui.revivalages.process_rule.random_outcome": "Процесс может дать случайный альтернативный результат",
+  "gui.revivalages.process_rule.random_outcome.status": "Определяется случайный результат",
+  "gui.revivalages.process_rule.random_outcome.chance": "Шанс: %s",
+  "gui.revivalages.process_rule.random_outcome.additional": "Проверяется один раз как дополнительный выход",
+  "gui.revivalages.process_rule.random_outcome.per_input": "Проверяется отдельно для каждого входного предмета; огнеупорные блоки уменьшают шанс",
+  "gui.revivalages.process_rule.random_outcome.per_stage": "Проверяется отдельно для каждой из %s стадий; результаты неудачи равновероятны",
+  "gui.revivalages.process_rule.random_outcome.per_attempt": "Проверяется отдельно для каждой из %s операций распила",
+  "gui.revivalages.process_rule.random_outcome.per_item": "Проверяется отдельно для каждого входного предмета; при неудаче выбирается один из указанных результатов",
+  "gui.revivalages.process_rule.random_outcome.results": "Возможный результат: %s",
+  "gui.revivalages.tool_requirement.chopping": "Требуемый инструмент: подходящий топор для рубки (исключённые топоры не работают)",
+  "gui.revivalages.tool_requirement.chopping_tier": "%s: %s ударов, выход %s",
+  "gui.revivalages.tool_requirement.frame": "Требуемый инструмент: завершает сборку в раме",
+  "gui.revivalages.tool_requirement.frame_durability": "Потеря прочности при успехе: %s",
+  "gui.revivalages.tool_requirement.anvil": "Требуемый инструмент: %s",
+  "gui.revivalages.tool_requirement.anvil_hits": "Требуется ударов: %s",
+  "gui.revivalages.tool_requirement.anvil_durability_enabled": "Каждый подходящий удар расходует прочность инструмента",
+  "gui.revivalages.tool_requirement.anvil_durability_disabled": "В этой конфигурации прочность инструмента не расходуется",
+  "gui.revivalages.tool_requirement.anvil_hunger": "Каждый подходящий удар расходует голод",
+  "gui.revivalages.tool_tier.0": "Деревянный tier",
+  "gui.revivalages.tool_tier.1": "Каменный tier",
+  "gui.revivalages.tool_tier.2": "Железный tier",
+  "gui.revivalages.tool_tier.3": "Алмазный tier",
+  "jade.revivalages.pit_kiln.rain": "Воздействие дождя: %s/%s",
   "config.jade.plugin_revivalages.drying_rack": "Сведения о сушилке",
   "config.jade.plugin_revivalages.primitive_devices": "Сведения о примитивных устройствах",
   "jade.revivalages.primitive.ready": "Можно забрать",
@@ -169,7 +218,6 @@
   ,"message.revivalages.anvil.not_enough_hunger": "Вы слишком голодны для работы на наковальне"
   ,"gui.revivalages.recipe.tool.hammer": "Инструмент: молот"
   ,"gui.revivalages.recipe.tool.pickaxe": "Инструмент: кирка"
-  ,"gui.revivalages.recipe.sawmill_chips": "Шанс щепок: %s"
   ,"gui.revivalages.recipe.anvil_detail": "%s; ударов: %s"
   ,"jade.revivalages.stone_machine.output_ready": "Результат готов"
   ,"jade.revivalages.stone_machine.speed": "Скорость работы: x%s"
@@ -190,7 +238,6 @@
   ,"item.revivalages.primitive_bucket.filled": "%1$s: %2$s"
   ,"jei.revivalages.category.pit_burn": "Ямное выжигание"
   ,"emi.category.revivalages.pit_burn": "Ямное выжигание"
-  ,"gui.revivalages.recipe.pit_burn_detail": "%s стадий; шанс неудачи каждой — %s"
   ,"jade.revivalages.pit_burn.structure.valid": "Обкладка: исправна"
   ,"jade.revivalages.pit_burn.structure.invalid": "Обкладка: нарушена"
   ,"jade.revivalages.pit_burn.invalid_grace": "Разрушение конструкции: %s/%s тиков"
@@ -345,4 +392,8 @@
   ,"jade.revivalages.storage_barrel.capacity": "Вместимость: %s ячеек"
   ,"jade.revivalages.storage_barrel.preserved": "Сохранение еды активно"
   ,"config.jade.plugin_revivalages.storage_barrel": "Сведения о бочке для хранения"
+  ,"jei.revivalages.category.hand_grinding": "Ручной помол"
+  ,"jei.revivalages.category.animal_grinding": "Помол животной тягой"
+  ,"emi.category.revivalages.hand_grinding": "Ручной помол"
+  ,"emi.category.revivalages.animal_grinding": "Помол животной тягой"
 }

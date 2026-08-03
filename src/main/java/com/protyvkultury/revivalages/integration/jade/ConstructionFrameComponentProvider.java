@@ -48,10 +48,13 @@ public enum ConstructionFrameComponentProvider implements IBlockComponentProvide
             ));
             ItemStack[] tools = recipe.tool().getItems();
             if (tools.length > 0) {
-                tooltip.add(Component.translatable(
-                        "jade.revivalages.construction_frame.tool",
-                        tools[0].getHoverName()
-                ));
+                java.util.ArrayList<IElement> toolLine = new java.util.ArrayList<>();
+                for (ItemStack tool : tools) {
+                    toolLine.add(elements.item(tool));
+                }
+                toolLine.add(elements.spacer(2, 0));
+                toolLine.add(elements.text(Component.translatable("jade.revivalages.construction_frame.tool", tools[0].getHoverName())));
+                tooltip.add(toolLine);
             }
             if (frame.isPlacementBlocked(recipe)) {
                 tooltip.add(Component.translatable("jade.revivalages.construction_frame.blocked"));

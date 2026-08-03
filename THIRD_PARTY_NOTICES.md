@@ -164,7 +164,8 @@ paths `textures/block/grinding_contents.png`,
 `textures/gui/animal_power_grinding.png`, and
 `textures/gui/animal_power_pressing.png`. Model parents, vanilla texture names,
 resource locations, blockstate composition, and renderer transforms were adapted
-for Minecraft 1.21.1.
+for Minecraft 1.21.1. The pressing background was further adapted into a fixed
+dual-output layout with independent item-slot and fluid-tank frames.
 
 ## Pyrotech
 

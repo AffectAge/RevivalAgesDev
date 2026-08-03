@@ -149,7 +149,10 @@ Each machine owns its block, block entity, and recipe type, while shared materia
 configuration, rendering helpers, tags, and shared recipe-query semantics live in
 `feature/technology/primitive`. Optional Jade, JEI, and EMI adapters depend on
 those synchronized states and gameplay recipe types. JEI and EMI keep separate
-presentation adapters while enumerating the same recipes from `RecipeManager`;
+presentation adapters while enumerating the same recipes from `RecipeManager`.
+Shared gates, environmental modifiers, and persistent process risks use the
+server-authoritative [Process Rules](process-rules.md) contract; viewers only
+render its common presentation model.
 
 The processing Barrel remains a recipe-and-fluid machine. The Storage Barrel is
 a separate general inventory under the barrel feature, with sealed preservation

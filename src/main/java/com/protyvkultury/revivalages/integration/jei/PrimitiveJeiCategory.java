@@ -1,7 +1,11 @@
 package com.protyvkultury.revivalages.integration.jei;
 
 import com.protyvkultury.revivalages.RevivalAges;
-import com.protyvkultury.revivalages.feature.technology.campfire.CampfireFeature;
+import com.protyvkultury.revivalages.core.process.ProcessRuleType;
+import com.protyvkultury.revivalages.core.process.ProcessRuleView;
+import com.protyvkultury.revivalages.core.process.ProcessRulePresentation;
+import com.protyvkultury.revivalages.core.process.ProcessRuleLayout;
+import com.protyvkultury.revivalages.feature.technology.primitive.view.PrimitiveFluidSlotGeometry;
 import com.protyvkultury.revivalages.feature.technology.primitive.view.PrimitiveRecipeView;
 import java.util.Locale;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
@@ -32,7 +36,6 @@ final class PrimitiveJeiCategory implements IRecipeCategory<PrimitiveRecipeView>
     private final IDrawable background;
     private final IDrawable arrow;
     private final IDrawable flame;
-    private final IDrawable rainIcon;
 
     PrimitiveJeiCategory(
             IGuiHelper helper,
@@ -61,9 +64,6 @@ final class PrimitiveJeiCategory implements IRecipeCategory<PrimitiveRecipeView>
                         IDrawableAnimated.StartDirection.TOP,
                         true)
                 : null;
-        this.rainIcon = layout == Layout.TANNING_RACK
-                ? helper.createDrawable(texture, 101, 0, 18, 11)
-                : null;
     }
 
     public RecipeType<PrimitiveRecipeView> getRecipeType() {
@@ -83,14 +83,15 @@ final class PrimitiveJeiCategory implements IRecipeCategory<PrimitiveRecipeView>
     }
 
     public int getHeight() {
-        if (this.layout == Layout.TANNING_RACK) {
-            return this.layout.backgroundHeight;
-        }
-        return this.layout.backgroundHeight + (this.layout == Layout.SOAKING_POT ? 24 : 13);
+        return this.layout.backgroundHeight
+                + 20
+                + maximumRuleHeight()
+                + 24;
     }
 
     public void setRecipe(
             IRecipeLayoutBuilder builder, PrimitiveRecipeView recipe, IFocusGroup focuses) {
+        addToolRequirements(builder, recipe);
         switch (this.layout) {
             case CAMPFIRE, STONE_OVEN:
                 {
@@ -112,12 +113,15 @@ final class PrimitiveJeiCategory implements IRecipeCategory<PrimitiveRecipeView>
                 PrimitiveJeiCategory.addItemInputs(builder, recipe, new int[][] {{34, 32}});
                 PrimitiveJeiCategory.addItemOutputs(builder, recipe, new int[][] {{90, 32}});
                 PrimitiveJeiCategory.addFluid(
-                        builder, RecipeIngredientRole.OUTPUT, recipe.fluidOutput(), 95, 23, 16, 27);
+                        builder,
+                        RecipeIngredientRole.OUTPUT,
+                        recipe.fluidOutput(),
+                        PrimitiveFluidSlotGeometry.PRESSING_OUTPUT);
                 break;
-            case PIT_KILN:
+            case PIT_KILN, PIT_BURN:
                 {
                     PrimitiveJeiCategory.addItemInputs(builder, recipe, new int[][] {{0, 22}});
-                    PrimitiveJeiCategory.addItemOutputs(builder, recipe, new int[][] {{60, 18}, {83, 22}});
+                    addChanceOutputs(builder, recipe, 60, 18, 83, 22);
                     break;
                 }
             case BARREL:
@@ -125,21 +129,26 @@ final class PrimitiveJeiCategory implements IRecipeCategory<PrimitiveRecipeView>
                     PrimitiveJeiCategory.addItemInputs(
                             builder, recipe, new int[][] {{0, 0}, {19, 0}, {0, 19}, {19, 19}});
                     PrimitiveJeiCategory.addFluid(
-                            builder, RecipeIngredientRole.INPUT, recipe.fluidInput(), 1, 39, 35, 11);
+                            builder,
+                            RecipeIngredientRole.INPUT,
+                            recipe.fluidInput(),
+                            PrimitiveFluidSlotGeometry.BARREL_INPUT);
                     PrimitiveJeiCategory.addFluid(
-                            builder, RecipeIngredientRole.OUTPUT, recipe.fluidOutput(), 72, 1, 24, 49);
+                            builder,
+                            RecipeIngredientRole.OUTPUT,
+                            recipe.fluidOutput(),
+                            PrimitiveFluidSlotGeometry.BARREL_OUTPUT);
                     break;
                 }
             case SOAKING_POT:
                 {
                     PrimitiveJeiCategory.addItemInputs(builder, recipe, new int[][] {{0, 0}});
                     PrimitiveJeiCategory.addFluid(
-                            builder, RecipeIngredientRole.INPUT, recipe.fluidInput(), 1, 20, 16, 16);
+                            builder,
+                            RecipeIngredientRole.INPUT,
+                            recipe.fluidInput(),
+                            PrimitiveFluidSlotGeometry.SOAKING_POT_INPUT);
                     PrimitiveJeiCategory.addItemOutputs(builder, recipe, new int[][] {{60, 19}});
-                    if (recipe.requiresCampfire()) {
-                        builder.addSlot(RecipeIngredientRole.CATALYST, 25, 37)
-                                .addItemStack(new ItemStack(CampfireFeature.TINDER.get()));
-                    }
                     break;
                 }
             case TANNING_RACK:
@@ -150,16 +159,19 @@ final class PrimitiveJeiCategory implements IRecipeCategory<PrimitiveRecipeView>
                 }
             case STONE_SAWMILL:
                 PrimitiveJeiCategory.addItemInputs(builder, recipe, new int[][] {{0, 0}, {0, 19}});
-                PrimitiveJeiCategory.addItemOutputs(builder, recipe, new int[][] {{60, 16}, {83, 20}});
+                addChanceOutputs(builder, recipe, 60, 16, 83, 20);
                 break;
             case STONE_KILN:
                 PrimitiveJeiCategory.addItemInputs(builder, recipe, new int[][] {{0, 0}});
-                PrimitiveJeiCategory.addItemOutputs(builder, recipe, new int[][] {{60, 10}, {83, 14}});
+                addChanceOutputs(builder, recipe, 60, 10, 83, 14);
                 break;
             case STONE_CRUCIBLE:
                 PrimitiveJeiCategory.addItemInputs(builder, recipe, new int[][] {{0, 0}});
                 PrimitiveJeiCategory.addFluid(
-                        builder, RecipeIngredientRole.OUTPUT, recipe.fluidOutput(), 61, 11, 16, 16);
+                        builder,
+                        RecipeIngredientRole.OUTPUT,
+                        recipe.fluidOutput(),
+                        PrimitiveFluidSlotGeometry.STONE_CRUCIBLE_OUTPUT);
                 break;
         }
     }
@@ -186,16 +198,17 @@ final class PrimitiveJeiCategory implements IRecipeCategory<PrimitiveRecipeView>
             IRecipeLayoutBuilder builder,
             RecipeIngredientRole role,
             FluidStack fluid,
-            int x,
-            int y,
-            int width,
-            int height) {
+            PrimitiveFluidSlotGeometry geometry) {
         if (fluid.isEmpty()) {
             return;
         }
         builder
-                .addSlot(role, x, y)
-                .setFluidRenderer((long) fluid.getAmount(), false, width, height)
+                .addSlot(role, geometry.contentX(), geometry.contentY())
+                .setFluidRenderer(
+                        (long) fluid.getAmount(),
+                        false,
+                        geometry.contentWidth(),
+                        geometry.contentHeight())
                 .addFluidStack(fluid.getFluid(), (long) fluid.getAmount());
     }
 
@@ -212,16 +225,10 @@ final class PrimitiveJeiCategory implements IRecipeCategory<PrimitiveRecipeView>
         if (this.arrow != null) {
             this.arrow.draw(graphics, this.layout.arrowX, this.layout.arrowY);
         }
-        if (this.layout == Layout.TANNING_RACK) {
-            if (hasRainFailure(recipe) && this.rainIcon != null) {
-                this.rainIcon.draw(graphics, 1, 34);
-            }
-            if (recipe.processingTime() > 0) {
-                drawCenteredAt(graphics, processingTimeText(recipe), 36, 35);
-            }
-            return;
-        }
-        int textY = this.layout.backgroundHeight + 2;
+        drawCustomConditions(graphics, recipe);
+        int textY = conditionY(recipe)
+                + ProcessRuleLayout.of(this.layout.width, recipe.processRules().size()).height()
+                + 2;
         if (recipe.processingTime() > 0) {
             drawCentered(graphics, processingTimeText(recipe), textY);
             textY += 10;
@@ -229,6 +236,27 @@ final class PrimitiveJeiCategory implements IRecipeCategory<PrimitiveRecipeView>
         Component detail = recipe.detail();
         if (!detail.getString().isEmpty()) {
             drawCentered(graphics, detail, textY);
+        }
+    }
+
+    private static void addChanceOutputs(
+            IRecipeLayoutBuilder builder, PrimitiveRecipeView recipe, int resultX, int resultY, int chanceX, int chanceY) {
+        if (recipe.itemOutputs().isEmpty()) {
+            return;
+        }
+        builder.addOutputSlot(resultX, resultY).addItemStack(recipe.itemOutputs().getFirst());
+        if (recipe.itemOutputs().size() > 1) {
+            builder.addOutputSlot(chanceX, chanceY).addItemStacks(recipe.itemOutputs().subList(1, recipe.itemOutputs().size()));
+        }
+    }
+
+    private void addToolRequirements(IRecipeLayoutBuilder builder, PrimitiveRecipeView recipe) {
+        int x = Math.max(0, (this.layout.width - recipe.toolRequirements().size() * 18 + 2) / 2);
+        int y = this.layout.backgroundHeight + 2;
+        for (int index = 0; index < recipe.toolRequirements().size(); index++) {
+            builder.addSlot(RecipeIngredientRole.CATALYST, x + index * 18, y)
+                    .setStandardSlotBackground()
+                    .addIngredients(recipe.toolRequirements().get(index).ingredient());
         }
     }
 
@@ -240,21 +268,44 @@ final class PrimitiveJeiCategory implements IRecipeCategory<PrimitiveRecipeView>
             double mouseX,
             double mouseY
     ) {
-        if (this.layout == Layout.TANNING_RACK
-                && hasRainFailure(recipe)
-                && mouseX >= 1
-                && mouseX < 19
-                && mouseY >= 34
-                && mouseY < 45) {
-            tooltip.add(
-                    Component.translatable(
-                            "gui.revivalages.recipe.rain_failure_tooltip",
-                            recipe.itemOutputs().get(1).getHoverName()));
+        int conditionY = conditionY(recipe);
+        for (int index = 0; index < recipe.toolRequirements().size(); index++) {
+            int x = Math.max(0, (this.layout.width - recipe.toolRequirements().size() * 18 + 2) / 2) + index * 18;
+            if (mouseX >= x && mouseX < x + 16 && mouseY >= this.layout.backgroundHeight + 2
+                    && mouseY < this.layout.backgroundHeight + 18) {
+                recipe.toolRequirements().get(index).tooltip().forEach(tooltip::add);
+            }
+        }
+        ProcessRuleLayout ruleLayout = ProcessRuleLayout.of(this.layout.width, recipe.processRules().size());
+        for (int index = 0; index < recipe.processRules().size(); index++) {
+            int iconX = ruleLayout.x(index);
+            int iconY = ruleLayout.y(conditionY, index);
+            if (mouseX >= iconX && mouseX < iconX + 16 && mouseY >= iconY && mouseY < iconY + 16) {
+                appendRuleTooltip(tooltip, recipe.processRules().get(index));
+            }
         }
     }
 
-    private static boolean hasRainFailure(PrimitiveRecipeView recipe) {
-        return recipe.itemOutputs().size() > 1;
+    private void drawCustomConditions(GuiGraphics graphics, PrimitiveRecipeView recipe) {
+        int y = conditionY(recipe);
+        ProcessRuleLayout ruleLayout = ProcessRuleLayout.of(this.layout.width, recipe.processRules().size());
+        for (int index = 0; index < recipe.processRules().size(); index++) {
+            ProcessRulePresentation presentation = recipe.processRules().get(index).presentation();
+            graphics.blit(ProcessRulePresentation.ATLAS, ruleLayout.x(index), ruleLayout.y(y, index), presentation.u(), presentation.v(), 16, 16,
+                    ProcessRulePresentation.ATLAS_WIDTH, ProcessRulePresentation.ATLAS_HEIGHT);
+        }
+    }
+
+    private int conditionY(PrimitiveRecipeView recipe) {
+        return this.layout.backgroundHeight + 2 + (recipe.toolRequirements().isEmpty() ? 0 : 20);
+    }
+
+    private int maximumRuleHeight() {
+        return ProcessRuleLayout.of(this.layout.width, ProcessRuleType.values().length).height();
+    }
+
+    private static void appendRuleTooltip(ITooltipBuilder tooltip, ProcessRuleView rule) {
+        ProcessRulePresentation.viewerTooltip(rule).forEach(tooltip::add);
     }
 
     private static Component processingTimeText(PrimitiveRecipeView recipe) {
@@ -285,7 +336,8 @@ final class PrimitiveJeiCategory implements IRecipeCategory<PrimitiveRecipeView>
     static enum Layout {
         CAMPFIRE("campfire", 82, 33, 82, 14, 24, 17, 24, 10, true, 82, 0, 1, 19),
         CHOPPING("chopping", 82, 40, 82, 0, 24, 17, 24, 18, false, 0, 0, 0, 0),
-        PIT_KILN("pit_kiln", 101, 54, 101, 14, 24, 17, 24, 18, true, 101, 0, 1, 27),
+        PIT_KILN("pit_kiln", 101, 54, 101, 14, 24, 17, 24, 18, true, 101, 0, 1, 7),
+        PIT_BURN("pit_kiln", 101, 54, 101, 14, 24, 17, 24, 18, true, 101, 0, 1, 6),
         BARREL("barrel", 97, 51, 101, 0, 24, 17, 42, 19, false, 0, 0, 0, 0),
         SOAKING_POT("soaking_pot", 82, 56, 82, 0, 24, 17, 24, 19, false, 0, 0, 0, 0),
         TANNING_RACK("tanning_rack", 95, 45, 119, 0, 24, 17, 24, 10, false, 0, 0, 0, 0),

@@ -2,5 +2,7 @@
   "neoforge:conditions": [{"type":"revivalages:content_enabled","content":"revivalages:soaking_pot","enabled":true}],
   "type": "revivalages:soaking_pot", "ingredient": { "item": "revivalages:washed_hide" },
   "input_fluid": { "id": "revivalages:tannin", "amount": 500 },
-  "result": { "id": "revivalages:tanned_hide", "count": 1 }, "processing_time": 12000
+  "result": { "id": "revivalages:tanned_hide", "count": 1 },
+  "process_rules": [{ "type": "lit_block_below" }],
+  "processing_time": 12000
 }

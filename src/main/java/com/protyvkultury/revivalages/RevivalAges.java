@@ -2,6 +2,7 @@ package com.protyvkultury.revivalages;
 
 import com.mojang.logging.LogUtils;
 import com.protyvkultury.revivalages.data.RevivalAgesDataGenerators;
+import com.protyvkultury.revivalages.core.process.ProcessRulePresentation;
 import com.protyvkultury.revivalages.feature.ModFeatures;
 import com.protyvkultury.revivalages.feature.technology.dryingrack.environment.DryingRackSeasonService;
 import com.protyvkultury.revivalages.integration.DryingRackSeasonIntegrations;
@@ -19,6 +20,7 @@ public final class RevivalAges {
     public static final Logger LOGGER = LogUtils.getLogger();
 
     public RevivalAges(IEventBus modBus, ModContainer modContainer) {
+        ProcessRulePresentation.validate();
         modBus.addListener(RevivalAgesDataGenerators::gatherData);
         ModFeatures.register(modBus, modContainer);
         DryingRackSeasonService.install(DryingRackSeasonIntegrations.createProvider());

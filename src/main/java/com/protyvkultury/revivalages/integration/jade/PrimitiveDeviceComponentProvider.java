@@ -1,6 +1,8 @@
 package com.protyvkultury.revivalages.integration.jade;
 
 import com.protyvkultury.revivalages.RevivalAges;
+import com.protyvkultury.revivalages.core.process.ProcessRulePresentation;
+import com.protyvkultury.revivalages.core.process.ProcessRuleType;
 import com.protyvkultury.revivalages.feature.technology.barrel.block.BarrelBlock;
 import com.protyvkultury.revivalages.feature.technology.barrel.blockentity.BarrelBlockEntity;
 import com.protyvkultury.revivalages.feature.technology.campfire.blockentity.CampfireBlockEntity;
@@ -90,10 +92,16 @@ public enum PrimitiveDeviceComponentProvider implements IBlockComponentProvider 
         String stage = accessor.getBlockState().getValue(PitKilnBlock.STAGE).getSerializedName();
         tooltip.add(Component.translatable("jade.revivalages.pit_kiln.stage", Component.translatable("jade.revivalages.pit_kiln.stage." + stage)));
         boolean valid = kiln.isStructureValid();
+        appendRule(tooltip, ProcessRuleType.VALID_STRUCTURE, !valid);
         tooltip.add(Component.translatable("jade.revivalages.pit_kiln.structure." + (valid ? "valid" : "invalid")));
         if (!valid && kiln.invalidStructureTicks() > 0) {
             tooltip.add(Component.translatable("jade.revivalages.pit_kiln.invalid_grace",
                     kiln.invalidStructureTicks(), kiln.maximumInvalidStructureTicks()));
+        }
+        if (PrimitiveTechnologyConfig.PIT_KILN_RAIN_EXTINGUISHES.get() && kiln.rainTicks() > 0) {
+            appendRule(tooltip, ProcessRuleType.WEATHER_EXPOSURE, true);
+            tooltip.add(Component.translatable("jade.revivalages.pit_kiln.rain", kiln.rainTicks(),
+                    PrimitiveTechnologyConfig.PIT_KILN_RAIN_EXTINGUISH_TICKS.get()));
         }
         tooltip.add(Component.translatable("jade.revivalages.pit_kiln.logs", kiln.logCount(), 3));
         if (!kiln.input().isEmpty()) {
@@ -114,6 +122,7 @@ public enum PrimitiveDeviceComponentProvider implements IBlockComponentProvider 
         FluidStack output = barrel.recipeOutput();
         appendBarrelProcess(tooltip, barrel, output);
         boolean sealed = accessor.getBlockState().getValue(BarrelBlock.SEALED);
+        appendRule(tooltip, ProcessRuleType.SEALED_MACHINE, !sealed);
         tooltip.add(Component.translatable("jade.revivalages.barrel.state." + (sealed ? "sealed" : "open")));
         if (sealed) {
             long nearest = java.util.Arrays.stream(barrel.itemsForView())
@@ -144,13 +153,12 @@ public enum PrimitiveDeviceComponentProvider implements IBlockComponentProvider 
     private static void appendSoakingPot(ITooltip tooltip, BlockAccessor accessor, SoakingPotBlockEntity pot) {
         appendItemProgress(tooltip, pot.input(), pot.recipeOutput(), pot.progress());
         appendFluidIfPresent(tooltip, pot.fluidTank().getFluid(), pot.fluidTank().getCapacity());
-        if (pot.requiresCampfire()) {
-            boolean heated = accessor.getLevel().getBlockState(accessor.getPosition().below())
-                    .getOptionalValue(com.protyvkultury.revivalages.feature.technology.campfire.block.CampfireBlock.LIT)
-                    .orElse(false);
-            if (!heated) {
-                tooltip.add(Component.translatable("jade.revivalages.soaking_pot.heat.required"));
-            }
+        if (pot.processRules().stream().anyMatch(rule -> rule.type() == ProcessRuleType.LIT_BLOCK_BELOW)
+                && !pot.isRuleSatisfied(ProcessRuleType.LIT_BLOCK_BELOW)) {
+            appendRule(tooltip, ProcessRuleType.LIT_BLOCK_BELOW, true);
+            tooltip.add(Component.translatable("jade.revivalages.soaking_pot.heat.required"));
+        } else if (pot.processRules().stream().anyMatch(rule -> rule.type() == ProcessRuleType.LIT_BLOCK_BELOW)) {
+            appendRule(tooltip, ProcessRuleType.LIT_BLOCK_BELOW, false);
         }
         if (!pot.output().isEmpty()) {
             tooltip.add(Component.translatable("jade.revivalages.primitive.ready_item", pot.output().getHoverName()));
@@ -159,14 +167,17 @@ public enum PrimitiveDeviceComponentProvider implements IBlockComponentProvider 
 
     private static void appendTanningRack(ITooltip tooltip, BlockAccessor accessor, TanningRackBlockEntity rack) {
         appendItemProgress(tooltip, rack.input(), rack.recipeOutput(), rack.progress());
-        boolean sky = accessor.getLevel().canSeeSky(accessor.getPosition());
-        boolean day = accessor.getLevel().isDay();
-        boolean raining = accessor.getLevel().isRainingAt(accessor.getPosition().above());
-        tooltip.add(Component.translatable("jade.revivalages.tanning.sky." + (sky ? "clear" : "blocked")));
-        tooltip.add(Component.translatable("jade.revivalages.tanning.time." + (day ? "day" : "night")));
+        tooltip.add(Component.translatable("jade.revivalages.tanning.sky." + (rack.openSky() ? "clear" : "blocked")));
+        appendRule(tooltip, ProcessRuleType.OPEN_SKY, !rack.openSky());
+        tooltip.add(Component.translatable("jade.revivalages.tanning.time." + (rack.daytime() ? "day" : "night")));
         if (PrimitiveTechnologyConfig.TANNING_RACK_RAIN_RUIN_TICKS.get() >= 0
-                && (raining || rack.rainTicks() > 0)) {
+                && (rack.raining() || rack.rainTicks() > 0)) {
+            appendRule(tooltip, ProcessRuleType.WEATHER_EXPOSURE, rack.raining());
             tooltip.add(Component.translatable("jade.revivalages.tanning.rain", rack.rainTicks(), PrimitiveTechnologyConfig.TANNING_RACK_RAIN_RUIN_TICKS.get()));
+            if (!rack.rainFailureOutput().isEmpty()) {
+                tooltip.add(Component.translatable(
+                        "gui.revivalages.process_rule.weather_exposure.failure", rack.rainFailureOutput().getHoverName()));
+            }
         }
         if (!rack.output().isEmpty()) {
             tooltip.add(Component.translatable("jade.revivalages.primitive.ready_item", rack.output().getHoverName()));
@@ -179,6 +190,7 @@ public enum PrimitiveDeviceComponentProvider implements IBlockComponentProvider 
             return;
         }
         boolean valid = burn.isStructureValid();
+        appendRule(tooltip, ProcessRuleType.VALID_STRUCTURE, !valid);
         tooltip.add(Component.translatable("jade.revivalages.pit_burn.structure." + (valid ? "valid" : "invalid")));
         if (!valid && burn.invalidStructureTicks() > 0) {
             tooltip.add(Component.translatable("jade.revivalages.pit_burn.invalid_grace",
@@ -200,6 +212,11 @@ public enum PrimitiveDeviceComponentProvider implements IBlockComponentProvider 
         if (!fluid.isEmpty()) {
             tooltip.add(Component.translatable("jade.revivalages.primitive.fluid", fluid.getHoverName(), fluid.getAmount(), capacity));
         }
+    }
+
+    private static void appendRule(ITooltip tooltip, ProcessRuleType type, boolean blocked) {
+        ProcessRulePresentation presentation = ProcessRulePresentation.of(type);
+        tooltip.add(Component.translatable(blocked ? presentation.statusKey() : presentation.tooltipKey()));
     }
 
     private static void appendBarrelProcess(

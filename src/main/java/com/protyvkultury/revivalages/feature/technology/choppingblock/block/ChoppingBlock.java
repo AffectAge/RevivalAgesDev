@@ -4,6 +4,7 @@ import com.mojang.serialization.MapCodec;
 import com.protyvkultury.revivalages.core.interaction.ItemStackInteraction;
 import com.protyvkultury.revivalages.feature.technology.choppingblock.ChoppingBlockFeature;
 import com.protyvkultury.revivalages.feature.technology.choppingblock.blockentity.ChoppingBlockEntity;
+import com.protyvkultury.revivalages.feature.technology.choppingblock.ChoppingToolPolicy;
 import com.protyvkultury.revivalages.feature.technology.primitive.PrimitiveMaterialsFeature;
 import com.protyvkultury.revivalages.feature.technology.primitive.PrimitiveTags;
 import javax.annotation.Nullable;
@@ -95,8 +96,7 @@ public final class ChoppingBlock extends BaseEntityBlock {
             return ItemInteractionResult.sidedSuccess(level.isClientSide);
         }
         if (!chopping.input().isEmpty()
-                && stack.is(PrimitiveTags.CHOPPING_AXES)
-                && !stack.is(PrimitiveTags.INVALID_CHOPPING_AXES)) {
+                && ChoppingToolPolicy.isUsable(stack)) {
             if (player.getFoodData().getFoodLevel() < com.protyvkultury.revivalages.feature.technology.primitive.config.PrimitiveTechnologyConfig.CHOPPING_MINIMUM_HUNGER.get()) {
                 player.displayClientMessage(net.minecraft.network.chat.Component.translatable(
                         "message.revivalages.chopping.not_enough_hunger"), true);

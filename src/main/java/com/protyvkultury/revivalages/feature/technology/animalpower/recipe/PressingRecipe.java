@@ -28,8 +28,14 @@ public final class PressingRecipe implements Recipe<SingleRecipeInput> {
         if (inputCount <= 0) {
             throw new IllegalArgumentException("input_count must be positive");
         }
-        if (itemResult.isEmpty() == fluidResult.isEmpty()) {
-            throw new IllegalArgumentException("Pressing recipes require exactly one item or fluid result");
+        if (itemResult.isEmpty() && fluidResult.isEmpty()) {
+            throw new IllegalArgumentException("Pressing recipes require an item result, fluid result, or both");
+        }
+        if (!itemResult.isEmpty() && itemResult.getCount() <= 0) {
+            throw new IllegalArgumentException("Pressing item result must be non-empty");
+        }
+        if (!fluidResult.isEmpty() && fluidResult.getAmount() <= 0) {
+            throw new IllegalArgumentException("Pressing fluid result must have a positive amount");
         }
     }
 
@@ -45,8 +51,16 @@ public final class PressingRecipe implements Recipe<SingleRecipeInput> {
         return itemResult.copy();
     }
 
+    public boolean hasItemResult() {
+        return !itemResult.isEmpty();
+    }
+
     public FluidStack fluidResult() {
         return fluidResult.copy();
+    }
+
+    public boolean hasFluidResult() {
+        return !fluidResult.isEmpty();
     }
 
     @Override

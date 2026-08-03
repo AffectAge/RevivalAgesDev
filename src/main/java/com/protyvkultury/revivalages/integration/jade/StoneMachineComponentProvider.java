@@ -1,6 +1,8 @@
 package com.protyvkultury.revivalages.integration.jade;
 
 import com.protyvkultury.revivalages.RevivalAges;
+import com.protyvkultury.revivalages.core.process.ProcessRulePresentation;
+import com.protyvkultury.revivalages.core.process.ProcessRuleType;
 import com.protyvkultury.revivalages.feature.technology.stonemachine.StoneMachineKind;
 import com.protyvkultury.revivalages.feature.technology.stonemachine.blockentity.StoneMachineBlockEntity;
 import java.util.ArrayList;
@@ -40,9 +42,11 @@ public enum StoneMachineComponentProvider implements IBlockComponentProvider {
                 machine.burnTime()
         ));
         if (machine.kind() == StoneMachineKind.SAWMILL && machine.blade().isEmpty()) {
+            tooltip.add(Component.translatable(ProcessRulePresentation.of(ProcessRuleType.INSTALLED_TOOL).statusKey()));
             tooltip.add(Component.translatable("jade.revivalages.stone_machine.no_blade"));
         }
         if (!machine.isLit() && machine.burnTime() <= 0 && machine.fuel().isEmpty()) {
+            tooltip.add(Component.translatable(ProcessRulePresentation.of(ProcessRuleType.FUELLED_AND_LIT).statusKey()));
             tooltip.add(Component.translatable("jade.revivalages.stone_machine.no_fuel"));
         }
         if (!machine.firstOutput().isEmpty()) {

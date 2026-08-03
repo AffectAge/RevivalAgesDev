@@ -1,11 +1,15 @@
 package com.protyvkultury.revivalages.feature.technology.stonemachine.view;
 
 import com.protyvkultury.revivalages.RevivalAges;
+import com.protyvkultury.revivalages.core.process.ProcessRule;
+import com.protyvkultury.revivalages.core.process.ProcessRuleType;
+import com.protyvkultury.revivalages.core.process.ProcessRuleView;
+import com.protyvkultury.revivalages.core.process.ProcessOutcomeMode;
+import com.protyvkultury.revivalages.feature.technology.anvil.AnvilToolPolicy;
 import com.protyvkultury.revivalages.feature.content.ContentAvailability;
 import com.protyvkultury.revivalages.feature.content.ContentKey;
 import com.protyvkultury.revivalages.feature.technology.anvil.AnvilFeature;
 import com.protyvkultury.revivalages.feature.technology.anvil.recipe.AnvilRecipe;
-import com.protyvkultury.revivalages.feature.technology.anvil.recipe.AnvilTool;
 import com.protyvkultury.revivalages.feature.technology.choppingblock.ChoppingBlockFeature;
 import com.protyvkultury.revivalages.feature.technology.choppingblock.recipe.ChoppingRecipe;
 import com.protyvkultury.revivalages.feature.technology.primitive.PrimitiveMaterialsFeature;
@@ -18,10 +22,10 @@ import com.protyvkultury.revivalages.feature.technology.stonemachine.recipe.Ston
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Locale;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.level.Level;
@@ -69,11 +73,16 @@ public final class StoneTechnologyRecipeCatalog {
                 List.of(output, chips),
                 FluidStack.EMPTY,
                 processingTime,
-                Component.translatable(
-                        "gui.revivalages.recipe.sawmill_chips",
-                        String.format(Locale.ROOT, "%.0f%%",
-                                PrimitiveTechnologyConfig.STONE_SAWMILL_WOOD_CHIP_CHANCE.get() * 100.0D)),
-                holder);
+                Component.empty(),
+                holder,
+                List.of(
+                        new ProcessRuleView(ProcessRule.of(ProcessRuleType.FUELLED_AND_LIT)),
+                        new ProcessRuleView(ProcessRule.of(ProcessRuleType.INSTALLED_TOOL)),
+                        ProcessRuleView.chance(
+                                PrimitiveTechnologyConfig.STONE_SAWMILL_WOOD_CHIP_CHANCE.get(),
+                                ProcessOutcomeMode.PER_ATTEMPT,
+                                woodChips,
+                                List.of(chips))));
     }
 
     public static List<PrimitiveRecipeView> oven(Level level) {
@@ -101,12 +110,14 @@ public final class StoneTechnologyRecipeCatalog {
             if (!process.itemResult().isEmpty()) {
                 outputs.add(process.itemResult());
             }
-            outputs.addAll(process.failureResults());
-            Component detail = process.failureChance() > 0.0F
-                    ? Component.translatable(
-                            "gui.revivalages.recipe.failure_chance",
-                            String.format(Locale.ROOT, "%.0f%%", process.failureChance() * 100.0F))
-                    : Component.empty();
+            List<ProcessRuleView> rules = new ArrayList<>();
+            rules.add(new ProcessRuleView(ProcessRule.of(ProcessRuleType.FUELLED_AND_LIT)));
+            if (kind == StoneMachineKind.KILN && process.failureChance() > 0.0F) {
+                List<ItemStack> failureOutcomes = kilnFailureOutcomes(process);
+                outputs.addAll(failureOutcomes);
+                rules.add(ProcessRuleView.chance(
+                        process.failureChance(), ProcessOutcomeMode.PER_ITEM, 0, failureOutcomes));
+            }
             views.add(new PrimitiveRecipeView(
                     derivedId(category, process.sourceId()),
                     List.of(process.ingredient()),
@@ -114,10 +125,17 @@ public final class StoneTechnologyRecipeCatalog {
                     outputs,
                     process.fluidResult(),
                     process.processingTime(),
-                    detail,
-                    level.getRecipeManager().byKey(process.sourceId()).orElse(null)));
+                    Component.empty(),
+                    level.getRecipeManager().byKey(process.sourceId()).orElse(null),
+                    rules));
         }
         return List.copyOf(views);
+    }
+
+    static List<ItemStack> kilnFailureOutcomes(StoneMachineProcess process) {
+        return process.failureResults().isEmpty()
+                ? List.of(new ItemStack(PrimitiveMaterialsFeature.PIT_ASH.get()))
+                : process.failureResults();
     }
 
     public static List<PrimitiveRecipeView> anvil(RecipeManager manager) {
@@ -127,9 +145,6 @@ public final class StoneTechnologyRecipeCatalog {
         return manager.getAllRecipesFor(AnvilFeature.RECIPE_TYPE.get()).stream()
                 .map(holder -> {
                     AnvilRecipe recipe = holder.value();
-                    String key = recipe.tool() == AnvilTool.HAMMER
-                            ? "gui.revivalages.recipe.tool.hammer"
-                            : "gui.revivalages.recipe.tool.pickaxe";
                     return new PrimitiveRecipeView(
                             holder.id(),
                             List.of(recipe.ingredient()),
@@ -137,9 +152,10 @@ public final class StoneTechnologyRecipeCatalog {
                             List.of(recipe.result()),
                             FluidStack.EMPTY,
                             0,
-                            Component.translatable("gui.revivalages.recipe.anvil_detail",
-                                    Component.translatable(key), recipe.hits()),
-                            holder);
+                            Component.empty(),
+                            holder,
+                            List.of(new ProcessRuleView(ProcessRule.of(ProcessRuleType.REQUIRED_MANUAL_TOOL))),
+                            List.of(AnvilToolPolicy.viewerRequirement(recipe)));
                 })
                 .sorted(Comparator.comparing(view -> view.id().toString()))
                 .toList();

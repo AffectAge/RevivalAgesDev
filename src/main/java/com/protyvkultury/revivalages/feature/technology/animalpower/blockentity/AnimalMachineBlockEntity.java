@@ -61,6 +61,8 @@ public final class AnimalMachineBlockEntity extends BlockEntity {
     private int workPoints;
     private int areaCheckTicks;
     private boolean workAreaValid;
+    private String workerDisplayName = "";
+    private boolean workerLoaded;
     private ResourceLocation woodVariant = ResourceLocation.withDefaultNamespace("oak_log");
 
     public AnimalMachineBlockEntity(BlockPos pos, BlockState state) {
@@ -92,6 +94,7 @@ public final class AnimalMachineBlockEntity extends BlockEntity {
             }
         }
         boolean ready = machine.workAreaValid && machine.canProcess();
+        machine.updateWorkerSnapshot(server);
         if (machine.worker.tick(server, pos, ready)) {
             machine.workPoints++;
             machine.tryComplete();
@@ -129,6 +132,14 @@ public final class AnimalMachineBlockEntity extends BlockEntity {
 
     public boolean workAreaValid() {
         return workAreaValid;
+    }
+
+    public String workerDisplayName() {
+        return workerDisplayName;
+    }
+
+    public boolean workerLoaded() {
+        return workerLoaded;
     }
 
     public ResourceLocation woodVariant() {
@@ -260,7 +271,21 @@ public final class AnimalMachineBlockEntity extends BlockEntity {
         return findAnyRecipe(items.getFirst()) && outputsFit();
     }
 
+    private void updateWorkerSnapshot(ServerLevel server) {
+        var resolved = worker.resolve(server);
+        boolean nextLoaded = resolved.isPresent();
+        String nextName = resolved.map(mob -> mob.getDisplayName().getString()).orElse("");
+        if (workerLoaded != nextLoaded || !workerDisplayName.equals(nextName)) {
+            workerLoaded = nextLoaded;
+            workerDisplayName = nextName;
+            sync();
+        }
+    }
+
     private boolean outputsFit() {
+        if (kind == AnimalMachineKind.PRESS) {
+            return pressingRecipe().map(this::pressOutputsFit).orElse(false);
+        }
         ItemStack result = recipeOutput();
         if (!canMerge(items.get(1), result)) {
             return false;
@@ -274,6 +299,17 @@ public final class AnimalMachineBlockEntity extends BlockEntity {
         }
         return (tank.isEmpty() || FluidStack.isSameFluidSameComponents(tank.getFluid(), fluid))
                 && tank.getFluidAmount() + fluid.getAmount() <= tank.getCapacity();
+    }
+
+    private boolean pressOutputsFit(PressingRecipe recipe) {
+        ItemStack itemOutput = recipe.itemResult();
+        if (!itemOutput.isEmpty() && !canMerge(items.get(1), itemOutput)) {
+            return false;
+        }
+        FluidStack fluidOutput = recipe.fluidResult();
+        return fluidOutput.isEmpty() || (tank.isEmpty()
+                || FluidStack.isSameFluidSameComponents(tank.getFluid(), fluidOutput))
+                && tank.getFluidAmount() + fluidOutput.getAmount() <= tank.getCapacity();
     }
 
     private int requiredWorkPoints() {
@@ -290,6 +326,10 @@ public final class AnimalMachineBlockEntity extends BlockEntity {
     }
 
     private void tryComplete() {
+        if (kind == AnimalMachineKind.PRESS) {
+            tryCompletePress();
+            return;
+        }
         int required = requiredWorkPoints();
         if (required <= 0 || workPoints < required || !outputsFit() || level == null) {
             return;
@@ -330,6 +370,41 @@ public final class AnimalMachineBlockEntity extends BlockEntity {
                 1.0F,
                 1.0F
         );
+    }
+
+    private void tryCompletePress() {
+        if (level == null) {
+            return;
+        }
+        Optional<PressingRecipe> resolved = pressingRecipe();
+        if (resolved.isEmpty() || workPoints < AnimalPowerConfig.PRESS_POINTS.get()) {
+            return;
+        }
+        PressingRecipe recipe = resolved.get();
+        if (!pressOutputsFit(recipe)) {
+            return;
+        }
+        ItemStack input = items.getFirst();
+        if (input.getCount() < recipe.inputCount()) {
+            return;
+        }
+
+        ItemStack itemOutput = recipe.itemResult();
+        FoodFreshnessApi.copyOldest(itemOutput, java.util.List.of(input.copy()));
+        FluidStack fluidOutput = recipe.fluidResult();
+        ItemStack nextInput = input.copy();
+        nextInput.shrink(recipe.inputCount());
+        ItemStack nextItemOutput = mergedStack(items.get(1), itemOutput);
+        FluidStack nextFluidOutput = mergedFluid(tank.getFluid(), fluidOutput);
+
+        items.set(0, nextInput.isEmpty() ? ItemStack.EMPTY : nextInput);
+        items.set(1, nextItemOutput);
+        if (!fluidOutput.isEmpty()) {
+            tank.setFluid(nextFluidOutput);
+        }
+        workPoints = 0;
+        level.playSound(null, worldPosition, SoundEvents.GRINDSTONE_USE, SoundSource.BLOCKS, 1.0F, 1.0F);
+        sync();
     }
 
     private int requiredInputCount(ItemStack stack) {
@@ -405,6 +480,30 @@ public final class AnimalMachineBlockEntity extends BlockEntity {
         }
     }
 
+    private static ItemStack mergedStack(ItemStack stored, ItemStack addition) {
+        if (addition.isEmpty()) {
+            return stored.copy();
+        }
+        if (stored.isEmpty()) {
+            return addition.copy();
+        }
+        ItemStack merged = stored.copy();
+        merged.grow(addition.getCount());
+        return merged;
+    }
+
+    private static FluidStack mergedFluid(FluidStack stored, FluidStack addition) {
+        if (addition.isEmpty()) {
+            return stored.copy();
+        }
+        if (stored.isEmpty()) {
+            return addition.copy();
+        }
+        FluidStack merged = stored.copy();
+        merged.grow(addition.getAmount());
+        return merged;
+    }
+
     private void sync() {
         setChanged();
         if (level != null && !level.isClientSide) {
@@ -421,6 +520,8 @@ public final class AnimalMachineBlockEntity extends BlockEntity {
         workPoints = Math.max(0, tag.getInt("WorkPoints"));
         areaCheckTicks = Math.max(0, tag.getInt("AreaCheckTicks"));
         workAreaValid = tag.getBoolean("WorkAreaValid");
+        workerDisplayName = tag.getString("WorkerDisplayName");
+        workerLoaded = tag.getBoolean("WorkerLoaded");
         ResourceLocation parsed = ResourceLocation.tryParse(tag.getString("WoodVariant"));
         woodVariant = parsed == null ? ResourceLocation.withDefaultNamespace("oak_log") : parsed;
     }
@@ -434,6 +535,8 @@ public final class AnimalMachineBlockEntity extends BlockEntity {
         tag.putInt("WorkPoints", workPoints);
         tag.putInt("AreaCheckTicks", areaCheckTicks);
         tag.putBoolean("WorkAreaValid", workAreaValid);
+        tag.putString("WorkerDisplayName", workerDisplayName);
+        tag.putBoolean("WorkerLoaded", workerLoaded);
         tag.putString("WoodVariant", woodVariant.toString());
     }
 

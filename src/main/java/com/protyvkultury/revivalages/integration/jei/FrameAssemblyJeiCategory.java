@@ -35,7 +35,7 @@ final class FrameAssemblyJeiCategory extends AbstractRecipeCategory<FrameAssembl
     ) {
         builder.addSlot(RecipeIngredientRole.CATALYST, 62, 61)
                 .setStandardSlotBackground()
-                .addIngredients(recipe.tool());
+                .addIngredients(recipe.toolRequirement().ingredient());
         builder.addSlot(RecipeIngredientRole.OUTPUT, 94, 40)
                 .setOutputSlotBackground()
                 .addItemStack(recipe.result());
@@ -58,6 +58,18 @@ final class FrameAssemblyJeiCategory extends AbstractRecipeCategory<FrameAssembl
         builder.addRecipeArrow().setPosition(59, 41);
         builder.addSlottedWidget(widget, builder.getRecipeSlots().getSlots(RecipeIngredientRole.INPUT));
         builder.addGuiEventListener(widget);
+    }
+
+    @Override
+    public void getTooltip(
+            mezz.jei.api.gui.builder.ITooltipBuilder tooltip,
+            FrameAssemblyRecipeView recipe,
+            mezz.jei.api.gui.ingredient.IRecipeSlotsView slots,
+            double mouseX,
+            double mouseY) {
+        if (mouseX >= 62 && mouseX < 78 && mouseY >= 61 && mouseY < 77) {
+            recipe.toolRequirement().tooltip().forEach(tooltip::add);
+        }
     }
 
     @Override

@@ -25,6 +25,8 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.material.Fluids;
@@ -143,6 +145,12 @@ public final class AnimalPowerGameTests {
                         level.registryAccess(),
                         ConnectionType.NEOFORGE
                 );
+        RegistryFriendlyByteBuf combinedPressingBuffer =
+                new RegistryFriendlyByteBuf(
+                        Unpooled.buffer(),
+                        level.registryAccess(),
+                        ConnectionType.NEOFORGE
+                );
         try {
             AnimalPowerFeature.GRINDING_SERIALIZER.get().streamCodec().encode(grindingBuffer, grinding);
             GrindingRecipe decodedGrinding =
@@ -170,15 +178,27 @@ public final class AnimalPowerGameTests {
                             || FluidStack.isSameFluidSameComponents(decodedFluid, originalFluid)),
                     "pressing fluid result changed during stream-codec round trip"
             );
+
+            PressingRecipe combined = new PressingRecipe(
+                    Ingredient.of(Items.WHEAT_SEEDS),
+                    1,
+                    new ItemStack(Items.DIRT),
+                    new FluidStack(Fluids.WATER, 1000));
+            AnimalPowerFeature.PRESSING_SERIALIZER.get().streamCodec().encode(combinedPressingBuffer, combined);
+            PressingRecipe decodedCombined =
+                    AnimalPowerFeature.PRESSING_SERIALIZER.get().streamCodec().decode(combinedPressingBuffer);
+            helper.assertTrue(decodedCombined.hasItemResult() && decodedCombined.hasFluidResult(),
+                    "combined pressing result lost an output during stream-codec round trip");
         } finally {
             grindingBuffer.release();
             pressingBuffer.release();
+            combinedPressingBuffer.release();
         }
         helper.succeed();
     }
 
     @GameTest(template = "animal_power_empty")
-    public static void pressingCodecRejectsMutuallyExclusiveResultViolation(GameTestHelper helper) {
+    public static void pressingCodecAcceptsCombinedAndRejectsMissingResults(GameTestHelper helper) {
         if (!GameTestProfiles.requireEnabledContent(helper)) {
             return;
         }
@@ -202,9 +222,9 @@ public final class AnimalPowerGameTests {
                         .codec()
                         .codec()
                         .parse(operations, bothResults)
-                        .error()
+                        .result()
                         .isPresent(),
-                "pressing codec accepted both result kinds"
+                "pressing codec rejected combined result kinds"
         );
         helper.assertTrue(
                 AnimalPowerFeature.PRESSING_SERIALIZER.get()
