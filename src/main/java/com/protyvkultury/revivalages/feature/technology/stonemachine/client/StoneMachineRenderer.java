@@ -23,6 +23,8 @@ import net.minecraft.world.phys.BlockHitResult;
 public final class StoneMachineRenderer implements BlockEntityRenderer<StoneMachineBlockEntity> {
 
     private static final double FUEL_ITEM_Y = 0.25D;
+    private static final double BLADE_Y = 1.25D;
+    private static final float BLADE_SCALE = 0.95F;
     private static final double FUEL_COUNT_X = 0.5D;
     private static final double FUEL_COUNT_Y = 0.95D;
     private static final double FUEL_COUNT_Z = 0.95D;
@@ -162,12 +164,12 @@ public final class StoneMachineRenderer implements BlockEntityRenderer<StoneMach
             return;
         }
         pose.pushPose();
-        pose.translate(0.5D, 1.0D, 0.5D);
+        pose.translate(0.5D, BLADE_Y, 0.5D);
         pose.mulPose(Axis.YP.rotationDegrees(90.0F));
         if (machine.isLit()) {
             pose.mulPose(Axis.ZP.rotationDegrees((machine.getLevel().getGameTime() % 20L) * 18.0F));
         }
-        pose.scale(0.75F, 0.75F, 0.75F);
+        pose.scale(BLADE_SCALE, BLADE_SCALE, BLADE_SCALE);
         PrimitiveRenderHelper.renderItem(items, machine, machine.blade(), pose, buffers, light, overlay, 1);
         if (PrimitiveTechnologyClientConfig.SHOW_PHYSICAL_ITEM_COUNTS.get()) {
             InteractionPreviewRenderer.renderCount(machine.blade(), pose, buffers, light);
@@ -221,12 +223,12 @@ public final class StoneMachineRenderer implements BlockEntityRenderer<StoneMach
         }
         pose.translate(
                 0.5D,
-                slot == PreviewSlot.FUEL ? FUEL_ITEM_Y : 1.0D,
+                slot == PreviewSlot.FUEL ? FUEL_ITEM_Y : BLADE_Y,
                 0.5D
         );
         if (slot == PreviewSlot.BLADE) {
             pose.mulPose(Axis.YP.rotationDegrees(90.0F));
-            pose.scale(0.75F, 0.75F, 0.75F);
+            pose.scale(BLADE_SCALE, BLADE_SCALE, BLADE_SCALE);
         } else {
             pose.scale(0.5F, 0.5F, 0.5F);
         }
