@@ -19,8 +19,12 @@ worker state. See [content-availability.md](content-availability.md).
 ## Worker lifecycle
 
 An eligible mob already leashed to a player can be attached by interacting with
-an animal-powered device. Sneak-interacting without an item detaches the worker
-and returns the lead. Eligible entity types are data-driven through
+an animal-powered device. Attachment sets a three-block home radius around the
+device. An empty-hand interaction removes the primary result, secondary result,
+or input in that order; if no item remains, it returns the worker to the
+interacting player on its existing lead and clears that home radius. A worker
+that is leashed, dies, becomes ineligible, or leaves the device's 45-square
+distance boundary is detached and returns a dropped lead. Eligible entity types are data-driven through
 `revivalages:animal_power_workers`; the built-in tag contains horses, donkeys,
 mules, llamas, and camels.
 
@@ -42,9 +46,12 @@ chance, positive work-point requirement, and supported machine variants.
 
 `revivalages:pressing` defines an ingredient, input count, and at least one item
 or fluid result. A recipe may produce both outputs atomically; the press exposes
-its output-only fluid tank from the bottom.
-Animal-machine item automation inserts into the input from non-bottom sides and
-extracts result slots. The automation policy is server-configurable.
+its output-only fluid tank from the bottom. Right-clicking the press with a
+fluid container transfers from that output tank.
+Animal-machine item automation exposes only the input slot from non-bottom sides
+and only result slots from the bottom. Chopping blocks and presses accept new
+input only when their primary result slot is empty. The automation policy is
+server-configurable.
 
 The animal chopping block consumes the existing `revivalages:chopping` recipes.
 Its configured tier defaults to tier 2, which gives standard log recipes four

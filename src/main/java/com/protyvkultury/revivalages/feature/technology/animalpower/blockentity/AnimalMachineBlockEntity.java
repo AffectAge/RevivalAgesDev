@@ -173,8 +173,23 @@ public final class AnimalMachineBlockEntity extends BlockEntity {
         return true;
     }
 
+    public boolean returnWorkerTo(Player player) {
+        if (!(level instanceof ServerLevel server) || worker.workerId().isEmpty()) {
+            return false;
+        }
+        boolean returned = worker.releaseToPlayer(server, worldPosition, player);
+        if (returned) {
+            level.playSound(null, worldPosition, SoundEvents.LEASH_KNOT_BREAK, SoundSource.BLOCKS, 1.0F, 1.0F);
+        }
+        sync();
+        return returned;
+    }
+
     public boolean canInsert(ItemStack stack) {
-        return items.getFirst().isEmpty() && findAnyRecipe(stack);
+        if (!items.getFirst().isEmpty() || !findAnyRecipe(stack)) {
+            return false;
+        }
+        return kind == AnimalMachineKind.GRINDSTONE || items.get(1).isEmpty();
     }
 
     public void insert(ItemStack source, boolean infinite) {
@@ -194,7 +209,7 @@ public final class AnimalMachineBlockEntity extends BlockEntity {
     }
 
     public ItemStack extract(int slot) {
-        if (slot < 0 || slot >= items.size()) {
+        if (!canExtract(slot)) {
             return ItemStack.EMPTY;
         }
         ItemStack result = items.get(slot);
@@ -204,6 +219,12 @@ public final class AnimalMachineBlockEntity extends BlockEntity {
         }
         sync();
         return result;
+    }
+
+    public boolean canExtract(int slot) {
+        return slot >= 0
+                && slot < items.size()
+                && (kind != AnimalMachineKind.PRESS || slot != 0 || workPoints == 0);
     }
 
     public double progress() {
@@ -250,7 +271,11 @@ public final class AnimalMachineBlockEntity extends BlockEntity {
         return "working";
     }
 
+    @Nullable
     public IItemHandler itemHandler(@Nullable Direction side) {
+        if (side == null) {
+            return null;
+        }
         return new MachineItemHandler(side);
     }
 
@@ -578,23 +603,23 @@ public final class AnimalMachineBlockEntity extends BlockEntity {
 
         private final Direction side;
 
-        private MachineItemHandler(@Nullable Direction side) {
-            this.side = side == null ? Direction.UP : side;
+        private MachineItemHandler(Direction side) {
+            this.side = side;
         }
 
         @Override
         public int getSlots() {
-            return items.size();
+            return side == Direction.DOWN ? items.size() - 1 : 1;
         }
 
         @Override
         public ItemStack getStackInSlot(int slot) {
-            return item(slot).copy();
+            return validSlot(slot) ? item(internalSlot(slot)).copy() : ItemStack.EMPTY;
         }
 
         @Override
         public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
-            if (slot != 0 || side == Direction.DOWN || !canInsert(stack)) {
+            if (side == Direction.DOWN || slot != 0 || !canInsert(stack)) {
                 return stack;
             }
             int count = requiredInputCount(stack);
@@ -611,15 +636,19 @@ public final class AnimalMachineBlockEntity extends BlockEntity {
 
         @Override
         public ItemStack extractItem(int slot, int amount, boolean simulate) {
-            if (slot <= 0 || amount <= 0 || item(slot).isEmpty()) {
+            if (!validSlot(slot) || amount <= 0) {
                 return ItemStack.EMPTY;
             }
-            int extracted = Math.min(amount, item(slot).getCount());
-            ItemStack result = item(slot).copyWithCount(extracted);
+            int internalSlot = internalSlot(slot);
+            if (!canExtract(internalSlot) || item(internalSlot).isEmpty()) {
+                return ItemStack.EMPTY;
+            }
+            int extracted = Math.min(amount, item(internalSlot).getCount());
+            ItemStack result = item(internalSlot).copyWithCount(extracted);
             if (!simulate) {
-                items.get(slot).shrink(extracted);
-                if (items.get(slot).isEmpty()) {
-                    items.set(slot, ItemStack.EMPTY);
+                items.get(internalSlot).shrink(extracted);
+                if (items.get(internalSlot).isEmpty()) {
+                    items.set(internalSlot, ItemStack.EMPTY);
                 }
                 sync();
             }
@@ -634,6 +663,14 @@ public final class AnimalMachineBlockEntity extends BlockEntity {
         @Override
         public boolean isItemValid(int slot, ItemStack stack) {
             return slot == 0 && side != Direction.DOWN && canInsert(stack);
+        }
+
+        private boolean validSlot(int slot) {
+            return slot >= 0 && slot < getSlots();
+        }
+
+        private int internalSlot(int slot) {
+            return side == Direction.DOWN ? slot + 1 : slot;
         }
     }
 

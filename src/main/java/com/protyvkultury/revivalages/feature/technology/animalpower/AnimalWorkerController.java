@@ -16,6 +16,8 @@ import net.minecraft.world.phys.AABB;
 /** Owns the server-authoritative worker attachment and bounded waypoint lifecycle. */
 public final class AnimalWorkerController {
 
+    private static final double WORKER_SEARCH_RADIUS = 7.0D;
+    private static final double MAX_WORKER_DISTANCE_SQUARED = 45.0D;
     private UUID workerId;
     private int waypointIndex;
     private int retryTicks;
@@ -29,9 +31,19 @@ public final class AnimalWorkerController {
     }
 
     public boolean attach(ServerLevel level, BlockPos machinePos, Player player) {
+        if (workerId != null) {
+            return false;
+        }
         Optional<Mob> candidate = level.getEntitiesOfClass(
                         Mob.class,
-                        new AABB(machinePos).inflate(16.0D),
+                        new AABB(
+                                machinePos.getX() - WORKER_SEARCH_RADIUS,
+                                machinePos.getY() - WORKER_SEARCH_RADIUS,
+                                machinePos.getZ() - WORKER_SEARCH_RADIUS,
+                                machinePos.getX() + WORKER_SEARCH_RADIUS,
+                                machinePos.getY() + WORKER_SEARCH_RADIUS,
+                                machinePos.getZ() + WORKER_SEARCH_RADIUS
+                        ),
                         mob -> mob.getType().is(AnimalPowerTags.WORKERS)
                                 && player.equals(mob.getLeashHolder()))
                 .stream()
@@ -39,9 +51,9 @@ public final class AnimalWorkerController {
         if (candidate.isEmpty()) {
             return false;
         }
-        detach(level, machinePos, false);
         Mob worker = candidate.get();
         worker.dropLeash(false, false);
+        worker.restrictTo(machinePos, AnimalWorkArea.RADIUS);
         workerId = worker.getUUID();
         waypointIndex = nearestWaypoint(worker, machinePos);
         retryTicks = 0;
@@ -49,7 +61,10 @@ public final class AnimalWorkerController {
     }
 
     public void detach(ServerLevel level, BlockPos machinePos, boolean returnLead) {
-        resolve(level).ifPresent(worker -> worker.getNavigation().stop());
+        resolve(level).ifPresent(worker -> {
+            worker.getNavigation().stop();
+            worker.clearRestriction();
+        });
         if (workerId != null && returnLead) {
             level.addFreshEntity(new ItemEntity(
                     level,
@@ -62,6 +77,26 @@ public final class AnimalWorkerController {
         workerId = null;
         waypointIndex = 0;
         retryTicks = 0;
+    }
+
+    public boolean releaseToPlayer(ServerLevel level, BlockPos machinePos, Player player) {
+        Optional<Mob> resolved = resolve(level);
+        if (resolved.isEmpty()) {
+            detach(level, machinePos, true);
+            return false;
+        }
+        Mob worker = resolved.get();
+        if (!worker.isAlive() || !worker.canBeLeashed()) {
+            detach(level, machinePos, true);
+            return false;
+        }
+        worker.getNavigation().stop();
+        worker.clearRestriction();
+        worker.setLeashedTo(player, true);
+        workerId = null;
+        waypointIndex = 0;
+        retryTicks = 0;
+        return true;
     }
 
     public boolean tick(ServerLevel level, BlockPos machinePos, boolean shouldMove) {
@@ -79,9 +114,20 @@ public final class AnimalWorkerController {
         }
         retryTicks = 0;
         Mob worker = resolved.get();
-        if (!worker.isAlive() || !worker.getType().is(AnimalPowerTags.WORKERS)) {
+        if (!worker.isAlive()
+                || !worker.getType().is(AnimalPowerTags.WORKERS)
+                || worker.isLeashed()
+                || worker.distanceToSqr(
+                        machinePos.getX(),
+                        machinePos.getY(),
+                        machinePos.getZ()) >= MAX_WORKER_DISTANCE_SQUARED) {
             detach(level, machinePos, true);
             return false;
+        }
+        if (!worker.hasRestriction()
+                || !machinePos.equals(worker.getRestrictCenter())
+                || worker.getRestrictRadius() != AnimalWorkArea.RADIUS) {
+            worker.restrictTo(machinePos, AnimalWorkArea.RADIUS);
         }
         if (!shouldMove) {
             worker.getNavigation().stop();

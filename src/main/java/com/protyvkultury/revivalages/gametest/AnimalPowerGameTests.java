@@ -13,8 +13,10 @@ import com.protyvkultury.revivalages.feature.technology.animalpower.recipe.Grind
 import com.protyvkultury.revivalages.feature.technology.animalpower.recipe.PressingRecipe;
 import io.netty.buffer.Unpooled;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.nbt.CompoundTag;
@@ -30,7 +32,10 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.network.connection.ConnectionType;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
@@ -265,10 +270,48 @@ public final class AnimalPowerGameTests {
                     mob.getUUID(),
                     "wrong worker UUID was stored"
             );
-            controller.detach(level, machinePos, true);
+            helper.assertTrue(mob.hasRestriction(), "attached worker did not receive a machine home");
+            helper.assertValueEqual(mob.getRestrictCenter(), machinePos, "worker home was placed incorrectly");
+            helper.assertValueEqual(mob.getRestrictRadius(), 3.0F, "worker home radius changed");
+            helper.assertTrue(
+                    controller.releaseToPlayer(level, machinePos, player),
+                    "worker was not returned to the interacting player"
+            );
             helper.assertTrue(controller.workerId().isEmpty(), "worker did not detach safely");
+            helper.assertTrue(mob.isLeashed() && player.equals(mob.getLeashHolder()),
+                    "worker was not returned on its existing lead");
+            helper.assertFalse(mob.hasRestriction(), "released worker retained the machine home");
             mob.discard();
         }
+        player.discard();
+        helper.succeed();
+    }
+
+    @GameTest(template = "animal_power_empty")
+    public static void emptyHandReturnsWorkerToPlayer(GameTestHelper helper) {
+        if (!GameTestProfiles.requireEnabledContent(helper)) {
+            return;
+        }
+        helper.setBlock(MACHINE, AnimalPowerFeature.HORSE_GRINDSTONE.get());
+        ServerLevel level = helper.getLevel();
+        BlockPos machinePos = helper.absolutePos(MACHINE);
+        Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+        player.setPos(machinePos.getX() + 0.5D, machinePos.getY(), machinePos.getZ() + 0.5D);
+        Mob worker = helper.spawn(EntityType.HORSE, MACHINE.offset(1, 0, 0));
+        worker.setLeashedTo(player, true);
+        AnimalMachineBlockEntity machine = (AnimalMachineBlockEntity) helper.getBlockEntity(MACHINE);
+        helper.assertTrue(machine.attachWorker(player), "worker did not attach to the machine");
+
+        helper.assertValueEqual(
+                helper.getBlockState(MACHINE).useWithoutItem(level, player, hit(machinePos, Direction.UP)),
+                net.minecraft.world.InteractionResult.CONSUME,
+                "empty-hand interaction did not release the worker"
+        );
+        helper.assertTrue(machine.workerId().isEmpty(), "empty-hand interaction retained the worker UUID");
+        helper.assertTrue(worker.isLeashed() && player.equals(worker.getLeashHolder()),
+                "empty-hand interaction did not return the lead to the player");
+        helper.assertFalse(worker.hasRestriction(), "empty-hand interaction retained the machine home");
+        worker.discard();
         player.discard();
         helper.succeed();
     }
@@ -343,6 +386,75 @@ public final class AnimalPowerGameTests {
                 "output handler did not allow draining"
         );
         helper.succeed();
+    }
+
+    @GameTest(template = "animal_power_empty")
+    public static void pressInteractionTransfersFluidToHeldContainer(GameTestHelper helper) {
+        if (!GameTestProfiles.requireEnabledContent(helper)) {
+            return;
+        }
+        helper.setBlock(MACHINE, AnimalPowerFeature.HORSE_PRESS.get());
+        AnimalMachineBlockEntity press = (AnimalMachineBlockEntity) helper.getBlockEntity(MACHINE);
+        press.fluidTank().fill(new FluidStack(Fluids.WATER, 1000), IFluidHandler.FluidAction.EXECUTE);
+        Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+        player.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND, new ItemStack(Items.BUCKET));
+        BlockPos machinePos = helper.absolutePos(MACHINE);
+
+        helper.assertValueEqual(
+                helper.getBlockState(MACHINE).useItemOn(
+                        player.getMainHandItem(),
+                        helper.getLevel(),
+                        player,
+                        net.minecraft.world.InteractionHand.MAIN_HAND,
+                        hit(machinePos, Direction.UP)
+                ),
+                net.minecraft.world.ItemInteractionResult.SUCCESS,
+                "press did not handle the held fluid container"
+        );
+        helper.assertTrue(player.getMainHandItem().is(Items.WATER_BUCKET),
+                "press did not fill the held bucket");
+        helper.assertTrue(press.fluidTank().isEmpty(), "press did not drain its fluid output");
+        player.discard();
+        helper.succeed();
+    }
+
+    @GameTest(template = "animal_power_empty")
+    public static void automationSeparatesInputAndOutputFaces(GameTestHelper helper) {
+        if (!GameTestProfiles.requireEnabledContent(helper)) {
+            return;
+        }
+        helper.setBlock(MACHINE, AnimalPowerFeature.HORSE_GRINDSTONE.get());
+        AnimalMachineBlockEntity machine = (AnimalMachineBlockEntity) helper.getBlockEntity(MACHINE);
+        GrindingRecipe recipe = helper.getLevel().getRecipeManager()
+                .getAllRecipesFor(AnimalPowerFeature.GRINDING_TYPE.get())
+                .stream()
+                .map(holder -> holder.value())
+                .filter(candidate -> candidate.supports(
+                        com.protyvkultury.revivalages.feature.technology.animalpower.recipe.GrindingMachine.ANIMAL))
+                .findFirst()
+                .orElseThrow();
+        ItemStack input = recipe.ingredient().getItems()[0].copyWithCount(recipe.inputCount());
+        IItemHandler sideHandler = Objects.requireNonNull(machine.itemHandler(Direction.NORTH));
+        IItemHandler bottomHandler = Objects.requireNonNull(machine.itemHandler(Direction.DOWN));
+
+        helper.assertValueEqual(sideHandler.getSlots(), 1, "side automation exposed result slots");
+        helper.assertValueEqual(bottomHandler.getSlots(), 2, "bottom automation exposed the input slot");
+        helper.assertTrue(sideHandler.insertItem(0, input.copy(), false).isEmpty(),
+                "side automation could not insert the recipe input");
+        helper.assertTrue(machine.item(0).is(input.getItem()), "side automation did not populate the input slot");
+        helper.assertTrue(bottomHandler.getStackInSlot(0).isEmpty(),
+                "bottom automation exposed the occupied input slot");
+        ItemStack rejectedInput = bottomHandler.insertItem(0, input.copy(), true);
+        helper.assertTrue(
+                rejectedInput.getCount() == input.getCount()
+                        && ItemStack.isSameItemSameComponents(rejectedInput, input),
+                "bottom automation accepted an input stack"
+        );
+        helper.succeed();
+    }
+
+    private static BlockHitResult hit(BlockPos pos, Direction side) {
+        return new BlockHitResult(Vec3.atCenterOf(pos), side, pos, false);
     }
 
     private static void buildFloor(GameTestHelper helper) {

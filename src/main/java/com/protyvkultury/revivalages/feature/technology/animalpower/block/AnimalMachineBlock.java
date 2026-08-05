@@ -36,6 +36,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.neoforged.neoforge.fluids.FluidUtil;
 
 public final class AnimalMachineBlock extends BaseEntityBlock {
 
@@ -170,6 +171,14 @@ public final class AnimalMachineBlock extends BaseEntityBlock {
         if (machine == null) {
             return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         }
+        if (kind == AnimalMachineKind.PRESS) {
+            if (!level.isClientSide && FluidUtil.interactWithFluidHandler(player, hand, machine.fluidOutputHandler())) {
+                return ItemInteractionResult.SUCCESS;
+            }
+            if (level.isClientSide && FluidUtil.getFluidHandler(stack).isPresent()) {
+                return ItemInteractionResult.CONSUME;
+            }
+        }
         if (stack.is(Items.LEAD)) {
             if (!level.isClientSide && machine.attachWorker(player)) {
                 return ItemInteractionResult.SUCCESS;
@@ -198,19 +207,19 @@ public final class AnimalMachineBlock extends BaseEntityBlock {
         if (!level.isClientSide && machine.workerId().isEmpty() && machine.attachWorker(player)) {
             return InteractionResult.SUCCESS;
         }
-        if (player.isShiftKeyDown() && machine.workerId().isPresent()) {
-            if (!level.isClientSide) {
-                machine.detachWorker();
-            }
-            return InteractionResult.sidedSuccess(level.isClientSide);
-        }
-        for (int slot = 2; slot >= 0; slot--) {
-            if (!machine.item(slot).isEmpty()) {
+        for (int slot : new int[] {1, 2, 0}) {
+            if (machine.canExtract(slot) && !machine.item(slot).isEmpty()) {
                 int selected = slot;
                 BlockPos base = basePos(pos, state);
                 return ItemStackInteraction.extract(
                         level, base, player, machine.item(slot), () -> machine.extract(selected));
             }
+        }
+        if (machine.workerId().isPresent()) {
+            if (!level.isClientSide) {
+                machine.returnWorkerTo(player);
+            }
+            return InteractionResult.sidedSuccess(level.isClientSide);
         }
         return InteractionResult.PASS;
     }

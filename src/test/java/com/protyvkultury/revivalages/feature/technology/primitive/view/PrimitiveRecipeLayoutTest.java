@@ -87,6 +87,14 @@ final class PrimitiveRecipeLayoutTest {
         BufferedImage image = readImage("assets/revivalages/textures/gui/" + atlas + ".png");
         PrimitiveFluidSlotGeometry.EmiTankBounds bounds = geometry.emiTankBounds();
         assertEquals(FLUID_COLOR, image.getRGB(bounds.x(), bounds.y()));
+        assertEquals(18, bounds.width());
+        assertEquals(18, bounds.height());
+        assertEquals(FLUID_COLOR, image.getRGB(bounds.x() + bounds.width() - 1, bounds.y()));
+        assertEquals(FLUID_COLOR, image.getRGB(bounds.x(), bounds.y() + bounds.height() - 1));
+        assertEquals(
+                FLUID_COLOR,
+                image.getRGB(bounds.x() + bounds.width() - 1, bounds.y() + bounds.height() - 1)
+        );
     }
 
     private static BufferedImage readImage(String path) {
