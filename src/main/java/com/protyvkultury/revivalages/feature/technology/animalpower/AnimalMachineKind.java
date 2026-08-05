@@ -17,6 +17,11 @@ public enum AnimalMachineKind {
         return tall;
     }
 
+    /** Matches the vertical path plane used by the designated Horse Power machine. */
+    public int workerPathYOffset() {
+        return this == GRINDSTONE ? -1 : 0;
+    }
+
     public ContentKey contentKey() {
         return switch (this) {
             case GRINDSTONE -> ContentKey.HORSE_GRINDSTONE;

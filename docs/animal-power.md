@@ -28,15 +28,21 @@ distance boundary is detached and returns a dropped lead. Eligible entity types 
 `revivalages:animal_power_workers`; the built-in tag contains horses, donkeys,
 mules, llamas, and camels.
 
-Each device validates a solid 7 by 7 floor centered below it and two blocks of
-clearance above that floor. The eight waypoints form a symmetric circuit around
-the perimeter. Invalid areas pause navigation and processing without consuming
-input. Worker UUID, waypoint, machine progress, inventory, press fluid, and
-chopping-block wood variant are persisted.
+Each device follows Horse Power's work-area contract: every position in the
+7 by 7 area outside the central 3 by 3 machine footprint must be replaceable at
+the machine level and one adjacent vertical level. Horse Grindstones require the
+level below to be replaceable; Horse Chopping Blocks and Horse Presses require
+the level above. The Grindstone route is one block below the machine; the taller
+machines' routes are at machine level. The eight waypoints form a symmetric
+circuit around the perimeter; this retains the existing documented correction of
+the reference's asymmetric route. Invalid areas pause navigation and processing
+without consuming input. Worker UUID, waypoint, machine progress, inventory,
+press fluid, and chopping-block wood variant are persisted. Navigation,
+processing, inventory mutation, and completion remain server-authoritative.
 
-The symmetric area check intentionally corrects an asymmetric edge check in the
-designated reference. Navigation, processing, inventory mutation, and completion
-remain server-authoritative.
+In practice, a Horse Grindstone sits on a raised central 3 by 3 plinth, with
+the worker walking around it one block lower. Horse Chopping Blocks and Horse
+Presses use the ordinary ground-level route around their central footprint.
 
 ## Recipes and automation
 

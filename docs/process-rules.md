@@ -38,8 +38,11 @@ specific manual tool. Its tooltip describes the recipe-specific interaction;
 the generic `required_manual_tool` icon remains a condition rather than a
 substitute for the accepted tool set. The `attached_worker` and
 `valid_work_area` icons describe the default eligible workers, lead attachment,
-and the 7×7 solid-floor/two-block-headroom area contract. Datapacks may extend
-the worker tag; the icon text does not make that tag closed.
+and the Horse Power work-area contract: replaceable outer 7×7 cells outside the
+central 3×3 machine footprint at the machine level and its required adjacent
+vertical level; the Grindstone route is one block lower, while tall machines use
+the machine level. Datapacks may extend the worker tag; the icon text does not
+make that tag closed.
 
 Soaking recipes use only `process_rules`; obsolete recipe fields are rejected
 during data loading.

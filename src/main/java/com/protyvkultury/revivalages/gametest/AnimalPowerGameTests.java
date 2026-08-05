@@ -3,6 +3,7 @@ package com.protyvkultury.revivalages.gametest;
 import com.google.gson.JsonParser;
 import com.mojang.serialization.JsonOps;
 import com.protyvkultury.revivalages.RevivalAges;
+import com.protyvkultury.revivalages.feature.technology.animalpower.AnimalMachineKind;
 import com.protyvkultury.revivalages.feature.technology.animalpower.AnimalPowerFeature;
 import com.protyvkultury.revivalages.feature.technology.animalpower.AnimalPowerTags;
 import com.protyvkultury.revivalages.feature.technology.animalpower.AnimalWorkArea;
@@ -52,30 +53,50 @@ public final class AnimalPowerGameTests {
     }
 
     @GameTest(template = "animal_power_empty")
-    public static void symmetricWorkAreaAcceptsEveryEdge(GameTestHelper helper) {
+    public static void referenceGrindstoneAreaAcceptsCentralPlatform(GameTestHelper helper) {
         if (!GameTestProfiles.requireEnabledContent(helper)) {
             return;
         }
-        buildFloor(helper);
+        buildReferenceWorkArea(helper, false);
         helper.setBlock(MACHINE, AnimalPowerFeature.HORSE_GRINDSTONE.get());
 
         if (!AnimalWorkArea.isValid(helper.getLevel(), helper.absolutePos(MACHINE), false)) {
-            helper.fail("A solid, clear 7x7x2 area was rejected", MACHINE);
+            helper.fail("The Horse Power grindstone work area was rejected", MACHINE);
         }
         helper.succeed();
     }
 
     @GameTest(template = "animal_power_empty")
-    public static void missingCornerInvalidatesWorkArea(GameTestHelper helper) {
+    public static void occupiedOuterRingInvalidatesWorkArea(GameTestHelper helper) {
         if (!GameTestProfiles.requireEnabledContent(helper)) {
             return;
         }
-        buildFloor(helper);
+        buildReferenceWorkArea(helper, false);
         helper.setBlock(MACHINE, AnimalPowerFeature.HORSE_GRINDSTONE.get());
-        helper.setBlock(new BlockPos(1, 1, 1), Blocks.AIR);
+        helper.setBlock(new BlockPos(1, 2, 1), Blocks.STONE);
 
         if (AnimalWorkArea.isValid(helper.getLevel(), helper.absolutePos(MACHINE), false)) {
-            helper.fail("A missing perimeter floor block was accepted", MACHINE);
+            helper.fail("An occupied Horse Power work-area cell was accepted", MACHINE);
+        }
+        helper.succeed();
+    }
+
+    @GameTest(template = "animal_power_empty")
+    public static void referenceTallMachineAreaRequiresOuterHeadroom(GameTestHelper helper) {
+        if (!GameTestProfiles.requireEnabledContent(helper)) {
+            return;
+        }
+        buildReferenceWorkArea(helper, true);
+        helper.setBlock(MACHINE, AnimalPowerFeature.HORSE_PRESS.get());
+        helper.setBlock(MACHINE.above(), AnimalPowerFeature.HORSE_PRESS.get());
+
+        if (!AnimalWorkArea.isValid(helper.getLevel(), helper.absolutePos(MACHINE), true)) {
+            helper.fail("The Horse Power tall-machine work area was rejected", MACHINE);
+            return;
+        }
+        helper.setBlock(new BlockPos(1, 3, 1), Blocks.STONE);
+        if (AnimalWorkArea.isValid(helper.getLevel(), helper.absolutePos(MACHINE), true)) {
+            helper.fail("Blocked outer headroom was accepted for a tall machine", MACHINE);
         }
         helper.succeed();
     }
@@ -103,7 +124,7 @@ public final class AnimalPowerGameTests {
         if (!GameTestProfiles.requireEnabledContent(helper)) {
             return;
         }
-        buildFloor(helper);
+        buildReferenceWorkArea(helper, true);
         helper.setBlock(
                 MACHINE,
                 AnimalPowerFeature.HORSE_PRESS.get().defaultBlockState()
@@ -264,12 +285,16 @@ public final class AnimalPowerGameTests {
             Mob mob = helper.spawn(type, MACHINE.offset(1, 0, 0));
             mob.setLeashedTo(player, true);
             AnimalWorkerController controller = new AnimalWorkerController();
-            helper.assertTrue(controller.attach(level, machinePos, player), "eligible worker did not attach");
+            helper.assertTrue(
+                    controller.attach(level, machinePos, AnimalMachineKind.GRINDSTONE, player),
+                    "eligible worker did not attach"
+            );
             helper.assertValueEqual(
                     controller.workerId().orElseThrow(),
                     mob.getUUID(),
                     "wrong worker UUID was stored"
             );
+            helper.assertFalse(mob.isLeashed(), "attached worker kept the player's vanilla tether");
             helper.assertTrue(mob.hasRestriction(), "attached worker did not receive a machine home");
             helper.assertValueEqual(mob.getRestrictCenter(), machinePos, "worker home was placed incorrectly");
             helper.assertValueEqual(mob.getRestrictRadius(), 3.0F, "worker home radius changed");
@@ -316,6 +341,39 @@ public final class AnimalPowerGameTests {
         helper.succeed();
     }
 
+    @GameTest(template = "animal_power_empty", timeoutTicks = 20)
+    public static void grindstoneWorkerNavigatesOnLowerRoute(GameTestHelper helper) {
+        if (!GameTestProfiles.requireEnabledContent(helper)) {
+            return;
+        }
+        buildReferenceWorkArea(helper, false);
+        ServerLevel level = helper.getLevel();
+        BlockPos machinePos = helper.absolutePos(MACHINE);
+        Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+        player.setPos(machinePos.getX() + 0.5D, machinePos.getY(), machinePos.getZ() + 0.5D);
+        Mob worker = helper.spawn(EntityType.HORSE, MACHINE.offset(-2, -1, -2));
+        worker.setLeashedTo(player, true);
+
+        AnimalWorkerController controller = new AnimalWorkerController();
+        helper.assertTrue(
+                controller.attach(level, machinePos, AnimalMachineKind.GRINDSTONE, player),
+                "worker did not attach to the grindstone"
+        );
+        helper.runAfterDelay(2, () -> {
+            helper.assertFalse(
+                    controller.tick(level, machinePos, AnimalMachineKind.GRINDSTONE, true),
+                    "worker unexpectedly started inside a waypoint"
+            );
+            helper.assertFalse(
+                    worker.getNavigation().isDone(),
+                    "worker did not receive a path on the grindstone's lower route"
+            );
+            worker.discard();
+            player.discard();
+            helper.succeed();
+        });
+    }
+
     @GameTest(template = "animal_power_empty")
     public static void waypointAndMissingEntityStatePersist(GameTestHelper helper) {
         if (!GameTestProfiles.requireEnabledContent(helper)) {
@@ -325,14 +383,20 @@ public final class AnimalPowerGameTests {
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
         BlockPos machinePos = helper.absolutePos(MACHINE);
         player.setPos(machinePos.getX() + 0.5D, machinePos.getY(), machinePos.getZ() + 0.5D);
-        Mob worker = helper.spawn(EntityType.HORSE, MACHINE.offset(-3, 0, -3));
+        Mob worker = helper.spawn(EntityType.HORSE, MACHINE.offset(-3, -1, -3));
         worker.setLeashedTo(player, true);
 
         AnimalWorkerController controller = new AnimalWorkerController();
-        helper.assertTrue(controller.attach(level, machinePos, player), "worker did not attach");
+        helper.assertTrue(
+                controller.attach(level, machinePos, AnimalMachineKind.GRINDSTONE, player),
+                "worker did not attach"
+        );
         UUID workerId = worker.getUUID();
         int originalWaypoint = controller.waypointIndex();
-        helper.assertTrue(controller.tick(level, machinePos, true), "reached waypoint was not counted");
+        helper.assertTrue(
+                controller.tick(level, machinePos, AnimalMachineKind.GRINDSTONE, true),
+                "reached waypoint was not counted"
+        );
         helper.assertTrue(controller.waypointIndex() != originalWaypoint, "waypoint did not advance");
 
         CompoundTag saved = new CompoundTag();
@@ -348,7 +412,7 @@ public final class AnimalPowerGameTests {
 
         worker.discard();
         helper.assertFalse(
-                restored.tick(level, machinePos, true),
+                restored.tick(level, machinePos, AnimalMachineKind.GRINDSTONE, true),
                 "missing worker unexpectedly produced work"
         );
         helper.assertValueEqual(
@@ -457,11 +521,19 @@ public final class AnimalPowerGameTests {
         return new BlockHitResult(Vec3.atCenterOf(pos), side, pos, false);
     }
 
-    private static void buildFloor(GameTestHelper helper) {
+    private static void buildReferenceWorkArea(GameTestHelper helper, boolean tallMachine) {
         for (int x = 1; x <= 7; x++) {
             for (int z = 1; z <= 7; z++) {
-                helper.setBlock(new BlockPos(x, 1, z), Blocks.STONE);
                 helper.setBlock(new BlockPos(x, 2, z), Blocks.AIR);
+                int relativeX = x - MACHINE.getX();
+                int relativeZ = z - MACHINE.getZ();
+                boolean central = Math.abs(relativeX) <= 1 && Math.abs(relativeZ) <= 1;
+                if (tallMachine || central) {
+                    helper.setBlock(new BlockPos(x, 1, z), Blocks.STONE);
+                } else {
+                    helper.setBlock(new BlockPos(x, 0, z), Blocks.STONE);
+                    helper.setBlock(new BlockPos(x, 1, z), Blocks.AIR);
+                }
                 helper.setBlock(new BlockPos(x, 3, z), Blocks.AIR);
             }
         }

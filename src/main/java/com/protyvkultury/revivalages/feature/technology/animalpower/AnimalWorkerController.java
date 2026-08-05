@@ -30,7 +30,7 @@ public final class AnimalWorkerController {
         return waypointIndex;
     }
 
-    public boolean attach(ServerLevel level, BlockPos machinePos, Player player) {
+    public boolean attach(ServerLevel level, BlockPos machinePos, AnimalMachineKind kind, Player player) {
         if (workerId != null) {
             return false;
         }
@@ -52,10 +52,12 @@ public final class AnimalWorkerController {
             return false;
         }
         Mob worker = candidate.get();
-        worker.dropLeash(false, false);
+        // The machine supplies its own tether renderer. Broadcast removal of the
+        // player's vanilla tether so clients do not render both connections.
+        worker.dropLeash(true, false);
         worker.restrictTo(machinePos, AnimalWorkArea.RADIUS);
         workerId = worker.getUUID();
-        waypointIndex = nearestWaypoint(worker, machinePos);
+        waypointIndex = nearestWaypoint(worker, machinePos, kind);
         retryTicks = 0;
         return true;
     }
@@ -99,7 +101,7 @@ public final class AnimalWorkerController {
         return true;
     }
 
-    public boolean tick(ServerLevel level, BlockPos machinePos, boolean shouldMove) {
+    public boolean tick(ServerLevel level, BlockPos machinePos, AnimalMachineKind kind, boolean shouldMove) {
         if (workerId == null) {
             return false;
         }
@@ -133,30 +135,20 @@ public final class AnimalWorkerController {
             worker.getNavigation().stop();
             return false;
         }
-        BlockPos target = AnimalWorkArea.waypoint(machinePos, waypointIndex);
+        BlockPos target = AnimalWorkArea.waypoint(machinePos, kind, waypointIndex);
         double reach = AnimalPowerConfig.WAYPOINT_REACH_DISTANCE.get();
         if (worker.distanceToSqr(
                 target.getX() + 0.5D,
                 target.getY(),
                 target.getZ() + 0.5D) <= reach * reach) {
             waypointIndex = (waypointIndex + 1) % AnimalWorkArea.waypointCount();
-            target = AnimalWorkArea.waypoint(machinePos, waypointIndex);
-            worker.getNavigation().moveTo(
-                    target.getX() + 0.5D,
-                    target.getY(),
-                    target.getZ() + 0.5D,
-                    AnimalPowerConfig.WORKER_SPEED.get()
-            );
+            target = AnimalWorkArea.waypoint(machinePos, kind, waypointIndex);
+            navigateToWaypoint(worker, machinePos, target);
             return true;
         }
         if (worker.getNavigation().isDone()
                 || level.getGameTime() % AnimalPowerConfig.NAVIGATION_REFRESH_INTERVAL.get() == 0L) {
-            worker.getNavigation().moveTo(
-                    target.getX() + 0.5D,
-                    target.getY(),
-                    target.getZ() + 0.5D,
-                    AnimalPowerConfig.WORKER_SPEED.get()
-            );
+            navigateToWaypoint(worker, machinePos, target);
         }
         return false;
     }
@@ -184,11 +176,11 @@ public final class AnimalWorkerController {
         tag.putInt("WorkerRetry", retryTicks);
     }
 
-    private static int nearestWaypoint(Mob worker, BlockPos machinePos) {
+    private static int nearestWaypoint(Mob worker, BlockPos machinePos, AnimalMachineKind kind) {
         int nearest = 0;
         double nearestDistance = Double.MAX_VALUE;
         for (int index = 0; index < AnimalWorkArea.waypointCount(); index++) {
-            BlockPos waypoint = AnimalWorkArea.waypoint(machinePos, index);
+            BlockPos waypoint = AnimalWorkArea.waypoint(machinePos, kind, index);
             double distance = worker.distanceToSqr(
                     waypoint.getX() + 0.5D,
                     waypoint.getY(),
@@ -199,5 +191,21 @@ public final class AnimalWorkerController {
             }
         }
         return nearest;
+    }
+
+    private static void navigateToWaypoint(Mob worker, BlockPos machinePos, BlockPos target) {
+        // Modern navigation rejects targets outside a Mob's restriction radius.
+        // Horse Power's 1.12 navigator did not apply its three-block home to
+        // forced route movement, so create the route before restoring the home.
+        // GroundPathNavigation takes the supporting block, not the worker's
+        // feet position used by the Horse Power route.
+        worker.clearRestriction();
+        worker.getNavigation().moveTo(
+                target.getX() + 0.5D,
+                target.getY() - 1.0D,
+                target.getZ() + 0.5D,
+                AnimalPowerConfig.WORKER_SPEED.get()
+        );
+        worker.restrictTo(machinePos, AnimalWorkArea.RADIUS);
     }
 }

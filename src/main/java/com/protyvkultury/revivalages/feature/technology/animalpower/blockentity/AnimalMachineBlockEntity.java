@@ -95,7 +95,7 @@ public final class AnimalMachineBlockEntity extends BlockEntity {
         }
         boolean ready = machine.workAreaValid && machine.canProcess();
         machine.updateWorkerSnapshot(server);
-        if (machine.worker.tick(server, pos, ready)) {
+        if (machine.worker.tick(server, pos, machine.kind, ready)) {
             machine.workPoints++;
             machine.tryComplete();
             machine.sync();
@@ -155,7 +155,7 @@ public final class AnimalMachineBlockEntity extends BlockEntity {
         if (!(level instanceof ServerLevel server)) {
             return false;
         }
-        boolean attached = worker.attach(server, worldPosition, player);
+        boolean attached = worker.attach(server, worldPosition, kind, player);
         if (attached) {
             level.playSound(null, worldPosition, SoundEvents.LEASH_KNOT_PLACE, SoundSource.BLOCKS, 1.0F, 1.0F);
             sync();

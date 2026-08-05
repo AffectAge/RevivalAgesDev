@@ -1,7 +1,6 @@
 package com.protyvkultury.revivalages.feature.technology.animalpower;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.world.level.LevelReader;
 
 /** Validates and describes the bounded path around an animal-powered device. */
@@ -14,32 +13,24 @@ public final class AnimalWorkArea {
     public static boolean isValid(LevelReader level, BlockPos machinePos, boolean tallMachine) {
         for (int x = -RADIUS; x <= RADIUS; x++) {
             for (int z = -RADIUS; z <= RADIUS; z++) {
-                BlockPos floor = machinePos.offset(x, -1, z);
-                if (!level.getBlockState(floor).isFaceSturdy(level, floor, Direction.UP)) {
-                    return false;
-                }
-                if (x == 0 && z == 0) {
+                if (Math.abs(x) <= 1 && Math.abs(z) <= 1) {
                     continue;
                 }
-                if (!level.getBlockState(machinePos.offset(x, 0, z)).getCollisionShape(
-                        level, machinePos.offset(x, 0, z)).isEmpty()) {
+                if (!level.getBlockState(machinePos.offset(x, 0, z)).canBeReplaced()) {
                     return false;
                 }
-                if (!level.getBlockState(machinePos.offset(x, 1, z)).getCollisionShape(
-                        level, machinePos.offset(x, 1, z)).isEmpty()) {
+                int clearanceOffset = tallMachine ? 1 : -1;
+                if (!level.getBlockState(machinePos.offset(x, clearanceOffset, z)).canBeReplaced()) {
                     return false;
                 }
             }
         }
-        return !tallMachine || level.getBlockState(machinePos.above()).is(
-                com.protyvkultury.revivalages.feature.technology.animalpower.AnimalPowerFeature.HORSE_CHOPPING_BLOCK.get())
-                || level.getBlockState(machinePos.above()).is(
-                com.protyvkultury.revivalages.feature.technology.animalpower.AnimalPowerFeature.HORSE_PRESS.get());
+        return true;
     }
 
-    public static BlockPos waypoint(BlockPos machinePos, int index) {
+    public static BlockPos waypoint(BlockPos machinePos, AnimalMachineKind kind, int index) {
         AnimalWaypointCircuit.Offset offset = AnimalWaypointCircuit.offset(index);
-        return machinePos.offset(offset.x(), 0, offset.z());
+        return machinePos.offset(offset.x(), kind.workerPathYOffset(), offset.z());
     }
 
     public static int waypointCount() {
