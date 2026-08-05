@@ -1,0 +1,14 @@
+{
+  "replace": false,
+  "values": [
+    "revivalages:cobblestone_splitter",
+    "revivalages:granite_splitter",
+    "revivalages:diorite_splitter",
+    "revivalages:andesite_splitter",
+    "revivalages:sandstone_splitter",
+    "revivalages:red_sandstone_splitter",
+    "revivalages:end_stone_splitter",
+    "revivalages:netherrack_splitter",
+    "revivalages:soul_soil_splitter"
+  ]
+}

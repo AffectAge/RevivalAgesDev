@@ -1,30 +1,60 @@
-[03рту.2026 19:31:48.745] [main/INFO] [cpw.mods.modlauncher.Launcher/MODLAUNCHER]: ModLauncher running: args [--launchTarget, forgedatadev, --assetIndex, 17, --assetsDir, C:\\Users\\Affect\\.gradle\\caches\\neoformruntime\\assets, --gameDir, ., --fml.fmlVersion, 4.0.43, --fml.mcVersion, 1.21.1, --fml.neoForgeVersion, 21.1.241, --fml.neoFormVersion, 20240808.144430, --mod, revivalages, --all, --output, B:\Minecraft mods\Revival-Ages\src\generated\resources, --existing, B:\Minecraft mods\Revival-Ages\src\main\resources]
-[03рту.2026 19:31:48.750] [main/INFO] [cpw.mods.modlauncher.Launcher/MODLAUNCHER]: JVM identified as Eclipse Adoptium OpenJDK 64-Bit Server VM 21.0.7+6-LTS
-[03рту.2026 19:31:48.752] [main/INFO] [cpw.mods.modlauncher.Launcher/MODLAUNCHER]: ModLauncher 11.0.5+main.901c6ea8 starting: java version 21.0.7 by Eclipse Adoptium; OS Windows 10 arch amd64 version 10.0
-[03рту.2026 19:31:48.963] [main/INFO] [net.neoforged.fml.loading.ImmediateWindowHandler/]: ImmediateWindowProvider not loading because launch target is forgedatadev
-[03рту.2026 19:31:49.084] [main/INFO] [mixin/]: SpongePowered MIXIN Subsystem Version=0.8.7 Source=union:/C:/Users/Affect/.gradle/caches/modules-2/files-2.1/net.fabricmc/sponge-mixin/0.15.2+mixin.0.8.7/2af2f021d8e02a0220dc27a7a72b4666d66d44ca/sponge-mixin-0.15.2+mixin.0.8.7.jar%23138!/ Service=ModLauncher Env=CLIENT
-[03рту.2026 19:31:49.831] [main/INFO] [net.neoforged.fml.loading.moddiscovery.locators.JarInJarDependencyLocator/]: Found 2 dependencies adding them to mods collection
-[03рту.2026 19:31:49.833] [main/INFO] [net.neoforged.fml.loading.moddiscovery.ModDiscoverer/]: 
+[04рту.2026 19:51:52.601] [main/INFO] [cpw.mods.modlauncher.Launcher/MODLAUNCHER]: ModLauncher running: args [--launchTarget, forgedatadev, --assetIndex, 17, --assetsDir, C:\\Users\\Affect\\.gradle\\caches\\neoformruntime\\assets, --gameDir, ., --fml.fmlVersion, 4.0.43, --fml.mcVersion, 1.21.1, --fml.neoForgeVersion, 21.1.241, --fml.neoFormVersion, 20240808.144430, --mod, revivalages, --all, --output, B:\Minecraft mods\Revival-Ages\src\generated\resources, --existing, B:\Minecraft mods\Revival-Ages\src\main\resources]
+[04рту.2026 19:51:52.632] [main/INFO] [cpw.mods.modlauncher.Launcher/MODLAUNCHER]: JVM identified as Eclipse Adoptium OpenJDK 64-Bit Server VM 21.0.7+6-LTS
+[04рту.2026 19:51:52.638] [main/INFO] [cpw.mods.modlauncher.Launcher/MODLAUNCHER]: ModLauncher 11.0.5+main.901c6ea8 starting: java version 21.0.7 by Eclipse Adoptium; OS Windows 10 arch amd64 version 10.0
+[04рту.2026 19:51:53.293] [main/INFO] [net.neoforged.fml.loading.ImmediateWindowHandler/]: ImmediateWindowProvider not loading because launch target is forgedatadev
+[04рту.2026 19:51:53.506] [main/INFO] [mixin/]: SpongePowered MIXIN Subsystem Version=0.8.7 Source=union:/C:/Users/Affect/.gradle/caches/modules-2/files-2.1/net.fabricmc/sponge-mixin/0.15.2+mixin.0.8.7/2af2f021d8e02a0220dc27a7a72b4666d66d44ca/sponge-mixin-0.15.2+mixin.0.8.7.jar%23138!/ Service=ModLauncher Env=CLIENT
+[04рту.2026 19:51:55.307] [main/INFO] [net.neoforged.fml.loading.moddiscovery.locators.JarInJarDependencyLocator/]: Found 2 dependencies adding them to mods collection
+[04рту.2026 19:51:55.309] [main/INFO] [net.neoforged.fml.loading.moddiscovery.ModDiscoverer/]: 
      Mod List:
 		Name Version (Mod Id)
 
 		Minecraft 1.21.1 (minecraft)
 		NeoForge 21.1.241 (neoforge)
 		Revival Ages 0.1.0 (revivalages)
-[03рту.2026 19:31:52.971] [main/INFO] [mixin/]: Compatibility level set to JAVA_21
-[03рту.2026 19:31:53.015] [main/INFO] [cpw.mods.modlauncher.LaunchServiceHandler/MODLAUNCHER]: Launching target 'forgedatadev' with arguments [--gameDir, ., --assetsDir, C:\Users\Affect\.gradle\caches\neoformruntime\assets, --assetIndex, 17, --mod, revivalages, --all, --output, B:\Minecraft mods\Revival-Ages\src\generated\resources, --existing, B:\Minecraft mods\Revival-Ages\src\main\resources]
-[03рту.2026 19:31:54.163] [main/INFO] [net.neoforged.neoforge.data.loading.DatagenModLoader/]: Initializing Data Gatherer for mods [revivalages]
-[03рту.2026 19:31:54.181] [main/INFO] [MixinExtras|Service/]: Initializing MixinExtras via com.llamalad7.mixinextras.service.MixinExtrasServiceImpl(version=0.5.3).
-[03рту.2026 19:32:06.422] [modloading-worker-0/INFO] [net.neoforged.neoforge.common.NeoForgeMod/NEOFORGE-MOD]: NeoForge mod loading, version 21.1.241, for MC 1.21.1
-[03рту.2026 19:32:08.839] [main/WARN] [net.minecraft.server.packs.VanillaPackResourcesBuilder/]: Assets URL 'union:/B:/Minecraft%20mods/Revival-Ages/build/moddev/artifacts/neoforge-21.1.241.jar%23189!/assets/.mcassetsroot' uses unexpected schema
-[03рту.2026 19:32:08.848] [main/WARN] [net.minecraft.server.packs.VanillaPackResourcesBuilder/]: Assets URL 'union:/B:/Minecraft%20mods/Revival-Ages/build/moddev/artifacts/neoforge-21.1.241.jar%23189!/data/.mcassetsroot' uses unexpected schema
-[03рту.2026 19:32:09.259] [main/INFO] [net.minecraft.data.DataGenerator/]: Starting provider: Revival Ages Item Size Data Maps
-[03рту.2026 19:32:09.488] [main/INFO] [net.minecraft.data.DataGenerator/]: Revival Ages Item Size Data Maps finished after 224 ms
-[03рту.2026 19:32:09.488] [main/INFO] [net.minecraft.data.DataGenerator/]: Starting provider: Revival Ages Diet and Food Spoilage Data Maps
-[03рту.2026 19:32:09.513] [main/INFO] [net.minecraft.data.DataGenerator/]: Revival Ages Diet and Food Spoilage Data Maps finished after 24 ms
-[03рту.2026 19:32:09.513] [main/INFO] [net.minecraft.data.DataGenerator/]: Starting provider: Revival Ages content availability manifest
-[03рту.2026 19:32:09.611] [main/INFO] [net.minecraft.data.DataGenerator/]: Revival Ages content availability manifest finished after 97 ms
-[03рту.2026 19:32:09.611] [main/INFO] [net.minecraft.data.DataGenerator/]: Starting provider: Revival Ages Diet Toughness Icon
-[03рту.2026 19:32:09.662] [main/INFO] [net.minecraft.data.DataGenerator/]: Revival Ages Diet Toughness Icon finished after 50 ms
-[03рту.2026 19:32:09.662] [main/INFO] [net.minecraft.data.DataGenerator/]: All providers took: 400 ms
-[03рту.2026 19:32:09.667] [main/INFO] [net.minecraft.data.HashCache/]: Caching: total files: 7, old count: 7, new count: 8, removed stale: 0, written: 0
+[04рту.2026 19:51:58.455] [main/INFO] [mixin/]: Compatibility level set to JAVA_21
+[04рту.2026 19:51:58.574] [main/INFO] [cpw.mods.modlauncher.LaunchServiceHandler/MODLAUNCHER]: Launching target 'forgedatadev' with arguments [--gameDir, ., --assetsDir, C:\Users\Affect\.gradle\caches\neoformruntime\assets, --assetIndex, 17, --mod, revivalages, --all, --output, B:\Minecraft mods\Revival-Ages\src\generated\resources, --existing, B:\Minecraft mods\Revival-Ages\src\main\resources]
+[04рту.2026 19:52:01.391] [main/INFO] [net.neoforged.neoforge.data.loading.DatagenModLoader/]: Initializing Data Gatherer for mods [revivalages]
+[04рту.2026 19:52:01.493] [main/INFO] [MixinExtras|Service/]: Initializing MixinExtras via com.llamalad7.mixinextras.service.MixinExtrasServiceImpl(version=0.5.3).
+[04рту.2026 19:52:26.764] [modloading-worker-0/INFO] [net.neoforged.neoforge.common.NeoForgeMod/NEOFORGE-MOD]: NeoForge mod loading, version 21.1.241, for MC 1.21.1
+[04рту.2026 19:52:34.675] [main/WARN] [net.minecraft.server.packs.VanillaPackResourcesBuilder/]: Assets URL 'union:/B:/Minecraft%20mods/Revival-Ages/build/moddev/artifacts/neoforge-21.1.241.jar%23189!/assets/.mcassetsroot' uses unexpected schema
+[04рту.2026 19:52:34.676] [main/WARN] [net.minecraft.server.packs.VanillaPackResourcesBuilder/]: Assets URL 'union:/B:/Minecraft%20mods/Revival-Ages/build/moddev/artifacts/neoforge-21.1.241.jar%23189!/data/.mcassetsroot' uses unexpected schema
+[04рту.2026 19:52:35.385] [main/INFO] [net.minecraft.data.DataGenerator/]: Starting provider: Revival Ages Item Size Data Maps
+[04рту.2026 19:52:36.398] [main/INFO] [net.minecraft.data.DataGenerator/]: Revival Ages Item Size Data Maps finished after 1012 ms
+[04рту.2026 19:52:36.398] [main/INFO] [net.minecraft.data.DataGenerator/]: Starting provider: Revival Ages Diet and Food Spoilage Data Maps
+[04рту.2026 19:52:36.430] [main/INFO] [net.minecraft.data.DataGenerator/]: Revival Ages Diet and Food Spoilage Data Maps finished after 30 ms
+[04рту.2026 19:52:36.430] [main/INFO] [net.minecraft.data.DataGenerator/]: Starting provider: Revival Ages content availability manifest
+[04рту.2026 19:52:36.745] [main/INFO] [net.minecraft.data.DataGenerator/]: Revival Ages content availability manifest finished after 315 ms
+[04рту.2026 19:52:36.745] [main/INFO] [net.minecraft.data.DataGenerator/]: Starting provider: Revival Ages Diet Toughness Icon
+[04рту.2026 19:52:36.837] [main/INFO] [net.minecraft.data.DataGenerator/]: Revival Ages Diet Toughness Icon finished after 90 ms
+[04рту.2026 19:52:36.838] [main/INFO] [net.minecraft.data.DataGenerator/]: All providers took: 1453 ms
+[04рту.2026 19:52:36.842] [main/INFO] [net.minecraft.data.HashCache/]: Caching: total files: 7, old count: 7, new count: 8, removed stale: 0, written: 0
+[04рту.2026 19:52:42.261] [main/INFO] [cpw.mods.modlauncher.Launcher/MODLAUNCHER]: ModLauncher running: args [--launchTarget, forgedatadev, --assetIndex, 17, --assetsDir, C:\\Users\\Affect\\.gradle\\caches\\neoformruntime\\assets, --gameDir, ., --fml.fmlVersion, 4.0.43, --fml.mcVersion, 1.21.1, --fml.neoForgeVersion, 21.1.241, --fml.neoFormVersion, 20240808.144430, --mod, revivalages, --all, --output, B:\Minecraft mods\Revival-Ages\src\generated\resources, --existing, B:\Minecraft mods\Revival-Ages\src\main\resources]
+[04рту.2026 19:52:42.288] [main/INFO] [cpw.mods.modlauncher.Launcher/MODLAUNCHER]: JVM identified as Eclipse Adoptium OpenJDK 64-Bit Server VM 21.0.7+6-LTS
+[04рту.2026 19:52:42.328] [main/INFO] [cpw.mods.modlauncher.Launcher/MODLAUNCHER]: ModLauncher 11.0.5+main.901c6ea8 starting: java version 21.0.7 by Eclipse Adoptium; OS Windows 10 arch amd64 version 10.0
+[04рту.2026 19:52:42.712] [main/INFO] [net.neoforged.fml.loading.ImmediateWindowHandler/]: ImmediateWindowProvider not loading because launch target is forgedatadev
+[04рту.2026 19:52:42.942] [main/INFO] [mixin/]: SpongePowered MIXIN Subsystem Version=0.8.7 Source=union:/C:/Users/Affect/.gradle/caches/modules-2/files-2.1/net.fabricmc/sponge-mixin/0.15.2+mixin.0.8.7/2af2f021d8e02a0220dc27a7a72b4666d66d44ca/sponge-mixin-0.15.2+mixin.0.8.7.jar%23138!/ Service=ModLauncher Env=CLIENT
+[04рту.2026 19:52:44.357] [main/INFO] [net.neoforged.fml.loading.moddiscovery.locators.JarInJarDependencyLocator/]: Found 2 dependencies adding them to mods collection
+[04рту.2026 19:52:44.360] [main/INFO] [net.neoforged.fml.loading.moddiscovery.ModDiscoverer/]: 
+     Mod List:
+		Name Version (Mod Id)
+
+		Minecraft 1.21.1 (minecraft)
+		NeoForge 21.1.241 (neoforge)
+		Revival Ages 0.1.0 (revivalages)
+[04рту.2026 19:52:47.551] [main/INFO] [mixin/]: Compatibility level set to JAVA_21
+[04рту.2026 19:52:47.614] [main/INFO] [cpw.mods.modlauncher.LaunchServiceHandler/MODLAUNCHER]: Launching target 'forgedatadev' with arguments [--gameDir, ., --assetsDir, C:\Users\Affect\.gradle\caches\neoformruntime\assets, --assetIndex, 17, --mod, revivalages, --all, --output, B:\Minecraft mods\Revival-Ages\src\generated\resources, --existing, B:\Minecraft mods\Revival-Ages\src\main\resources]
+[04рту.2026 19:52:49.155] [main/INFO] [net.neoforged.neoforge.data.loading.DatagenModLoader/]: Initializing Data Gatherer for mods [revivalages]
+[04рту.2026 19:52:49.197] [main/INFO] [MixinExtras|Service/]: Initializing MixinExtras via com.llamalad7.mixinextras.service.MixinExtrasServiceImpl(version=0.5.3).
+[04рту.2026 19:53:10.181] [modloading-worker-0/INFO] [net.neoforged.neoforge.common.NeoForgeMod/NEOFORGE-MOD]: NeoForge mod loading, version 21.1.241, for MC 1.21.1
+[04рту.2026 19:53:18.715] [main/WARN] [net.minecraft.server.packs.VanillaPackResourcesBuilder/]: Assets URL 'union:/B:/Minecraft%20mods/Revival-Ages/build/moddev/artifacts/neoforge-21.1.241.jar%23189!/assets/.mcassetsroot' uses unexpected schema
+[04рту.2026 19:53:18.717] [main/WARN] [net.minecraft.server.packs.VanillaPackResourcesBuilder/]: Assets URL 'union:/B:/Minecraft%20mods/Revival-Ages/build/moddev/artifacts/neoforge-21.1.241.jar%23189!/data/.mcassetsroot' uses unexpected schema
+[04рту.2026 19:53:20.105] [main/INFO] [net.minecraft.data.DataGenerator/]: Starting provider: Revival Ages Item Size Data Maps
+[04рту.2026 19:53:20.488] [main/INFO] [net.minecraft.data.DataGenerator/]: Revival Ages Item Size Data Maps finished after 380 ms
+[04рту.2026 19:53:20.488] [main/INFO] [net.minecraft.data.DataGenerator/]: Starting provider: Revival Ages Diet and Food Spoilage Data Maps
+[04рту.2026 19:53:20.513] [main/INFO] [net.minecraft.data.DataGenerator/]: Revival Ages Diet and Food Spoilage Data Maps finished after 24 ms
+[04рту.2026 19:53:20.514] [main/INFO] [net.minecraft.data.DataGenerator/]: Starting provider: Revival Ages content availability manifest
+[04рту.2026 19:53:20.803] [main/INFO] [net.minecraft.data.DataGenerator/]: Revival Ages content availability manifest finished after 289 ms
+[04рту.2026 19:53:20.803] [main/INFO] [net.minecraft.data.DataGenerator/]: Starting provider: Revival Ages Diet Toughness Icon
+[04рту.2026 19:53:20.887] [main/INFO] [net.minecraft.data.DataGenerator/]: Revival Ages Diet Toughness Icon finished after 83 ms
+[04рту.2026 19:53:20.887] [main/INFO] [net.minecraft.data.DataGenerator/]: All providers took: 782 ms
+[04рту.2026 19:53:20.893] [main/INFO] [net.minecraft.data.HashCache/]: Caching: total files: 7, old count: 7, new count: 8, removed stale: 0, written: 0

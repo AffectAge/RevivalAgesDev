@@ -3,7 +3,7 @@
     "type": "neoforge:compound",
     "ingredients": [
       {
-        "item": "revivalages:rock"
+        "tag": "revivalages:knapping_splitters"
       },
       {
         "item": "minecraft:flint"
@@ -17,6 +17,6 @@
   "has_off_texture": false,
   "spawns_particles": true,
   "viewer_icon": {
-    "id": "revivalages:rock"
+    "id": "revivalages:cobblestone_splitter"
   }
 }

@@ -183,7 +183,7 @@ public final class RevivalAgesJeiPlugin implements IModPlugin {
                     new KnappingJeiCategory(
                             registration.getJeiHelpers().getGuiHelper(),
                             ROCK_KNAPPING,
-                            SurfaceDepositFeature.ROCK.get()
+                            SurfaceDepositFeature.COBBLESTONE_SPLITTER.get()
                     ),
                     new KnappingJeiCategory(
                             registration.getJeiHelpers().getGuiHelper(),

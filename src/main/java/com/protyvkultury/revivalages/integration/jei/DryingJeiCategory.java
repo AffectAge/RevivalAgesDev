@@ -2,6 +2,7 @@ package com.protyvkultury.revivalages.integration.jei;
 
 import com.protyvkultury.revivalages.RevivalAges;
 import com.protyvkultury.revivalages.feature.technology.dryingrack.view.DryingRecipeView;
+import com.protyvkultury.revivalages.feature.technology.primitive.view.PrimitiveRecipeLayout;
 import java.util.Locale;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
@@ -23,7 +24,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 
 final class DryingJeiCategory implements IRecipeCategory<DryingRecipeView> {
-    private static final int HEIGHT = 42;
+    private static final PrimitiveRecipeLayout LAYOUT = PrimitiveRecipeLayout.DRYING;
+    private static final int HEIGHT = LAYOUT.backgroundHeight() + 16;
     private static final ResourceLocation TEXTURE = RevivalAges.id("textures/gui/drying_rack.png");
     private final RecipeType<DryingRecipeView> recipeType;
     private final Component title;
@@ -39,10 +41,11 @@ final class DryingJeiCategory implements IRecipeCategory<DryingRecipeView> {
         this.recipeType = recipeType;
         this.title = Component.translatable((String) titleKey);
         this.icon = guiHelper.createDrawableItemStack(new ItemStack((ItemLike) iconItem));
-        this.background = guiHelper.createDrawable(TEXTURE, 0, 0, 82, 26);
+        this.background = guiHelper.createDrawable(
+                TEXTURE, 0, 0, LAYOUT.backgroundWidth(), LAYOUT.backgroundHeight());
         this.arrow =
                 guiHelper.createAnimatedDrawable(
-                        guiHelper.createDrawable(TEXTURE, 82, 0, 24, 17),
+                        guiHelper.createDrawable(TEXTURE, LAYOUT.arrowSourceX(), LAYOUT.arrowSourceY(), 24, 17),
                         200,
                         IDrawableAnimated.StartDirection.LEFT,
                         false);
@@ -57,7 +60,7 @@ final class DryingJeiCategory implements IRecipeCategory<DryingRecipeView> {
     }
 
     public int getWidth() {
-        return 82;
+        return LAYOUT.backgroundWidth();
     }
 
     public int getHeight() {
@@ -69,9 +72,11 @@ final class DryingJeiCategory implements IRecipeCategory<DryingRecipeView> {
     }
 
     public void setRecipe(IRecipeLayoutBuilder builder, DryingRecipeView view, IFocusGroup focuses) {
-        builder.addInputSlot(0, 3).addIngredients(view.displayIngredient());
+        PrimitiveRecipeLayout.Position input = LAYOUT.itemInputs().getFirst();
+        PrimitiveRecipeLayout.Position output = LAYOUT.itemOutputs().getFirst();
+        builder.addInputSlot(input.x(), input.y()).addIngredients(view.displayIngredient());
         builder
-                .addOutputSlot(60, 4)
+                .addOutputSlot(output.x(), output.y())
                 .addItemStack(
                         view.recipe()
                                 .getResultItem(
@@ -85,7 +90,7 @@ final class DryingJeiCategory implements IRecipeCategory<DryingRecipeView> {
             double mouseX,
             double mouseY) {
         this.background.draw(graphics, 0, 0);
-        this.arrow.draw(graphics, 24, 4);
+        this.arrow.draw(graphics, LAYOUT.progressArrow().x(), LAYOUT.progressArrow().y());
         MutableComponent duration =
                 Component.translatable(
                         (String) "gui.revivalages.drying_rack.time",
@@ -94,7 +99,13 @@ final class DryingJeiCategory implements IRecipeCategory<DryingRecipeView> {
                                     String.format(Locale.ROOT, "%.1f", (double) view.processingTime() / 20.0)
                                 });
         int x = (this.getWidth() - Minecraft.getInstance().font.width((FormattedText) duration)) / 2;
-        graphics.drawString(Minecraft.getInstance().font, (Component) duration, x, 31, -8355712, false);
+        graphics.drawString(
+                Minecraft.getInstance().font,
+                (Component) duration,
+                x,
+                LAYOUT.backgroundHeight() + 2,
+                -8355712,
+                false);
     }
 
     public ResourceLocation getRegistryName(DryingRecipeView view) {

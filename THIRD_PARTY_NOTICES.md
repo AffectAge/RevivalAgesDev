@@ -159,32 +159,31 @@ runtime dependency or original namespace is used by gameplay code or resources.
 The adapted block model geometry is shipped under
 `assets/revivalages/models/block/hand_grindstone*.json` and
 `assets/revivalages/models/block/horse_*.json`. The original grinding-content
-texture and functional recipe-viewer backgrounds are shipped under the renamed
-paths `textures/block/grinding_contents.png`,
-`textures/gui/animal_power_grinding.png`, and
-`textures/gui/animal_power_pressing.png`. Model parents, vanilla texture names,
-resource locations, blockstate composition, and renderer transforms were adapted
-for Minecraft 1.21.1. The pressing background was further adapted into a fixed
-dual-output layout with independent item-slot and fluid-tank frames.
+texture is shipped under the renamed path `textures/block/grinding_contents.png`.
+Model parents, vanilla texture names, resource locations, blockstate composition,
+and renderer transforms were adapted for Minecraft 1.21.1. The recipe-viewer
+guide atlases at `textures/gui/animal_power_grinding.png` and
+`textures/gui/animal_power_pressing.png` are original Revival Ages assets.
 
 ## Pyrotech
 
 The Drying Rack, Barrel, Chopping Block, Pit Kiln, Soaking Pot, Tanning Rack,
 Stone Sawmill, Stone Oven, Stone Kiln, Stone Crucible, granite Anvil, thatch,
 Pit Burn piles, Flint and Tinder, Wood Torch, wooden and clay buckets,
-primitive material item, and functional recipe-viewer textures and model geometry
-were adapted from Pyrotech by codetaylor. This includes the slot
-backgrounds, progress arrows, flame indicators, and fluid gauges used by the
-JEI/EMI presentation layer. The source project is available at
+primitive material item, and model geometry were adapted from Pyrotech by
+codetaylor. The source project is available at
 <https://github.com/codetaylor/pyrotech>.
 
 Pyrotech is licensed under the Apache License 2.0. A copy is included at
 `licenses/Pyrotech-LICENSE.txt`. The assets were renamed, their resource paths
 were updated, and their blockstate, renderer, and recipe-viewer definitions were
 adapted for Minecraft 1.21.1, NeoForge, JEI, and EMI. Pyrotech GUI files
-`jei11.png`, `jei2.png`, `jei8.png`, `jei6.png`, and `jei3.png` are shipped under
-the renamed Revival Ages paths `stone_sawmill.png`, `stone_oven.png`,
-`stone_kiln.png`, `stone_crucible.png`, and `anvil.png` respectively.
+`jei2.png`, `jei8.png`, and `jei6.png` are shipped under the renamed Revival
+Ages paths `stone_oven.png`, `stone_kiln.png`, and `stone_crucible.png`
+respectively. The guide-atlas replacements at `campfire.png`, `chopping.png`,
+`pit_kiln.png`, `pit_burn.png`, `barrel.png`, `soaking_pot.png`,
+`tanning_rack.png`, `stone_sawmill.png`, `anvil.png`, and `drying_rack.png` are
+original Revival Ages assets.
 
 The four functional Stone Sawmill recordings from Pyrotech are shipped under the
 Revival Ages namespace as `sounds/sawmill/sawmill-idle.ogg`,

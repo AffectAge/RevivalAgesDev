@@ -10,15 +10,15 @@ package com.protyvkultury.revivalages.feature.technology.primitive.view;
 public record PrimitiveFluidSlotGeometry(int contentX, int contentY, int contentWidth, int contentHeight) {
 
     public static final PrimitiveFluidSlotGeometry BARREL_INPUT =
-            new PrimitiveFluidSlotGeometry(2, 40, 33, 9);
+            new PrimitiveFluidSlotGeometry(65, 21, 14, 22);
     public static final PrimitiveFluidSlotGeometry BARREL_OUTPUT =
-            new PrimitiveFluidSlotGeometry(73, 2, 22, 47);
+            new PrimitiveFluidSlotGeometry(121, 21, 14, 22);
     public static final PrimitiveFluidSlotGeometry SOAKING_POT_INPUT =
-            new PrimitiveFluidSlotGeometry(2, 21, 14, 14);
+            new PrimitiveFluidSlotGeometry(17, 30, 14, 14);
     public static final PrimitiveFluidSlotGeometry STONE_CRUCIBLE_OUTPUT =
-            new PrimitiveFluidSlotGeometry(62, 12, 14, 14);
+            new PrimitiveFluidSlotGeometry(73, 11, 16, 16);
     public static final PrimitiveFluidSlotGeometry PRESSING_OUTPUT =
-            new PrimitiveFluidSlotGeometry(117, 24, 14, 25);
+            new PrimitiveFluidSlotGeometry(97, 11, 14, 25);
 
     public PrimitiveFluidSlotGeometry {
         if (contentX < 1 || contentY < 1 || contentWidth < 1 || contentHeight < 1) {

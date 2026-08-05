@@ -6,7 +6,10 @@ import com.protyvkultury.revivalages.core.process.ProcessRuleView;
 import com.protyvkultury.revivalages.core.process.ProcessRulePresentation;
 import com.protyvkultury.revivalages.core.process.ProcessRuleLayout;
 import com.protyvkultury.revivalages.feature.technology.primitive.view.PrimitiveFluidSlotGeometry;
+import com.protyvkultury.revivalages.feature.technology.primitive.view.PrimitiveRecipeLayout;
 import com.protyvkultury.revivalages.feature.technology.primitive.view.PrimitiveRecipeView;
+import com.protyvkultury.revivalages.feature.technology.stonemachine.view.StoneMachineRecipeLayout;
+import java.util.List;
 import java.util.Locale;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.builder.ITooltipBuilder;
@@ -93,25 +96,28 @@ final class PrimitiveJeiCategory implements IRecipeCategory<PrimitiveRecipeView>
             IRecipeLayoutBuilder builder, PrimitiveRecipeView recipe, IFocusGroup focuses) {
         addToolRequirements(builder, recipe);
         switch (this.layout) {
-            case CAMPFIRE, STONE_OVEN:
+            case CAMPFIRE:
                 {
-                    PrimitiveJeiCategory.addItemInputs(builder, recipe, new int[][] {{0, 0}});
-                    PrimitiveJeiCategory.addItemOutputs(builder, recipe, new int[][] {{60, 10}});
+                    addItemInputs(builder, recipe, this.layout.flow.itemInputs());
+                    addItemOutputs(builder, recipe, this.layout.flow.itemOutputs());
                     break;
                 }
+            case STONE_OVEN:
+                addStoneMachineFlow(builder, recipe, StoneMachineRecipeLayout.OVEN);
+                break;
             case CHOPPING, ANVIL:
                 {
-                    PrimitiveJeiCategory.addItemInputs(builder, recipe, new int[][] {{0, 17}});
-                    PrimitiveJeiCategory.addItemOutputs(builder, recipe, new int[][] {{60, 18}, {83, 18}});
+                    addItemInputs(builder, recipe, this.layout.flow.itemInputs());
+                    addItemOutputs(builder, recipe, this.layout.flow.itemOutputs());
                     break;
                 }
             case GRINDING:
-                PrimitiveJeiCategory.addItemInputs(builder, recipe, new int[][] {{34, 27}});
-                PrimitiveJeiCategory.addItemOutputs(builder, recipe, new int[][] {{90, 27}, {90, 50}});
+                addItemInputs(builder, recipe, this.layout.flow.itemInputs());
+                addItemOutputs(builder, recipe, this.layout.flow.itemOutputs());
                 break;
             case PRESSING:
-                PrimitiveJeiCategory.addItemInputs(builder, recipe, new int[][] {{34, 32}});
-                PrimitiveJeiCategory.addItemOutputs(builder, recipe, new int[][] {{90, 32}});
+                addItemInputs(builder, recipe, this.layout.flow.itemInputs());
+                addItemOutputs(builder, recipe, this.layout.flow.itemOutputs());
                 PrimitiveJeiCategory.addFluid(
                         builder,
                         RecipeIngredientRole.OUTPUT,
@@ -120,14 +126,13 @@ final class PrimitiveJeiCategory implements IRecipeCategory<PrimitiveRecipeView>
                 break;
             case PIT_KILN, PIT_BURN:
                 {
-                    PrimitiveJeiCategory.addItemInputs(builder, recipe, new int[][] {{0, 22}});
-                    addChanceOutputs(builder, recipe, 60, 18, 83, 22);
+                    addItemInputs(builder, recipe, this.layout.flow.itemInputs());
+                    addChanceOutputs(builder, recipe, this.layout.flow.itemOutputs());
                     break;
                 }
             case BARREL:
                 {
-                    PrimitiveJeiCategory.addItemInputs(
-                            builder, recipe, new int[][] {{0, 0}, {19, 0}, {0, 19}, {19, 19}});
+                    addItemInputs(builder, recipe, this.layout.flow.itemInputs());
                     PrimitiveJeiCategory.addFluid(
                             builder,
                             RecipeIngredientRole.INPUT,
@@ -142,31 +147,35 @@ final class PrimitiveJeiCategory implements IRecipeCategory<PrimitiveRecipeView>
                 }
             case SOAKING_POT:
                 {
-                    PrimitiveJeiCategory.addItemInputs(builder, recipe, new int[][] {{0, 0}});
+                    addItemInputs(builder, recipe, this.layout.flow.itemInputs());
                     PrimitiveJeiCategory.addFluid(
                             builder,
                             RecipeIngredientRole.INPUT,
                             recipe.fluidInput(),
                             PrimitiveFluidSlotGeometry.SOAKING_POT_INPUT);
-                    PrimitiveJeiCategory.addItemOutputs(builder, recipe, new int[][] {{60, 19}});
+                    addItemOutputs(builder, recipe, this.layout.flow.itemOutputs());
                     break;
                 }
             case TANNING_RACK:
                 {
-                    PrimitiveJeiCategory.addItemInputs(builder, recipe, new int[][] {{1, 9}});
-                    PrimitiveJeiCategory.addItemOutputs(builder, recipe, new int[][] {{53, 9}, {77, 9}});
+                    addItemInputs(builder, recipe, this.layout.flow.itemInputs());
+                    addChanceOutputs(builder, recipe, this.layout.flow.itemOutputs());
                     break;
                 }
             case STONE_SAWMILL:
-                PrimitiveJeiCategory.addItemInputs(builder, recipe, new int[][] {{0, 0}, {0, 19}});
-                addChanceOutputs(builder, recipe, 60, 16, 83, 20);
+                addItemInputs(builder, recipe, this.layout.flow.itemInputs());
+                addChanceOutputs(builder, recipe, this.layout.flow.itemOutputs());
                 break;
             case STONE_KILN:
-                PrimitiveJeiCategory.addItemInputs(builder, recipe, new int[][] {{0, 0}});
-                addChanceOutputs(builder, recipe, 60, 10, 83, 14);
+                addStoneMachineFlow(builder, recipe, StoneMachineRecipeLayout.KILN);
                 break;
             case STONE_CRUCIBLE:
-                PrimitiveJeiCategory.addItemInputs(builder, recipe, new int[][] {{0, 0}});
+                PrimitiveJeiCategory.addItemInputs(
+                        builder,
+                        recipe,
+                        new int[][] {{StoneMachineRecipeLayout.CRUCIBLE.input().x(),
+                                StoneMachineRecipeLayout.CRUCIBLE.input().y()}}
+                );
                 PrimitiveJeiCategory.addFluid(
                         builder,
                         RecipeIngredientRole.OUTPUT,
@@ -185,12 +194,32 @@ final class PrimitiveJeiCategory implements IRecipeCategory<PrimitiveRecipeView>
         }
     }
 
+    private static void addItemInputs(
+            IRecipeLayoutBuilder builder,
+            PrimitiveRecipeView recipe,
+            List<PrimitiveRecipeLayout.Position> positions) {
+        for (int index = 0; index < recipe.itemInputs().size() && index < positions.size(); ++index) {
+            PrimitiveRecipeLayout.Position position = positions.get(index);
+            builder.addInputSlot(position.x(), position.y()).addIngredients(recipe.itemInputs().get(index));
+        }
+    }
+
     private static void addItemOutputs(
             IRecipeLayoutBuilder builder, PrimitiveRecipeView recipe, int[][] positions) {
         for (int index = 0; index < recipe.itemOutputs().size() && index < positions.length; ++index) {
             builder
                     .addOutputSlot(positions[index][0], positions[index][1])
                     .addItemStack(recipe.itemOutputs().get(index));
+        }
+    }
+
+    private static void addItemOutputs(
+            IRecipeLayoutBuilder builder,
+            PrimitiveRecipeView recipe,
+            List<PrimitiveRecipeLayout.Position> positions) {
+        for (int index = 0; index < recipe.itemOutputs().size() && index < positions.size(); ++index) {
+            PrimitiveRecipeLayout.Position position = positions.get(index);
+            builder.addOutputSlot(position.x(), position.y()).addItemStack(recipe.itemOutputs().get(index));
         }
     }
 
@@ -240,14 +269,62 @@ final class PrimitiveJeiCategory implements IRecipeCategory<PrimitiveRecipeView>
     }
 
     private static void addChanceOutputs(
-            IRecipeLayoutBuilder builder, PrimitiveRecipeView recipe, int resultX, int resultY, int chanceX, int chanceY) {
+            IRecipeLayoutBuilder builder,
+            PrimitiveRecipeView recipe,
+            int resultX,
+            int resultY,
+            int chanceX,
+            int chanceY) {
         if (recipe.itemOutputs().isEmpty()) {
             return;
         }
         builder.addOutputSlot(resultX, resultY).addItemStack(recipe.itemOutputs().getFirst());
         if (recipe.itemOutputs().size() > 1) {
-            builder.addOutputSlot(chanceX, chanceY).addItemStacks(recipe.itemOutputs().subList(1, recipe.itemOutputs().size()));
+            builder
+                    .addOutputSlot(chanceX, chanceY)
+                    .addItemStacks(recipe.itemOutputs().subList(1, recipe.itemOutputs().size()));
         }
+    }
+
+    private static void addChanceOutputs(
+            IRecipeLayoutBuilder builder,
+            PrimitiveRecipeView recipe,
+            List<PrimitiveRecipeLayout.Position> positions) {
+        if (positions.size() < 2) {
+            throw new IllegalArgumentException("Chance-result layouts need two output positions");
+        }
+        PrimitiveRecipeLayout.Position result = positions.getFirst();
+        PrimitiveRecipeLayout.Position chance = positions.get(1);
+        addChanceOutputs(builder, recipe, result.x(), result.y(), chance.x(), chance.y());
+    }
+
+    private static void addStoneMachineFlow(
+            IRecipeLayoutBuilder builder,
+            PrimitiveRecipeView recipe,
+            StoneMachineRecipeLayout layout
+    ) {
+        PrimitiveJeiCategory.addItemInputs(
+                builder,
+                recipe,
+                new int[][] {{layout.input().x(), layout.input().y()}}
+        );
+        if (layout.hasSecondaryOutput()) {
+            StoneMachineRecipeLayout.Position secondaryOutput = layout.secondaryOutput();
+            addChanceOutputs(
+                    builder,
+                    recipe,
+                    layout.output().x(),
+                    layout.output().y(),
+                    secondaryOutput.x(),
+                    secondaryOutput.y()
+            );
+            return;
+        }
+        PrimitiveJeiCategory.addItemOutputs(
+                builder,
+                recipe,
+                new int[][] {{layout.output().x(), layout.output().y()}}
+        );
     }
 
     private void addToolRequirements(IRecipeLayoutBuilder builder, PrimitiveRecipeView recipe) {
@@ -291,8 +368,16 @@ final class PrimitiveJeiCategory implements IRecipeCategory<PrimitiveRecipeView>
         ProcessRuleLayout ruleLayout = ProcessRuleLayout.of(this.layout.width, recipe.processRules().size());
         for (int index = 0; index < recipe.processRules().size(); index++) {
             ProcessRulePresentation presentation = recipe.processRules().get(index).presentation();
-            graphics.blit(ProcessRulePresentation.ATLAS, ruleLayout.x(index), ruleLayout.y(y, index), presentation.u(), presentation.v(), 16, 16,
-                    ProcessRulePresentation.ATLAS_WIDTH, ProcessRulePresentation.ATLAS_HEIGHT);
+            graphics.blit(
+                    ProcessRulePresentation.ATLAS,
+                    ruleLayout.x(index),
+                    ruleLayout.y(y, index),
+                    presentation.u(),
+                    presentation.v(),
+                    16,
+                    16,
+                    ProcessRulePresentation.ATLAS_WIDTH,
+                    ProcessRulePresentation.ATLAS_HEIGHT);
         }
     }
 
@@ -334,20 +419,65 @@ final class PrimitiveJeiCategory implements IRecipeCategory<PrimitiveRecipeView>
     }
 
     static enum Layout {
-        CAMPFIRE("campfire", 82, 33, 82, 14, 24, 17, 24, 10, true, 82, 0, 1, 19),
-        CHOPPING("chopping", 82, 40, 82, 0, 24, 17, 24, 18, false, 0, 0, 0, 0),
-        PIT_KILN("pit_kiln", 101, 54, 101, 14, 24, 17, 24, 18, true, 101, 0, 1, 7),
-        PIT_BURN("pit_kiln", 101, 54, 101, 14, 24, 17, 24, 18, true, 101, 0, 1, 6),
-        BARREL("barrel", 97, 51, 101, 0, 24, 17, 42, 19, false, 0, 0, 0, 0),
-        SOAKING_POT("soaking_pot", 82, 56, 82, 0, 24, 17, 24, 19, false, 0, 0, 0, 0),
-        TANNING_RACK("tanning_rack", 95, 45, 119, 0, 24, 17, 24, 10, false, 0, 0, 0, 0),
-        STONE_SAWMILL("stone_sawmill", 101, 38, 101, 0, 24, 17, 24, 16, false, 0, 0, 0, 0),
-        STONE_OVEN("stone_oven", 82, 33, 82, 14, 24, 17, 24, 10, true, 82, 0, 1, 19),
-        STONE_KILN("stone_kiln", 101, 46, 101, 14, 24, 17, 24, 10, true, 101, 0, 1, 19),
-        STONE_CRUCIBLE("stone_crucible", 82, 33, 82, 14, 24, 17, 24, 10, true, 82, 0, 1, 19),
-        ANVIL("anvil", 82, 40, 82, 0, 24, 17, 24, 18, false, 0, 0, 0, 0),
-        GRINDING("animal_power_grinding", 146, 85, 0, 0, 0, 0, 0, 0, false, 0, 0, 0, 0, true),
-        PRESSING("animal_power_pressing", 146, 74, 0, 0, 0, 0, 0, 0, false, 0, 0, 0, 0, true);
+        CAMPFIRE(PrimitiveRecipeLayout.CAMPFIRE),
+        CHOPPING(PrimitiveRecipeLayout.CHOPPING),
+        PIT_KILN(PrimitiveRecipeLayout.PIT_KILN),
+        PIT_BURN(PrimitiveRecipeLayout.PIT_BURN),
+        BARREL(PrimitiveRecipeLayout.BARREL),
+        SOAKING_POT(PrimitiveRecipeLayout.SOAKING_POT),
+        TANNING_RACK(PrimitiveRecipeLayout.TANNING_RACK),
+        STONE_SAWMILL(PrimitiveRecipeLayout.STONE_SAWMILL),
+        STONE_OVEN(
+                "stone_oven",
+                StoneMachineRecipeLayout.OVEN.backgroundWidth(),
+                StoneMachineRecipeLayout.OVEN.backgroundHeight(),
+                StoneMachineRecipeLayout.OVEN.backgroundWidth(),
+                14,
+                24,
+                17,
+                StoneMachineRecipeLayout.OVEN.progressArrow().x(),
+                StoneMachineRecipeLayout.OVEN.progressArrow().y(),
+                true,
+                StoneMachineRecipeLayout.OVEN.backgroundWidth(),
+                0,
+                StoneMachineRecipeLayout.OVEN.flame().x(),
+                StoneMachineRecipeLayout.OVEN.flame().y()
+        ),
+        STONE_KILN(
+                "stone_kiln",
+                StoneMachineRecipeLayout.KILN.backgroundWidth(),
+                StoneMachineRecipeLayout.KILN.backgroundHeight(),
+                StoneMachineRecipeLayout.KILN.backgroundWidth(),
+                14,
+                24,
+                17,
+                StoneMachineRecipeLayout.KILN.progressArrow().x(),
+                StoneMachineRecipeLayout.KILN.progressArrow().y(),
+                true,
+                StoneMachineRecipeLayout.KILN.backgroundWidth(),
+                0,
+                StoneMachineRecipeLayout.KILN.flame().x(),
+                StoneMachineRecipeLayout.KILN.flame().y()
+        ),
+        STONE_CRUCIBLE(
+                "stone_crucible",
+                StoneMachineRecipeLayout.CRUCIBLE.backgroundWidth(),
+                StoneMachineRecipeLayout.CRUCIBLE.backgroundHeight(),
+                StoneMachineRecipeLayout.CRUCIBLE.backgroundWidth(),
+                14,
+                24,
+                17,
+                StoneMachineRecipeLayout.CRUCIBLE.progressArrow().x(),
+                StoneMachineRecipeLayout.CRUCIBLE.progressArrow().y(),
+                true,
+                StoneMachineRecipeLayout.CRUCIBLE.backgroundWidth(),
+                0,
+                StoneMachineRecipeLayout.CRUCIBLE.flame().x(),
+                StoneMachineRecipeLayout.CRUCIBLE.flame().y()
+        ),
+        ANVIL(PrimitiveRecipeLayout.ANVIL),
+        GRINDING(PrimitiveRecipeLayout.GRINDING),
+        PRESSING(PrimitiveRecipeLayout.PRESSING);
 
         final String texture;
         final int width;
@@ -364,6 +494,26 @@ final class PrimitiveJeiCategory implements IRecipeCategory<PrimitiveRecipeView>
         final int flameX;
         final int flameY;
         final boolean usesEmbeddedArrow;
+        final PrimitiveRecipeLayout flow;
+
+        private Layout(PrimitiveRecipeLayout flow) {
+            this.texture = flow.texture();
+            this.width = flow.backgroundWidth();
+            this.backgroundHeight = flow.backgroundHeight();
+            this.arrowU = flow.arrowSourceX();
+            this.arrowV = flow.arrowSourceY();
+            this.arrowWidth = 24;
+            this.arrowHeight = 17;
+            this.arrowX = flow.progressArrow().x();
+            this.arrowY = flow.progressArrow().y();
+            this.hasFlame = flow.hasFlame();
+            this.flameU = flow.flameSourceX();
+            this.flameV = flow.flameSourceY();
+            this.flameX = flow.hasFlame() ? flow.flame().x() : 0;
+            this.flameY = flow.hasFlame() ? flow.flame().y() : 0;
+            this.usesEmbeddedArrow = false;
+            this.flow = flow;
+        }
 
         private Layout(
                 String texture,
@@ -430,6 +580,7 @@ final class PrimitiveJeiCategory implements IRecipeCategory<PrimitiveRecipeView>
             this.flameX = flameX;
             this.flameY = flameY;
             this.usesEmbeddedArrow = usesEmbeddedArrow;
+            this.flow = null;
         }
     }
 }

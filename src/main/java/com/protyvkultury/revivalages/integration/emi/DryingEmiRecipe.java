@@ -2,6 +2,7 @@ package com.protyvkultury.revivalages.integration.emi;
 
 import com.protyvkultury.revivalages.RevivalAges;
 import com.protyvkultury.revivalages.feature.technology.dryingrack.view.DryingRecipeView;
+import com.protyvkultury.revivalages.feature.technology.primitive.view.PrimitiveRecipeLayout;
 import dev.emi.emi.api.recipe.EmiRecipe;
 import dev.emi.emi.api.recipe.EmiRecipeCategory;
 import dev.emi.emi.api.stack.EmiIngredient;
@@ -17,6 +18,7 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 
 final class DryingEmiRecipe implements EmiRecipe {
     private static final ResourceLocation TEXTURE = RevivalAges.id("textures/gui/drying_rack.png");
+    private static final PrimitiveRecipeLayout LAYOUT = PrimitiveRecipeLayout.DRYING;
     private final EmiRecipeCategory category;
     private final ResourceLocation id;
     private final DryingRecipeView view;
@@ -52,20 +54,32 @@ final class DryingEmiRecipe implements EmiRecipe {
     }
 
     public int getDisplayWidth() {
-        return 82;
+        return LAYOUT.backgroundWidth();
     }
 
     public int getDisplayHeight() {
-        return 38;
+        return LAYOUT.backgroundHeight() + 12;
     }
 
     public void addWidgets(WidgetHolder widgets) {
-        widgets.addTexture(TEXTURE, 0, 0, 82, 26, 0, 0);
+        widgets.addTexture(TEXTURE, 0, 0, LAYOUT.backgroundWidth(), LAYOUT.backgroundHeight(), 0, 0);
         widgets.addAnimatedTexture(
-                TEXTURE, 24, 4, 24, 17, 82, 0, this.view.processingTime() * 50, true, false, false);
-        widgets.addSlot(this.input, 0, 3).drawBack(false);
+                TEXTURE,
+                LAYOUT.progressArrow().x(),
+                LAYOUT.progressArrow().y(),
+                24,
+                17,
+                LAYOUT.arrowSourceX(),
+                LAYOUT.arrowSourceY(),
+                this.view.processingTime() * 50,
+                true,
+                false,
+                false);
+        PrimitiveRecipeLayout.Position inputPosition = LAYOUT.itemInputs().getFirst();
+        PrimitiveRecipeLayout.Position outputPosition = LAYOUT.itemOutputs().getFirst();
+        widgets.addSlot(this.input, inputPosition.x(), inputPosition.y()).drawBack(false);
         widgets
-                .addSlot(this.output, 60, 4)
+                .addSlot(this.output, outputPosition.x(), outputPosition.y())
                 .drawBack(false)
                 .recipeContext(this);
         widgets
@@ -78,8 +92,8 @@ final class DryingEmiRecipe implements EmiRecipe {
                                         (double) this.view.processingTime() / 20.0
                                 )
                         ),
-                        41,
-                        28,
+                        LAYOUT.backgroundWidth() / 2,
+                        LAYOUT.backgroundHeight() + 2,
                         -1,
                         true)
                 .horizontalAlign(TextWidget.Alignment.CENTER);

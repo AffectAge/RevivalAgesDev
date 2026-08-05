@@ -2,6 +2,7 @@ package com.protyvkultury.revivalages.feature.technology.knapping.menu;
 
 import com.protyvkultury.revivalages.feature.technology.knapping.KnappingConfig;
 import com.protyvkultury.revivalages.feature.technology.knapping.KnappingFeature;
+import com.protyvkultury.revivalages.feature.technology.knapping.KnappingLayout;
 import com.protyvkultury.revivalages.feature.technology.knapping.KnappingType;
 import com.protyvkultury.revivalages.feature.technology.knapping.network.KnappingStatePayload;
 import com.protyvkultury.revivalages.feature.technology.knapping.recipe.KnappingRecipe;
@@ -41,7 +42,7 @@ public final class KnappingMenu extends ItemBackedMenu {
         super(KnappingFeature.MENU.get(), containerId, inventory, hotbarIndex);
         this.typeId = typeId;
         this.initialInput = openingStack();
-        addSlot(new ResultSlot(output, 0, 143, 54));
+        addSlot(new ResultSlot(output, 0, KnappingLayout.OUTPUT_X, KnappingLayout.OUTPUT_Y));
         addPlayerInventory(inventory);
         bindPlayerInventorySlots(1);
     }
@@ -199,11 +200,16 @@ public final class KnappingMenu extends ItemBackedMenu {
     private void addPlayerInventory(Inventory inventory) {
         for (int row = 0; row < 3; row++) {
             for (int column = 0; column < 9; column++) {
-                addSlot(new Slot(inventory, column + row * 9 + 9, 8 + column * 18, 84 + row * 18));
+                addSlot(new Slot(
+                        inventory,
+                        column + row * 9 + 9,
+                        8 + column * 18,
+                        KnappingLayout.PLAYER_INVENTORY_Y + row * 18
+                ));
             }
         }
         for (int column = 0; column < 9; column++) {
-            addSlot(new Slot(inventory, column, 8 + column * 18, 142));
+            addSlot(new Slot(inventory, column, 8 + column * 18, KnappingLayout.HOTBAR_Y));
         }
     }
 

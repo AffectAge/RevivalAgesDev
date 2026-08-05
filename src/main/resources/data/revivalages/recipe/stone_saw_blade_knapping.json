@@ -15,7 +15,7 @@
   ],
   "default_on": false,
   "ingredient": {
-    "item": "revivalages:rock"
+    "tag": "revivalages:knapping_splitters"
   },
   "result": {
     "id": "revivalages:stone_saw_blade"

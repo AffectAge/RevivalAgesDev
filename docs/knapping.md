@@ -2,8 +2,8 @@
 
 ## Scope
 
-Knapping is a server-authoritative 5×5 item interaction for stone, clay, leather,
-and horn materials. Its type definitions are supplied by the synchronized
+Knapping is a server-authoritative 5×5 item interaction for material splitters,
+flint, clay, leather, and horn materials. Its type definitions are supplied by the synchronized
 `revivalages:knapping_type` data-pack registry; recipes use the
 `revivalages:knapping` recipe type.
 
@@ -17,6 +17,12 @@ outside their bounds, shift horizontally and vertically, and mirror
 horizontally. Any non-space pattern character denotes an enabled cell. Type data
 owns consume timing, click sound, visual flags, particles, and viewer icon.
 Horn results use the instrument component declared by the matched recipe.
+
+The built-in stone Knapping type accepts the `revivalages:knapping_splitters`
+item tag and flint. Its 5×5 material grid uses the actual material texture of
+each built-in splitter; an externally added tag member safely uses the stone
+fallback. The menu background, grid, output slot, and player inventory share
+one coordinate contract.
 
 The server synchronizes the complete 25-bit grid through a dedicated payload;
 vanilla 16-bit menu data is not used. After the player takes a result, every

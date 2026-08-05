@@ -8,11 +8,11 @@ class PrimitiveFluidSlotGeometryTest {
 
     @Test
     void emiOuterBoundsProduceTheSameVisibleFillAsJei() {
-        assertGeometry(PrimitiveFluidSlotGeometry.BARREL_INPUT, 2, 40, 33, 9);
-        assertGeometry(PrimitiveFluidSlotGeometry.BARREL_OUTPUT, 73, 2, 22, 47);
-        assertGeometry(PrimitiveFluidSlotGeometry.SOAKING_POT_INPUT, 2, 21, 14, 14);
-        assertGeometry(PrimitiveFluidSlotGeometry.STONE_CRUCIBLE_OUTPUT, 62, 12, 14, 14);
-        assertGeometry(PrimitiveFluidSlotGeometry.PRESSING_OUTPUT, 117, 24, 14, 25);
+        assertGeometry(PrimitiveFluidSlotGeometry.BARREL_INPUT, 65, 21, 14, 22);
+        assertGeometry(PrimitiveFluidSlotGeometry.BARREL_OUTPUT, 121, 21, 14, 22);
+        assertGeometry(PrimitiveFluidSlotGeometry.SOAKING_POT_INPUT, 17, 30, 14, 14);
+        assertGeometry(PrimitiveFluidSlotGeometry.STONE_CRUCIBLE_OUTPUT, 73, 11, 16, 16);
+        assertGeometry(PrimitiveFluidSlotGeometry.PRESSING_OUTPUT, 97, 11, 14, 25);
     }
 
     private static void assertGeometry(PrimitiveFluidSlotGeometry geometry, int x, int y, int width, int height) {

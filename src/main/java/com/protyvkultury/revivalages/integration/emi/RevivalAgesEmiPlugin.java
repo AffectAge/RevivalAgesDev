@@ -94,7 +94,7 @@ public final class RevivalAgesEmiPlugin implements EmiPlugin {
                     ConstructionFrameFeature.CONSTRUCTION_FRAME_ITEM.get()
             );
     public static final EmiRecipeCategory ROCK_KNAPPING =
-            RevivalAgesEmiPlugin.category("rock_knapping", SurfaceDepositFeature.ROCK.get());
+            RevivalAgesEmiPlugin.category("rock_knapping", SurfaceDepositFeature.COBBLESTONE_SPLITTER.get());
     public static final EmiRecipeCategory CLAY_KNAPPING =
             RevivalAgesEmiPlugin.category("clay_knapping", net.minecraft.world.item.Items.CLAY_BALL);
     public static final EmiRecipeCategory LEATHER_KNAPPING =
