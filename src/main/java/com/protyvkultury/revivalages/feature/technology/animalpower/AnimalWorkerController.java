@@ -21,6 +21,7 @@ public final class AnimalWorkerController {
     private UUID workerId;
     private int waypointIndex;
     private int retryTicks;
+    private boolean running;
 
     public Optional<UUID> workerId() {
         return Optional.ofNullable(workerId);
@@ -59,6 +60,7 @@ public final class AnimalWorkerController {
         workerId = worker.getUUID();
         waypointIndex = nearestWaypoint(worker, machinePos, kind);
         retryTicks = 0;
+        running = false;
         return true;
     }
 
@@ -79,6 +81,7 @@ public final class AnimalWorkerController {
         workerId = null;
         waypointIndex = 0;
         retryTicks = 0;
+        running = false;
     }
 
     public boolean releaseToPlayer(ServerLevel level, BlockPos machinePos, Player player) {
@@ -98,11 +101,13 @@ public final class AnimalWorkerController {
         workerId = null;
         waypointIndex = 0;
         retryTicks = 0;
+        running = false;
         return true;
     }
 
     public boolean tick(ServerLevel level, BlockPos machinePos, AnimalMachineKind kind, boolean shouldMove) {
         if (workerId == null) {
+            running = false;
             return false;
         }
         if (retryTicks > 0 && retryTicks < AnimalPowerConfig.WORKER_RETRY_INTERVAL.get()) {
@@ -119,10 +124,7 @@ public final class AnimalWorkerController {
         if (!worker.isAlive()
                 || !worker.getType().is(AnimalPowerTags.WORKERS)
                 || worker.isLeashed()
-                || worker.distanceToSqr(
-                        machinePos.getX(),
-                        machinePos.getY(),
-                        machinePos.getZ()) >= MAX_WORKER_DISTANCE_SQUARED) {
+                || worker.distanceToSqr(machinePos.getCenter()) >= MAX_WORKER_DISTANCE_SQUARED) {
             detach(level, machinePos, true);
             return false;
         }
@@ -132,22 +134,27 @@ public final class AnimalWorkerController {
             worker.restrictTo(machinePos, AnimalWorkArea.RADIUS);
         }
         if (!shouldMove) {
-            worker.getNavigation().stop();
+            if (running) {
+                worker.getNavigation().stop();
+                waypointIndex = nearestWaypoint(worker, machinePos, kind);
+            }
+            running = false;
             return false;
         }
+        if (!running) {
+            waypointIndex = nearestWaypoint(worker, machinePos, kind);
+            worker.getNavigation().stop();
+            running = true;
+        }
+
         BlockPos target = AnimalWorkArea.waypoint(machinePos, kind, waypointIndex);
-        double reach = AnimalPowerConfig.WAYPOINT_REACH_DISTANCE.get();
-        if (worker.distanceToSqr(
-                target.getX() + 0.5D,
-                target.getY(),
-                target.getZ() + 0.5D) <= reach * reach) {
+        AABB targetArea = new AABB(target).inflate(0.001D);
+        if (worker.getBoundingBox().intersects(targetArea)) {
             waypointIndex = (waypointIndex + 1) % AnimalWorkArea.waypointCount();
-            target = AnimalWorkArea.waypoint(machinePos, kind, waypointIndex);
-            navigateToWaypoint(worker, machinePos, target);
+            navigateToWaypoint(worker, machinePos, AnimalWorkArea.waypoint(machinePos, kind, waypointIndex));
             return true;
         }
-        if (worker.getNavigation().isDone()
-                || level.getGameTime() % AnimalPowerConfig.NAVIGATION_REFRESH_INTERVAL.get() == 0L) {
+        if (worker.getNavigation().isDone()) {
             navigateToWaypoint(worker, machinePos, target);
         }
         return false;
@@ -166,6 +173,7 @@ public final class AnimalWorkerController {
         workerId = tag.hasUUID("Worker") ? tag.getUUID("Worker") : null;
         waypointIndex = Math.floorMod(tag.getInt("Waypoint"), AnimalWorkArea.waypointCount());
         retryTicks = Math.max(0, tag.getInt("WorkerRetry"));
+        running = false;
     }
 
     public void save(CompoundTag tag) {
