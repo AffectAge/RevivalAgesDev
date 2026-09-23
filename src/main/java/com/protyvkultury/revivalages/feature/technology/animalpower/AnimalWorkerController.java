@@ -21,7 +21,9 @@ public final class AnimalWorkerController {
     private UUID workerId;
     private int waypointIndex;
     private int retryTicks;
-    private boolean running;
+    private boolean running = true;
+    private boolean wasRunning;
+    private int origin = -1;
 
     public Optional<UUID> workerId() {
         return Optional.ofNullable(workerId);
@@ -60,7 +62,9 @@ public final class AnimalWorkerController {
         workerId = worker.getUUID();
         waypointIndex = nearestWaypoint(worker, machinePos, kind);
         retryTicks = 0;
-        running = false;
+        running = true;
+        wasRunning = false;
+        origin = -1;
         return true;
     }
 
@@ -81,7 +85,9 @@ public final class AnimalWorkerController {
         workerId = null;
         waypointIndex = 0;
         retryTicks = 0;
-        running = false;
+        running = true;
+        wasRunning = false;
+        origin = -1;
     }
 
     public boolean releaseToPlayer(ServerLevel level, BlockPos machinePos, Player player) {
@@ -101,63 +107,81 @@ public final class AnimalWorkerController {
         workerId = null;
         waypointIndex = 0;
         retryTicks = 0;
-        running = false;
+        running = true;
+        wasRunning = false;
+        origin = -1;
         return true;
     }
 
-    public boolean tick(ServerLevel level, BlockPos machinePos, AnimalMachineKind kind, boolean shouldMove) {
+    public boolean tick(ServerLevel level, BlockPos machinePos, AnimalMachineKind kind, boolean canWork) {
         if (workerId == null) {
-            running = false;
             return false;
         }
-        if (retryTicks > 0 && retryTicks < AnimalPowerConfig.WORKER_RETRY_INTERVAL.get()) {
-            retryTicks++;
-            return false;
-        }
+
         Optional<Mob> resolved = resolve(level);
         if (resolved.isEmpty()) {
-            retryTicks = 1;
+            if (retryTicks <= 0) {
+                retryTicks = AnimalPowerConfig.WORKER_RETRY_INTERVAL.get();
+            } else {
+                retryTicks--;
+            }
             return false;
         }
         retryTicks = 0;
         Mob worker = resolved.get();
+
+        // Horse Power's hasWorker(): an attached worker is valid only while alive,
+        // not vanilla-leashed, and within distanceSq < 45 from the machine.
         if (!worker.isAlive()
                 || !worker.getType().is(AnimalPowerTags.WORKERS)
                 || worker.isLeashed()
-                || worker.distanceToSqr(machinePos.getCenter()) >= MAX_WORKER_DISTANCE_SQUARED) {
+                || worker.distanceToSqr(machinePos.getX(), machinePos.getY(), machinePos.getZ())
+                        >= MAX_WORKER_DISTANCE_SQUARED) {
             detach(level, machinePos, true);
             return false;
         }
-        if (!worker.hasRestriction()
-                || !machinePos.equals(worker.getRestrictCenter())
-                || worker.getRestrictRadius() != AnimalWorkArea.RADIUS) {
-            worker.restrictTo(machinePos, AnimalWorkArea.RADIUS);
-        }
-        if (!shouldMove) {
-            if (running) {
-                worker.getNavigation().stop();
-                waypointIndex = nearestWaypoint(worker, machinePos, kind);
-            }
+
+        // Mirror TileEntityHPHorseBase's running/wasRunning transition exactly.
+        if (!running && canWork) {
+            running = true;
+        } else if (running && !canWork) {
             running = false;
-            return false;
+        }
+        if (running != wasRunning) {
+            waypointIndex = nearestWaypoint(worker, machinePos, kind);
+            wasRunning = running;
         }
         if (!running) {
-            waypointIndex = nearestWaypoint(worker, machinePos, kind);
-            worker.getNavigation().stop();
-            running = true;
+            return false;
         }
 
         BlockPos target = AnimalWorkArea.waypoint(machinePos, kind, waypointIndex);
-        AABB targetArea = new AABB(target).inflate(0.001D);
-        if (worker.getBoundingBox().intersects(targetArea)) {
+        AABB searchArea = new AABB(
+                target.getX() - 0.5D, target.getY() - 0.5D, target.getZ() - 0.5D,
+                target.getX() + 0.5D, target.getY() + 0.5D, target.getZ() + 0.5D);
+
+        boolean reached = false;
+        if (worker.getBoundingBox().intersects(searchArea)) {
+            if (origin != waypointIndex) {
+                origin = waypointIndex;
+                reached = true;
+            }
             waypointIndex = (waypointIndex + 1) % AnimalWorkArea.waypointCount();
-            navigateToWaypoint(worker, machinePos, AnimalWorkArea.waypoint(machinePos, kind, waypointIndex));
-            return true;
+            target = AnimalWorkArea.waypoint(machinePos, kind, waypointIndex);
         }
+
+        // Horse Power only asks the navigator for a route when it has no path.
+        // Do not impose a modern Mob restriction here: the original home radius
+        // did not constrain its explicit tryMoveToXYZ route.
         if (worker.getNavigation().isDone()) {
-            navigateToWaypoint(worker, machinePos, target);
+            worker.getNavigation().moveTo(
+                    target.getX(),
+                    target.getY(),
+                    target.getZ(),
+                    1.0D
+            );
         }
-        return false;
+        return reached;
     }
 
     public Optional<Mob> resolve(ServerLevel level) {
@@ -173,7 +197,9 @@ public final class AnimalWorkerController {
         workerId = tag.hasUUID("Worker") ? tag.getUUID("Worker") : null;
         waypointIndex = Math.floorMod(tag.getInt("Waypoint"), AnimalWorkArea.waypointCount());
         retryTicks = Math.max(0, tag.getInt("WorkerRetry"));
-        running = false;
+        running = true;
+        wasRunning = false;
+        origin = -1;
     }
 
     public void save(CompoundTag tag) {
@@ -201,20 +227,4 @@ public final class AnimalWorkerController {
         return nearest;
     }
 
-    private static void navigateToWaypoint(Mob worker, BlockPos machinePos, BlockPos target) {
-        // Modern navigation rejects targets outside a Mob's restriction radius.
-        // Horse Power's 1.12 navigator did not apply its three-block home to
-        // forced route movement, so create the route before restoring the home.
-        // PathNavigation's coordinate overload expects the mob's destination
-        // position. Passing the supporting block one level below makes horses
-        // continually turn toward an unreachable node instead of walking.
-        worker.clearRestriction();
-        worker.getNavigation().moveTo(
-                target.getX() + 0.5D,
-                target.getY(),
-                target.getZ() + 0.5D,
-                AnimalPowerConfig.WORKER_SPEED.get()
-        );
-        worker.restrictTo(machinePos, AnimalWorkArea.RADIUS);
-    }
 }
