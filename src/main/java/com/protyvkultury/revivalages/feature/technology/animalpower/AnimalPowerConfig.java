@@ -14,11 +14,10 @@ public final class AnimalPowerConfig {
     public static final ModConfigSpec.BooleanValue HORSE_CHOPPING_BLOCK_ENABLED;
     public static final ModConfigSpec.BooleanValue HORSE_PRESS_ENABLED;
     public static final ModConfigSpec.BooleanValue AUTOMATION_ENABLED;
-    public static final ModConfigSpec.IntValue WORK_AREA_CHECK_INTERVAL;
+    public static final ModConfigSpec.IntValue WORK_AREA_VALID_CHECK_INTERVAL;
+    public static final ModConfigSpec.IntValue WORK_AREA_INVALID_CHECK_INTERVAL;
     public static final ModConfigSpec.IntValue WORKER_RETRY_INTERVAL;
-    public static final ModConfigSpec.IntValue NAVIGATION_REFRESH_INTERVAL;
     public static final ModConfigSpec.DoubleValue WORKER_SPEED;
-    public static final ModConfigSpec.DoubleValue WAYPOINT_REACH_DISTANCE;
     public static final ModConfigSpec.IntValue HAND_GRINDSTONE_ROTATION_TICKS;
     public static final ModConfigSpec.IntValue HAND_GRINDSTONE_POINTS_PER_ROTATION;
     public static final ModConfigSpec.DoubleValue HAND_GRINDSTONE_EXHAUSTION;
@@ -38,11 +37,12 @@ public final class AnimalPowerConfig {
         );
         AUTOMATION_ENABLED = builder.comment("Exposes item and fluid capabilities on animal-powered devices.")
                 .define("automationEnabled", true);
-        WORK_AREA_CHECK_INTERVAL = builder.defineInRange("workAreaCheckInterval", 20, 1, 1200);
+        WORK_AREA_VALID_CHECK_INTERVAL = builder.comment("Ticks between work-area checks while the area is valid.")
+                .defineInRange("validWorkAreaCheckInterval", 220, 1, 1200);
+        WORK_AREA_INVALID_CHECK_INTERVAL = builder.comment("Ticks between work-area checks while the area is obstructed.")
+                .defineInRange("invalidWorkAreaCheckInterval", 60, 1, 1200);
         WORKER_RETRY_INTERVAL = builder.defineInRange("workerRetryInterval", 40, 1, 1200);
-        NAVIGATION_REFRESH_INTERVAL = builder.defineInRange("navigationRefreshInterval", 20, 1, 1200);
         WORKER_SPEED = builder.defineInRange("workerSpeed", 0.65D, 0.05D, 2.0D);
-        WAYPOINT_REACH_DISTANCE = builder.defineInRange("waypointReachDistance", 1.25D, 0.25D, 3.0D);
 
         builder.push("handGrindstone");
         HAND_GRINDSTONE_ENABLED = restartToggle(builder, "enabled", "Enables the Hand Grindstone.");
