@@ -205,12 +205,13 @@ public final class AnimalWorkerController {
         // Modern navigation rejects targets outside a Mob's restriction radius.
         // Horse Power's 1.12 navigator did not apply its three-block home to
         // forced route movement, so create the route before restoring the home.
-        // GroundPathNavigation takes the supporting block, not the worker's
-        // feet position used by the Horse Power route.
+        // PathNavigation's coordinate overload expects the mob's destination
+        // position. Passing the supporting block one level below makes horses
+        // continually turn toward an unreachable node instead of walking.
         worker.clearRestriction();
         worker.getNavigation().moveTo(
                 target.getX() + 0.5D,
-                target.getY() - 1.0D,
+                target.getY(),
                 target.getZ() + 0.5D,
                 AnimalPowerConfig.WORKER_SPEED.get()
         );
