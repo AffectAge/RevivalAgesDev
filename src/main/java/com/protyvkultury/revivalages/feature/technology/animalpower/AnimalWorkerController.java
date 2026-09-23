@@ -58,7 +58,9 @@ public final class AnimalWorkerController {
         // The machine supplies its own tether renderer. Broadcast removal of the
         // player's vanilla tether so clients do not render both connections.
         worker.dropLeash(true, false);
-        worker.restrictTo(machinePos, AnimalWorkArea.RADIUS);
+        // Horse Power records a home radius here, but its explicit navigator route is
+        // not constrained by that home. Modern restrictions do constrain navigation,
+        // so keeping restrictTo() would change the original behavior.
         workerId = worker.getUUID();
         waypointIndex = nearestWaypoint(worker, machinePos, kind);
         retryTicks = 0;
