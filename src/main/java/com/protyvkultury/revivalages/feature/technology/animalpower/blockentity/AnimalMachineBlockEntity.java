@@ -390,7 +390,7 @@ public final class AnimalMachineBlockEntity extends BlockEntity {
     }
 
     private void resetProgress() {
-        resetProgress();
+        workPoints = 0;
         choppingWindup = 0;
         choppingCycles = 0;
     }
