@@ -59,6 +59,8 @@ public final class AnimalMachineBlockEntity extends BlockEntity {
     };
     private AnimalMachineKind kind;
     private int workPoints;
+    private int choppingWindup;
+    private int choppingCycles;
     private int areaCheckTicks;
     private boolean workAreaValid;
     private String workerDisplayName = "";
@@ -88,7 +90,9 @@ public final class AnimalMachineBlockEntity extends BlockEntity {
         if (machine.areaCheckTicks <= 0) {
             boolean previous = machine.workAreaValid;
             machine.workAreaValid = AnimalWorkArea.isValid(level, pos, machine.kind.tall());
-            machine.areaCheckTicks = AnimalPowerConfig.WORK_AREA_CHECK_INTERVAL.get();
+            machine.areaCheckTicks = machine.workAreaValid
+                    ? AnimalPowerConfig.WORK_AREA_VALID_CHECK_INTERVAL.get()
+                    : AnimalPowerConfig.WORK_AREA_INVALID_CHECK_INTERVAL.get();
             if (previous != machine.workAreaValid) {
                 machine.sync();
             }
@@ -96,8 +100,7 @@ public final class AnimalMachineBlockEntity extends BlockEntity {
         boolean ready = machine.workAreaValid && machine.canProcess();
         machine.updateWorkerSnapshot(server);
         if (machine.worker.tick(server, pos, machine.kind, ready)) {
-            machine.workPoints++;
-            machine.tryComplete();
+            machine.onWaypointReached();
             machine.sync();
         }
     }
@@ -204,7 +207,7 @@ public final class AnimalMachineBlockEntity extends BlockEntity {
         if (!infinite) {
             source.shrink(count);
         }
-        workPoints = 0;
+        resetProgress();
         sync();
     }
 
@@ -215,7 +218,7 @@ public final class AnimalMachineBlockEntity extends BlockEntity {
         ItemStack result = items.get(slot);
         items.set(slot, ItemStack.EMPTY);
         if (slot == 0) {
-            workPoints = 0;
+            resetProgress();
         }
         sync();
         return result;
@@ -228,8 +231,20 @@ public final class AnimalMachineBlockEntity extends BlockEntity {
     }
 
     public double progress() {
+        if (kind == AnimalMachineKind.CHOPPING_BLOCK) {
+            int points = Math.max(1, AnimalPowerConfig.CHOPPING_POINTS_PER_CYCLE.get());
+            return Math.min(1.0D, choppingWindup / (double) points);
+        }
         int required = requiredWorkPoints();
         return required <= 0 ? 0.0D : Math.min(1.0D, workPoints / (double) required);
+    }
+
+    public int choppingWindup() {
+        return choppingWindup;
+    }
+
+    public int choppingCycles() {
+        return choppingCycles;
     }
 
     public ItemStack recipeOutput() {
@@ -350,6 +365,36 @@ public final class AnimalMachineBlockEntity extends BlockEntity {
         };
     }
 
+    private void onWaypointReached() {
+        if (kind != AnimalMachineKind.CHOPPING_BLOCK) {
+            workPoints++;
+            tryComplete();
+            return;
+        }
+        int pointsPerCycle = Math.max(1, AnimalPowerConfig.CHOPPING_POINTS_PER_CYCLE.get());
+        choppingWindup++;
+        if (choppingWindup < pointsPerCycle) {
+            return;
+        }
+        choppingWindup = 0;
+        choppingCycles++;
+        workPoints = choppingCycles * pointsPerCycle;
+        int requiredCycles = choppingRecipe()
+                .map(recipe -> recipe.chopsForTier(
+                        AnimalPowerConfig.CHOPPING_TIER.get(),
+                        AnimalChoppingProfile.cyclesForTier(AnimalPowerConfig.CHOPPING_TIER.get())))
+                .orElse(0);
+        if (requiredCycles > 0 && choppingCycles >= requiredCycles) {
+            tryComplete();
+        }
+    }
+
+    private void resetProgress() {
+        resetProgress();
+        choppingWindup = 0;
+        choppingCycles = 0;
+    }
+
     private void tryComplete() {
         if (kind == AnimalMachineKind.PRESS) {
             tryCompletePress();
@@ -386,7 +431,7 @@ public final class AnimalMachineBlockEntity extends BlockEntity {
         if (!fluidOutput.isEmpty()) {
             tank.fill(fluidOutput, IFluidHandler.FluidAction.EXECUTE);
         }
-        workPoints = 0;
+        resetProgress();
         level.playSound(
                 null,
                 worldPosition,
@@ -427,7 +472,7 @@ public final class AnimalMachineBlockEntity extends BlockEntity {
         if (!fluidOutput.isEmpty()) {
             tank.setFluid(nextFluidOutput);
         }
-        workPoints = 0;
+        resetProgress();
         level.playSound(null, worldPosition, SoundEvents.GRINDSTONE_USE, SoundSource.BLOCKS, 1.0F, 1.0F);
         sync();
     }
@@ -543,6 +588,8 @@ public final class AnimalMachineBlockEntity extends BlockEntity {
         tank.readFromNBT(registries, tag.getCompound("Tank"));
         worker.load(tag);
         workPoints = Math.max(0, tag.getInt("WorkPoints"));
+        choppingWindup = Math.max(0, tag.getInt("ChoppingWindup"));
+        choppingCycles = Math.max(0, tag.getInt("ChoppingCycles"));
         areaCheckTicks = Math.max(0, tag.getInt("AreaCheckTicks"));
         workAreaValid = tag.getBoolean("WorkAreaValid");
         workerDisplayName = tag.getString("WorkerDisplayName");
@@ -558,6 +605,8 @@ public final class AnimalMachineBlockEntity extends BlockEntity {
         tag.put("Tank", tank.writeToNBT(registries, new CompoundTag()));
         worker.save(tag);
         tag.putInt("WorkPoints", workPoints);
+        tag.putInt("ChoppingWindup", choppingWindup);
+        tag.putInt("ChoppingCycles", choppingCycles);
         tag.putInt("AreaCheckTicks", areaCheckTicks);
         tag.putBoolean("WorkAreaValid", workAreaValid);
         tag.putString("WorkerDisplayName", workerDisplayName);
