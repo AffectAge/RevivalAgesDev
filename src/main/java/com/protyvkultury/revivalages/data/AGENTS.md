@@ -24,5 +24,6 @@ depend on it.
   `runData`.
 - Run datagen after provider changes, review additions and deletions, then run it a
   second time when investigating nondeterminism.
-- Never patch generated JSON to make a test pass. Fix the provider or its source
-  definition.
+- Do not add or modify automated tests for data providers unless the user
+  explicitly requests test work. Never patch generated JSON to make a test pass;
+  fix the provider or its source definition.

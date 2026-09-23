@@ -18,5 +18,6 @@ This subtree is the physical-client boundary.
 - Do not access `Minecraft.getInstance()` from static initializers.
 - Treat missing worlds, players, menus, and render entities as normal transient
   states. Handle them without crashing.
-- Verify resource reloads, GUI scale, localization expansion, and both light/dark
-  visual contexts where relevant.
+- Perform visual verification only when the user explicitly requests it or the
+  task is a release/handoff. Do not add automated tests for visual presentation,
+  GUI layout, transforms, colors, or localization without a direct user request.

@@ -71,7 +71,6 @@ com.protyvkultury.revivalages
 |   |-- technology/           processing and machines
 |   |-- world/                persistent world simulation and structural rules
 |   `-- worldgen/             feature-owned world generation
-|-- gametest/                 in-game integration tests
 |-- integration/              optional-mod adapters
 `-- network/                  payloads and handler boundaries
 ```

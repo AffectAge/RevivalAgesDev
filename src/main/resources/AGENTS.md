@@ -73,14 +73,15 @@ This subtree contains source resources that humans intentionally maintain.
   disabled state.
 - Every acquisition recipe and block loot table must contain a recognized
   Revival Ages content condition, and every worldgen contribution must declare
-  its content key. Shared consumers use `revivalages:any_content_enabled`. The
-  resource-gate test and datagen manifest validation are mandatory and must fail
-  when a new JSON resource omits this classification.
+  its content key. Shared consumers use `revivalages:any_content_enabled`.
+  Preserve datagen manifest validation, but do not add or modify resource-gate
+  tests unless the user explicitly requests test work.
 - JSON must be strict, UTF-8, deterministic, and free of comments or trailing
   commas. Resource locations must be namespaced.
 - Do not replace Minecraft namespace data unless the feature explicitly requires
   an override and documents compatibility consequences.
 - Validate worldgen and loot changes in fresh and existing worlds as applicable.
 
-Before handoff, run datagen (if providers exist), launch the client to catch models
-and translations, and launch a dedicated server to catch data-pack errors.
+Run datagen, client, or dedicated-server verification only when the user
+explicitly requests it or the task is a release/handoff. Do not create automated
+tests for resources without an explicit user request.

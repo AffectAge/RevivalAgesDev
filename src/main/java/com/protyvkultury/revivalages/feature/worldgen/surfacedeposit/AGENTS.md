@@ -13,7 +13,8 @@ from the designated reference mod to Revival Ages on NeoForge 1.21.1.
   predicates in configured features, placed features, and biome modifiers rather
   than hardcoding biome IDs in blocks.
 - Do not reproduce known source-data mistakes. Document corrections in
-  `docs/surface-deposits.md` and add a regression check when practical.
+  `docs/surface-deposits.md`. Add a regression check only when the user explicitly
+  requests test work.
 - The source uses vanilla stone and wood sounds for these blocks. Preserve all
   functional sound triggers even when no custom audio file exists. If the
   reference later adds custom sounds, port the licensed files and full trigger

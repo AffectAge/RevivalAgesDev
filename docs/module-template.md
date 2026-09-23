@@ -25,18 +25,16 @@ Create `feature/<feature_name>` and add only the subpackages the feature uses.
 - Decide the authoritative side and persistence owner of all state.
 - Define payload direction, validation, size limits, and handler thread for every
   network message.
-- Add pure unit tests for algorithms and GameTests for in-world behavior.
-- Test enabled and disabled startup configurations. Disabled content must leave
-  no exclusive registry, data, creative-tab, networking, worldgen, or integration
-  contribution.
-- Add universal content conditions to every acquisition resource, gate shared
-  recipe types with `any_content_enabled`, and add the resource to the automated
-  gate-validation suite.
+- Do not add or modify automated tests unless the user explicitly requests test
+  work. Disabled content must leave no exclusive registry, data, creative-tab,
+  networking, worldgen, or integration contribution.
+- Add universal content conditions to every acquisition resource and gate shared
+  recipe types with `any_content_enabled`.
 - Prove that disabled block entities retain inventory/fluid state, expose no
   capability, perform no tick work, reject payloads/interactions, and drop one
   restorable state-carrying block item.
-- Run both `runGameTestServer` and `runGameTestServerContentDisabled`.
-- Verify client, dedicated server, datagen, and build tasks.
+- Run client, dedicated-server, datagen, and build verification only when the
+  user requests it or the task is a release/handoff.
 
 Do not place unfinished global helpers in `util`. Prefer a private helper inside
 the feature until there are multiple proven callers and a stable shared concept.

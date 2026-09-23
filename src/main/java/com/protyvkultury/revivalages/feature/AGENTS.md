@@ -38,8 +38,9 @@ architecture.
 - Validate dependencies between enabled behaviors explicitly. Disabled placed
   content remains loadable and inert, preserves state, reports that it is
   disabled when used, and never deletes stored items or fluids.
-- A new feature must include its resource/datagen plan and tests in the same
-  change. A Java-only content feature is incomplete.
+- A new feature must include its resource/datagen plan in the same change. Do not
+  add or modify automated tests unless the user explicitly requests test work in
+  the current task. A Java-only content feature is incomplete.
 - Every new or changed feature must assess the complete catalog in
   `docs/optional-integrations.md` and implement all applicable adapters. That
   document owns the list and applicability criteria; do not duplicate them here.

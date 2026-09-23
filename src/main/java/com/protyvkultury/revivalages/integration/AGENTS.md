@@ -47,15 +47,12 @@ from the compatible 1.21.1 release; do not infer them from package hints.
 
 ## Verification
 
-For each implemented adapter, verify:
-
-1. Revival Ages starts and the affected feature works without the optional mod.
-2. The supported 1.21.1 version starts with the optional mod installed.
-3. Client-only integrations do not break a dedicated server.
-4. Missing/disabled integrations do not delete items, corrupt saves, or leave
-   unresolved registry references.
-5. When two mods cover the same concern (EMI/JEI or the two season mods),
-   installing both produces consistent information and no duplicate effect.
+Do not add or modify automated integration tests unless the user explicitly
+requests test work. Run integration verification only when the user explicitly
+requests it or the task is a release/handoff. When requested, limit it to the
+named critical risk: missing-mod startup, dedicated-server classloading, data
+loss/corruption, registry identity, or duplicate gameplay effects. Do not infer a
+full optional-mod matrix from an adapter change.
 
 If no compatible 1.21.1 release/API exists, record the adapter as blocked with the
 checked version and date. Do not weaken base-mod correctness to force support.

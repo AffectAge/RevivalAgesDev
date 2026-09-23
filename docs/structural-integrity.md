@@ -94,9 +94,10 @@ the player's authoritative rotation.
 | Ecliptic Seasons | not applicable | Structural rules have no seasonal input. |
 
 The base implementation and dedicated server do not load optional API classes.
-The dedicated GameTest suite covers reload-visible support data, block-state
-predicates, asymmetric ranges, placement limits, foundation semantics, strict
-replacement rules, and immediate span invalidation.
+No automated GameTest suite is maintained. Assess reload-visible support data,
+block-state predicates, asymmetric ranges, placement limits, foundation
+semantics, strict replacement rules, and immediate span invalidation when the
+user explicitly requests verification.
 
 ## Configuration
 

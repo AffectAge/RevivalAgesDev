@@ -1,18 +1,14 @@
 # Unit Test Rules
 
-- Unit tests cover pure Java domain rules, codecs with available test fixtures,
-  validation, math, state transitions, and deterministic algorithms.
-- Mirror production packages and name classes `<Subject>Test`.
-- Use Arrange/Act/Assert structure without explanatory boilerplate comments.
-- Test behavior and invariants, not private implementation details.
-- Tests must be deterministic, isolated, and independent of execution order,
-  network access, real time, user directories, or an already-running game.
-- Do not mock large parts of Minecraft. Move pure rules behind a small domain
-  boundary or use a GameTest when the platform behavior is essential.
-- A bug fix includes a regression test when the failure is practical to reproduce.
-- Configuration tests cover defaults, bounds, invalid values, dependency
-  validation, and enabled/disabled behavior for every content toggle. They must
-  also prove that toggle values never alter registry identity.
-- Keep dependency-graph and generated-resource gate checks exhaustive. Adding a
-  `ContentKey`, recipe, block loot table, or worldgen contribution without
-  extending those checks is a build failure, not an optional follow-up.
+Automated unit tests are not part of normal feature work. Do not add, restore, or
+modify a unit test unless the user explicitly requests test work in the current
+task; bug fixes and Java changes do not imply that request.
+
+When explicitly requested, add only deterministic coverage for the critical risk
+named by the user: data loss or duplication, save migration/corruption, registry
+identity, server authority or network validation, crashes, security-sensitive
+permissions, or another explicit invariant. Mirror the production package, name
+the class `<Subject>Test`, and test observable behavior. Do not add tests for
+presentation, layout, colors, translations, routine configuration values,
+ordinary calculations, or broad resource/dependency exhaustiveness unless the
+user specifically requests them.

@@ -129,17 +129,10 @@ classification, so these omissions are release-blocking.
 
 ## Verification and future features
 
-`runGameTestServer` is the all-enabled profile.
-`runGameTestServerContentDisabled` starts a dedicated GameTest server with the
-same registry set and forces every content key unavailable. Enabled-profile
-GameTests skip only in that explicit disabled profile; availability contract
-tests do the inverse.
-
-The unit suite validates dependency graphs, effective parent state, conflicts,
-all recipe and block-loot gates, all surface worldgen gates, and translations.
-The disabled GameTests validate registry/classification safety, legacy and
-universal conditions, recipe removal, interaction rejection, null capabilities,
-and lossless block-entity drops.
+No automated unit-test or GameTest suite is maintained. Do not add or modify
+tests for content availability unless the user explicitly requests test work in
+the current task. Use the catalog startup validation and datagen manifest as the
+normal safeguards for content classification.
 
 A new gameplay feature is incomplete until it:
 
@@ -149,7 +142,8 @@ A new gameplay feature is incomplete until it:
 3. gates recipes, acquisition data, worldgen, creative tabs, runtime behavior,
    capabilities, payloads, and every applicable optional integration;
 4. preserves existing serialized state and supports a lossless disabled break;
-5. adds enabled and disabled tests and translations.
+5. adds translations. Automated tests are added only when the user explicitly
+   requests them.
 
-Catalog startup validation and resource-gate unit tests intentionally fail the
+Catalog startup validation and datagen manifest validation intentionally fail the
 build when these requirements are omitted.
