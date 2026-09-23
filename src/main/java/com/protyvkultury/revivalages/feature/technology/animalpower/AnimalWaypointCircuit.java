@@ -8,11 +8,11 @@ public final class AnimalWaypointCircuit {
     private static final List<Offset> OFFSETS = List.of(
             new Offset(-3, -3),
             new Offset(0, -3),
-            new Offset(3, -3),
-            new Offset(3, 0),
-            new Offset(3, 3),
-            new Offset(0, 3),
-            new Offset(-3, 3),
+            new Offset(2, -3),
+            new Offset(2, 0),
+            new Offset(2, 2),
+            new Offset(0, 2),
+            new Offset(-3, 2),
             new Offset(-3, 0)
     );
 
