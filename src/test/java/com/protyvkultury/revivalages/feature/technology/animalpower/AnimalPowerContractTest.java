@@ -38,21 +38,20 @@ final class AnimalPowerContractTest {
     }
 
     @Test
-    void waypointCircuitIsUniqueAndSymmetric() {
-        Set<AnimalWaypointCircuit.Offset> waypoints = new HashSet<>();
-
-        for (int index = 0; index < AnimalWaypointCircuit.size(); index++) {
-            AnimalWaypointCircuit.Offset waypoint = AnimalWaypointCircuit.offset(index);
-            waypoints.add(waypoint);
-            assertTrue(Math.abs(waypoint.x()) <= 3);
-            assertTrue(Math.abs(waypoint.z()) <= 3);
-        }
-
-        assertEquals(8, waypoints.size());
-        for (AnimalWaypointCircuit.Offset waypoint : waypoints) {
-            AnimalWaypointCircuit.Offset opposite =
-                    new AnimalWaypointCircuit.Offset(-waypoint.x(), -waypoint.z());
-            assertTrue(waypoints.contains(opposite));
+    void waypointCircuitMatchesHorsePowerRoute() {
+        List<AnimalWaypointCircuit.Offset> expected = List.of(
+                new AnimalWaypointCircuit.Offset(-3, -3),
+                new AnimalWaypointCircuit.Offset(0, -3),
+                new AnimalWaypointCircuit.Offset(2, -3),
+                new AnimalWaypointCircuit.Offset(2, 0),
+                new AnimalWaypointCircuit.Offset(2, 2),
+                new AnimalWaypointCircuit.Offset(0, 2),
+                new AnimalWaypointCircuit.Offset(-3, 2),
+                new AnimalWaypointCircuit.Offset(-3, 0)
+        );
+        assertEquals(expected.size(), AnimalWaypointCircuit.size());
+        for (int index = 0; index < expected.size(); index++) {
+            assertEquals(expected.get(index), AnimalWaypointCircuit.offset(index));
         }
     }
 
