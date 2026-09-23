@@ -130,7 +130,6 @@ public final class PrimitiveMaterialsFeature implements FeatureModule {
         Set<ContentKey> hideChain = Set.of(
                 ContentKey.RAW_HIDE_DROPS,
                 ContentKey.CHOPPING_BLOCK,
-                ContentKey.HORSE_CHOPPING_BLOCK,
                 ContentKey.SOAKING_POT,
                 ContentKey.TANNING_RACK
         );
@@ -157,7 +156,6 @@ public final class PrimitiveMaterialsFeature implements FeatureModule {
                 .sharedItems(
                         Set.of(
                                 ContentKey.CHOPPING_BLOCK,
-                                ContentKey.HORSE_CHOPPING_BLOCK,
                                 ContentKey.STONE_SAWMILL
                         ),
                         "wood_chips"

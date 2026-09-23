@@ -72,11 +72,7 @@ warning when a child is configured `true` below a disabled parent.
 | `revivalages:wood_torch` | `primitive_technology` | `primitiveTechnology.ignition.woodTorchEnabled` |
 | `revivalages:wooden_bucket` | `primitive_technology` | `primitiveTechnology.primitiveBuckets.woodenBucketEnabled` |
 | `revivalages:clay_bucket` | `primitive_technology` | `primitiveTechnology.primitiveBuckets.clayBucketEnabled` |
-| `revivalages:animal_power` | — | `revivalages-animal-power-server.toml`: `animalPower.enabled` |
-| `revivalages:hand_grindstone` | `animal_power` | `animalPower.handGrindstone.enabled` |
-| `revivalages:horse_grindstone` | `animal_power` | `animalPower.horseGrindstoneEnabled` |
-| `revivalages:horse_chopping_block` | `animal_power` | `animalPower.choppingBlock.enabled` |
-| `revivalages:horse_press` | `animal_power` | `animalPower.press.enabled` |
+| `revivalages:hand_grindstone` | — | `revivalages-animal-power-server.toml`: `animalPower.handGrindstone.enabled` |
 
 Shared materials declare every producer or consumer in their policy. They remain
 visible while at least one declared content unit is enabled. Examples include
@@ -100,10 +96,7 @@ Data shared by several consumers can use:
 ```json
 {
   "type": "revivalages:any_content_enabled",
-  "contents": [
-    "revivalages:hand_grindstone",
-    "revivalages:horse_grindstone"
-  ],
+  "contents": ["revivalages:hand_grindstone"],
   "enabled": true
 }
 ```

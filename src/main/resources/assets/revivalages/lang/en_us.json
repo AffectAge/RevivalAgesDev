@@ -69,14 +69,12 @@
   "emi.category.revivalages.drying": "Drying",
   "jei.revivalages.category.campfire": "Campfire Cooking",
   "jei.revivalages.category.chopping_block": "Chopping Block",
-  "jei.revivalages.category.animal_chopping": "Animal Chopping",
   "jei.revivalages.category.pit_kiln": "Pit Kiln",
   "jei.revivalages.category.barrel": "Barrel",
   "jei.revivalages.category.soaking_pot": "Soaking Pot",
   "jei.revivalages.category.tanning_rack": "Tanning Rack",
   "emi.category.revivalages.campfire": "Campfire Cooking",
   "emi.category.revivalages.chopping_block": "Chopping Block",
-  "emi.category.revivalages.animal_chopping": "Animal Chopping",
   "emi.category.revivalages.pit_kiln": "Pit Kiln",
   "emi.category.revivalages.barrel": "Barrel",
   "emi.category.revivalages.soaking_pot": "Soaking Pot",
@@ -87,8 +85,6 @@
   "gui.revivalages.recipe.rain_failure": "Rain can ruin this recipe",
   "gui.revivalages.recipe.rain_failure_tooltip": "Rain may produce: %s",
   "gui.revivalages.process_rule.fuelled_and_lit": "Requires fuel and ignition",
-  "gui.revivalages.process_rule.valid_work_area": "Requires a valid work area",
-  "gui.revivalages.process_rule.attached_worker": "Requires an attached worker",
   "gui.revivalages.process_rule.lit_block_below": "Requires a lit campfire directly below",
   "gui.revivalages.process_rule.lit_block_below.status": "Blocked: no lit campfire below",
   "gui.revivalages.process_rule.open_sky": "Requires open sky",
@@ -103,13 +99,6 @@
   "gui.revivalages.process_rule.installed_tool": "Requires an installed tool",
   "gui.revivalages.process_rule.installed_tool.status": "Blocked: tool is missing",
   "gui.revivalages.process_rule.fuelled_and_lit.status": "Blocked: fuel or ignition is missing",
-  "gui.revivalages.process_rule.attached_worker.status": "Blocked: no worker is attached",
-  "gui.revivalages.process_rule.attached_worker.animals": "Accepted workers: horse, donkey, mule, llama, or camel",
-  "gui.revivalages.process_rule.attached_worker.lead": "Attach a worker by leading it to the machine with a lead",
-  "gui.revivalages.process_rule.valid_work_area.status": "Blocked: work area is invalid",
-  "gui.revivalages.process_rule.valid_work_area.square": "Requires a clear 7×7 area centered on the machine",
-  "gui.revivalages.process_rule.valid_work_area.floor": "Every position needs a solid floor",
-  "gui.revivalages.process_rule.valid_work_area.headroom": "Every route position needs two clear blocks of headroom",
   "gui.revivalages.process_rule.valid_structure": "Requires a valid structure",
   "gui.revivalages.process_rule.valid_structure.status": "Blocked: structure is invalid",
   "gui.revivalages.process_rule.required_manual_tool": "Requires the specified manual tool",
@@ -305,28 +294,8 @@
   ,"item.revivalages.netherrack_splitter": "Netherrack Splitter"
   ,"item.revivalages.soul_soil_splitter": "Soul Soil Splitter"
   ,"block.revivalages.hand_grindstone": "Hand Grindstone"
-  ,"block.revivalages.horse_grindstone": "Animal-Powered Grindstone"
-  ,"block.revivalages.horse_chopping_block": "Animal-Powered Chopping Block"
-  ,"block.revivalages.horse_press": "Animal-Powered Press"
-  ,"config.jade.plugin_revivalages.animal_power": "Animal Power Details"
-  ,"jade.revivalages.animal_power.worker.attached": "Worker: %s"
-  ,"jade.revivalages.animal_power.worker.unloaded": "Attached (unloaded)"
-  ,"jade.revivalages.animal_power.worker.missing": "Worker: Not attached"
-  ,"jade.revivalages.animal_power.area.valid": "Work area: Valid"
-  ,"jade.revivalages.animal_power.area.invalid": "Work area: Invalid (requires a clear 7x7x2 area)"
-  ,"jade.revivalages.animal_power.state.working": "State: Working"
-  ,"jade.revivalages.animal_power.state.invalid_area": "Blocked: Invalid work area"
-  ,"jade.revivalages.animal_power.state.no_worker": "Blocked: Attach a worker with a lead"
-  ,"jade.revivalages.animal_power.state.no_input": "Blocked: Add an input"
-  ,"jade.revivalages.animal_power.state.no_recipe": "Blocked: No matching recipe"
-  ,"jade.revivalages.animal_power.state.output_blocked": "Blocked: Collect the output"
-  ,"jade.revivalages.animal_power.fluid": "Fluid: %s (%s/%s mB)"
   ,"jei.revivalages.category.hand_grinding": "Hand Grinding"
-  ,"jei.revivalages.category.animal_grinding": "Animal Grinding"
-  ,"jei.revivalages.category.pressing": "Pressing"
   ,"emi.category.revivalages.hand_grinding": "Hand Grinding"
-  ,"emi.category.revivalages.animal_grinding": "Animal Grinding"
-  ,"emi.category.revivalages.pressing": "Pressing"
   ,"container.revivalages.knapping": "Knapping"
   ,"jei.revivalages.category.knapping": "Knapping"
   ,"emi.category.revivalages.knapping": "Knapping"
@@ -408,11 +377,7 @@
   ,"content.revivalages.wood_torch": "Wood Torch"
   ,"content.revivalages.wooden_bucket": "Wooden Bucket"
   ,"content.revivalages.clay_bucket": "Clay Bucket"
-  ,"content.revivalages.animal_power": "Animal Power"
   ,"content.revivalages.hand_grindstone": "Hand Grindstone"
-  ,"content.revivalages.horse_grindstone": "Horse Grindstone"
-  ,"content.revivalages.horse_chopping_block": "Horse Chopping Block"
-  ,"content.revivalages.horse_press": "Horse Press"
   ,"content.revivalages.item_size": "Item Size"
   ,"tooltip.revivalages.item_size": "Size: %s"
   ,"message.revivalages.item_size.container_rejected": "Cannot store %s: too large for this container"
@@ -446,7 +411,6 @@
   ,"command.revivalages.weight.inspect_armor": "Armor provides %s pockets and %s g capacity"
   ,"config.jade.plugin_revivalages.disabled_content": "Disabled Content State"
   ,"config.jade.plugin_revivalages.construction_frame": "Construction Frame Details"
-  ,"config.jade.plugin_revivalages.animal_power": "Animal Power Details"
   ,"config.jade.plugin_revivalages.structural_integrity": "Structural Integrity"
   ,"message.revivalages.content_disabled": "This content is disabled by the server."
   ,"tooltip.revivalages.wood_torch.burns_up.true": "Burns out over time"

@@ -143,27 +143,23 @@ not copied.
 
 ## HorsePower
 
-The interaction flow, worker waypoint lifecycle, work-area contract, processing
-rules, configuration defaults, and functional model structure for the Hand
-Grindstone, Animal-Powered Grindstone, Animal-Powered Chopping Block, and
-Animal-Powered Press were adapted from HorsePower by GoryMoon. The source used
-for the adaptation is the local HorsePower 2.6.4 source tree for Minecraft
-1.12.2.
+The interaction flow and functional model structure for the Hand Grindstone were
+adapted from HorsePower by GoryMoon. The source used for the adaptation is the
+local HorsePower 2.6.4 source tree for Minecraft 1.12.2.
 
 HorsePower is licensed under the GNU Lesser General Public License version 3 or
 later. A copy is included at `licenses/HorsePower-LICENSE.txt`. The implementation
-was rewritten for Minecraft 1.21.1 and NeoForge, uses the Revival Ages namespace,
-and intentionally corrects the asymmetric work-area edge check. No HorsePower
-runtime dependency or original namespace is used by gameplay code or resources.
+was rewritten for Minecraft 1.21.1 and NeoForge and uses the Revival Ages
+namespace. No HorsePower runtime dependency or original namespace is used by
+gameplay code or resources.
 
 The adapted block model geometry is shipped under
-`assets/revivalages/models/block/hand_grindstone*.json` and
-`assets/revivalages/models/block/horse_*.json`. The original grinding-content
-texture is shipped under the renamed path `textures/block/grinding_contents.png`.
-Model parents, vanilla texture names, resource locations, blockstate composition,
-and renderer transforms were adapted for Minecraft 1.21.1. The recipe-viewer
-guide atlases at `textures/gui/animal_power_grinding.png` and
-`textures/gui/animal_power_pressing.png` are original Revival Ages assets.
+`assets/revivalages/models/block/hand_grindstone*.json`. The original
+grinding-content texture is shipped under the renamed path
+`textures/block/grinding_contents.png`. Model parents, vanilla texture names,
+resource locations, blockstate composition, and renderer transforms were adapted
+for Minecraft 1.21.1. The recipe-viewer guide atlas at
+`textures/gui/animal_power_grinding.png` is an original Revival Ages asset.
 
 ## Pyrotech
 

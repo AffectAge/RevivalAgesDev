@@ -52,15 +52,6 @@ public record PrimitiveRecipeLayout(
     );
     public static final PrimitiveRecipeLayout ANVIL = single("anvil", false);
     public static final PrimitiveRecipeLayout GRINDING = single("animal_power_grinding", false);
-    public static final PrimitiveRecipeLayout PRESSING = new PrimitiveRecipeLayout(
-            "animal_power_pressing",
-            128,
-            47,
-            List.of(new Position(16, 16)),
-            List.of(new Position(72, 16)),
-            new Position(40, 16),
-            null
-    );
     public static final PrimitiveRecipeLayout DRYING = single("drying_rack", false);
 
     public PrimitiveRecipeLayout {

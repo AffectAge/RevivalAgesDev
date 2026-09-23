@@ -47,7 +47,6 @@ public final class CreativeTabFeature implements FeatureModule {
             "chopping_block", "pit_kiln", "log_pile",
             "barrel", "storage_barrel", "soaking_pot", "tanning_rack",
             // Stone-age workstations.
-            "horse_grindstone", "horse_chopping_block", "horse_press",
             "stone_sawmill", "stone_oven", "stone_kiln", "stone_crucible", "anvil"
     );
     private static final Map<String, Integer> PROGRESSION_INDEX = createProgressionIndex();

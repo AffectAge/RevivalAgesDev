@@ -140,8 +140,7 @@ public final class ItemSizeDataProvider extends DataMapProvider {
         add(values, Size.VERY_LARGE, "stone_hammer", "chopping_block", "log_pile", "hand_grindstone");
         add(values, Size.HUGE,
                 "barrel", "storage_barrel", "soaking_pot", "anvil",
-                "stone_sawmill", "stone_oven", "stone_kiln", "stone_crucible",
-                "horse_grindstone", "horse_chopping_block", "horse_press"
+                "stone_sawmill", "stone_oven", "stone_kiln", "stone_crucible"
         );
         return Map.copyOf(values);
     }

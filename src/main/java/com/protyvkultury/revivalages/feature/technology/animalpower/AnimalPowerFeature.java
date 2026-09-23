@@ -2,28 +2,19 @@ package com.protyvkultury.revivalages.feature.technology.animalpower;
 
 import com.protyvkultury.revivalages.RevivalAges;
 import com.protyvkultury.revivalages.feature.FeatureModule;
-import com.protyvkultury.revivalages.feature.content.ContentAvailability;
 import com.protyvkultury.revivalages.feature.content.ContentKey;
 import com.protyvkultury.revivalages.feature.content.ContentPolicy;
-import com.protyvkultury.revivalages.feature.technology.animalpower.block.AnimalMachineBlock;
 import com.protyvkultury.revivalages.feature.technology.animalpower.block.HandGrindstoneBlock;
-import com.protyvkultury.revivalages.feature.technology.animalpower.blockentity.AnimalMachineBlockEntity;
 import com.protyvkultury.revivalages.feature.technology.animalpower.blockentity.HandGrindstoneBlockEntity;
 import com.protyvkultury.revivalages.feature.technology.animalpower.client.AnimalPowerClientEvents;
 import com.protyvkultury.revivalages.feature.technology.animalpower.recipe.GrindingRecipe;
 import com.protyvkultury.revivalages.feature.technology.animalpower.recipe.GrindingRecipeSerializer;
-import com.protyvkultury.revivalages.feature.technology.animalpower.recipe.PressingRecipe;
-import com.protyvkultury.revivalages.feature.technology.animalpower.recipe.PressingRecipeSerializer;
-import com.protyvkultury.revivalages.feature.technology.animalpower.recipe.WoodVariantChoppingBlockRecipe;
 import java.util.function.Supplier;
-import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.item.crafting.SimpleCraftingRecipeSerializer;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -32,8 +23,6 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.loading.FMLEnvironment;
-import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredItem;
@@ -49,44 +38,14 @@ public final class AnimalPowerFeature implements FeatureModule {
             DeferredRegister.create(Registries.RECIPE_TYPE, RevivalAges.MOD_ID);
     private static final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZERS =
             DeferredRegister.create(Registries.RECIPE_SERIALIZER, RevivalAges.MOD_ID);
-    private static final DeferredRegister.DataComponents DATA_COMPONENTS =
-            DeferredRegister.createDataComponents(Registries.DATA_COMPONENT_TYPE, RevivalAges.MOD_ID);
-
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<ResourceLocation>> WOOD_VARIANT =
-            DATA_COMPONENTS.registerComponentType("wood_variant", builder -> builder
-                    .persistent(ResourceLocation.CODEC)
-                    .networkSynchronized(ResourceLocation.STREAM_CODEC)
-                    .cacheEncoding());
-
     public static final DeferredBlock<HandGrindstoneBlock> HAND_GRINDSTONE = BLOCKS.registerBlock(
             "hand_grindstone",
             HandGrindstoneBlock::new,
             machineProperties(SoundType.STONE)
     );
-    public static final DeferredBlock<AnimalMachineBlock> HORSE_GRINDSTONE = BLOCKS.registerBlock(
-            "horse_grindstone",
-            properties -> new AnimalMachineBlock(AnimalMachineKind.GRINDSTONE, properties),
-            machineProperties(SoundType.STONE)
-    );
-    public static final DeferredBlock<AnimalMachineBlock> HORSE_CHOPPING_BLOCK = BLOCKS.registerBlock(
-            "horse_chopping_block",
-            properties -> new AnimalMachineBlock(AnimalMachineKind.CHOPPING_BLOCK, properties),
-            machineProperties(SoundType.WOOD)
-    );
-    public static final DeferredBlock<AnimalMachineBlock> HORSE_PRESS = BLOCKS.registerBlock(
-            "horse_press",
-            properties -> new AnimalMachineBlock(AnimalMachineKind.PRESS, properties),
-            machineProperties(SoundType.WOOD)
-    );
 
     public static final DeferredItem<BlockItem> HAND_GRINDSTONE_ITEM =
             ITEMS.registerSimpleBlockItem(HAND_GRINDSTONE, new Item.Properties());
-    public static final DeferredItem<BlockItem> HORSE_GRINDSTONE_ITEM =
-            ITEMS.registerSimpleBlockItem(HORSE_GRINDSTONE, new Item.Properties());
-    public static final DeferredItem<BlockItem> HORSE_CHOPPING_BLOCK_ITEM =
-            ITEMS.registerSimpleBlockItem(HORSE_CHOPPING_BLOCK, new Item.Properties());
-    public static final DeferredItem<BlockItem> HORSE_PRESS_ITEM =
-            ITEMS.registerSimpleBlockItem(HORSE_PRESS, new Item.Properties());
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<HandGrindstoneBlockEntity>>
             HAND_GRINDSTONE_BLOCK_ENTITY = BLOCK_ENTITIES.register(
@@ -94,70 +53,29 @@ public final class AnimalPowerFeature implements FeatureModule {
                     () -> BlockEntityType.Builder.of(HandGrindstoneBlockEntity::new, HAND_GRINDSTONE.get())
                             .build(null)
             );
-    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<AnimalMachineBlockEntity>>
-            ANIMAL_MACHINE_BLOCK_ENTITY = BLOCK_ENTITIES.register(
-                    "animal_machine",
-                    () -> BlockEntityType.Builder.of(
-                            AnimalMachineBlockEntity::new,
-                            HORSE_GRINDSTONE.get(),
-                            HORSE_CHOPPING_BLOCK.get(),
-                            HORSE_PRESS.get()
-                    ).build(null)
-            );
-
     public static final DeferredHolder<RecipeType<?>, RecipeType<GrindingRecipe>> GRINDING_TYPE =
             RECIPE_TYPES.register("grinding", simpleRecipeType("grinding"));
     public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<GrindingRecipe>> GRINDING_SERIALIZER =
             RECIPE_SERIALIZERS.register("grinding", GrindingRecipeSerializer::new);
-    public static final DeferredHolder<RecipeType<?>, RecipeType<PressingRecipe>> PRESSING_TYPE =
-            RECIPE_TYPES.register("pressing", simpleRecipeType("pressing"));
-    public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<PressingRecipe>> PRESSING_SERIALIZER =
-            RECIPE_SERIALIZERS.register("pressing", PressingRecipeSerializer::new);
-    public static final DeferredHolder<RecipeSerializer<?>, SimpleCraftingRecipeSerializer<WoodVariantChoppingBlockRecipe>>
-            WOOD_VARIANT_RECIPE_SERIALIZER = RECIPE_SERIALIZERS.register(
-                    "wood_variant_chopping_block",
-                    () -> new SimpleCraftingRecipeSerializer<>(WoodVariantChoppingBlockRecipe::new)
-            );
 
     @Override
     public ContentPolicy contentPolicy() {
-        return ContentPolicy.gameplay("animal_power")
-                .define(
-                        ContentKey.ANIMAL_POWER,
-                        () -> AnimalPowerConfig.contentEnabled(ContentKey.ANIMAL_POWER)
-                )
+        return ContentPolicy.gameplay("hand_grinding")
                 .define(
                         ContentKey.HAND_GRINDSTONE,
                         () -> AnimalPowerConfig.contentEnabled(ContentKey.HAND_GRINDSTONE)
                 )
-                .define(
-                        ContentKey.HORSE_GRINDSTONE,
-                        () -> AnimalPowerConfig.contentEnabled(ContentKey.HORSE_GRINDSTONE)
-                )
-                .define(
-                        ContentKey.HORSE_CHOPPING_BLOCK,
-                        () -> AnimalPowerConfig.contentEnabled(ContentKey.HORSE_CHOPPING_BLOCK)
-                )
-                .define(
-                        ContentKey.HORSE_PRESS,
-                        () -> AnimalPowerConfig.contentEnabled(ContentKey.HORSE_PRESS)
-                )
                 .items(ContentKey.HAND_GRINDSTONE, "hand_grindstone")
-                .items(ContentKey.HORSE_GRINDSTONE, "horse_grindstone")
-                .items(ContentKey.HORSE_CHOPPING_BLOCK, "horse_chopping_block")
-                .items(ContentKey.HORSE_PRESS, "horse_press")
                 .build();
     }
 
     @Override
     public void register(IEventBus modBus, ModContainer modContainer) {
-        DATA_COMPONENTS.register(modBus);
         BLOCKS.register(modBus);
         ITEMS.register(modBus);
         BLOCK_ENTITIES.register(modBus);
         RECIPE_TYPES.register(modBus);
         RECIPE_SERIALIZERS.register(modBus);
-        modBus.addListener(this::registerCapabilities);
         modContainer.registerConfig(
                 ModConfig.Type.SERVER,
                 AnimalPowerConfig.SPEC,
@@ -166,12 +84,6 @@ public final class AnimalPowerFeature implements FeatureModule {
         if (FMLEnvironment.dist == Dist.CLIENT) {
             AnimalPowerClientEvents.register(modBus);
         }
-    }
-
-    public static AnimalMachineKind kind(net.minecraft.world.level.block.state.BlockState state) {
-        return state.getBlock() instanceof AnimalMachineBlock machine
-                ? machine.kind()
-                : AnimalMachineKind.GRINDSTONE;
     }
 
     private static BlockBehaviour.Properties machineProperties(SoundType sound) {
@@ -192,24 +104,4 @@ public final class AnimalPowerFeature implements FeatureModule {
         };
     }
 
-    private void registerCapabilities(RegisterCapabilitiesEvent event) {
-        event.registerBlockEntity(
-                Capabilities.ItemHandler.BLOCK,
-                ANIMAL_MACHINE_BLOCK_ENTITY.get(),
-                (machine, side) -> ContentAvailability.isEnabled(machine.contentKey())
-                        && AnimalPowerConfig.AUTOMATION_ENABLED.get()
-                        ? machine.itemHandler(side)
-                        : null
-        );
-        event.registerBlockEntity(
-                Capabilities.FluidHandler.BLOCK,
-                ANIMAL_MACHINE_BLOCK_ENTITY.get(),
-                (machine, side) -> ContentAvailability.isEnabled(machine.contentKey())
-                        && AnimalPowerConfig.AUTOMATION_ENABLED.get()
-                        && machine.kind() == AnimalMachineKind.PRESS
-                        && side == net.minecraft.core.Direction.DOWN
-                        ? machine.fluidOutputHandler()
-                        : null
-        );
-    }
 }

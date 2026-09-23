@@ -23,8 +23,8 @@ example, a heated soaking recipe uses:
 
 The current built-in rule types are `lit_block_below`, `open_sky`,
 `weather_exposure`, `drying_environment`, `sealed_machine`, `installed_tool`,
-`fuelled_and_lit`, `attached_worker`, `valid_work_area`, `valid_structure`, and
-`required_manual_tool`. `random_outcome` is presentation-only: it references a
+`fuelled_and_lit`, `valid_structure`, and `required_manual_tool`.
+`random_outcome` is presentation-only: it references a
 recipe's existing chance and alternate results; it never participates in server
 recipe validation or machine processing.
 
@@ -36,13 +36,7 @@ recipe validity.
 Recipe viewers render an actual cycling ingredient slot when a recipe requires a
 specific manual tool. Its tooltip describes the recipe-specific interaction;
 the generic `required_manual_tool` icon remains a condition rather than a
-substitute for the accepted tool set. The `attached_worker` and
-`valid_work_area` icons describe the default eligible workers, lead attachment,
-and the Horse Power work-area contract: replaceable outer 7×7 cells outside the
-central 3×3 machine footprint at the machine level and its required adjacent
-vertical level; the Grindstone route is one block lower, while tall machines use
-the machine level. Datapacks may extend the worker tag; the icon text does not
-make that tag closed.
+substitute for the accepted tool set.
 
 Soaking recipes use only `process_rules`; obsolete recipe fields are rejected
 during data loading.

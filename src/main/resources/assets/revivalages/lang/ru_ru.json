@@ -57,14 +57,12 @@
   "emi.category.revivalages.drying": "Сушка",
   "jei.revivalages.category.campfire": "Готовка на костре",
   "jei.revivalages.category.chopping_block": "Рубочный блок",
-  "jei.revivalages.category.animal_chopping": "Рубка животной тягой",
   "jei.revivalages.category.pit_kiln": "Ямная печь",
   "jei.revivalages.category.barrel": "Бочка",
   "jei.revivalages.category.soaking_pot": "Замачивание",
   "jei.revivalages.category.tanning_rack": "Дубление",
   "emi.category.revivalages.campfire": "Готовка на костре",
   "emi.category.revivalages.chopping_block": "Рубочный блок",
-  "emi.category.revivalages.animal_chopping": "Рубка животной тягой",
   "emi.category.revivalages.pit_kiln": "Ямная печь",
   "emi.category.revivalages.barrel": "Бочка",
   "emi.category.revivalages.soaking_pot": "Замачивание",
@@ -76,8 +74,6 @@
   "gui.revivalages.recipe.rain_failure_tooltip": "Дождь может привести к результату: %s",
   "gui.revivalages.process_rule.fuelled_and_lit": "Требуется топливо и розжиг",
   "gui.revivalages.process_rule.installed_tool": "Требуется установленный инструмент",
-  "gui.revivalages.process_rule.valid_work_area": "Требуется подходящая рабочая область",
-  "gui.revivalages.process_rule.attached_worker": "Требуется привязанный работник",
   "gui.revivalages.process_rule.lit_block_below": "Требуется горящий костёр непосредственно снизу",
   "gui.revivalages.process_rule.lit_block_below.status": "Остановка: снизу нет горящего костра",
   "gui.revivalages.process_rule.open_sky": "Требуется открытое небо",
@@ -91,13 +87,6 @@
   "gui.revivalages.process_rule.sealed_machine.status": "Остановка: устройство не запечатано",
   "gui.revivalages.process_rule.installed_tool.status": "Остановка: инструмент отсутствует",
   "gui.revivalages.process_rule.fuelled_and_lit.status": "Остановка: нет топлива или розжига",
-  "gui.revivalages.process_rule.attached_worker.status": "Остановка: работник не привязан",
-  "gui.revivalages.process_rule.attached_worker.animals": "Подходят: лошадь, осёл, мул, лама или верблюд",
-  "gui.revivalages.process_rule.attached_worker.lead": "Приведите работника к механизму на поводке, чтобы привязать его",
-  "gui.revivalages.process_rule.valid_work_area.status": "Остановка: рабочая область неверна",
-  "gui.revivalages.process_rule.valid_work_area.square": "Нужна свободная область 7×7 с механизмом в центре",
-  "gui.revivalages.process_rule.valid_work_area.floor": "В каждой позиции нужен прочный пол",
-  "gui.revivalages.process_rule.valid_work_area.headroom": "Над каждой позицией маршрута нужно два свободных блока",
   "gui.revivalages.process_rule.valid_structure": "Требуется правильная структура",
   "gui.revivalages.process_rule.valid_structure.status": "Остановка: структура неверна",
   "gui.revivalages.process_rule.required_manual_tool": "Требуется указанный ручной инструмент",
@@ -339,11 +328,7 @@
   ,"content.revivalages.wood_torch": "Деревянный факел"
   ,"content.revivalages.wooden_bucket": "Деревянное ведро"
   ,"content.revivalages.clay_bucket": "Глиняное ведро"
-  ,"content.revivalages.animal_power": "Животная тяга"
   ,"content.revivalages.hand_grindstone": "Ручной жернов"
-  ,"content.revivalages.horse_grindstone": "Конный жернов"
-  ,"content.revivalages.horse_chopping_block": "Конная рубильная установка"
-  ,"content.revivalages.horse_press": "Конный пресс"
   ,"content.revivalages.item_size": "Размер предмета"
   ,"tooltip.revivalages.item_size": "Размер: %s"
   ,"message.revivalages.item_size.container_rejected": "Нельзя положить %s: предмет слишком велик для этого контейнера"
@@ -377,7 +362,6 @@
   ,"command.revivalages.weight.inspect_armor": "Броня даёт %s карманов и %s г грузоподъёмности"
   ,"config.jade.plugin_revivalages.disabled_content": "Состояние отключённого контента"
   ,"config.jade.plugin_revivalages.construction_frame": "Сведения о строительной раме"
-  ,"config.jade.plugin_revivalages.animal_power": "Сведения о механизмах животной тяги"
   ,"config.jade.plugin_revivalages.structural_integrity": "Структурная целостность"
   ,"message.revivalages.content_disabled": "Этот контент отключён настройками сервера."
   ,"tooltip.revivalages.wood_torch.burns_up.true": "Сгорает со временем"
@@ -393,7 +377,5 @@
   ,"jade.revivalages.storage_barrel.preserved": "Сохранение еды активно"
   ,"config.jade.plugin_revivalages.storage_barrel": "Сведения о бочке для хранения"
   ,"jei.revivalages.category.hand_grinding": "Ручной помол"
-  ,"jei.revivalages.category.animal_grinding": "Помол животной тягой"
   ,"emi.category.revivalages.hand_grinding": "Ручной помол"
-  ,"emi.category.revivalages.animal_grinding": "Помол животной тягой"
 }

@@ -260,18 +260,6 @@
       "replace": true,
       "value": "very_large"
     },
-    "revivalages:horse_chopping_block": {
-      "replace": true,
-      "value": "huge"
-    },
-    "revivalages:horse_grindstone": {
-      "replace": true,
-      "value": "huge"
-    },
-    "revivalages:horse_press": {
-      "replace": true,
-      "value": "huge"
-    },
     "revivalages:jungle_stick": {
       "replace": true,
       "value": "very_small"

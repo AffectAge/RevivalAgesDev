@@ -139,11 +139,6 @@ final class PrimitiveEmiRecipe implements EmiRecipe {
                 this.addItemInputs(widgets, this.layout.flow.itemInputs());
                 this.addItemOutputs(widgets, this.layout.flow.itemOutputs());
                 break;
-            case PRESSING:
-                this.addItemInputs(widgets, this.layout.flow.itemInputs());
-                this.addItemOutputs(widgets, this.layout.flow.itemOutputs());
-                this.addFluidTank(widgets, this.view.fluidOutput(), PrimitiveFluidSlotGeometry.PRESSING_OUTPUT);
-                break;
             case PIT_KILN, PIT_BURN:
                 {
                     this.addItemInputs(widgets, this.layout.flow.itemInputs());
@@ -434,8 +429,7 @@ final class PrimitiveEmiRecipe implements EmiRecipe {
                 StoneMachineRecipeLayout.CRUCIBLE.flame().y()
         ),
         ANVIL(PrimitiveRecipeLayout.ANVIL),
-        GRINDING(PrimitiveRecipeLayout.GRINDING),
-        PRESSING(PrimitiveRecipeLayout.PRESSING);
+        GRINDING(PrimitiveRecipeLayout.GRINDING);
 
         final String texture;
         final int width;

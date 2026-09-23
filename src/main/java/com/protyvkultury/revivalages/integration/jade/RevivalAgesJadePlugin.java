@@ -13,7 +13,6 @@ import com.protyvkultury.revivalages.feature.technology.anvil.block.AnvilBlock;
 import com.protyvkultury.revivalages.feature.technology.pitburn.block.ActivePileBlock;
 import com.protyvkultury.revivalages.feature.technology.pitburn.block.AshPileBlock;
 import com.protyvkultury.revivalages.feature.technology.ignition.block.WoodTorchBlock;
-import com.protyvkultury.revivalages.feature.technology.animalpower.block.AnimalMachineBlock;
 import com.protyvkultury.revivalages.feature.technology.animalpower.block.HandGrindstoneBlock;
 import com.protyvkultury.revivalages.feature.technology.constructionframe.block.ConstructionFrameBlock;
 import net.minecraft.world.level.block.Block;
@@ -42,7 +41,6 @@ public final class RevivalAgesJadePlugin implements IWailaPlugin {
         registration.registerBlockComponent(PrimitiveDeviceComponentProvider.INSTANCE, AshPileBlock.class);
         registration.registerBlockComponent(PrimitiveDeviceComponentProvider.INSTANCE, WoodTorchBlock.class);
         registration.registerBlockComponent(AnimalPowerComponentProvider.INSTANCE, HandGrindstoneBlock.class);
-        registration.registerBlockComponent(AnimalPowerComponentProvider.INSTANCE, AnimalMachineBlock.class);
         registration.registerBlockComponent(
                 ConstructionFrameComponentProvider.INSTANCE,
                 ConstructionFrameBlock.class

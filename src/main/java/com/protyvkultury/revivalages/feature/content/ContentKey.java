@@ -52,11 +52,7 @@ public enum ContentKey {
     WOODEN_BUCKET("wooden_bucket", PRIMITIVE_TECHNOLOGY),
     CLAY_BUCKET("clay_bucket", PRIMITIVE_TECHNOLOGY),
 
-    ANIMAL_POWER("animal_power"),
-    HAND_GRINDSTONE("hand_grindstone", ANIMAL_POWER),
-    HORSE_GRINDSTONE("horse_grindstone", ANIMAL_POWER),
-    HORSE_CHOPPING_BLOCK("horse_chopping_block", ANIMAL_POWER),
-    HORSE_PRESS("horse_press", ANIMAL_POWER);
+    HAND_GRINDSTONE("hand_grindstone");
 
     private final String path;
     private final List<ContentKey> parents;

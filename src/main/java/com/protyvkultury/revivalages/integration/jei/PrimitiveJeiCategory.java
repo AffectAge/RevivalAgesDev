@@ -115,15 +115,6 @@ final class PrimitiveJeiCategory implements IRecipeCategory<PrimitiveRecipeView>
                 addItemInputs(builder, recipe, this.layout.flow.itemInputs());
                 addItemOutputs(builder, recipe, this.layout.flow.itemOutputs());
                 break;
-            case PRESSING:
-                addItemInputs(builder, recipe, this.layout.flow.itemInputs());
-                addItemOutputs(builder, recipe, this.layout.flow.itemOutputs());
-                PrimitiveJeiCategory.addFluid(
-                        builder,
-                        RecipeIngredientRole.OUTPUT,
-                        recipe.fluidOutput(),
-                        PrimitiveFluidSlotGeometry.PRESSING_OUTPUT);
-                break;
             case PIT_KILN, PIT_BURN:
                 {
                     addItemInputs(builder, recipe, this.layout.flow.itemInputs());
@@ -476,8 +467,7 @@ final class PrimitiveJeiCategory implements IRecipeCategory<PrimitiveRecipeView>
                 StoneMachineRecipeLayout.CRUCIBLE.flame().y()
         ),
         ANVIL(PrimitiveRecipeLayout.ANVIL),
-        GRINDING(PrimitiveRecipeLayout.GRINDING),
-        PRESSING(PrimitiveRecipeLayout.PRESSING);
+        GRINDING(PrimitiveRecipeLayout.GRINDING);
 
         final String texture;
         final int width;
