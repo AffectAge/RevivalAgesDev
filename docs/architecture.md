@@ -100,8 +100,9 @@ handlers subscribe to `NeoForge.EVENT_BUS` only when they need game events. Avoi
 scanning or global static initialization merely to make a class load.
 
 Registrations are always available and deterministic. Configuration changes
-control acquisition, visibility, and behavior, but never omit registry entries
+balance and presentation, but never disables content or omits registry entries,
 because registry sets must agree between server, client, saves, and data packs.
+All settings are assembled into `config/revivalages.toml`.
 
 ## Data ownership
 
@@ -164,14 +165,7 @@ viewer and probe APIs never enter the machine packages.
 
 Use [module-template.md](module-template.md) as the checklist and
 [content-availability.md](content-availability.md) as the mandatory availability
-contract. Add the feature to
-`ModFeatures` only after its entry point exists. Every feature family and every
-independently usable content unit has an enable setting. A disabled feature keeps
-all registry identities and saved state loadable while suppressing normal
-acquisition, creative visibility, world generation, recipe-viewer categories,
-and server-authoritative behavior.
-
-Settings that alter recipe availability or discovery surfaces are
-restart-required and must be evaluated on the server. Validate dependencies
-between enabled behaviors explicitly. Document and test both enabled and inert
-saved-content behavior for every toggle.
+contract. Add the feature to `ModFeatures` only after its entry point exists.
+Content policies classify ownership and dependencies, but every built-in content
+key is permanently enabled. Feature and machine enable switches are not part of
+the configuration contract.

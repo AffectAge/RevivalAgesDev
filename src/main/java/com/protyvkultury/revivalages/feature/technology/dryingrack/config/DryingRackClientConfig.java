@@ -1,17 +1,17 @@
 package com.protyvkultury.revivalages.feature.technology.dryingrack.config;
 
+import com.protyvkultury.revivalages.config.RevivalAgesConfig;
 import net.neoforged.neoforge.common.ModConfigSpec;
 
 public final class DryingRackClientConfig {
 
-    public static final ModConfigSpec SPEC;
     public static final ModConfigSpec.BooleanValue SHOW_PROGRESS_PARTICLES;
     public static final ModConfigSpec.BooleanValue SHOW_ITEM_PREVIEW;
     public static final ModConfigSpec.BooleanValue SHOW_ITEM_COUNTS;
     public static final ModConfigSpec.BooleanValue SHOW_INTERACTION_BOUNDS;
 
     static {
-        ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
+        ModConfigSpec.Builder builder = RevivalAgesConfig.builder();
         builder.push("dryingRack");
         SHOW_PROGRESS_PARTICLES = builder
                 .comment("Shows subtle happy-villager particles while a Drying Rack is making progress.")
@@ -26,9 +26,11 @@ public final class DryingRackClientConfig {
                 .comment("Shows a green outline around the selected Drying Rack interaction area.")
                 .define("showInteractionBounds", true);
         builder.pop();
-        SPEC = builder.build();
     }
 
     private DryingRackClientConfig() {
+    }
+
+    public static void bootstrap() {
     }
 }

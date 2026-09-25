@@ -9,11 +9,9 @@ Revival Ages' shared NeoForge core and used by the mechanisms.
 
 ## Progression chain
 
-The family and every independently usable machine or portable mechanism have
-default-enabled, restart-required server toggles in
-`revivalages-primitive-server.toml`. Effective availability, shared materials,
-data conditions, inert saved machines, and integration filtering follow
-[content-availability.md](content-availability.md).
+The family and every independently usable machine or portable mechanism are
+always available. Content ownership, shared materials, and compatibility data
+conditions follow [content-availability.md](content-availability.md).
 
 1. Dry wheat on a Crude Drying Rack to obtain straw.
 2. Craft straw into thatch and tinder.
@@ -25,7 +23,7 @@ data conditions, inert saved machines, and integration filtering follow
    structure, and ignite it. An active kiln maintains a real fire block above it.
    A broken structure receives a 100-tick recovery window before its contents
    fail. Rain can extinguish it and recipes may define failure products. When
-   Item Size is enabled, the effective input capacity is four items through the
+   Item Size applies an effective input capacity of four items through the
    configured batchable size and one larger item by default; existing inputs are
    preserved across reload.
 5. Fill a Barrel with water and leaves, close it with a Barrel Lid, and wait for
@@ -116,8 +114,8 @@ the configured healing, absorption, exhaustion, food, and experience bonuses.
 
 ## Server configuration
 
-The primitive technology configuration is written to
-`config/revivalages-primitive-server.toml`. It controls automation and progress
+Primitive Technology settings are written under `primitiveTechnology` in
+`config/revivalages.toml`. They control automation and progress
 particles, Campfire cooking, fuel, ash, rain, light, floor ignition, burn damage and all five
 effects, Chopping Block tier work/output/durability/exhaustion, Pit Kiln batch and
 rain behavior, Barrel capacity/rain/hot fluids, Soaking Pot batch, duration,
@@ -176,7 +174,7 @@ hunger blocks the action with feedback. Progress persists across reloads. Damage
 advances through four visible stages; final breakage preserves the workpiece.
 
 Drying Rack environment and seasonal balance remains in
-`config/revivalages-server.toml`. Every seasonal coefficient is configurable;
+`config/revivalages.toml`. Every seasonal coefficient is configurable;
 `enabled=false` forces a zero seasonal bonus. Ecliptic Seasons takes precedence
 when both supported season mods are installed, while all coefficients still come
 from Revival Ages configuration. New seasonal coefficients must never be fixed

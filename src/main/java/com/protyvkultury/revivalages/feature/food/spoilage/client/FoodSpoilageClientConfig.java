@@ -1,21 +1,23 @@
 package com.protyvkultury.revivalages.feature.food.spoilage.client;
 
+import com.protyvkultury.revivalages.config.RevivalAgesConfig;
 import net.neoforged.neoforge.common.ModConfigSpec;
 
 public final class FoodSpoilageClientConfig {
 
-    public static final ModConfigSpec SPEC;
     public static final ModConfigSpec.EnumValue<TooltipMode> TOOLTIP_MODE;
 
     static {
-        ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
+        ModConfigSpec.Builder builder = RevivalAgesConfig.builder();
         builder.push("foodSpoilage");
         TOOLTIP_MODE = builder.defineEnum("tooltipMode", TooltipMode.TIME_LEFT);
         builder.pop();
-        SPEC = builder.build();
     }
 
     private FoodSpoilageClientConfig() {
+    }
+
+    public static void bootstrap() {
     }
 
     public enum TooltipMode {

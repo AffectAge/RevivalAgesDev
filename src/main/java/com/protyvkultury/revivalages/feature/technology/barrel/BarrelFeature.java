@@ -91,14 +91,8 @@ public final class BarrelFeature implements FeatureModule {
     @Override
     public ContentPolicy contentPolicy() {
         return ContentPolicy.gameplay("barrel")
-                .define(
-                        ContentKey.BARREL,
-                        () -> PrimitiveTechnologyConfig.contentEnabled(ContentKey.BARREL)
-                )
-                .define(
-                        ContentKey.STORAGE_BARREL,
-                        () -> PrimitiveTechnologyConfig.contentEnabled(ContentKey.STORAGE_BARREL)
-                )
+                .define(ContentKey.BARREL)
+                .define(ContentKey.STORAGE_BARREL)
                 .items(ContentKey.BARREL, "barrel", "barrel_lid")
                 .items(ContentKey.STORAGE_BARREL, "storage_barrel")
                 .build();

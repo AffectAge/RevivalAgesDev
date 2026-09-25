@@ -67,10 +67,7 @@ public final class ChoppingBlockFeature implements FeatureModule {
     @Override
     public ContentPolicy contentPolicy() {
         return ContentPolicy.gameplay("chopping_block")
-                .define(
-                        ContentKey.CHOPPING_BLOCK,
-                        () -> PrimitiveTechnologyConfig.contentEnabled(ContentKey.CHOPPING_BLOCK)
-                )
+                .define(ContentKey.CHOPPING_BLOCK)
                 .items(ContentKey.CHOPPING_BLOCK, "chopping_block")
                 .build();
     }

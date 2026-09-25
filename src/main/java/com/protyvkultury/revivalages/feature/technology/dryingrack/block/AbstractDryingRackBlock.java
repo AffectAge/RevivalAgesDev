@@ -3,11 +3,9 @@ package com.protyvkultury.revivalages.feature.technology.dryingrack.block;
 import com.protyvkultury.revivalages.feature.technology.dryingrack.blockentity.DryingRackBlockEntity;
 import com.mojang.serialization.MapCodec;
 import com.protyvkultury.revivalages.core.interaction.ItemStackInteraction;
-import com.protyvkultury.revivalages.feature.content.ContentAvailability;
 import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
@@ -50,12 +48,6 @@ public abstract class AbstractDryingRackBlock extends BaseEntityBlock {
         if (!(level.getBlockEntity(pos) instanceof DryingRackBlockEntity rack)) {
             return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         }
-        if (!ContentAvailability.isEnabled(rack.contentKey())) {
-            if (!level.isClientSide) {
-                player.displayClientMessage(Component.translatable("message.revivalages.content_disabled"), true);
-            }
-            return ItemInteractionResult.CONSUME;
-        }
         if (!isInteractionFaceAllowed(state, hitResult.getDirection())) {
             return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         }
@@ -83,12 +75,6 @@ public abstract class AbstractDryingRackBlock extends BaseEntityBlock {
     ) {
         if (!(level.getBlockEntity(pos) instanceof DryingRackBlockEntity rack)) {
             return InteractionResult.PASS;
-        }
-        if (!ContentAvailability.isEnabled(rack.contentKey())) {
-            if (!level.isClientSide) {
-                player.displayClientMessage(Component.translatable("message.revivalages.content_disabled"), true);
-            }
-            return InteractionResult.CONSUME;
         }
         if (!isInteractionFaceAllowed(state, hitResult.getDirection())) {
             return InteractionResult.PASS;

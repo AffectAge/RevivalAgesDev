@@ -11,9 +11,8 @@ Create `feature/<feature_name>` and add only the subpackages the feature uses.
 - Register game-bus listeners only for actual runtime events.
 - Put physical-client implementation under `client`.
 - Put optional-mod adapters under `integration`, not in the feature core.
-- Add a restart-required startup content toggle before wiring the feature's
-  deferred registers. Independently usable machines and content units also need
-  individual toggles.
+- Add the feature to the permanent content catalog; do not add family, machine,
+  block, item, or gameplay-system enable switches.
 - Put every gameplay-significant timing, capacity, range, damage, durability,
   chance, multiplier, limit, environmental modifier, and automation policy in
   the appropriate mod configuration with validated bounds and documented defaults.
@@ -26,13 +25,9 @@ Create `feature/<feature_name>` and add only the subpackages the feature uses.
 - Define payload direction, validation, size limits, and handler thread for every
   network message.
 - Do not add or modify automated tests unless the user explicitly requests test
-  work. Disabled content must leave no exclusive registry, data, creative-tab,
-  networking, worldgen, or integration contribution.
-- Add universal content conditions to every acquisition resource and gate shared
-  recipe types with `any_content_enabled`.
-- Prove that disabled block entities retain inventory/fluid state, expose no
-  capability, perform no tick work, reject payloads/interactions, and drop one
-  restorable state-carrying block item.
+  work.
+- Keep legacy content conditions only where compatibility with existing data
+  requires them; they must not expose a configuration-backed content switch.
 - Run client, dedicated-server, datagen, and build verification only when the
   user requests it or the task is a release/handoff.
 

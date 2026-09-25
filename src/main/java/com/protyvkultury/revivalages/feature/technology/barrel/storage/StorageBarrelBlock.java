@@ -1,13 +1,10 @@
 package com.protyvkultury.revivalages.feature.technology.barrel.storage;
 
 import com.mojang.serialization.MapCodec;
-import com.protyvkultury.revivalages.feature.content.ContentAvailability;
-import com.protyvkultury.revivalages.feature.content.ContentKey;
 import com.protyvkultury.revivalages.feature.technology.barrel.BarrelFeature;
 import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
@@ -57,12 +54,6 @@ public final class StorageBarrelBlock extends BaseEntityBlock {
             ItemStack stack, BlockState state, Level level, BlockPos pos, Player player,
             InteractionHand hand, BlockHitResult hit
     ) {
-        if (!ContentAvailability.isEnabled(ContentKey.STORAGE_BARREL)) {
-            if (!level.isClientSide) {
-                player.displayClientMessage(Component.translatable("message.revivalages.content_disabled"), true);
-            }
-            return ItemInteractionResult.CONSUME;
-        }
         if (!(level.getBlockEntity(pos) instanceof StorageBarrelBlockEntity barrel)) {
             return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         }
@@ -85,8 +76,7 @@ public final class StorageBarrelBlock extends BaseEntityBlock {
     protected InteractionResult useWithoutItem(
             BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit
     ) {
-        if (!ContentAvailability.isEnabled(ContentKey.STORAGE_BARREL)
-                || !(level.getBlockEntity(pos) instanceof StorageBarrelBlockEntity barrel)) {
+        if (!(level.getBlockEntity(pos) instanceof StorageBarrelBlockEntity barrel)) {
             return InteractionResult.CONSUME;
         }
         if (state.getValue(SEALED)) {

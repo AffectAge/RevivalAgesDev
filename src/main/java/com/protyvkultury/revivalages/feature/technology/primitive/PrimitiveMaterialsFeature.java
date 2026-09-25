@@ -7,8 +7,6 @@ import com.protyvkultury.revivalages.feature.content.ContentKey;
 import com.protyvkultury.revivalages.feature.content.ContentPolicy;
 import com.protyvkultury.revivalages.feature.technology.primitive.client.PrimitiveFluidClientEvents;
 import com.protyvkultury.revivalages.feature.technology.primitive.client.PrimitiveDeviceClientEvents;
-import com.protyvkultury.revivalages.feature.technology.primitive.config.PrimitiveTechnologyConfig;
-import com.protyvkultury.revivalages.feature.technology.primitive.config.PrimitiveTechnologyClientConfig;
 import java.util.function.Supplier;
 import java.util.Set;
 import net.minecraft.core.registries.Registries;
@@ -26,7 +24,6 @@ import net.minecraft.world.level.material.Fluid;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
-import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
@@ -134,14 +131,8 @@ public final class PrimitiveMaterialsFeature implements FeatureModule {
                 ContentKey.TANNING_RACK
         );
         return ContentPolicy.gameplay("primitive_materials")
-                .define(
-                        ContentKey.PRIMITIVE_TECHNOLOGY,
-                        () -> PrimitiveTechnologyConfig.contentEnabled(ContentKey.PRIMITIVE_TECHNOLOGY)
-                )
-                .define(
-                        ContentKey.RAW_HIDE_DROPS,
-                        () -> PrimitiveTechnologyConfig.contentEnabled(ContentKey.RAW_HIDE_DROPS)
-                )
+                .define(ContentKey.PRIMITIVE_TECHNOLOGY)
+                .define(ContentKey.RAW_HIDE_DROPS)
                 .sharedItems(
                         Set.of(
                                 ContentKey.CRUDE_DRYING_RACK,
@@ -182,16 +173,6 @@ public final class PrimitiveMaterialsFeature implements FeatureModule {
             PrimitiveFluidClientEvents.register(modBus);
             PrimitiveDeviceClientEvents.register(modBus);
         }
-        modContainer.registerConfig(
-                ModConfig.Type.SERVER,
-                PrimitiveTechnologyConfig.SPEC,
-                "revivalages-primitive-server.toml"
-        );
-        modContainer.registerConfig(
-                ModConfig.Type.CLIENT,
-                PrimitiveTechnologyClientConfig.SPEC,
-                "revivalages-primitive-client.toml"
-        );
     }
 
     private void registerCapabilities(RegisterCapabilitiesEvent event) {

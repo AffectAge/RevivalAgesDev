@@ -1,11 +1,10 @@
 package com.protyvkultury.revivalages.feature.food.spoilage;
 
+import com.protyvkultury.revivalages.config.RevivalAgesConfig;
 import net.neoforged.neoforge.common.ModConfigSpec;
 
 public final class FoodSpoilageConfig {
 
-    public static final ModConfigSpec SPEC;
-    public static final ModConfigSpec.BooleanValue ENABLED;
     public static final ModConfigSpec.LongValue BASE_LIFETIME_TICKS;
     public static final ModConfigSpec.DoubleValue GLOBAL_DECAY_MULTIPLIER;
     public static final ModConfigSpec.LongValue STACKING_WINDOW_TICKS;
@@ -16,11 +15,8 @@ public final class FoodSpoilageConfig {
     public static final ModConfigSpec.IntValue MAXIMUM_CONTAINER_DEPTH;
 
     static {
-        ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
+        ModConfigSpec.Builder builder = RevivalAgesConfig.builder();
         builder.push("foodSpoilage");
-        ENABLED = builder
-                .comment("Enables the independent food spoilage clock and food decay.")
-                .define("enabled", true);
         BASE_LIFETIME_TICKS = builder
                 .comment("Base lifetime before an item's decay modifier is applied.")
                 .defineInRange("baseLifetimeTicks", 22L * 28_800L, 1L, Long.MAX_VALUE);
@@ -46,13 +42,15 @@ public final class FoodSpoilageConfig {
                 .comment("Maximum portable-container nesting depth examined for spoilage.")
                 .defineInRange("maximumContainerDepth", 8, 0, 32);
         builder.pop();
-        SPEC = builder.build();
     }
 
     private FoodSpoilageConfig() {
     }
 
     public static boolean configuredEnabled() {
-        return SPEC.isLoaded() ? ENABLED.get() : ENABLED.getDefault();
+        return true;
+    }
+
+    public static void bootstrap() {
     }
 }

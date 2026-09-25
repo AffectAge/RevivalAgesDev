@@ -13,11 +13,9 @@ depend on it.
   machine-specific paths, no network calls, and no random unseeded values.
 - Providers may be split by feature, but one composition class registers them so
   none silently disappear.
-- Datagen must not read a local content-toggle value to change registry identity
-  or make generated output machine-dependent. Generate the resources needed to
-  load registered content safely, and encode supported load conditions or
-  feature-owned filtering metadata for recipes, loot, worldgen, and other normal
-  acquisition paths that must be inactive when content is disabled.
+- Datagen must not read local configuration to change registry identity or make
+  generated output machine-dependent. Generate every resource needed for the
+  permanently available content catalog.
 - Keep `ContentAvailabilityDataProvider` exhaustive. It must validate every
   conditioned acquisition resource and worldgen contribution against
   `ContentKey`, and its deterministic manifest must make newly ungated data fail

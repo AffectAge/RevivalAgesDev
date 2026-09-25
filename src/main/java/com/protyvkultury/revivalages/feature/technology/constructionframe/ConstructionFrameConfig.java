@@ -1,5 +1,6 @@
 package com.protyvkultury.revivalages.feature.technology.constructionframe;
 
+import com.protyvkultury.revivalages.config.RevivalAgesConfig;
 import com.protyvkultury.revivalages.feature.content.ContentAvailability;
 import com.protyvkultury.revivalages.feature.content.ContentKey;
 import net.neoforged.neoforge.common.ModConfigSpec;
@@ -7,22 +8,15 @@ import net.neoforged.neoforge.common.ModConfigSpec;
 /** Server-owned availability and balance settings for frame assembly. */
 public final class ConstructionFrameConfig {
 
-    public static final ModConfigSpec SPEC;
-    public static final ModConfigSpec.BooleanValue ENABLED;
     public static final ModConfigSpec.IntValue TOOL_DURABILITY_COST;
 
     static {
-        ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
+        ModConfigSpec.Builder builder = RevivalAgesConfig.builder();
         builder.push("constructionFrame");
-        ENABLED = builder
-                .comment("Enables Construction Frame acquisition, frame assembly recipes, and interaction.",
-                        "Changing this value requires a server restart so recipes can be rebuilt safely.")
-                .define("enabled", true);
         TOOL_DURABILITY_COST = builder
                 .comment("Durability consumed from the assembly tool after a successful assembly.")
                 .defineInRange("toolDurabilityCost", 1, 0, 1024);
         builder.pop();
-        SPEC = builder.build();
     }
 
     private ConstructionFrameConfig() {
@@ -32,11 +26,10 @@ public final class ConstructionFrameConfig {
         return ContentAvailability.isEnabled(ContentKey.CONSTRUCTION_FRAME);
     }
 
-    public static boolean configuredEnabled() {
-        return SPEC.isLoaded() ? ENABLED.get() : ENABLED.getDefault();
+    public static int toolDurabilityCost() {
+        return RevivalAgesConfig.isLoaded() ? TOOL_DURABILITY_COST.get() : TOOL_DURABILITY_COST.getDefault();
     }
 
-    public static int toolDurabilityCost() {
-        return SPEC.isLoaded() ? TOOL_DURABILITY_COST.get() : TOOL_DURABILITY_COST.getDefault();
+    public static void bootstrap() {
     }
 }

@@ -29,15 +29,10 @@ architecture.
   it.
 - Cross-feature access to another feature's `internal`, registry implementation,
   block entity fields, or event handlers is prohibited.
-- Give every feature family and every independently usable public machine or
-  content unit a server configuration toggle that defaults to enabled.
-- Feature modules always attach all of their deferred registers, payload
-  registrations, and stable prerequisites. Never conditionally register content
-  from a toggle. Apply disabled state to creative-tab visibility, recipes, loot,
-  worldgen, integrations, automation, and server-authoritative gameplay behavior.
-- Validate dependencies between enabled behaviors explicitly. Disabled placed
-  content remains loadable and inert, preserves state, reports that it is
-  disabled when used, and never deletes stored items or fluids.
+- Feature modules always attach all deferred registers, payload registrations,
+  stable prerequisites, acquisition data, integrations, and server-authoritative
+  behavior. Do not add configuration switches that disable a feature family,
+  public machine, content unit, or gameplay system.
 - A new feature must include its resource/datagen plan in the same change. Do not
   add or modify automated tests unless the user explicitly requests test work in
   the current task. A Java-only content feature is incomplete.
@@ -73,8 +68,7 @@ architecture.
 - Register public content normally and rely on the central registry-driven,
   progression-ordered Revival Ages creative tab. Add established content to its
   one centralized progression list; do not maintain a second list in a feature.
-  Its registry-ID fallback must continue to expose unlisted enabled public items
-  while content disabled by server configuration remains hidden.
+  Its registry-ID fallback must continue to expose unlisted public items.
 - Surface rocks and sticks follow the designated reference's parity rules. Audit
   variants, waterlogging, support loss, replacement, shapes, creative cycling,
   loot, splitter recipes, models, rotations, biome filtering, generation density,

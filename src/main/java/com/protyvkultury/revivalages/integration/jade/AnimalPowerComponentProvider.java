@@ -20,9 +20,6 @@ public enum AnimalPowerComponentProvider implements IBlockComponentProvider {
 
     @Override
     public void appendTooltip(ITooltip tooltip, BlockAccessor accessor, IPluginConfig config) {
-        if (DisabledContentComponentProvider.isDisabled(accessor)) {
-            return;
-        }
         BlockEntity blockEntity = accessor.getBlockEntity();
         if (blockEntity instanceof HandGrindstoneBlockEntity hand) {
             appendItemProgress(tooltip, hand.item(0), hand.recipeOutput(), hand.progress());

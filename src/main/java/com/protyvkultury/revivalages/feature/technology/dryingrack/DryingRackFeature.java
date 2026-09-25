@@ -11,7 +11,6 @@ import com.protyvkultury.revivalages.feature.technology.dryingrack.block.DryingR
 import com.protyvkultury.revivalages.feature.technology.dryingrack.blockentity.DryingRackBlockEntity;
 import com.protyvkultury.revivalages.feature.technology.dryingrack.client.DryingRackClientEvents;
 import com.protyvkultury.revivalages.feature.technology.dryingrack.config.DryingRackConfig;
-import com.protyvkultury.revivalages.feature.technology.dryingrack.config.DryingRackClientConfig;
 import com.protyvkultury.revivalages.feature.technology.dryingrack.environment.DryingRackDataMaps;
 import com.protyvkultury.revivalages.feature.technology.dryingrack.recipe.DryingRecipe;
 import com.protyvkultury.revivalages.feature.technology.dryingrack.recipe.DryingRecipeSerializer;
@@ -28,7 +27,6 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
-import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.neoforge.capabilities.Capabilities;
@@ -118,14 +116,8 @@ public final class DryingRackFeature implements FeatureModule {
     @Override
     public ContentPolicy contentPolicy() {
         return ContentPolicy.gameplay("drying_rack")
-                .define(
-                        ContentKey.CRUDE_DRYING_RACK,
-                        () -> PrimitiveTechnologyConfig.contentEnabled(ContentKey.CRUDE_DRYING_RACK)
-                )
-                .define(
-                        ContentKey.DRYING_RACK,
-                        () -> PrimitiveTechnologyConfig.contentEnabled(ContentKey.DRYING_RACK)
-                )
+                .define(ContentKey.CRUDE_DRYING_RACK)
+                .define(ContentKey.DRYING_RACK)
                 .items(ContentKey.CRUDE_DRYING_RACK, "crude_drying_rack")
                 .items(ContentKey.DRYING_RACK, "drying_rack")
                 .build();
@@ -144,8 +136,6 @@ public final class DryingRackFeature implements FeatureModule {
         if (FMLEnvironment.dist == Dist.CLIENT) {
             DryingRackClientEvents.register(modBus);
         }
-        modContainer.registerConfig(ModConfig.Type.SERVER, DryingRackConfig.SPEC, "revivalages-server.toml");
-        modContainer.registerConfig(ModConfig.Type.CLIENT, DryingRackClientConfig.SPEC, "revivalages-client.toml");
     }
 
     private void registerDataMaps(RegisterDataMapTypesEvent event) {

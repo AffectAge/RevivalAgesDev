@@ -1,11 +1,10 @@
 package com.protyvkultury.revivalages.feature.player.diet;
 
+import com.protyvkultury.revivalages.config.RevivalAgesConfig;
 import net.neoforged.neoforge.common.ModConfigSpec;
 
 public final class DietConfig {
 
-    public static final ModConfigSpec SPEC;
-    public static final ModConfigSpec.BooleanValue ENABLED;
     public static final ModConfigSpec.DoubleValue STARTING_VALUE;
     public static final ModConfigSpec.DoubleValue NUTRITION_MULTIPLIER;
     public static final ModConfigSpec.DoubleValue MILK_NUTRITION;
@@ -23,11 +22,8 @@ public final class DietConfig {
     public static final ModConfigSpec.DoubleValue TOUGHNESS_MINIMUM;
 
     static {
-        ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
+        ModConfigSpec.Builder builder = RevivalAgesConfig.builder();
         builder.push("diet");
-        ENABLED = builder
-                .comment("Enables diet tracking, effects, tooltips, and the diet screen.")
-                .define("enabled", true);
         STARTING_VALUE = value(builder, "startingValue", 50.0D, 0.0D, 100.0D);
         NUTRITION_MULTIPLIER = value(builder, "nutritionMultiplier", 0.5D, 0.0D, 100.0D);
         MILK_NUTRITION = value(builder, "milkNutrition", 1.0D, 0.0D, 100.0D);
@@ -48,14 +44,16 @@ public final class DietConfig {
         STRENGTH_MINIMUM = value(builder, "effects.strengthMinimum", 90.0D, 0.0D, 100.0D);
         TOUGHNESS_MINIMUM = value(builder, "effects.toughnessMinimum", 90.0D, 0.0D, 100.0D);
         builder.pop();
-        SPEC = builder.build();
     }
 
     private DietConfig() {
     }
 
     public static boolean configuredEnabled() {
-        return SPEC.isLoaded() ? ENABLED.get() : ENABLED.getDefault();
+        return true;
+    }
+
+    public static void bootstrap() {
     }
 
     private static ModConfigSpec.DoubleValue value(

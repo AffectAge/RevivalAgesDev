@@ -103,34 +103,27 @@ license and attribution.
 
 ## Configuration
 
+- Register exactly one configuration file, `config/revivalages.toml`. Server
+  balance and client presentation settings use distinct sections in that file;
+  features must not register additional config specs or filenames.
 - Every gameplay-significant value must be exposed through the appropriate
   Revival Ages configuration instead of being fixed in Java. This includes
   timings, capacities, ranges, damage, durability, chances, multipliers, limits,
   environmental modifiers, automation policy, and feature-specific balance.
-- Every independently usable content feature or machine must have a server
-  configuration toggle that defaults to enabled. Content toggles may require a
-  restart, but must never change the registry set.
+- Do not add configuration switches that disable a block, item, machine, feature
+  family, or gameplay system. Revival Ages content is always available. Boolean
+  settings may control presentation or a narrow behavior option, but must not
+  remove the owning content or its core gameplay loop.
 - Every `FeatureModule` must declare a `ContentPolicy`. Gameplay policies define
-  stable content keys, parents, configured suppliers, and every public item/block
-  membership. `core` and `creative_tab` are the only infrastructure policies.
+  stable content keys, parents, and every public item/block membership. `core`
+  and `creative_tab` are the only infrastructure policies.
   Missing, duplicate, cyclic, or unclassified declarations are build/startup
   failures, never review-only findings.
 - Register every public block, item, block entity, menu, recipe type, serializer,
-  payload type, and other registry object unconditionally. Disabled content must
-  be hidden from creative tabs and normal acquisition, contribute no enabled
-  crafting or processing recipes, loot, world generation, or optional-integration
-  displays, and perform no gameplay behavior.
-- Existing disabled blocks and items must load and preserve all serialized state.
-  Placed machines remain inert, return a clear server-authoritative disabled
-  message when used, and can be retained or removed without item loss. Disabling
-  content must not create missing mappings or corrupt existing worlds.
-- Group toggles may disable a complete feature family, but each public machine or
-  independent content unit must also be individually controllable. Dependencies
-  between toggles must be explicit, validated, and reported; never silently
-  re-enable disabled content.
-- Apply content toggles through server-authoritative behavior checks and supported
-  data load conditions or provider filtering. Never leave unresolved recipes,
-  tags, loot, worldgen references, creative-tab entries, or integration entries.
+  payload type, and other registry object unconditionally and keep its normal
+  acquisition, creative visibility, data, integrations, and gameplay behavior
+  available. Legacy content-condition codecs may remain for data-pack
+  compatibility, but built-in policies must resolve every content key as enabled.
 
 ## Repository hygiene
 
@@ -199,12 +192,12 @@ license and attribution.
   Do not replace these contracts with decorative blocks or fluid-specific item
   lists.
 - The Revival Ages creative tab is registry-driven and progression-ordered like
-  the designated reference's tab. Every new enabled public registered item must
+  the designated reference's tab. Every new public registered item must
   appear automatically. Add
   known content to the centralized progression order; retain deterministic
-  registry-ID fallback ordering so an omitted enabled entry remains visible.
-  Disabled content must remain hidden. Internal state blocks must not receive
-  artificial BlockItems merely to expose them.
+  registry-ID fallback ordering so an omitted public entry remains visible.
+  Internal state blocks must not receive artificial BlockItems merely to expose
+  them.
 - For reference-derived surface deposits, parity includes every visual variant
   and weighted random state, placement and support rules, waterlogging, collision
   and selection shapes, creative variation cycling, drops, splitter recombination,
@@ -236,7 +229,7 @@ regressions unless the user specifically asks for them.
 Use the smallest relevant non-test check requested by the user or required to
 perform the requested change. `compileJava` is appropriate for Java changes and
 `runData` is appropriate for data-provider changes. Run `build`, `runServer`,
-client launches, optional-mod matrix checks, and content-toggle profiles only
+client launches and optional-mod matrix checks only
 when the user explicitly requests those checks or the task is a release/handoff.
 Never describe an unrun check as passed.
 
@@ -248,7 +241,7 @@ failure as expected behavior.
 
 A feature is complete when its requested registration, server-authoritative
 behavior, client presentation, resources/datagen, translations, recipes/tags/loot,
-configuration, content toggles, migration compatibility, and documentation are
+configuration, migration compatibility, and documentation are
 addressed. Automated tests are included only when the user explicitly requested
 them. The feature's integration assessment for the required compatibility list
 must also be complete. Update architecture documentation when a package boundary

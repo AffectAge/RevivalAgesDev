@@ -21,7 +21,6 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
-import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -61,10 +60,7 @@ public final class AnimalPowerFeature implements FeatureModule {
     @Override
     public ContentPolicy contentPolicy() {
         return ContentPolicy.gameplay("hand_grinding")
-                .define(
-                        ContentKey.HAND_GRINDSTONE,
-                        () -> AnimalPowerConfig.contentEnabled(ContentKey.HAND_GRINDSTONE)
-                )
+                .define(ContentKey.HAND_GRINDSTONE)
                 .items(ContentKey.HAND_GRINDSTONE, "hand_grindstone")
                 .build();
     }
@@ -76,11 +72,6 @@ public final class AnimalPowerFeature implements FeatureModule {
         BLOCK_ENTITIES.register(modBus);
         RECIPE_TYPES.register(modBus);
         RECIPE_SERIALIZERS.register(modBus);
-        modContainer.registerConfig(
-                ModConfig.Type.SERVER,
-                AnimalPowerConfig.SPEC,
-                "revivalages-animal-power-server.toml"
-        );
         if (FMLEnvironment.dist == Dist.CLIENT) {
             AnimalPowerClientEvents.register(modBus);
         }

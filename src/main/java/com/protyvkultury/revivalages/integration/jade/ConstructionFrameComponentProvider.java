@@ -21,9 +21,6 @@ public enum ConstructionFrameComponentProvider implements IBlockComponentProvide
 
     @Override
     public void appendTooltip(ITooltip tooltip, BlockAccessor accessor, IPluginConfig config) {
-        if (DisabledContentComponentProvider.isDisabled(accessor)) {
-            return;
-        }
         if (!(accessor.getBlockEntity() instanceof ConstructionFrameBlockEntity frame)) {
             return;
         }

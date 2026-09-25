@@ -4,10 +4,10 @@ The Storage Barrel is a general-purpose item container separate from the
 processing Barrel. It accepts arbitrary item stacks while open and applies the
 existing `revivalages:preserved` food trait while sealed.
 
-The server configuration controls its enabled state, slot capacity, automation,
-and expired-food materialization interval. Slot capacity is rounded down to a
-complete row of nine and requires a restart. All registry objects remain present
-when disabled.
+The `primitiveTechnology.storageBarrel` section of `config/revivalages.toml`
+controls slot capacity, automation, and the expired-food materialization
+interval. Slot capacity is rounded down to a complete row of nine and requires a
+restart. The Storage Barrel itself is always available.
 
 Sealing requires a Barrel Lid on the top face. A sealed barrel blocks its menu
 and all item capability operations, including capability objects obtained before

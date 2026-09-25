@@ -2,8 +2,8 @@
 
 `ProcessRule` is the shared runtime and presentation contract for conditions
 that affect an in-progress machine operation. It deliberately does not model
-inputs, output capacity, disabled content, or automation permissions: those are
-runtime blockers rather than permanent recipe prerequisites.
+inputs, output capacity, or automation permissions: those are runtime blockers
+rather than permanent recipe prerequisites.
 
 Each rule has one of three kinds:
 

@@ -1,8 +1,7 @@
 # Drying Rack
 
-Crude and normal racks have independent restart-required content toggles under
-the Primitive Technology family and follow the shared
-[content availability contract](content-availability.md).
+Crude and normal racks are always available under the Primitive Technology
+family and follow the shared [content availability contract](content-availability.md).
 
 The Drying Rack is a server-authoritative, no-menu processing feature. A Crude
 Drying Rack has one wall-mounted slot. A normal
@@ -31,15 +30,15 @@ Drying Rack has four independent slots, inherits crude recipes, processes at a
   previewed translucently in an empty selected slot. Both forms of feedback have
   independent client toggles.
 - A subtle progress particle appears only while at least one valid recipe is
-  advancing. It can be disabled in `revivalages-client.toml` with
+  advancing. It can be disabled in `config/revivalages.toml` with
   `dryingRack.showProgressParticles=false`.
 
 The crude rack deliberately requires a sturdy wall and breaks when that support
 is lost. This is an intentional safety improvement over the designated
 behavioral source. Normal-rack climbing deliberately applies to every
 `LivingEntity`, not only players. Optional item-handler automation is also a
-Revival Ages extension and remains disabled by default. A disabled rack refuses
-new manual and automated insertion while preserving existing contents.
+Revival Ages extension and remains disabled by default. Turning automation off
+does not affect manual interaction or existing contents.
 
 ## Recipe duration and environment
 
@@ -68,7 +67,7 @@ campfire blocks.
 
 ## Seasonal configuration
 
-All seasonal balance is read from `revivalages-server.toml`:
+All seasonal balance is read from `config/revivalages.toml`:
 
 ```toml
 [dryingRack.seasons]

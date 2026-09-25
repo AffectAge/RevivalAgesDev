@@ -17,7 +17,7 @@ entire call path before implementing a local fix.
 
 ## Stateful blocks
 
-- Verify open, sealed, disabled, active, complete, invalid, rain-exposed, and
+- Verify open, sealed, automation-blocked, active, complete, invalid, rain-exposed, and
   unloaded/reloaded states.
 - Block both manual and cached capability access when a state forbids access.
 - Preserve contents during reload and configuration changes.
