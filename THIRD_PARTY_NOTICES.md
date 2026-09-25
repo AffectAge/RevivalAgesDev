@@ -195,9 +195,9 @@ texture and reproduce the functional five-stage placement around and above the
 block.
 
 The granite Anvil geometry from
-`assets/pyrotech/models/block/anvil.json` informed
-`assets/revivalages/models/block/anvil.json`, which is simplified to one slab
-with damage confined to its top face. The Chopping Block's previously adapted
+`assets/pyrotech/models/block/anvil.json` is adapted at
+`assets/revivalages/models/block/anvil.json` as one model containing both slabs,
+with damage confined to the upper face. The Chopping Block's previously adapted
 `chopping_block_core.json` geometry was extended into a single slab in place of
 the separate `chopping_block_bark_[a-f].json` parts. Its upper face shows the
 damage stages, and its item models use the same slab. These adaptations use the

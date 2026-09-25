@@ -43,12 +43,12 @@ public final class AnimalPowerRenderers {
             renderPart("hand_grindstone_rotor", grindstone, pose, buffers, light, overlay);
             pose.popPose();
 
-            ItemStack display = grindstone.item(0).isEmpty() ? grindstone.item(1) : grindstone.item(0);
+            ItemStack display = grindstone.displayItem();
             if (display.isEmpty()) {
                 return;
             }
             pose.pushPose();
-            pose.translate(0.5D, 0.88D, 0.5D);
+            pose.translate(0.5D, 0.65D, 0.5D);
             pose.mulPose(Axis.YP.rotationDegrees(grindstone.rotation(partialTick) * 360.0F));
             pose.mulPose(Axis.XP.rotationDegrees(90.0F));
             pose.scale(0.45F, 0.45F, 0.45F);

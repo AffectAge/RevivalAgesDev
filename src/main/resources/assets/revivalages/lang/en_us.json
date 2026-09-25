@@ -142,6 +142,8 @@
   "jade.revivalages.campfire.ash": "Ash: %s/%s",
   "jade.revivalages.campfire.burn_time": "Fuel time: %s",
   "jade.revivalages.chopping.damage": "Block damage: %s/%s",
+  "jade.revivalages.chopping.remaining_chops": "Chops left before breaking: %s",
+  "jade.revivalages.chopping.unlimited": "Chops left before breaking: Unlimited",
   "jade.revivalages.chopping.chips": "Wood chips: %s",
   "jade.revivalages.pit_kiln.stage": "Stage: %s",
   "jade.revivalages.pit_kiln.stage.empty": "Input",
@@ -216,6 +218,7 @@
   ,"jade.revivalages.stone_machine.airflow": "Airflow bonus: +%s"
   ,"jade.revivalages.anvil.damage": "Anvil damage: %s/4"
   ,"jade.revivalages.anvil.hits": "Progress: %s/%s hits"
+  ,"jade.revivalages.anvil.remaining_hits": "Hits left before breaking: %s"
   ,"message.revivalages.anvil.not_enough_hunger": "You are too hungry to use the anvil"
   ,"gui.revivalages.recipe.tool.hammer": "Tool: Hammer"
   ,"gui.revivalages.recipe.tool.pickaxe": "Tool: Pickaxe"

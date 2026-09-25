@@ -25,6 +25,7 @@ public enum AnvilComponentProvider implements IBlockComponentProvider {
         if (!(accessor.getBlockEntity() instanceof AnvilBlockEntity anvil)) {
             return;
         }
+        tooltip.add(Component.translatable("jade.revivalages.anvil.remaining_hits", anvil.remainingHits()));
         if (anvil.input().isEmpty()) {
             return;
         }

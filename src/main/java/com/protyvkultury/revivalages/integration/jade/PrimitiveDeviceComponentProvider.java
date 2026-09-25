@@ -78,6 +78,10 @@ public enum PrimitiveDeviceComponentProvider implements IBlockComponentProvider 
     private static void appendChopping(ITooltip tooltip, BlockAccessor accessor, ChoppingBlockEntity chopping) {
         appendItemProgress(tooltip, chopping.input(), chopping.recipeOutput(), chopping.progress());
         tooltip.add(Component.translatable("jade.revivalages.chopping.damage", accessor.getBlockState().getValue(ChoppingBlock.DAMAGE), 5));
+        long remainingChops = chopping.remainingChops();
+        tooltip.add(remainingChops < 0
+                ? Component.translatable("jade.revivalages.chopping.unlimited")
+                : Component.translatable("jade.revivalages.chopping.remaining_chops", remainingChops));
         tooltip.add(Component.translatable("jade.revivalages.chopping.chips", chopping.sawdust()));
         if (!chopping.output().isEmpty()) {
             tooltip.add(Component.translatable("jade.revivalages.primitive.ready_item", chopping.output().getHoverName()));

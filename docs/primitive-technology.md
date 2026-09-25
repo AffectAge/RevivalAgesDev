@@ -18,7 +18,8 @@ conditions follow [content-availability.md](content-availability.md).
 3. Hunt animals in the `revivalages:drops_raw_hide` entity-type tag to obtain raw
    hide, then use a Chopping Block with an axe to process logs and scrape it. Tool tier
    changes required chops and output; work consumes exhaustion, tool durability,
-   and can produce removable wood chips.
+   and can produce removable wood chips. Completed recipe outputs drop above the
+   block.
 4. Load a Pit Kiln, cover it with thatch, add three logs, validate its surrounding
    structure, and ignite it. An active kiln maintains a real fire block above it.
    A broken structure receives a 100-tick recovery window before its contents
@@ -49,7 +50,8 @@ conditions follow [content-availability.md](content-availability.md).
    synchronized process state, airflow input, and output-blocking behavior.
 9. Use the in-world Anvil with a tagged hammer or pickaxe. Each recipe specifies
    the tool family and hit count; work consumes hunger and tool durability and
-   eventually damages the granite anvil itself.
+   eventually damages the granite anvil itself. Completed recipe outputs drop
+   above the block.
 10. Compress nine logs into a Log Pile, completely enclose one or more connected
     piles with solid nonflammable blocks, and ignite them. Each pile becomes an
     Active Pile, produces one staged Pit Burn result at a time, and ends as an Ash

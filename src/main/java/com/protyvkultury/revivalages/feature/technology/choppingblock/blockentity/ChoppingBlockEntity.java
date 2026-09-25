@@ -1,6 +1,7 @@
 package com.protyvkultury.revivalages.feature.technology.choppingblock.blockentity;
 
 import com.protyvkultury.revivalages.api.food.FoodFreshnessApi;
+import com.protyvkultury.revivalages.core.item.RecipeOutputDrops;
 import com.protyvkultury.revivalages.feature.technology.choppingblock.ChoppingBlockFeature;
 import com.protyvkultury.revivalages.feature.technology.choppingblock.block.ChoppingBlock;
 import com.protyvkultury.revivalages.feature.technology.choppingblock.recipe.ChoppingRecipe;
@@ -59,6 +60,15 @@ public final class ChoppingBlockEntity extends BlockEntity {
 
     public int sawdust() {
         return sawdust;
+    }
+
+    public long remainingChops() {
+        if (!PrimitiveTechnologyConfig.CHOPPING_USES_DURABILITY.get()) {
+            return -1L;
+        }
+        int damage = getBlockState().getValue(ChoppingBlock.DAMAGE);
+        return Math.max(1, durabilityUntilDamage)
+                + (long) (5 - damage) * PrimitiveTechnologyConfig.CHOPPING_CHOPS_PER_DAMAGE.get();
     }
 
     public void removeSawdust() {
@@ -181,13 +191,14 @@ public final class ChoppingBlockEntity extends BlockEntity {
 
         if (chops >= requiredChops) {
             player.causeFoodExhaustion(PrimitiveTechnologyConfig.CHOPPING_EXHAUSTION_PER_CRAFT.get().floatValue());
-            output = activeRecipe.result();
-            output.setCount(ChoppingToolPolicy.outputQuantity(activeRecipe, tier));
-            FoodFreshnessApi.copyOldest(output, java.util.List.of(input.copy()));
+            ItemStack result = activeRecipe.result();
+            result.setCount(ChoppingToolPolicy.outputQuantity(activeRecipe, tier));
+            FoodFreshnessApi.copyOldest(result, java.util.List.of(input.copy()));
             input = ItemStack.EMPTY;
             chops = 0;
             requiredChops = 0;
             activeRecipe = null;
+            RecipeOutputDrops.spawnAbove(level, worldPosition, result);
             level.playSound(null, worldPosition, SoundEvents.WOOD_BREAK, SoundSource.BLOCKS, 1.0F, 1.0F);
         }
         sync();

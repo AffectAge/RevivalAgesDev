@@ -69,6 +69,13 @@ public final class HandGrindstoneBlockEntity extends BlockEntity {
         return slot >= 0 && slot < items.size() ? items.get(slot) : ItemStack.EMPTY;
     }
 
+    public ItemStack displayItem() {
+        if (!items.getFirst().isEmpty()) {
+            return items.getFirst();
+        }
+        return items.get(1).isEmpty() ? items.get(2) : items.get(1);
+    }
+
     public boolean canInsert(ItemStack stack) {
         return !isRotating() && items.getFirst().isEmpty()
                 && findRecipe(stack).filter(this::outputsFit).isPresent();
@@ -225,6 +232,10 @@ public final class HandGrindstoneBlockEntity extends BlockEntity {
     @Override
     protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.loadAdditional(tag, registries);
+        // ContainerHelper leaves slots absent from the packet unchanged.
+        for (int slot = 0; slot < items.size(); slot++) {
+            items.set(slot, ItemStack.EMPTY);
+        }
         ContainerHelper.loadAllItems(tag, items, registries);
         workPoints = Math.max(0, tag.getInt("WorkPoints"));
         rotationTicks = Math.max(0, tag.getInt("RotationTicks"));
