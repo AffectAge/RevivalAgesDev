@@ -7,6 +7,7 @@ import com.protyvkultury.revivalages.feature.content.ContentKey;
 import com.protyvkultury.revivalages.feature.content.ContentPolicy;
 import com.protyvkultury.revivalages.feature.technology.choppingblock.block.ChoppingBlock;
 import com.protyvkultury.revivalages.feature.technology.choppingblock.blockentity.ChoppingBlockEntity;
+import com.protyvkultury.revivalages.feature.technology.choppingblock.client.ChoppingBlockClientEvents;
 import com.protyvkultury.revivalages.feature.technology.choppingblock.recipe.ChoppingRecipe;
 import com.protyvkultury.revivalages.feature.technology.choppingblock.recipe.ChoppingRecipeSerializer;
 import com.protyvkultury.revivalages.feature.technology.primitive.config.PrimitiveTechnologyConfig;
@@ -19,8 +20,10 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.registries.DeferredBlock;
@@ -80,6 +83,9 @@ public final class ChoppingBlockFeature implements FeatureModule {
         RECIPE_TYPES.register(modBus);
         RECIPE_SERIALIZERS.register(modBus);
         modBus.addListener(this::registerCapabilities);
+        if (FMLEnvironment.dist == Dist.CLIENT) {
+            ChoppingBlockClientEvents.register(modBus);
+        }
     }
 
     private void registerCapabilities(RegisterCapabilitiesEvent event) {

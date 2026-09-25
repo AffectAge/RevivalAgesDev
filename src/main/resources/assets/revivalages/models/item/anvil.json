@@ -1,1 +1,8 @@
-{ "parent": "revivalages:block/anvil_0" }
+{
+  "parent": "revivalages:block/anvil_0",
+  "overrides": [
+    {"predicate": {"revivalages:damage": 1}, "model": "revivalages:item/anvil_damage_1"},
+    {"predicate": {"revivalages:damage": 2}, "model": "revivalages:item/anvil_damage_2"},
+    {"predicate": {"revivalages:damage": 3}, "model": "revivalages:item/anvil_damage_3"}
+  ]
+}

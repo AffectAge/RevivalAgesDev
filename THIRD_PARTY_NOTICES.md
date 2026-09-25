@@ -194,6 +194,15 @@ paths in the Revival Ages namespace. They use the existing Revival Ages wood-chi
 texture and reproduce the functional five-stage placement around and above the
 block.
 
+The granite Anvil geometry from
+`assets/pyrotech/models/block/anvil.json` informed
+`assets/revivalages/models/block/anvil.json`, which is simplified to one slab
+with damage confined to its top face. The Chopping Block's previously adapted
+`chopping_block_core.json` geometry was extended into a single slab in place of
+the separate `chopping_block_bark_[a-f].json` parts. Its upper face shows the
+damage stages, and its item models use the same slab. These adaptations use the
+Pyrotech Apache License 2.0 noted above.
+
 The Campfire visual-state contract was adapted from
 `assets/pyrotech/blockstates/campfire.json`,
 `assets/pyrotech/models/block/tinder.json`,

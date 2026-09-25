@@ -2,8 +2,7 @@
   "parent": "revivalages:block/anvil",
   "textures": {
     "top": "minecraft:block/polished_granite",
-    "top_side": "minecraft:block/polished_granite",
-    "bottom_side": "minecraft:block/smooth_stone_slab_side",
+    "side": "minecraft:block/polished_granite",
     "bottom": "minecraft:block/smooth_stone",
     "particle": "minecraft:block/polished_granite"
   }

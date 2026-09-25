@@ -103,6 +103,9 @@ public final class HandGrindstoneBlock extends BaseEntityBlock {
             }
             return InteractionResult.PASS;
         }
+        if (grindstone.isRotating()) {
+            return InteractionResult.sidedSuccess(level.isClientSide);
+        }
         if (!level.isClientSide && grindstone.turn(player)) {
             return InteractionResult.SUCCESS;
         }

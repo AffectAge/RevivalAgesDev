@@ -34,6 +34,7 @@ public final class HandGrindstoneBlockEntity extends BlockEntity {
     private int workPoints;
     private int rotationTicks;
     private int rotationDuration;
+    private long rotationStartTick = -1L;
 
     public HandGrindstoneBlockEntity(BlockPos pos, BlockState state) {
         super(AnimalPowerFeature.HAND_GRINDSTONE_BLOCK_ENTITY.get(), pos, state);
@@ -58,8 +59,10 @@ public final class HandGrindstoneBlockEntity extends BlockEntity {
         if (grindstone.rotationTicks == 0) {
             grindstone.workPoints += AnimalPowerConfig.HAND_GRINDSTONE_POINTS_PER_ROTATION.get();
             grindstone.tryComplete();
+            grindstone.sync();
+        } else {
+            grindstone.setChanged();
         }
-        grindstone.sync();
     }
 
     public ItemStack item(int slot) {
@@ -67,12 +70,13 @@ public final class HandGrindstoneBlockEntity extends BlockEntity {
     }
 
     public boolean canInsert(ItemStack stack) {
-        return items.getFirst().isEmpty() && findRecipe(stack).filter(this::outputsFit).isPresent();
+        return !isRotating() && items.getFirst().isEmpty()
+                && findRecipe(stack).filter(this::outputsFit).isPresent();
     }
 
     public void insert(ItemStack source, boolean infinite) {
         Optional<GrindingRecipe> recipe = findRecipe(source);
-        if (!items.getFirst().isEmpty() || recipe.isEmpty() || !outputsFit(recipe.get())) {
+        if (isRotating() || !items.getFirst().isEmpty() || recipe.isEmpty() || !outputsFit(recipe.get())) {
             return;
         }
         int count = recipe.get().inputCount();
@@ -102,11 +106,12 @@ public final class HandGrindstoneBlockEntity extends BlockEntity {
 
     public boolean turn(Player player) {
         Optional<GrindingRecipe> recipe = findRecipe(items.getFirst());
-        if (rotationTicks > 0 || recipe.isEmpty() || !outputsFit(recipe.get())) {
+        if (isRotating() || recipe.isEmpty() || !outputsFit(recipe.get())) {
             return false;
         }
         rotationDuration = AnimalPowerConfig.HAND_GRINDSTONE_ROTATION_TICKS.get();
         rotationTicks = rotationDuration;
+        rotationStartTick = level != null ? level.getGameTime() : 0L;
         player.causeFoodExhaustion(AnimalPowerConfig.HAND_GRINDSTONE_EXHAUSTION.get().floatValue());
         if (level != null) {
             level.playSound(null, worldPosition, SoundEvents.GRINDSTONE_USE, SoundSource.BLOCKS, 0.65F, 1.0F);
@@ -122,10 +127,19 @@ public final class HandGrindstoneBlockEntity extends BlockEntity {
     }
 
     public float rotation(float partialTick) {
-        if (rotationDuration <= 0 || rotationTicks <= 0) {
+        if (level == null || rotationDuration <= 0 || rotationStartTick < 0L) {
             return 0.0F;
         }
-        return (rotationDuration - rotationTicks + partialTick) / rotationDuration;
+        double elapsed = level.getGameTime() - rotationStartTick + partialTick;
+        return (float) Math.clamp(elapsed / rotationDuration, 0.0D, 1.0D);
+    }
+
+    public boolean isRotating() {
+        if (level != null && level.isClientSide) {
+            return rotationStartTick >= 0L && rotationDuration > 0
+                    && level.getGameTime() - rotationStartTick < rotationDuration;
+        }
+        return rotationTicks > 0;
     }
 
     public ItemStack recipeOutput() {
@@ -215,6 +229,7 @@ public final class HandGrindstoneBlockEntity extends BlockEntity {
         workPoints = Math.max(0, tag.getInt("WorkPoints"));
         rotationTicks = Math.max(0, tag.getInt("RotationTicks"));
         rotationDuration = Math.max(0, tag.getInt("RotationDuration"));
+        rotationStartTick = tag.contains("RotationStartTick") ? tag.getLong("RotationStartTick") : -1L;
     }
 
     @Override
@@ -224,6 +239,16 @@ public final class HandGrindstoneBlockEntity extends BlockEntity {
         tag.putInt("WorkPoints", workPoints);
         tag.putInt("RotationTicks", rotationTicks);
         tag.putInt("RotationDuration", rotationDuration);
+        tag.putLong("RotationStartTick", rotationStartTick);
+    }
+
+    @Override
+    public void onLoad() {
+        super.onLoad();
+        if (level != null && !level.isClientSide && rotationTicks > 0) {
+            rotationStartTick = level.getGameTime() - (rotationDuration - rotationTicks);
+            sync();
+        }
     }
 
     @Override
