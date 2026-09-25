@@ -72,6 +72,8 @@ burn out after a configured duration with configured random variance. Lit torche
 emit light, flame and smoke, damage colliding entities, and drop either a stick or
 straw when broken; an unlit torch drops itself. All three visible states use the
 functional licensed textures described in the third-party notices.
+Their Jade burn countdown is calculated from game time and freezes while doused;
+the infrequent rain check does not delay normal burnout.
 
 Wooden and clay buckets expose NeoForge's standard item fluid capability and hold
 1,000 mB of any compatible fluid, including fluids from other mods. They interact
@@ -98,16 +100,22 @@ recipe.
 
 ## Campfire
 
-Tinder places a Campfire. Add individual logs, ignite it with flint and steel or a
+Tinder places a Campfire on sturdy ground and explains this in its item tooltip.
+Add individual logs, ignite it with flint and steel or a
 fire charge, and insert one cookable item. Custom `revivalages:campfire` recipes
 take priority; compatible vanilla smelting recipes are inherited, except bread and
-cookies. Cooking speed scales with the visible fuel level. Rain extinguishes the
+cookies. Cooking speed scales with the queued and currently burning logs. Rain extinguishes the
 fire, ash can stop operation, forgotten results become Burned Food, and a shovel
 removes accumulated ash. Empty-hand interaction recovers the cooking item first,
 then the most recently added log; held-item clicks never remove stored stacks.
 Removing a log from a lit fire can burn the player unless Frost Walker protects
 them. A fire without fuel burns out into a dead ash state, an unsupported
 campfire breaks, and an unsafe flammable floor can ignite.
+Light also scales with queued and burning logs, reaching level 15 at full fuel
+with the default configuration. Ready results remain available to collect;
+after overcooking they become Burned Food once and emit heavy smoke while lit.
+Normal cooking and ready results emit flame without smoke. Jade shows whole-second
+remaining fuel time and locally advances cooking progress between state packets.
 
 At configured night hours, an unthreatened player near a lit Campfire receives
 Comfort and Resting. Continued rest can grant Well Rested; eating to fullness can
@@ -133,6 +141,9 @@ bucket uses, empty stack sizes, milk access, material-specific temperature
 thresholds, passive wear, hot-fluid wear, holder damage, source placement on
 break, and lava fuel time. These controls are read at runtime and are not
 persisted as fixed balance values in world data.
+The shared client setting `client.interactionOutlineColor` controls the Drying
+Rack and Construction Frame selection outlines as six hexadecimal RGB digits
+with an optional `#` prefix; its default is `007FBD`.
 
 The same server file configures stone-machine fuel limits and multiplier,
 airflow acceleration and drag, retained heat, Sawmill blade damage and chip
@@ -249,6 +260,9 @@ predicted result for Active Piles; Ash Piles explain how to collect their stored
 contents. Jade also reports the Wood Torch state and remaining burn time. Flint
 and Tinder and primitive buckets are items rather than inspectable world devices,
 so Jade is not applicable to them.
+For Campfire, the generic Jade item-storage line is hidden in favor of the
+recipe arrow. Ready and burned results have separate colored statuses; legacy
+saves containing Burned Food are recognized without recooking it.
 
 KubeJS can add or replace these codec-backed recipes through normal custom recipe
 JSON. Biomes O' Plenty logs receive optional, load-conditioned Chopping recipes;

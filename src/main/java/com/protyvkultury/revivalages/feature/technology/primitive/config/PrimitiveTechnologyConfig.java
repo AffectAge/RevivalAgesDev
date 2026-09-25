@@ -162,7 +162,7 @@ public final class PrimitiveTechnologyConfig {
         CAMPFIRE_ENTITY_BURN_DAMAGE = nonNegative(builder, "entityBurnDamage", 1.0D);
         CAMPFIRE_FLOOR_IGNITION_CHANCE = chance(builder, "floorIgnitionChance", 0.05D);
         CAMPFIRE_MINIMUM_LIGHT = builder.defineInRange("minimumLight", 3, 0, 15);
-        CAMPFIRE_MAXIMUM_LIGHT = builder.defineInRange("maximumLight", 11, 0, 15);
+        CAMPFIRE_MAXIMUM_LIGHT = builder.defineInRange("maximumLight", 15, 0, 15);
         builder.pop();
 
         builder.push("choppingBlock");

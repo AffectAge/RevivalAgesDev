@@ -24,6 +24,8 @@ exactly once.
 
 The `constructionFrame` section of `config/revivalages.toml` contains
 `toolDurabilityCost`, the durability consumed after a successful assembly.
+The selected-cell outline uses the shared client setting
+`client.interactionOutlineColor` (default `007FBD`, optional `#` prefix).
 
 Frame Assembly replaces the ordinary recipes for twelve vanilla workstations and
 the supported Revival Ages machines. The replacement of vanilla

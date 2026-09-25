@@ -19,9 +19,10 @@ import com.protyvkultury.revivalages.feature.technology.pitburn.PitBurnFeature;
 import com.protyvkultury.revivalages.feature.technology.pitburn.blockentity.PitBurnBlockEntity;
 import com.protyvkultury.revivalages.feature.technology.ignition.block.WoodTorchBlock;
 import com.protyvkultury.revivalages.feature.technology.ignition.blockentity.WoodTorchBlockEntity;
+import com.protyvkultury.revivalages.feature.technology.ignition.WoodTorchSettings;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
+import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -43,7 +44,7 @@ public enum PrimitiveDeviceComponentProvider implements IBlockComponentProvider 
     @Override
     public void appendTooltip(ITooltip tooltip, BlockAccessor accessor, IPluginConfig config) {
         switch (accessor.getBlockEntity()) {
-            case CampfireBlockEntity campfire -> appendCampfire(tooltip, campfire);
+            case CampfireBlockEntity campfire -> appendCampfire(tooltip, accessor, campfire);
             case ChoppingBlockEntity chopping -> appendChopping(tooltip, accessor, chopping);
             case PitKilnBlockEntity kiln -> appendPitKiln(tooltip, accessor, kiln);
             case BarrelBlockEntity barrel -> appendBarrel(tooltip, accessor, barrel);
@@ -56,22 +57,35 @@ public enum PrimitiveDeviceComponentProvider implements IBlockComponentProvider 
         }
     }
 
-    private static void appendCampfire(ITooltip tooltip, CampfireBlockEntity campfire) {
-        appendItemProgress(tooltip, campfire.cookingStack(), campfire.recipeOutput(), campfire.progress());
+    private static void appendCampfire(ITooltip tooltip, BlockAccessor accessor, CampfireBlockEntity campfire) {
+        ItemStack input = campfire.cookingInput();
+        ItemStack output = campfire.recipeOutput();
+        if (campfire.isBurned()) {
+            appendItemProgress(tooltip, output.isEmpty() ? input : output, campfire.cookingStack(), 1.0D);
+        } else {
+            appendItemProgress(tooltip, input.isEmpty() ? campfire.cookingStack() : input,
+                    output, campfire.progressAt(accessor.getLevel().getGameTime()));
+        }
         String state = campfire.isDead() ? "dead" : campfire.isLit() ? "lit" : "unlit";
-        tooltip.add(Component.translatable("jade.revivalages.campfire.state." + state));
+        tooltip.add(Component.translatable("jade.revivalages.campfire.state." + state)
+                .withStyle(campfire.isLit() ? ChatFormatting.GREEN : ChatFormatting.RED));
         tooltip.add(Component.translatable("jade.revivalages.campfire.fuel", campfire.fuelLevel(), 8));
         tooltip.add(Component.translatable("jade.revivalages.campfire.ash", campfire.ashLevel(), 8));
         if (campfire.isLit()) {
-            tooltip.add(Component.translatable("jade.revivalages.campfire.burn_time", formatSeconds(campfire.burnTime())));
+            tooltip.add(Component.translatable("jade.revivalages.campfire.burn_time",
+                    wholeSeconds(campfire.remainingFuelTicksAt(accessor.getLevel().getGameTime()))));
         }
         if (!campfire.isDead() && !campfire.hasTinder()) {
             tooltip.add(Component.translatable("jade.revivalages.campfire.blocked.no_tinder"));
         } else if (!campfire.isDead() && campfire.ashLevel() >= 8) {
             tooltip.add(Component.translatable("jade.revivalages.campfire.blocked.ash"));
         }
-        if (campfire.isCompleted()) {
-            tooltip.add(Component.translatable("jade.revivalages.primitive.ready"));
+        if (campfire.isBurned()) {
+            tooltip.add(Component.translatable("jade.revivalages.campfire.burned")
+                    .withStyle(ChatFormatting.RED));
+        } else if (campfire.isCompleted()) {
+            tooltip.add(Component.translatable("jade.revivalages.primitive.ready")
+                    .withStyle(ChatFormatting.GREEN));
         }
     }
 
@@ -203,9 +217,13 @@ public enum PrimitiveDeviceComponentProvider implements IBlockComponentProvider 
 
     private static void appendWoodTorch(ITooltip tooltip, BlockAccessor accessor, WoodTorchBlockEntity torch) {
         String state = accessor.getBlockState().getValue(WoodTorchBlock.STATE).getSerializedName();
-        tooltip.add(Component.translatable("jade.revivalages.wood_torch.state." + state));
-        if (torch.remainingTicks() >= 0 && state.equals("lit")) {
-            tooltip.add(Component.translatable("jade.revivalages.wood_torch.remaining", formatSeconds(torch.remainingTicks())));
+        tooltip.add(Component.translatable("jade.revivalages.wood_torch.state." + state)
+                .withStyle(state.equals("lit") ? ChatFormatting.GREEN : ChatFormatting.RED));
+        if (state.equals("lit") && !WoodTorchSettings.clientSnapshot().burnsUp()) {
+            tooltip.add(Component.translatable("jade.revivalages.wood_torch.unlimited"));
+        } else if (torch.remainingTicks() >= 0 && state.equals("lit")) {
+            tooltip.add(Component.translatable("jade.revivalages.wood_torch.remaining",
+                    wholeSeconds(torch.remainingTicksAt(accessor.getLevel().getGameTime()))));
         }
     }
 
@@ -276,8 +294,8 @@ public enum PrimitiveDeviceComponentProvider implements IBlockComponentProvider 
         tooltip.add(List.of(IElementHelper.get().progress((float) Math.clamp(progress, 0.0D, 1.0D))));
     }
 
-    private static String formatSeconds(int ticks) {
-        return String.format(Locale.ROOT, "%.1f s", ticks / 20.0D);
+    private static long wholeSeconds(int ticks) {
+        return (Math.max(0L, ticks) + 19L) / 20L;
     }
 
     @Override

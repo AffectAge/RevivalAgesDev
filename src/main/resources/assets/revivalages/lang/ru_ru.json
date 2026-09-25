@@ -126,9 +126,12 @@
   "jade.revivalages.campfire.state.dead": "Состояние: прогорел",
   "jade.revivalages.campfire.blocked.no_tinder": "Остановка: требуется трут",
   "jade.revivalages.campfire.blocked.ash": "Остановка: уберите золу",
-  "jade.revivalages.campfire.fuel": "Поленья: %s/%s",
+  "jade.revivalages.campfire.fuel": "Поленья в запасе: %s/%s",
   "jade.revivalages.campfire.ash": "Зола: %s/%s",
-  "jade.revivalages.campfire.burn_time": "Время топлива: %s",
+  "jade.revivalages.campfire.burn_time": "Время топлива: %s с",
+  "jade.revivalages.campfire.burned": "Сгорело",
+  "tooltip.revivalages.tinder.place": "Разместите на земле, чтобы создать костёр.",
+  "config.revivalages.interaction_outline_color": "Цвет рамки взаимодействия",
   "jade.revivalages.chopping.damage": "Повреждение колоды: %s/%s",
   "jade.revivalages.chopping.chips": "Щепа: %s",
   "jade.revivalages.pit_kiln.stage": "Стадия: %s",
@@ -235,7 +238,8 @@
   ,"jade.revivalages.wood_torch.state.unlit": "Состояние: не горит"
   ,"jade.revivalages.wood_torch.state.lit": "Состояние: горит"
   ,"jade.revivalages.wood_torch.state.doused": "Состояние: намок"
-  ,"jade.revivalages.wood_torch.remaining": "Осталось горения: %s"
+  ,"jade.revivalages.wood_torch.remaining": "Осталось горения: %s с"
+  ,"jade.revivalages.wood_torch.unlimited": "Время горения: неограниченно"
   ,"tooltip.revivalages.primitive_bucket.fluid": "Содержит: %s"
   ,"tooltip.revivalages.primitive_bucket.uses": "Осталось использований: %s/%s"
   ,"tooltip.revivalages.primitive_bucket.uses.full": "Осталось использований: %s"

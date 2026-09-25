@@ -33,6 +33,7 @@ public final class RevivalAgesConfig {
         DietClientConfig.bootstrap();
         PrimitiveTechnologyConfig.bootstrap();
         PrimitiveTechnologyClientConfig.bootstrap();
+        InteractionOutlineConfig.bootstrap();
         DryingRackConfig.bootstrap();
         DryingRackClientConfig.bootstrap();
         KnappingConfig.bootstrap();

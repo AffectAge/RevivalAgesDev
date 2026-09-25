@@ -138,9 +138,12 @@
   "jade.revivalages.campfire.state.dead": "State: Burned out",
   "jade.revivalages.campfire.blocked.no_tinder": "Blocked: Tinder required",
   "jade.revivalages.campfire.blocked.ash": "Blocked: Remove ash",
-  "jade.revivalages.campfire.fuel": "Logs: %s/%s",
+  "jade.revivalages.campfire.fuel": "Queued logs: %s/%s",
   "jade.revivalages.campfire.ash": "Ash: %s/%s",
-  "jade.revivalages.campfire.burn_time": "Fuel time: %s",
+  "jade.revivalages.campfire.burn_time": "Fuel time: %s s",
+  "jade.revivalages.campfire.burned": "Burned",
+  "tooltip.revivalages.tinder.place": "Place on the ground to start a campfire.",
+  "config.revivalages.interaction_outline_color": "Interaction outline color",
   "jade.revivalages.chopping.damage": "Block damage: %s/%s",
   "jade.revivalages.chopping.remaining_chops": "Chops left before breaking: %s",
   "jade.revivalages.chopping.unlimited": "Chops left before breaking: Unlimited",
@@ -250,7 +253,8 @@
   ,"jade.revivalages.wood_torch.state.unlit": "State: unlit"
   ,"jade.revivalages.wood_torch.state.lit": "State: lit"
   ,"jade.revivalages.wood_torch.state.doused": "State: doused"
-  ,"jade.revivalages.wood_torch.remaining": "Burn time: %s"
+  ,"jade.revivalages.wood_torch.remaining": "Burn time: %s s"
+  ,"jade.revivalages.wood_torch.unlimited": "Burn time: Unlimited"
   ,"tooltip.revivalages.primitive_bucket.fluid": "Contains: %s"
   ,"tooltip.revivalages.primitive_bucket.uses": "Uses remaining: %s/%s"
   ,"tooltip.revivalages.primitive_bucket.uses.full": "Uses remaining: %s"

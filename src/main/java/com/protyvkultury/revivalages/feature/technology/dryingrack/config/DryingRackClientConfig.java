@@ -23,7 +23,7 @@ public final class DryingRackClientConfig {
                 .comment("Shows stack counts next to physical Drying Rack contents.")
                 .define("showItemCounts", true);
         SHOW_INTERACTION_BOUNDS = builder
-                .comment("Shows a green outline around the selected Drying Rack interaction area.")
+                .comment("Shows the configured outline around the selected Drying Rack interaction area.")
                 .define("showInteractionBounds", true);
         builder.pop();
     }

@@ -164,7 +164,7 @@ for Minecraft 1.21.1. The recipe-viewer guide atlas at
 ## Pyrotech
 
 The Drying Rack, Barrel, Chopping Block, Pit Kiln, Soaking Pot, Tanning Rack,
-Stone Sawmill, Stone Oven, Stone Kiln, Stone Crucible, granite Anvil, thatch,
+Stone Sawmill, Stone Oven, Stone Kiln, Stone Crucible, Anvil gameplay, thatch,
 Pit Burn piles, Flint and Tinder, Wood Torch, wooden and clay buckets,
 primitive material item, and model geometry were adapted from Pyrotech by
 codetaylor. The source project is available at
@@ -194,14 +194,17 @@ paths in the Revival Ages namespace. They use the existing Revival Ages wood-chi
 texture and reproduce the functional five-stage placement around and above the
 block.
 
-The granite Anvil geometry from
-`assets/pyrotech/models/block/anvil.json` is adapted at
-`assets/revivalages/models/block/anvil.json` as one model containing both slabs,
-with damage confined to the upper face. The Chopping Block's previously adapted
+The Anvil model at `assets/revivalages/models/block/anvil.json` is the author's
+Blockbench geometry, with an inset upper slab and a full-width lower slab. Its
+smooth-stone damage textures at `textures/block/anvil_smooth_stone_damaged_[a-c].png`
+were generated for Revival Ages using the Pyrotech granite Anvil damage stages
+as visual references. Damage is confined to the upper face.
+
+The Chopping Block's previously adapted
 `chopping_block_core.json` geometry was extended into a single slab in place of
 the separate `chopping_block_bark_[a-f].json` parts. Its upper face shows the
-damage stages, and its item models use the same slab. These adaptations use the
-Pyrotech Apache License 2.0 noted above.
+damage stages, and its item models use the same slab. The referenced Pyrotech
+assets are under the Apache License 2.0 noted above.
 
 The Campfire visual-state contract was adapted from
 `assets/pyrotech/blockstates/campfire.json`,

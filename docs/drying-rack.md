@@ -26,7 +26,8 @@ Drying Rack has four independent slots, inherits crude recipes, processes at a
 - Displayed items use direction-aware transforms for every horizontal facing.
   Crude-rack items lie on the wall-facing mesh; normal-rack items lie on the top
   grill.
-- The selected interaction area receives a green outline. A held item is
+- The selected interaction area receives an outline colored by
+  `client.interactionOutlineColor` in `config/revivalages.toml`. A held item is
   previewed translucently in an empty selected slot. Both forms of feedback have
   independent client toggles.
 - A subtle progress particle appears only while at least one valid recipe is
