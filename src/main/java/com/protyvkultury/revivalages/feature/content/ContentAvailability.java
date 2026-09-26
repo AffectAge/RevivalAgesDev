@@ -2,27 +2,22 @@ package com.protyvkultury.revivalages.feature.content;
 
 import com.protyvkultury.revivalages.RevivalAges;
 import com.protyvkultury.revivalages.feature.FeatureModule;
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.BooleanSupplier;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 
-/** Server-authoritative availability source shared by gameplay, data, and integrations. */
+/** Permanent content catalog shared by gameplay, data, and integrations. */
 public final class ContentAvailability {
 
-    public static final String FORCE_ALL_DISABLED_PROPERTY = "revivalages.test.forceAllContentDisabled";
-    private static volatile ContentStateResolver<ContentKey> stateResolver;
     private static volatile Map<ResourceLocation, Set<ContentKey>> itemMemberships = Map.of();
     private static volatile Map<ResourceLocation, Set<ContentKey>> blockMemberships = Map.of();
 
@@ -30,7 +25,7 @@ public final class ContentAvailability {
     }
 
     public static void install(List<FeatureModule> modules) {
-        EnumMap<ContentKey, BooleanSupplier> collectedDefinitions = new EnumMap<>(ContentKey.class);
+        EnumSet<ContentKey> collectedDefinitions = EnumSet.noneOf(ContentKey.class);
         Map<ResourceLocation, Set<ContentKey>> collectedItems = new LinkedHashMap<>();
         Map<ResourceLocation, Set<ContentKey>> collectedBlocks = new LinkedHashMap<>();
         Set<String> moduleNames = new java.util.HashSet<>();
@@ -41,11 +36,7 @@ public final class ContentAvailability {
                 throw new IllegalStateException("Duplicate content policy module: " + policy.module());
             }
             for (ContentDefinition definition : policy.definitions()) {
-                BooleanSupplier previous = collectedDefinitions.putIfAbsent(
-                        definition.key(),
-                        definition.configuredEnabled()
-                );
-                if (previous != null) {
+                if (!collectedDefinitions.add(definition.key())) {
                     throw new IllegalStateException("Duplicate content definition: " + definition.key().id());
                 }
             }
@@ -66,39 +57,18 @@ public final class ContentAvailability {
         }
 
         EnumSet<ContentKey> missing = EnumSet.allOf(ContentKey.class);
-        missing.removeAll(collectedDefinitions.keySet());
+        missing.removeAll(collectedDefinitions);
         if (!missing.isEmpty()) {
             throw new IllegalStateException("Missing content definitions: " + missing);
         }
         validateParentGraph();
-        EnumMap<ContentKey, Set<ContentKey>> parents = new EnumMap<>(ContentKey.class);
-        for (ContentKey key : ContentKey.values()) {
-            parents.put(key, Set.copyOf(key.parents()));
-        }
-        stateResolver = new ContentStateResolver<>(collectedDefinitions, parents);
         itemMemberships = Collections.unmodifiableMap(new LinkedHashMap<>(collectedItems));
         blockMemberships = Collections.unmodifiableMap(new LinkedHashMap<>(collectedBlocks));
     }
 
     public static boolean isEnabled(ContentKey key) {
-        if (isForcedAllDisabled()) {
-            return false;
-        }
-        ContentStateResolver<ContentKey> resolver = stateResolver;
-        return resolver == null || resolver.isEnabled(key);
-    }
-
-    public static boolean isForcedAllDisabled() {
-        return Boolean.getBoolean(FORCE_ALL_DISABLED_PROPERTY);
-    }
-
-    public static boolean hasDisabledContent() {
-        for (ContentKey key : ContentKey.values()) {
-            if (!isEnabled(key)) {
-                return true;
-            }
-        }
-        return false;
+        java.util.Objects.requireNonNull(key, "key");
+        return true;
     }
 
     public static Optional<Boolean> isEnabled(ResourceLocation id) {
@@ -112,7 +82,7 @@ public final class ContentAvailability {
 
     public static boolean isItemEnabled(ResourceLocation itemId) {
         Set<ContentKey> keys = itemMemberships.get(itemId);
-        return keys != null && keys.stream().anyMatch(ContentAvailability::isEnabled);
+        return keys != null && !keys.isEmpty();
     }
 
     public static boolean isResultEnabled(ItemStack stack) {
@@ -129,7 +99,7 @@ public final class ContentAvailability {
 
     public static boolean isBlockEnabled(ResourceLocation blockId) {
         Set<ContentKey> keys = blockKeys(blockId);
-        return !keys.isEmpty() && keys.stream().anyMatch(ContentAvailability::isEnabled);
+        return !keys.isEmpty();
     }
 
     public static Set<ContentKey> itemKeys(ResourceLocation itemId) {
@@ -162,43 +132,12 @@ public final class ContentAvailability {
         }
     }
 
-    public static void reportConflicts() {
-        conflicts().forEach((key, disabledParents) -> RevivalAges.LOGGER.warn(
-                "Content {} is configured enabled but remains disabled because these parents are disabled: {}",
-                key.id(),
-                disabledParents.stream().map(ContentKey::id).toList()
-        ));
-    }
-
-    public static Map<ContentKey, List<ContentKey>> conflicts() {
-        if (isForcedAllDisabled()) {
-            return Map.of();
-        }
-        EnumMap<ContentKey, List<ContentKey>> conflicts = new EnumMap<>(ContentKey.class);
-        for (ContentKey key : ContentKey.values()) {
-            if (configuredEnabled(key)) {
-                List<ContentKey> disabledParents = key.parents().stream()
-                        .filter(parent -> !isEnabled(parent))
-                        .toList();
-                if (!disabledParents.isEmpty()) {
-                    conflicts.put(key, disabledParents);
-                }
-            }
-        }
-        return Collections.unmodifiableMap(conflicts);
-    }
-
     public static Map<ResourceLocation, Set<ContentKey>> itemMemberships() {
         return itemMemberships;
     }
 
-    private static boolean configuredEnabled(ContentKey key) {
-        ContentStateResolver<ContentKey> resolver = stateResolver;
-        return resolver == null || resolver.configuredEnabled(key);
-    }
-
     private static void validateParentGraph() {
-        EnumMap<ContentKey, Set<ContentKey>> graph = new EnumMap<>(ContentKey.class);
+        java.util.EnumMap<ContentKey, Set<ContentKey>> graph = new java.util.EnumMap<>(ContentKey.class);
         for (ContentKey key : ContentKey.values()) {
             graph.put(key, Set.copyOf(key.parents()));
         }

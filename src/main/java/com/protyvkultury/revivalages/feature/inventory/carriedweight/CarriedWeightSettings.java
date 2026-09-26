@@ -1,5 +1,6 @@
 package com.protyvkultury.revivalages.feature.inventory.carriedweight;
 
+import com.protyvkultury.revivalages.config.RevivalAgesConfig;
 import com.protyvkultury.revivalages.feature.content.ContentAvailability;
 import com.protyvkultury.revivalages.feature.content.ContentKey;
 import net.neoforged.neoforge.common.ModConfigSpec;
@@ -94,15 +95,15 @@ public final class CarriedWeightSettings {
     }
 
     private static boolean bool(ModConfigSpec.BooleanValue value) {
-        return CarriedWeightConfig.SPEC.isLoaded() ? value.get() : value.getDefault();
+        return RevivalAgesConfig.isLoaded() ? value.get() : value.getDefault();
     }
 
     private static int integer(ModConfigSpec.IntValue value) {
-        return CarriedWeightConfig.SPEC.isLoaded() ? value.get() : value.getDefault();
+        return RevivalAgesConfig.isLoaded() ? value.get() : value.getDefault();
     }
 
     private static double decimal(ModConfigSpec.DoubleValue value) {
-        return CarriedWeightConfig.SPEC.isLoaded() ? value.get() : value.getDefault();
+        return RevivalAgesConfig.isLoaded() ? value.get() : value.getDefault();
     }
 
     public record Snapshot(

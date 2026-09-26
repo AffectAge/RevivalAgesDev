@@ -2,7 +2,6 @@ package com.protyvkultury.revivalages.integration.jade;
 
 import com.protyvkultury.revivalages.feature.technology.dryingrack.block.AbstractDryingRackBlock;
 import com.protyvkultury.revivalages.feature.technology.barrel.block.BarrelBlock;
-import com.protyvkultury.revivalages.feature.technology.barrel.storage.StorageBarrelBlock;
 import com.protyvkultury.revivalages.feature.technology.campfire.block.CampfireBlock;
 import com.protyvkultury.revivalages.feature.technology.choppingblock.block.ChoppingBlock;
 import com.protyvkultury.revivalages.feature.technology.pitkiln.block.PitKilnBlock;
@@ -13,10 +12,12 @@ import com.protyvkultury.revivalages.feature.technology.anvil.block.AnvilBlock;
 import com.protyvkultury.revivalages.feature.technology.pitburn.block.ActivePileBlock;
 import com.protyvkultury.revivalages.feature.technology.pitburn.block.AshPileBlock;
 import com.protyvkultury.revivalages.feature.technology.ignition.block.WoodTorchBlock;
-import com.protyvkultury.revivalages.feature.technology.animalpower.block.AnimalMachineBlock;
 import com.protyvkultury.revivalages.feature.technology.animalpower.block.HandGrindstoneBlock;
 import com.protyvkultury.revivalages.feature.technology.constructionframe.block.ConstructionFrameBlock;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.FireBlock;
+import snownee.jade.api.BlockAccessor;
+import snownee.jade.api.JadeIds;
 import snownee.jade.api.IWailaClientRegistration;
 import snownee.jade.api.IWailaPlugin;
 import snownee.jade.api.WailaPlugin;
@@ -26,14 +27,13 @@ public final class RevivalAgesJadePlugin implements IWailaPlugin {
 
     @Override
     public void registerClient(IWailaClientRegistration registration) {
-        registration.registerBlockComponent(DisabledContentComponentProvider.INSTANCE, Block.class);
         registration.registerBlockComponent(ItemSizeComponentProvider.INSTANCE, Block.class);
         registration.registerBlockComponent(DryingRackComponentProvider.INSTANCE, AbstractDryingRackBlock.class);
         registration.registerBlockComponent(PrimitiveDeviceComponentProvider.INSTANCE, CampfireBlock.class);
         registration.registerBlockComponent(PrimitiveDeviceComponentProvider.INSTANCE, ChoppingBlock.class);
         registration.registerBlockComponent(PrimitiveDeviceComponentProvider.INSTANCE, PitKilnBlock.class);
+        registration.registerBlockComponent(PrimitiveDeviceComponentProvider.INSTANCE, FireBlock.class);
         registration.registerBlockComponent(PrimitiveDeviceComponentProvider.INSTANCE, BarrelBlock.class);
-        registration.registerBlockComponent(StorageBarrelComponentProvider.INSTANCE, StorageBarrelBlock.class);
         registration.registerBlockComponent(PrimitiveDeviceComponentProvider.INSTANCE, SoakingPotBlock.class);
         registration.registerBlockComponent(PrimitiveDeviceComponentProvider.INSTANCE, TanningRackBlock.class);
         registration.registerBlockComponent(StoneMachineComponentProvider.INSTANCE, StoneMachineBlock.class);
@@ -42,11 +42,20 @@ public final class RevivalAgesJadePlugin implements IWailaPlugin {
         registration.registerBlockComponent(PrimitiveDeviceComponentProvider.INSTANCE, AshPileBlock.class);
         registration.registerBlockComponent(PrimitiveDeviceComponentProvider.INSTANCE, WoodTorchBlock.class);
         registration.registerBlockComponent(AnimalPowerComponentProvider.INSTANCE, HandGrindstoneBlock.class);
-        registration.registerBlockComponent(AnimalPowerComponentProvider.INSTANCE, AnimalMachineBlock.class);
         registration.registerBlockComponent(
                 ConstructionFrameComponentProvider.INSTANCE,
                 ConstructionFrameBlock.class
         );
         registration.registerBlockComponent(StructuralIntegrityComponentProvider.INSTANCE, Block.class);
+        registration.addTooltipCollectedCallback((tooltip, accessor) -> {
+            if (accessor instanceof BlockAccessor block
+                    && (block.getBlock() instanceof CampfireBlock
+                    || block.getBlock() instanceof AnvilBlock
+                    || block.getBlock() instanceof ChoppingBlock
+                    || block.getBlock() instanceof BarrelBlock
+                    || block.getBlock() instanceof SoakingPotBlock)) {
+                tooltip.getTooltip().remove(JadeIds.UNIVERSAL_ITEM_STORAGE);
+            }
+        });
     }
 }

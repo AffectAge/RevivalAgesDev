@@ -1,10 +1,10 @@
 package com.protyvkultury.revivalages.feature.inventory.carriedweight.client;
 
+import com.protyvkultury.revivalages.config.RevivalAgesConfig;
 import net.neoforged.neoforge.common.ModConfigSpec;
 
 public final class CarriedWeightClientConfig {
 
-    public static final ModConfigSpec SPEC;
     public static final ModConfigSpec.BooleanValue SHOW_TOOLTIPS;
     public static final ModConfigSpec.BooleanValue SHOW_HUD;
     public static final ModConfigSpec.EnumValue<HudStyle> HUD_STYLE;
@@ -23,7 +23,7 @@ public final class CarriedWeightClientConfig {
     public static final ModConfigSpec.BooleanValue KEEP_TEXT_ON_SCREEN;
 
     static {
-        ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
+        ModConfigSpec.Builder builder = RevivalAgesConfig.builder();
         builder.push("carriedWeight");
         SHOW_TOOLTIPS = builder.define("showTooltips", true);
         SHOW_HUD = builder.define("showHud", true);
@@ -42,10 +42,12 @@ public final class CarriedWeightClientConfig {
         TEXT_SHADOW = builder.define("hud.textShadow", true);
         KEEP_TEXT_ON_SCREEN = builder.define("hud.keepTextOnScreen", true);
         builder.pop();
-        SPEC = builder.build();
     }
 
     private CarriedWeightClientConfig() {
+    }
+
+    public static void bootstrap() {
     }
 
     public enum HudStyle {

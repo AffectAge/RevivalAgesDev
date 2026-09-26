@@ -1,5 +1,6 @@
 package com.protyvkultury.revivalages.feature.player.diet;
 
+import com.protyvkultury.revivalages.config.RevivalAgesConfig;
 public final class DietSettings {
 
     private static volatile Snapshot remote;
@@ -51,7 +52,7 @@ public final class DietSettings {
     }
 
     private static double value(net.neoforged.neoforge.common.ModConfigSpec.DoubleValue setting) {
-        return DietConfig.SPEC.isLoaded() ? setting.get() : setting.getDefault();
+        return RevivalAgesConfig.isLoaded() ? setting.get() : setting.getDefault();
     }
 
     public record Snapshot(

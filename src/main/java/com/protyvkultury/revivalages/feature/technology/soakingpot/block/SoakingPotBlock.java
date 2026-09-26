@@ -2,8 +2,6 @@ package com.protyvkultury.revivalages.feature.technology.soakingpot.block;
 
 import com.mojang.serialization.MapCodec;
 import com.protyvkultury.revivalages.core.interaction.ItemStackInteraction;
-import com.protyvkultury.revivalages.feature.content.ContentAvailability;
-import com.protyvkultury.revivalages.feature.content.ContentKey;
 import com.protyvkultury.revivalages.feature.technology.campfire.CampfireFeature;
 import com.protyvkultury.revivalages.feature.technology.campfire.blockentity.CampfireBlockEntity;
 import com.protyvkultury.revivalages.feature.technology.soakingpot.SoakingPotFeature;
@@ -11,7 +9,6 @@ import com.protyvkultury.revivalages.feature.technology.soakingpot.blockentity.S
 import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
@@ -93,12 +90,6 @@ public final class SoakingPotBlock extends BaseEntityBlock {
             InteractionHand hand,
             BlockHitResult hit
     ) {
-        if (!ContentAvailability.isEnabled(ContentKey.SOAKING_POT)) {
-            if (!level.isClientSide) {
-                player.displayClientMessage(Component.translatable("message.revivalages.content_disabled"), true);
-            }
-            return ItemInteractionResult.CONSUME;
-        }
         if (hit.getDirection() != Direction.UP) {
             return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         }
@@ -130,12 +121,6 @@ public final class SoakingPotBlock extends BaseEntityBlock {
 
     @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
-        if (!ContentAvailability.isEnabled(ContentKey.SOAKING_POT)) {
-            if (!level.isClientSide) {
-                player.displayClientMessage(Component.translatable("message.revivalages.content_disabled"), true);
-            }
-            return InteractionResult.CONSUME;
-        }
         if (hit.getDirection() != Direction.UP) {
             return InteractionResult.PASS;
         }

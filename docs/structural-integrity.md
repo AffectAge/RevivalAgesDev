@@ -1,14 +1,13 @@
 # Structural Integrity
 
-The family toggle and the independent support-beam, collapse, and landslide
-toggles follow the shared [content availability contract](content-availability.md).
+Support Beams, Collapses, and Landslides are always available and follow the
+shared [content availability contract](content-availability.md).
 
 ## Scope
 
 Structural Integrity owns Support Beams, mining- and explosion-triggered
-Collapses, and delayed Landslides. Registry identities are unconditional.
-Server configuration controls acquisition, creative visibility, and simulation
-without making existing worlds unreadable.
+Collapses, and delayed Landslides. Registry identities, acquisition, creative
+visibility, and simulation are unconditional.
 
 Nine Support Beam materials share one placement item per material. Placement on
 the floor produces a vertical support; placement against a side produces a
@@ -84,7 +83,7 @@ the player's authoritative rotation.
 | Integration | Status | Notes |
 | --- | --- | --- |
 | KubeJS | applicable | Typed Collapse and Landslide schemas emit ordinary data-pack JSON through the canonical codecs; support data remains a normal data map. The adapter compiles against file `7143884`; an in-game script smoke test is still pending. |
-| Jade | applicable | Support range and supported, unsupported, and disabled states are inspectable. Jade 15.10.5 was tested on the client and dedicated GameTest server. |
+| Jade | applicable | Support range and supported or unsupported states are inspectable. Jade 15.10.5 was tested on the client and dedicated GameTest server. |
 | EMI | not applicable | Structural movement does not define a workstation recipe UI; Support Beam crafting remains a normal crafting recipe. |
 | JEI | not applicable | Structural movement does not define a workstation recipe UI; Support Beam crafting remains a normal crafting recipe. |
 | Curios | not applicable | No wearable or accessory state exists. |
@@ -94,18 +93,17 @@ the player's authoritative rotation.
 | Ecliptic Seasons | not applicable | Structural rules have no seasonal input. |
 
 The base implementation and dedicated server do not load optional API classes.
-The dedicated GameTest suite covers reload-visible support data, block-state
-predicates, asymmetric ranges, placement limits, foundation semantics, strict
-replacement rules, and immediate span invalidation.
+No automated GameTest suite is maintained. Assess reload-visible support data,
+block-state predicates, asymmetric ranges, placement limits, foundation
+semantics, strict replacement rules, and immediate span invalidation when the
+user explicitly requests verification.
 
 ## Configuration
 
-`revivalages-structural-integrity-server.toml` contains independent enable
-settings for Support Beams, Collapses, and Landslides plus auto-build limits,
-span length, saw wear, trigger and propagation probabilities,
+The `structuralIntegrity` section of `config/revivalages.toml` contains
+auto-build limits, span length, saw wear, trigger and propagation probabilities,
 collapse radius, cadence, falling damage, delay, queue capacity, tick budget,
-and camera-shake radius, strength, and duration. Enable settings default to
-`true`.
+and camera-shake radius, strength, and duration.
 
-`revivalages-structural-integrity-client.toml` contains `cameraShake.enabled`
-and the local `cameraShake.intensity` multiplier.
+The same file contains the client-facing `cameraShake.enabled` setting and local
+`cameraShake.intensity` multiplier.

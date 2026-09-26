@@ -9,8 +9,6 @@ public enum ProcessRuleType {
     SEALED_MACHINE("sealed_machine", ProcessRuleKind.GATE, ProcessRulePolicy.PAUSE),
     INSTALLED_TOOL("installed_tool", ProcessRuleKind.GATE, ProcessRulePolicy.PAUSE),
     FUELLED_AND_LIT("fuelled_and_lit", ProcessRuleKind.GATE, ProcessRulePolicy.PAUSE),
-    ATTACHED_WORKER("attached_worker", ProcessRuleKind.GATE, ProcessRulePolicy.PAUSE),
-    VALID_WORK_AREA("valid_work_area", ProcessRuleKind.GATE, ProcessRulePolicy.PAUSE),
     VALID_STRUCTURE("valid_structure", ProcessRuleKind.GATE, ProcessRulePolicy.PAUSE),
     REQUIRED_MANUAL_TOOL("required_manual_tool", ProcessRuleKind.GATE, ProcessRulePolicy.PAUSE),
     RANDOM_OUTCOME("random_outcome", ProcessRuleKind.HAZARD, ProcessRulePolicy.PAUSE);

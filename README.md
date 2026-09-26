@@ -47,8 +47,8 @@ required because the repository includes the Gradle wrapper.
 4. Find the compiled mod JAR in `build/libs/`. Files ending in `-sources.jar`
    are source archives and should not be placed in a Minecraft `mods` folder.
 
-The build compiles Java, validates resources, runs automated tests, and creates
-the distributable JAR. If Gradle reports the wrong Java version, set `JAVA_HOME`
+The build compiles Java, validates resources, and creates the distributable JAR.
+If Gradle reports the wrong Java version, set `JAVA_HOME`
 to a JDK 21 installation and open a new terminal before trying again.
 
 ## Development commands
@@ -58,7 +58,6 @@ to a JDK 21 installation and open a new terminal before trying again.
 ./gradlew runClient
 ./gradlew runServer
 ./gradlew runData
-./gradlew runGameTestServer
 ```
 
 On Windows, use `gradlew.bat` instead of `./gradlew`.

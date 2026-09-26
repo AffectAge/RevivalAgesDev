@@ -1,6 +1,7 @@
 package com.protyvkultury.revivalages.feature.technology.barrel.blockentity;
 
 import com.protyvkultury.revivalages.core.interaction.ItemStackInteraction;
+import com.protyvkultury.revivalages.core.process.ProgressProjection;
 import com.protyvkultury.revivalages.api.food.FoodFreshnessApi;
 import com.protyvkultury.revivalages.core.particle.ProgressParticleHelper;
 import com.protyvkultury.revivalages.feature.content.ContentAvailability;
@@ -10,6 +11,7 @@ import com.protyvkultury.revivalages.feature.technology.barrel.BarrelFeature;
 import com.protyvkultury.revivalages.feature.technology.barrel.block.BarrelBlock;
 import com.protyvkultury.revivalages.feature.technology.barrel.recipe.BarrelRecipe;
 import com.protyvkultury.revivalages.feature.technology.barrel.recipe.BarrelRecipeInput;
+import com.protyvkultury.revivalages.feature.technology.barrel.recipe.CountedBarrelIngredient;
 import com.protyvkultury.revivalages.feature.technology.primitive.config.PrimitiveTechnologyConfig;
 import com.protyvkultury.revivalages.feature.technology.primitive.PrimitiveMaterialsFeature;
 import java.util.List;
@@ -45,7 +47,9 @@ import org.jetbrains.annotations.Nullable;
 
 public final class BarrelBlockEntity extends BlockEntity {
 
-    private final NonNullList<ItemStack> items = NonNullList.withSize(4, ItemStack.EMPTY);
+    private static final int INPUT_SLOTS = 4;
+    private static final int OUTPUT_SLOT = 4;
+    private final NonNullList<ItemStack> items = NonNullList.withSize(5, ItemStack.EMPTY);
     private final FluidTank tank = new FluidTank(PrimitiveTechnologyConfig.BARREL_CAPACITY.get()) {
         @Override
         protected void onContentsChanged() {
@@ -67,6 +71,9 @@ public final class BarrelBlockEntity extends BlockEntity {
     };
     private int elapsedTicks;
     private int totalTicks;
+    private long clientProgressSnapshotTime = -1L;
+    private int clientProgressDuration;
+    private double clientProgressRate;
     private int rainFillTicks;
     private int rainConversionTicks;
     private BarrelRecipe activeRecipe;
@@ -92,16 +99,25 @@ public final class BarrelBlockEntity extends BlockEntity {
             barrel.resolveRecipe();
             barrel.sync();
         }
-        if (!state.getValue(BarrelBlock.SEALED)) {
-            barrel.setPreserved(false);
+        boolean sealed = state.getValue(BarrelBlock.SEALED);
+        barrel.setPreserved(sealed);
+        if (!sealed) {
             barrel.collectRain(level, pos);
-            return;
         }
-        barrel.setPreserved(true);
+        BarrelRecipe previousRecipe = barrel.activeRecipe;
         barrel.resolveRecipe();
-        if (barrel.activeRecipe == null) {
+        if (previousRecipe != barrel.activeRecipe) {
             barrel.elapsedTicks = 0;
             barrel.totalTicks = 0;
+            barrel.sync();
+        }
+        if (barrel.activeRecipe == null || !barrel.canComplete(barrel.activeRecipe)
+                || barrel.activeRecipe.requiresSeal() && !sealed) {
+            if (barrel.elapsedTicks != 0 || barrel.totalTicks != 0) {
+                barrel.elapsedTicks = 0;
+                barrel.totalTicks = 0;
+                barrel.sync();
+            }
             return;
         }
         barrel.totalTicks = Math.max(1, (int) Math.round(barrel.activeRecipe.processingTime()
@@ -116,8 +132,9 @@ public final class BarrelBlockEntity extends BlockEntity {
 
     public static void clientTick(Level level, BlockPos pos, BlockState state, BarrelBlockEntity barrel) {
         if (ContentAvailability.isEnabled(ContentKey.BARREL)
-                && state.getValue(BarrelBlock.SEALED)
                 && barrel.activeRecipe != null
+                && barrel.canComplete(barrel.activeRecipe)
+                && (!barrel.activeRecipe.requiresSeal() || state.getValue(BarrelBlock.SEALED))
                 && PrimitiveTechnologyConfig.PROGRESS_PARTICLES.get()
                 && level.getGameTime() % 40L == 0L) {
             ProgressParticleHelper.spawn(
@@ -137,7 +154,15 @@ public final class BarrelBlockEntity extends BlockEntity {
     }
 
     public ItemStack item(int slot) {
-        return slot >= 0 && slot < items.size() ? items.get(slot) : ItemStack.EMPTY;
+        return slot >= 0 && slot < INPUT_SLOTS ? items.get(slot) : ItemStack.EMPTY;
+    }
+
+    public ItemStack output() {
+        return items.get(OUTPUT_SLOT);
+    }
+
+    public ItemStack extractOutput() {
+        return extract(OUTPUT_SLOT);
     }
 
     public int slotFromHit(double x, double z) {
@@ -145,20 +170,31 @@ public final class BarrelBlockEntity extends BlockEntity {
     }
 
     public boolean canInsert(int slot, ItemStack stack) {
-        if (slot < 0 || slot >= 4 || !items.get(slot).isEmpty() || stack.isEmpty() || tank.isEmpty()) {
+        if (slot < 0 || slot >= INPUT_SLOTS || stack.isEmpty()) {
+            return false;
+        }
+        ItemStack existing = items.get(slot);
+        if (!existing.isEmpty() && !ItemStack.isSameItemSameComponents(existing, stack)) {
+            return false;
+        }
+        if (existing.getCount() >= Math.min(stack.getMaxStackSize(),
+                PrimitiveTechnologyConfig.BARREL_MAX_ITEM_STACK_SIZE.get())) {
             return false;
         }
         return level != null && level.getRecipeManager().getAllRecipesFor(BarrelFeature.RECIPE_TYPE.get()).stream()
                 .map(net.minecraft.world.item.crafting.RecipeHolder::value)
-                .anyMatch(recipe -> FluidStack.isSameFluidSameComponents(recipe.inputFluid(), tank.getFluid())
-                        && recipe.acceptsItem(stack));
+                .anyMatch(recipe -> recipe.acceptsItem(stack));
     }
 
     public void insert(int slot, ItemStack source, boolean infinite) {
         if (!canInsert(slot, source)) {
             return;
         }
-        items.set(slot, source.copyWithCount(1));
+        if (items.get(slot).isEmpty()) {
+            items.set(slot, source.copyWithCount(1));
+        } else {
+            items.get(slot).grow(1);
+        }
         if (!infinite) {
             source.shrink(1);
         }
@@ -167,12 +203,15 @@ public final class BarrelBlockEntity extends BlockEntity {
     }
 
     public ItemStack extract(int slot) {
-        if (slot < 0 || slot >= 4) {
+        return extract(slot, slot >= 0 && slot < items.size() ? items.get(slot).getCount() : 0);
+    }
+
+    public ItemStack extract(int slot, int amount) {
+        if (slot < 0 || slot >= items.size() || amount <= 0) {
             return ItemStack.EMPTY;
         }
-        ItemStack result = items.get(slot);
+        ItemStack result = items.get(slot).split(amount);
         FoodFreshnessApi.removeTrait(result, FoodFreshnessService.PRESERVED);
-        items.set(slot, ItemStack.EMPTY);
         elapsedTicks = 0;
         totalTicks = 0;
         resolveRecipe();
@@ -234,12 +273,32 @@ public final class BarrelBlockEntity extends BlockEntity {
         return totalTicks <= 0 ? 0.0D : Math.min(1.0D, elapsedTicks / (double) totalTicks);
     }
 
+    public double progressAt(long gameTime) {
+        if (level == null || !level.isClientSide || clientProgressSnapshotTime < 0L) {
+            return progress();
+        }
+        return ProgressProjection.fraction(elapsedTicks, clientProgressDuration,
+                clientProgressRate, clientProgressSnapshotTime, gameTime);
+    }
+
     public ItemStack[] itemsForView() {
-        return items.stream().map(ItemStack::copy).toArray(ItemStack[]::new);
+        return items.subList(0, INPUT_SLOTS).stream().map(ItemStack::copy).toArray(ItemStack[]::new);
     }
 
     public FluidStack recipeOutput() {
         return activeRecipe == null ? FluidStack.EMPTY : activeRecipe.resultFluid();
+    }
+
+    public ItemStack recipeItemOutput() {
+        return activeRecipe == null ? ItemStack.EMPTY : activeRecipe.resultItem();
+    }
+
+    public boolean recipeRequiresSeal() {
+        return activeRecipe != null && activeRecipe.requiresSeal();
+    }
+
+    public boolean isOutputBlocked() {
+        return activeRecipe != null && !canComplete(activeRecipe);
     }
 
     public IItemHandler itemHandler(@Nullable Direction side) {
@@ -279,23 +338,54 @@ public final class BarrelBlockEntity extends BlockEntity {
             activeRecipe = null;
             return;
         }
-        BarrelRecipeInput input = new BarrelRecipeInput(items, tank.getFluid());
+        BarrelRecipeInput input = new BarrelRecipeInput(items.subList(0, INPUT_SLOTS), tank.getFluid());
         activeRecipe = level.getRecipeManager().getRecipeFor(BarrelFeature.RECIPE_TYPE.get(), input, level)
                 .map(net.minecraft.world.item.crafting.RecipeHolder::value)
                 .orElse(null);
     }
 
+    private boolean canComplete(BarrelRecipe recipe) {
+        ItemStack result = recipe.resultItem();
+        if (!result.isEmpty()) {
+            ItemStack stored = output();
+            int limit = Math.min(result.getMaxStackSize(),
+                    PrimitiveTechnologyConfig.BARREL_MAX_ITEM_STACK_SIZE.get());
+            return result.getCount() <= limit && (stored.isEmpty() || ItemStack.isSameItemSameComponents(stored, result)
+                    && stored.getCount() + result.getCount() <= Math.min(stored.getMaxStackSize(),
+                            PrimitiveTechnologyConfig.BARREL_MAX_ITEM_STACK_SIZE.get()));
+        }
+        return recipe.resultFluid().getAmount() <= tank.getCapacity();
+    }
+
     private void completeRecipe() {
-        if (activeRecipe == null) {
+        if (activeRecipe == null || !canComplete(activeRecipe)) {
             return;
         }
-        for (int slot = 0; slot < 4; slot++) {
-            items.set(slot, ItemStack.EMPTY);
+        BarrelRecipeInput input = new BarrelRecipeInput(items.subList(0, INPUT_SLOTS), tank.getFluid());
+        int[] matchedSlots = activeRecipe.matchingSlots(input);
+        if (matchedSlots == null) {
+            return;
         }
-        tank.setFluid(activeRecipe.resultFluid());
+        for (int index = 0; index < matchedSlots.length; index++) {
+            CountedBarrelIngredient required = activeRecipe.countedIngredients().get(index);
+            items.get(matchedSlots[index]).shrink(required.count());
+        }
+        if (!activeRecipe.resultFluid().isEmpty()) {
+            tank.setFluid(activeRecipe.resultFluid());
+        } else if (!activeRecipe.inputFluid().isEmpty()) {
+            tank.setFluid(FluidStack.EMPTY);
+        }
+        ItemStack resultItem = activeRecipe.resultItem();
+        if (!resultItem.isEmpty()) {
+            if (output().isEmpty()) {
+                items.set(OUTPUT_SLOT, resultItem);
+            } else {
+                output().grow(resultItem.getCount());
+            }
+        }
         elapsedTicks = 0;
         totalTicks = 0;
-        activeRecipe = null;
+        resolveRecipe();
         sync();
     }
 
@@ -347,6 +437,9 @@ public final class BarrelBlockEntity extends BlockEntity {
         totalTicks = tag.getInt("TotalTicks");
         rainFillTicks = tag.getInt("RainFillTicks");
         rainConversionTicks = tag.getInt("RainConversionTicks");
+        clientProgressSnapshotTime = tag.contains("ProgressSnapshotTime") ? tag.getLong("ProgressSnapshotTime") : -1L;
+        clientProgressDuration = tag.getInt("ProgressDurationSnapshot");
+        clientProgressRate = tag.getDouble("ProgressRateSnapshot");
         resolveRecipe();
     }
 
@@ -395,7 +488,17 @@ public final class BarrelBlockEntity extends BlockEntity {
 
     @Override
     public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
-        return saveWithoutMetadata(registries);
+        CompoundTag tag = saveWithoutMetadata(registries);
+        if (level != null) {
+            tag.putLong("ProgressSnapshotTime", level.getGameTime());
+            tag.putInt("ProgressDurationSnapshot", activeRecipe == null ? 0 : Math.max(1,
+                    (int) Math.round(activeRecipe.processingTime()
+                            * PrimitiveTechnologyConfig.BARREL_DURATION_MULTIPLIER.get())));
+            tag.putDouble("ProgressRateSnapshot", activeRecipe != null && canComplete(activeRecipe)
+                    && (!activeRecipe.requiresSeal() || getBlockState().getValue(BarrelBlock.SEALED))
+                    ? 1.0D : 0.0D);
+        }
+        return tag;
     }
 
     private final class BarrelItemHandler implements IItemHandler {
@@ -408,12 +511,12 @@ public final class BarrelBlockEntity extends BlockEntity {
 
         @Override
         public int getSlots() {
-            return 4;
+            return items.size();
         }
 
         @Override
         public ItemStack getStackInSlot(int slot) {
-            return item(slot).copy();
+            return slot == OUTPUT_SLOT ? output().copy() : item(slot).copy();
         }
 
         @Override
@@ -432,19 +535,22 @@ public final class BarrelBlockEntity extends BlockEntity {
 
         @Override
         public ItemStack extractItem(int slot, int amount, boolean simulate) {
-            if (getBlockState().getValue(BarrelBlock.SEALED) || side != Direction.UP || amount <= 0 || item(slot).isEmpty()) {
+            ItemStack stored = getStackInSlot(slot);
+            if (getBlockState().getValue(BarrelBlock.SEALED) || side != Direction.UP
+                    || amount <= 0 || stored.isEmpty()) {
                 return ItemStack.EMPTY;
             }
-            ItemStack result = item(slot).copyWithCount(1);
+            ItemStack result = stored.copyWithCount(Math.min(amount, stored.getCount()));
             if (!simulate) {
-                extract(slot);
+                extract(slot, result.getCount());
             }
             return result;
         }
 
         @Override
         public int getSlotLimit(int slot) {
-            return 1;
+            return slot >= 0 && slot < items.size()
+                    ? PrimitiveTechnologyConfig.BARREL_MAX_ITEM_STACK_SIZE.get() : 0;
         }
 
         @Override

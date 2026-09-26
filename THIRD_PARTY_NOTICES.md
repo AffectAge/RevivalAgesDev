@@ -137,38 +137,35 @@ paths. The generated block model
 `models/block/crafting_workspace.json` is shipped as
 `models/block/construction_frame.json`; `textures/block/horizontal_rope.png` is
 shipped as `textures/block/construction_rope.png`; and only the functional
-40x30 button region of `textures/gui/emi.png` is shipped as
-`textures/gui/frame_assembly_controls.png`. The unused workspace GUI image was
-not copied.
+button region of `textures/gui/emi.png` is adapted into
+`textures/gui/frame_assembly_controls.png`. Its six button states were resized
+from 12x10 pixels to 16x16 pixels and placed in a 256x256 atlas with space for
+future controls. The unused workspace GUI image was not copied.
 
 ## HorsePower
 
-The interaction flow, worker waypoint lifecycle, work-area contract, processing
-rules, configuration defaults, and functional model structure for the Hand
-Grindstone, Animal-Powered Grindstone, Animal-Powered Chopping Block, and
-Animal-Powered Press were adapted from HorsePower by GoryMoon. The source used
-for the adaptation is the local HorsePower 2.6.4 source tree for Minecraft
-1.12.2.
+The interaction flow and functional model structure for the Hand Grindstone were
+adapted from HorsePower by GoryMoon. The source used for the adaptation is the
+local HorsePower 2.6.4 source tree for Minecraft 1.12.2.
 
 HorsePower is licensed under the GNU Lesser General Public License version 3 or
 later. A copy is included at `licenses/HorsePower-LICENSE.txt`. The implementation
-was rewritten for Minecraft 1.21.1 and NeoForge, uses the Revival Ages namespace,
-and intentionally corrects the asymmetric work-area edge check. No HorsePower
-runtime dependency or original namespace is used by gameplay code or resources.
+was rewritten for Minecraft 1.21.1 and NeoForge and uses the Revival Ages
+namespace. No HorsePower runtime dependency or original namespace is used by
+gameplay code or resources.
 
 The adapted block model geometry is shipped under
-`assets/revivalages/models/block/hand_grindstone*.json` and
-`assets/revivalages/models/block/horse_*.json`. The original grinding-content
-texture is shipped under the renamed path `textures/block/grinding_contents.png`.
-Model parents, vanilla texture names, resource locations, blockstate composition,
-and renderer transforms were adapted for Minecraft 1.21.1. The recipe-viewer
-guide atlases at `textures/gui/animal_power_grinding.png` and
-`textures/gui/animal_power_pressing.png` are original Revival Ages assets.
+`assets/revivalages/models/block/hand_grindstone*.json`. The original
+grinding-content texture is shipped under the renamed path
+`textures/block/grinding_contents.png`. Model parents, vanilla texture names,
+resource locations, blockstate composition, and renderer transforms were adapted
+for Minecraft 1.21.1. The recipe-viewer guide atlas at
+`textures/gui/animal_power_grinding.png` is an original Revival Ages asset.
 
 ## Pyrotech
 
 The Drying Rack, Barrel, Chopping Block, Pit Kiln, Soaking Pot, Tanning Rack,
-Stone Sawmill, Stone Oven, Stone Kiln, Stone Crucible, granite Anvil, thatch,
+Stone Sawmill, Stone Oven, Stone Kiln, Stone Crucible, Anvil gameplay, thatch,
 Pit Burn piles, Flint and Tinder, Wood Torch, wooden and clay buckets,
 primitive material item, and model geometry were adapted from Pyrotech by
 codetaylor. The source project is available at
@@ -197,6 +194,18 @@ The Chopping Block wood-chip accumulation models from
 paths in the Revival Ages namespace. They use the existing Revival Ages wood-chip
 texture and reproduce the functional five-stage placement around and above the
 block.
+
+The Anvil model at `assets/revivalages/models/block/anvil.json` is the author's
+Blockbench geometry, with an inset upper slab and a full-width lower slab. Its
+smooth-stone damage textures at `textures/block/anvil_smooth_stone_damaged_[a-c].png`
+were generated for Revival Ages using the Pyrotech granite Anvil damage stages
+as visual references. Damage is confined to the upper face.
+
+The Chopping Block's previously adapted
+`chopping_block_core.json` geometry was extended into a single slab in place of
+the separate `chopping_block_bark_[a-f].json` parts. Its upper face shows the
+damage stages, and its item models use the same slab. The referenced Pyrotech
+assets are under the Apache License 2.0 noted above.
 
 The Campfire visual-state contract was adapted from
 `assets/pyrotech/blockstates/campfire.json`,
@@ -247,12 +256,6 @@ The Wood Torch volumetric standing and wall geometry was adapted from
 `assets/revivalages/models/block/wood_wall_torch_base.json`. Its timestamp-based
 burning, rain, particles, collision damage, and state-dependent drops were
 adapted from the corresponding torch block and tile paths.
-
-The Storage Barrel reuses the already adapted barrel side, bottom, inside, and
-lid models and textures through the renamed
-`assets/revivalages/models/block/storage_barrel*.json` paths. Its general storage
-and sealed-access lifecycle was adapted separately from the source storage
-container contract; the processing Barrel semantics remain unchanged.
 
 ## Athenaeum
 

@@ -63,10 +63,7 @@ public final class AnvilFeature implements FeatureModule {
     @Override
     public ContentPolicy contentPolicy() {
         return ContentPolicy.gameplay("anvil")
-                .define(
-                        ContentKey.ANVIL,
-                        () -> PrimitiveTechnologyConfig.contentEnabled(ContentKey.ANVIL)
-                )
+                .define(ContentKey.ANVIL)
                 .items(ContentKey.ANVIL, "anvil")
                 .sharedItems(Set.of(ContentKey.ANVIL, ContentKey.CONSTRUCTION_FRAME), "stone_hammer")
                 .build();

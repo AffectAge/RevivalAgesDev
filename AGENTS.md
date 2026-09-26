@@ -90,10 +90,11 @@ license and attribution.
   `not applicable` or `blocked` exactly as that document requires.
 - All listed integrations are optional. Revival Ages must compile its base code,
   load, create worlds, and run dedicated servers when none of them are installed.
-- Never claim support without testing against a Minecraft 1.21.1-compatible build.
-  If a listed mod has no compatible release or stable API for the target, document
-  the blocked integration instead of adding an incompatible dependency or a fake
-  adapter.
+- Never claim support without evidence from a Minecraft 1.21.1-compatible build
+  or an explicitly requested verification run. Do not create automated tests to
+  obtain that evidence unless the user explicitly asks for test work. If a listed
+  mod has no compatible release or stable API for the target, document the blocked
+  integration instead of adding an incompatible dependency or a fake adapter.
 - Isolate every reference to `net.minecraft.client.*` under `client`.
 - Prefer data packs, tags, recipes, loot tables, data maps, and codecs over hard-
   coded content lists and ad-hoc JSON parsing.
@@ -102,34 +103,27 @@ license and attribution.
 
 ## Configuration
 
+- Register exactly one configuration file, `config/revivalages.toml`. Server
+  balance and client presentation settings use distinct sections in that file;
+  features must not register additional config specs or filenames.
 - Every gameplay-significant value must be exposed through the appropriate
   Revival Ages configuration instead of being fixed in Java. This includes
   timings, capacities, ranges, damage, durability, chances, multipliers, limits,
   environmental modifiers, automation policy, and feature-specific balance.
-- Every independently usable content feature or machine must have a server
-  configuration toggle that defaults to enabled. Content toggles may require a
-  restart, but must never change the registry set.
+- Do not add configuration switches that disable a block, item, machine, feature
+  family, or gameplay system. Revival Ages content is always available. Boolean
+  settings may control presentation or a narrow behavior option, but must not
+  remove the owning content or its core gameplay loop.
 - Every `FeatureModule` must declare a `ContentPolicy`. Gameplay policies define
-  stable content keys, parents, configured suppliers, and every public item/block
-  membership. `core` and `creative_tab` are the only infrastructure policies.
+  stable content keys, parents, and every public item/block membership. `core`
+  and `creative_tab` are the only infrastructure policies.
   Missing, duplicate, cyclic, or unclassified declarations are build/startup
   failures, never review-only findings.
 - Register every public block, item, block entity, menu, recipe type, serializer,
-  payload type, and other registry object unconditionally. Disabled content must
-  be hidden from creative tabs and normal acquisition, contribute no enabled
-  crafting or processing recipes, loot, world generation, or optional-integration
-  displays, and perform no gameplay behavior.
-- Existing disabled blocks and items must load and preserve all serialized state.
-  Placed machines remain inert, return a clear server-authoritative disabled
-  message when used, and can be retained or removed without item loss. Disabling
-  content must not create missing mappings or corrupt existing worlds.
-- Group toggles may disable a complete feature family, but each public machine or
-  independent content unit must also be individually controllable. Dependencies
-  between toggles must be explicit, validated, and reported; never silently
-  re-enable disabled content.
-- Apply content toggles through server-authoritative behavior checks and supported
-  data load conditions or provider filtering. Never leave unresolved recipes,
-  tags, loot, worldgen references, creative-tab entries, or integration entries.
+  payload type, and other registry object unconditionally and keep its normal
+  acquisition, creative visibility, data, integrations, and gameplay behavior
+  available. Legacy content-condition codecs may remain for data-pack
+  compatibility, but built-in policies must resolve every content key as enabled.
 
 ## Repository hygiene
 
@@ -198,12 +192,12 @@ license and attribution.
   Do not replace these contracts with decorative blocks or fluid-specific item
   lists.
 - The Revival Ages creative tab is registry-driven and progression-ordered like
-  the designated reference's tab. Every new enabled public registered item must
+  the designated reference's tab. Every new public registered item must
   appear automatically. Add
   known content to the centralized progression order; retain deterministic
-  registry-ID fallback ordering so an omitted enabled entry remains visible.
-  Disabled content must remain hidden. Internal state blocks must not receive
-  artificial BlockItems merely to expose them.
+  registry-ID fallback ordering so an omitted public entry remains visible.
+  Internal state blocks must not receive artificial BlockItems merely to expose
+  them.
 - For reference-derived surface deposits, parity includes every visual variant
   and weighted random state, placement and support rules, waterlogging, collision
   and selection shapes, creative variation cycling, drops, splitter recombination,
@@ -216,30 +210,28 @@ license and attribution.
   into Revival Ages' shared core first; do not substitute a mechanism-local
   manual approximation.
 
-## Required verification
+## Verification and automated tests
 
-Use the smallest relevant checks while developing, then run the full applicable
-set before declaring work complete:
+Automated tests are opt-in. Do not create, modify, restore, or require unit
+tests, GameTests, test templates, test-only Gradle runs, or test gates unless the
+user explicitly requests test work in the current task. Do not infer that request
+from a Java, data, gameplay, integration, configuration, bug-fix, release, or
+handoff change.
 
-1. `./gradlew compileJava` for Java changes.
-2. `./gradlew runData` for providers or generated-resource changes; review the
-   diff after generation.
-3. `./gradlew test` for pure Java logic.
-4. `./gradlew runGameTestServer` when GameTests exist and gameplay behavior
-   changed.
-5. `./gradlew build` before release or handoff.
-6. Start `runServer` for changes that could cross physical sides. A client launch
-   alone is not sufficient.
-7. For every affected optional integration, test both with the mod present and
-   absent. For client display integrations, also verify a dedicated server without
-   the client-only companion installed.
-8. For every affected content toggle, test both enabled and disabled
-   configurations. Verify that registry IDs remain present and identical, enabled
-   behavior works, disabled content is inert and unavailable through normal
-   acquisition or data, serialized state is preserved, and existing worlds load
-   without missing mappings or item loss.
-9. Run `runGameTestServerContentDisabled` for changes to gameplay content,
-   acquisition, worldgen, capabilities, payloads, or optional integrations.
+When the user explicitly requests tests, cover only the critical behavior named
+in that request. Critical behavior is limited to data loss or duplication,
+world/save corruption or migration, registry identity, server authority and
+network validation, security-sensitive permissions, crashes, or an explicitly
+identified gameplay invariant. Do not add tests for presentation, layout, model
+transforms, colors, translations, sounds, ordinary recipes, or convenience
+regressions unless the user specifically asks for them.
+
+Use the smallest relevant non-test check requested by the user or required to
+perform the requested change. `compileJava` is appropriate for Java changes and
+`runData` is appropriate for data-provider changes. Run `build`, `runServer`,
+client launches and optional-mod matrix checks only
+when the user explicitly requests those checks or the task is a release/handoff.
+Never describe an unrun check as passed.
 
 On Windows use `gradlew.bat`. Never accept a warning, missing model, missing
 translation, registry error, data-pack error, or dedicated-server classloading
@@ -247,9 +239,10 @@ failure as expected behavior.
 
 ## Definition of done
 
-A feature is complete only when registration, server-authoritative behavior,
-client presentation, resources/datagen, translations, recipes/tags/loot,
-configuration, content toggles, migration compatibility, and relevant tests are all
-addressed. The feature's integration assessment for the required compatibility
-list must also be complete. Update architecture documentation when a package
-boundary or dependency direction changes.
+A feature is complete when its requested registration, server-authoritative
+behavior, client presentation, resources/datagen, translations, recipes/tags/loot,
+configuration, migration compatibility, and documentation are
+addressed. Automated tests are included only when the user explicitly requested
+them. The feature's integration assessment for the required compatibility list
+must also be complete. Update architecture documentation when a package boundary
+or dependency direction changes.

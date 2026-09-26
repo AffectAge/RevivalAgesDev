@@ -35,8 +35,8 @@ final class FrameAssemblyEmiWidget extends Widget {
         this.height = height;
         this.ingredients = ingredients;
         buttons = List.of(
-                new ButtonWidget(x + 64, y, 12, 10, 16, 0, CONTROLS, () -> layer < 3, this::up),
-                new ButtonWidget(x + 64, y + 10, 12, 10, 28, 0, CONTROLS, () -> layer > 0, this::down)
+                new ButtonWidget(x + width - 18, y + 2, 16, 16, 0, 0, CONTROLS, () -> layer < 3, this::up),
+                new ButtonWidget(x + width - 18, y + 18, 16, 16, 16, 0, CONTROLS, () -> layer > 0, this::down)
         );
         for (int gridLayer = 0; gridLayer < 3; gridLayer++) {
             List<SlotWidget> slots = new ArrayList<>();

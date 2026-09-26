@@ -38,7 +38,6 @@ public enum ContentKey {
     CHOPPING_BLOCK("chopping_block", PRIMITIVE_TECHNOLOGY),
     PIT_KILN("pit_kiln", PRIMITIVE_TECHNOLOGY),
     BARREL("barrel", PRIMITIVE_TECHNOLOGY),
-    STORAGE_BARREL("storage_barrel", PRIMITIVE_TECHNOLOGY),
     SOAKING_POT("soaking_pot", PRIMITIVE_TECHNOLOGY),
     TANNING_RACK("tanning_rack", PRIMITIVE_TECHNOLOGY),
     STONE_SAWMILL("stone_sawmill", PRIMITIVE_TECHNOLOGY),
@@ -52,11 +51,7 @@ public enum ContentKey {
     WOODEN_BUCKET("wooden_bucket", PRIMITIVE_TECHNOLOGY),
     CLAY_BUCKET("clay_bucket", PRIMITIVE_TECHNOLOGY),
 
-    ANIMAL_POWER("animal_power"),
-    HAND_GRINDSTONE("hand_grindstone", ANIMAL_POWER),
-    HORSE_GRINDSTONE("horse_grindstone", ANIMAL_POWER),
-    HORSE_CHOPPING_BLOCK("horse_chopping_block", ANIMAL_POWER),
-    HORSE_PRESS("horse_press", ANIMAL_POWER);
+    HAND_GRINDSTONE("hand_grindstone");
 
     private final String path;
     private final List<ContentKey> parents;

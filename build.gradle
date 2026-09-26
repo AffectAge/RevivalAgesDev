@@ -173,8 +173,6 @@ neoForge {
                         providers.gradleProperty("quickPlayWorld").get()
                 )
             }
-            // Comma-separated list of namespaces to load gametests from. Empty = all namespaces.
-            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
         }
 
         server {
@@ -183,23 +181,6 @@ neoForge {
                 gameDirectory = project.file(providers.gradleProperty("serverGameDirectory").get())
             }
             programArgument '--nogui'
-            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
-        }
-
-        // This run config launches GameTestServer and runs all registered gametests, then exits.
-        // By default, the server will crash when no gametests are provided.
-        // The gametest system is also enabled by default for other run configs under the /test command.
-        gameTestServer {
-            type = "gameTestServer"
-            gameDirectory = project.file('run-gametest-content-enabled')
-            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
-        }
-
-        gameTestServerContentDisabled {
-            type = "gameTestServer"
-            gameDirectory = project.file('run-gametest-content-disabled')
-            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
-            systemProperty 'revivalages.test.forceAllContentDisabled', 'true'
         }
 
         data {

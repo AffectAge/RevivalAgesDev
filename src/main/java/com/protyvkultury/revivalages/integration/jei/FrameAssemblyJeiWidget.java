@@ -41,8 +41,8 @@ final class FrameAssemblyJeiWidget implements ISlottedRecipeWidget, IJeiGuiEvent
         this.ingredients = ingredients;
         this.helpers = helpers;
         buttons = List.of(
-                new LayerButton(x + 64, y, 16, () -> layer < 3, () -> layer++),
-                new LayerButton(x + 64, y + 10, 28, () -> layer > 0, () -> layer--)
+                new LayerButton(x + 76, y + 2, 0, () -> layer < 3, () -> layer++),
+                new LayerButton(x + 76, y + 18, 16, () -> layer > 0, () -> layer--)
         );
     }
 
@@ -157,7 +157,7 @@ final class FrameAssemblyJeiWidget implements ISlottedRecipeWidget, IJeiGuiEvent
     ) {
 
         private boolean contains(double mouseX, double mouseY) {
-            return mouseX > x && mouseX < x + 12 && mouseY > y && mouseY < y + 10;
+            return mouseX >= x && mouseX < x + 16 && mouseY >= y && mouseY < y + 16;
         }
 
         private boolean click() {
@@ -170,9 +170,9 @@ final class FrameAssemblyJeiWidget implements ISlottedRecipeWidget, IJeiGuiEvent
         }
 
         private void draw(GuiGraphics graphics, double mouseX, double mouseY) {
-            int v = !active.getAsBoolean() ? 20 : contains(mouseX, mouseY) ? 10 : 0;
+            int v = !active.getAsBoolean() ? 32 : contains(mouseX, mouseY) ? 16 : 0;
             RenderSystem.enableDepthTest();
-            graphics.blit(CONTROLS, x, y, u, v, 12, 10);
+            graphics.blit(CONTROLS, x, y, u, v, 16, 16);
         }
     }
 }

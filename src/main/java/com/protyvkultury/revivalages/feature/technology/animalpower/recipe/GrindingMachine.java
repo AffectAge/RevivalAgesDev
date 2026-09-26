@@ -4,8 +4,7 @@ import com.mojang.serialization.Codec;
 import net.minecraft.util.StringRepresentable;
 
 public enum GrindingMachine implements StringRepresentable {
-    HAND("hand"),
-    ANIMAL("animal");
+    HAND("hand");
 
     public static final Codec<GrindingMachine> CODEC = StringRepresentable.fromEnum(GrindingMachine::values);
 

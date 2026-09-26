@@ -87,12 +87,12 @@ public final class BarrelBlock extends BaseEntityBlock {
             return ItemInteractionResult.sidedSuccess(level.isClientSide);
         }
         int slot = barrel.slotFromHit(hit.getLocation().x - pos.getX(), hit.getLocation().z - pos.getZ());
-        if (!barrel.item(slot).isEmpty()) {
-            return ItemInteractionResult.CONSUME;
-        }
         if (barrel.canInsert(slot, stack)) {
             return ItemStackInteraction.insert(level, true,
                     () -> barrel.insert(slot, stack, player.hasInfiniteMaterials()));
+        }
+        if (!barrel.item(slot).isEmpty()) {
+            return ItemInteractionResult.CONSUME;
         }
         return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
     }
@@ -112,6 +112,9 @@ public final class BarrelBlock extends BaseEntityBlock {
             return InteractionResult.sidedSuccess(level.isClientSide);
         }
         int slot = barrel.slotFromHit(hit.getLocation().x - pos.getX(), hit.getLocation().z - pos.getZ());
+        if (!barrel.output().isEmpty()) {
+            return ItemStackInteraction.extract(level, pos, player, barrel.output(), barrel::extractOutput);
+        }
         if (!barrel.item(slot).isEmpty()) {
             return ItemStackInteraction.extract(level, pos, player, barrel.item(slot), () -> barrel.extract(slot));
         }

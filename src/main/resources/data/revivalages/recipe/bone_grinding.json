@@ -1,9 +1,9 @@
 {
-  "neoforge:conditions": [{"type":"revivalages:any_content_enabled","contents":["revivalages:hand_grindstone","revivalages:horse_grindstone"],"enabled":true}],
+  "neoforge:conditions": [{"type":"revivalages:any_content_enabled","contents":["revivalages:hand_grindstone"],"enabled":true}],
   "type": "revivalages:grinding",
   "ingredient": { "item": "minecraft:bone" },
   "input_count": 1,
   "result": { "id": "minecraft:bone_meal", "count": 3 },
   "work_points": 12,
-  "machines": ["hand", "animal"]
+  "machines": ["hand"]
 }

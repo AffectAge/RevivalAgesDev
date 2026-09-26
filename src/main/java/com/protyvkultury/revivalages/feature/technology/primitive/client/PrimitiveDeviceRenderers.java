@@ -277,6 +277,16 @@ public final class PrimitiveDeviceRenderers {
                 }
                 pose.popPose();
             }
+            if (!barrel.output().isEmpty()) {
+                pose.pushPose();
+                pose.translate(0.5D, 14.0D / 16.0D, 0.5D);
+                pose.scale(3.0F / 16.0F, 3.0F / 16.0F, 3.0F / 16.0F);
+                PrimitiveRenderHelper.renderItem(items, barrel, barrel.output(), pose, buffers, light, overlay, 4);
+                if (PrimitiveTechnologyClientConfig.SHOW_PHYSICAL_ITEM_COUNTS.get()) {
+                    InteractionPreviewRenderer.renderCount(barrel.output(), pose, buffers, light);
+                }
+                pose.popPose();
+            }
             Minecraft minecraft = Minecraft.getInstance();
             if (isTargeted(barrel, minecraft, Direction.UP)
                     && PrimitiveTechnologyClientConfig.SHOW_INTERACTION_PREVIEWS.get()) {

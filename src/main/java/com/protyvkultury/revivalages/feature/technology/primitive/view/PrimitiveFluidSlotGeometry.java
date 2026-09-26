@@ -18,8 +18,6 @@ public record PrimitiveFluidSlotGeometry(int contentX, int contentY, int content
             new PrimitiveFluidSlotGeometry(17, 30, SIZE, SIZE);
     public static final PrimitiveFluidSlotGeometry STONE_CRUCIBLE_OUTPUT =
             new PrimitiveFluidSlotGeometry(73, 11, SIZE, SIZE);
-    public static final PrimitiveFluidSlotGeometry PRESSING_OUTPUT =
-            new PrimitiveFluidSlotGeometry(97, 16, SIZE, SIZE);
 
     public PrimitiveFluidSlotGeometry {
         if (contentX < 1 || contentY < 1) {

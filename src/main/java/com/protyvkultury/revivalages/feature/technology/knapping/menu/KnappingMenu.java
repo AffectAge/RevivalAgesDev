@@ -81,7 +81,7 @@ public final class KnappingMenu extends ItemBackedMenu {
         }
         KnappingType type = type(player).orElse(null);
         ItemStack target = targetStack();
-        if (type == null || !validTarget(type, target)) {
+        if (type == null || !validTarget(player, type, target)) {
             player.closeContainer();
             return;
         }
@@ -140,11 +140,14 @@ public final class KnappingMenu extends ItemBackedMenu {
         super.removed(player);
     }
 
-    private boolean validTarget(KnappingType type, ItemStack target) {
+    private boolean validTarget(Player player, KnappingType type, ItemStack target) {
         if (hasBeenModified && !type.consumeAfterComplete()) {
             return target.isEmpty() || ItemStack.isSameItemSameComponents(target, initialInput);
         }
-        return type.input().test(target)
+        boolean matchesInput = player.getAbilities().instabuild
+                ? type.input().ingredient().test(target)
+                : type.input().test(target);
+        return matchesInput
                 && ItemStack.isSameItemSameComponents(target, initialInput);
     }
 
