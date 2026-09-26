@@ -8,6 +8,7 @@ import com.protyvkultury.revivalages.feature.content.ContentPolicy;
 import com.protyvkultury.revivalages.feature.technology.barrel.block.BarrelBlock;
 import com.protyvkultury.revivalages.feature.technology.barrel.blockentity.BarrelBlockEntity;
 import com.protyvkultury.revivalages.feature.technology.barrel.item.BarrelBlockItem;
+import com.protyvkultury.revivalages.feature.technology.barrel.item.BarrelLidItem;
 import com.protyvkultury.revivalages.feature.technology.barrel.recipe.BarrelRecipe;
 import com.protyvkultury.revivalages.feature.technology.barrel.recipe.BarrelRecipeSerializer;
 import com.protyvkultury.revivalages.feature.technology.barrel.storage.StorageBarrelBlock;
@@ -50,7 +51,8 @@ public final class BarrelFeature implements FeatureModule {
             properties -> new BarrelBlockItem(BARREL.get(), properties),
             new Item.Properties()
     );
-    public static final DeferredItem<Item> BARREL_LID = ITEMS.registerSimpleItem("barrel_lid", new Item.Properties().stacksTo(16));
+    public static final DeferredItem<BarrelLidItem> BARREL_LID = ITEMS.registerItem(
+            "barrel_lid", BarrelLidItem::new, new Item.Properties().stacksTo(16));
     public static final DeferredBlock<StorageBarrelBlock> STORAGE_BARREL = BLOCKS.registerBlock(
             "storage_barrel",
             StorageBarrelBlock::new,

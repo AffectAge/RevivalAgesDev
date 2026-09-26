@@ -58,6 +58,7 @@ public final class CampfireBlockEntity extends BlockEntity {
     private long clientSnapshotTime = -1L;
     private int clientFuelTicks;
     private double clientProgressSpeed;
+    private int clientBurnedFoodTicks;
 
     public CampfireBlockEntity(BlockPos pos, BlockState state) {
         super(CampfireFeature.BLOCK_ENTITY.get(), pos, state);
@@ -366,6 +367,22 @@ public final class CampfireBlockEntity extends BlockEntity {
         return Math.clamp(predicted / totalTime, 0.0D, 1.0D);
     }
 
+    public double burnProgressAt(long gameTime) {
+        if (!completed) {
+            return 0.0D;
+        }
+        if (burned) {
+            return 1.0D;
+        }
+        int duration = level != null && level.isClientSide && clientBurnedFoodTicks > 0
+                ? clientBurnedFoodTicks
+                : PrimitiveTechnologyConfig.CAMPFIRE_BURNED_FOOD_TICKS.get();
+        long elapsed = level != null && level.isClientSide && clientSnapshotTime >= 0L && lit
+                ? Math.max(0L, gameTime - clientSnapshotTime)
+                : 0L;
+        return Math.clamp((burnOutputTicks + elapsed) / (double) Math.max(1, duration), 0.0D, 1.0D);
+    }
+
     public int remainingFuelTicksAt(long gameTime) {
         int ticks = level != null && level.isClientSide && clientSnapshotTime >= 0L
                 ? clientFuelTicks
@@ -539,6 +556,7 @@ public final class CampfireBlockEntity extends BlockEntity {
         clientSnapshotTime = tag.contains("SnapshotGameTime") ? tag.getLong("SnapshotGameTime") : -1L;
         clientFuelTicks = tag.getInt("FuelTicksSnapshot");
         clientProgressSpeed = tag.getDouble("ProgressSpeedSnapshot");
+        clientBurnedFoodTicks = tag.getInt("BurnedFoodTicksSnapshot");
     }
 
     @Override
@@ -579,6 +597,7 @@ public final class CampfireBlockEntity extends BlockEntity {
             tag.putLong("SnapshotGameTime", level.getGameTime());
             tag.putInt("FuelTicksSnapshot", remainingFuelTicks());
             tag.putDouble("ProgressSpeedSnapshot", cookingSpeed());
+            tag.putInt("BurnedFoodTicksSnapshot", PrimitiveTechnologyConfig.CAMPFIRE_BURNED_FOOD_TICKS.get());
         }
         return tag;
     }

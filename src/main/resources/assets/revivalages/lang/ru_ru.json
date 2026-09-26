@@ -131,6 +131,7 @@
   "jade.revivalages.campfire.burn_time": "Время топлива: %s с",
   "jade.revivalages.campfire.burned": "Сгорело",
   "tooltip.revivalages.tinder.place": "Разместите на земле, чтобы создать костёр.",
+  "tooltip.revivalages.barrel_lid.seal": "Используйте на верхней стороне бочки, чтобы закрыть её.",
   "config.revivalages.interaction_outline_color": "Цвет рамки взаимодействия",
   "jade.revivalages.chopping.damage": "Повреждение колоды: %s/%s",
   "jade.revivalages.chopping.chips": "Щепа: %s",

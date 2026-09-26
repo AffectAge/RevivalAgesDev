@@ -13,6 +13,7 @@ import com.protyvkultury.revivalages.feature.technology.pitkiln.blockentity.PitK
 import com.protyvkultury.revivalages.api.size.SizeApi;
 import com.protyvkultury.revivalages.api.food.FoodFreshnessApi;
 import com.protyvkultury.revivalages.feature.technology.primitive.config.PrimitiveTechnologyConfig;
+import com.protyvkultury.revivalages.feature.technology.primitive.PrimitiveMaterialsFeature;
 import com.protyvkultury.revivalages.feature.technology.soakingpot.blockentity.SoakingPotBlockEntity;
 import com.protyvkultury.revivalages.feature.technology.tanningrack.blockentity.TanningRackBlockEntity;
 import com.protyvkultury.revivalages.feature.technology.pitburn.PitBurnFeature;
@@ -62,6 +63,10 @@ public enum PrimitiveDeviceComponentProvider implements IBlockComponentProvider 
         ItemStack output = campfire.recipeOutput();
         if (campfire.isBurned()) {
             appendItemProgress(tooltip, output.isEmpty() ? input : output, campfire.cookingStack(), 1.0D);
+        } else if (campfire.isCompleted()) {
+            appendItemProgress(tooltip, campfire.cookingStack(),
+                    new ItemStack(PrimitiveMaterialsFeature.BURNED_FOOD.get()),
+                    campfire.burnProgressAt(accessor.getLevel().getGameTime()));
         } else {
             appendItemProgress(tooltip, input.isEmpty() ? campfire.cookingStack() : input,
                     output, campfire.progressAt(accessor.getLevel().getGameTime()));

@@ -143,6 +143,7 @@
   "jade.revivalages.campfire.burn_time": "Fuel time: %s s",
   "jade.revivalages.campfire.burned": "Burned",
   "tooltip.revivalages.tinder.place": "Place on the ground to start a campfire.",
+  "tooltip.revivalages.barrel_lid.seal": "Use on top of a barrel to seal it.",
   "config.revivalages.interaction_outline_color": "Interaction outline color",
   "jade.revivalages.chopping.damage": "Block damage: %s/%s",
   "jade.revivalages.chopping.remaining_chops": "Chops left before breaking: %s",

@@ -127,7 +127,7 @@ public final class DryingRackRenderer implements BlockEntityRenderer<DryingRackB
         }
         int slot = block.interactionSlot(rack.getBlockState(), hit);
         AABB bounds = rack.getSlotCount() == 1
-                ? new AABB(0.0D, 11.0D / 16.0D, 11.0D / 16.0D, 1.0D, 1.0D, 1.0D)
+                ? new AABB(0.1D, 0.1D, 0.81D, 0.9D, 0.9D, 0.89D)
                 : normalSlotBounds(slot);
         if (DryingRackClientConfig.SHOW_INTERACTION_BOUNDS.get()) {
             int color = InteractionOutlineConfig.rgb();
@@ -176,15 +176,15 @@ public final class DryingRackRenderer implements BlockEntityRenderer<DryingRackB
     }
 
     private static AABB normalSlotBounds(int slot) {
-        double minX = (slot & 1) == 0 ? 0.0D : 0.5D;
-        double minZ = (slot & 2) == 0 ? 0.0D : 0.5D;
+        double x = (slot & 1) == 0 ? 0.3125D : 0.6875D;
+        double z = (slot & 2) == 0 ? 0.3125D : 0.6875D;
         return new AABB(
-                minX,
-                11.0D / 16.0D,
-                minZ,
-                minX + 0.5D,
-                12.0D / 16.0D,
-                minZ + 0.5D);
+                x - 0.16D,
+                0.75D,
+                z - 0.16D,
+                x + 0.16D,
+                0.8125D,
+                z + 0.16D);
     }
 
     private void renderStack(
