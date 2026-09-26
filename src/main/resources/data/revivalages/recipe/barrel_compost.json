@@ -1,0 +1,11 @@
+{
+  "neoforge:conditions": [{"type":"revivalages:content_enabled","content":"revivalages:barrel","enabled":true}],
+  "type": "revivalages:barrel",
+  "items": [
+    {"ingredient": {"item": "minecraft:oak_leaves"}, "count": 8},
+    {"ingredient": {"item": "minecraft:rotten_flesh"}, "count": 2}
+  ],
+  "result_item": {"id": "minecraft:dirt", "count": 2},
+  "requires_seal": false,
+  "processing_time": 2400
+}

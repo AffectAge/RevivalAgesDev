@@ -257,12 +257,6 @@ The Wood Torch volumetric standing and wall geometry was adapted from
 burning, rain, particles, collision damage, and state-dependent drops were
 adapted from the corresponding torch block and tile paths.
 
-The Storage Barrel reuses the already adapted barrel side, bottom, inside, and
-lid models and textures through the renamed
-`assets/revivalages/models/block/storage_barrel*.json` paths. Its general storage
-and sealed-access lifecycle was adapted separately from the source storage
-container contract; the processing Barrel semantics remain unchanged.
-
 ## Athenaeum
 
 The item interaction semantics, including its shared item-extraction sound,

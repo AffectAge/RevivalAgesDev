@@ -155,13 +155,20 @@
   "jade.revivalages.pit_kiln.stage.wood": "Fuel",
   "jade.revivalages.pit_kiln.stage.active": "Firing",
   "jade.revivalages.pit_kiln.stage.complete": "Complete",
-  "jade.revivalages.pit_kiln.structure.valid": "Structure: Valid",
-  "jade.revivalages.pit_kiln.structure.invalid": "Structure: Invalid",
+  "jade.revivalages.pit_kiln.structure.valid": "Structure is valid",
+  "jade.revivalages.pit_kiln.structure.invalid": "Structure is invalid",
+  "jade.revivalages.pit_kiln.firing": "Firing in progress",
+  "jade.revivalages.pit_kiln.add_thatch": "Add thatch",
+  "jade.revivalages.pit_kiln.add_logs_ignite": "Add three logs and ignite",
+  "jade.revivalages.pit_kiln.item_size.empty": "Input size: Empty",
+  "message.revivalages.pit_kiln.input_full": "Pit Kiln is full",
+  "message.revivalages.pit_kiln.input_too_large": "This item is too large for the Pit Kiln",
   "jade.revivalages.pit_kiln.logs": "Logs: %s/%s",
   "jade.revivalages.pit_kiln.invalid_grace": "Structure failure: %s/%s ticks",
   "jade.revivalages.barrel.state.sealed": "Sealed",
   "jade.revivalages.barrel.state.open": "Open",
   "jade.revivalages.barrel.processing": "Processing",
+  "jade.revivalages.barrel.output_blocked": "Collect the output",
   "jade.revivalages.barrel.result": "Result: %s (%s mB)",
   "jade.revivalages.soaking_pot.no_heat": "No lit campfire below",
   "jade.revivalages.tanning.sky.clear": "Sky access: Clear",
@@ -397,7 +404,7 @@
   ,"size.revivalages.huge": "Huge"
   ,"config.jade.plugin_revivalages.item_size": "Item Size"
   ,"jade.revivalages.item_size.maximum": "Maximum item size: %s"
-  ,"jade.revivalages.pit_kiln.item_size": "Input size: %s; capacity: %s"
+  ,"jade.revivalages.pit_kiln.item_size": "Input size: %s"
   ,"content.revivalages.carried_weight": "Carried Weight"
   ,"attribute.name.revivalages.carry_capacity_bonus": "Carrying Capacity Bonus"
   ,"effect.revivalages.overloaded": "Overloaded"
@@ -422,12 +429,4 @@
   ,"tooltip.revivalages.wood_torch.burns_up.false": "Does not burn out"
   ,"tooltip.revivalages.wood_torch.rain_extinguishes.true": "Extinguished by rain"
   ,"tooltip.revivalages.wood_torch.rain_extinguishes.false": "Not extinguished by rain"
-  ,"block.revivalages.storage_barrel": "Storage Barrel"
-  ,"container.revivalages.storage_barrel": "Storage Barrel"
-  ,"content.revivalages.storage_barrel": "Storage Barrel"
-  ,"jade.revivalages.storage_barrel.sealed.true": "Sealed"
-  ,"jade.revivalages.storage_barrel.sealed.false": "Open"
-  ,"jade.revivalages.storage_barrel.capacity": "Capacity: %s slots"
-  ,"jade.revivalages.storage_barrel.preserved": "Food preservation active"
-  ,"config.jade.plugin_revivalages.storage_barrel": "Storage Barrel Details"
 }

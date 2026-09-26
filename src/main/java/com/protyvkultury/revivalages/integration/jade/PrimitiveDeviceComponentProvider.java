@@ -9,8 +9,8 @@ import com.protyvkultury.revivalages.feature.technology.campfire.blockentity.Cam
 import com.protyvkultury.revivalages.feature.technology.choppingblock.block.ChoppingBlock;
 import com.protyvkultury.revivalages.feature.technology.choppingblock.blockentity.ChoppingBlockEntity;
 import com.protyvkultury.revivalages.feature.technology.pitkiln.block.PitKilnBlock;
+import com.protyvkultury.revivalages.feature.technology.pitkiln.block.PitKilnStage;
 import com.protyvkultury.revivalages.feature.technology.pitkiln.blockentity.PitKilnBlockEntity;
-import com.protyvkultury.revivalages.api.size.SizeApi;
 import com.protyvkultury.revivalages.api.food.FoodFreshnessApi;
 import com.protyvkultury.revivalages.feature.technology.primitive.config.PrimitiveTechnologyConfig;
 import com.protyvkultury.revivalages.feature.technology.primitive.PrimitiveMaterialsFeature;
@@ -27,6 +27,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.fluids.FluidStack;
 import snownee.jade.api.BlockAccessor;
 import snownee.jade.api.IBlockComponentProvider;
@@ -44,10 +45,18 @@ public enum PrimitiveDeviceComponentProvider implements IBlockComponentProvider 
 
     @Override
     public void appendTooltip(ITooltip tooltip, BlockAccessor accessor, IPluginConfig config) {
+        if (accessor.getBlockState().is(Blocks.FIRE)) {
+            if (accessor.getLevel().getBlockEntity(accessor.getPosition().below())
+                    instanceof PitKilnBlockEntity kiln
+                    && kiln.getBlockState().getValue(PitKilnBlock.STAGE) == PitKilnStage.ACTIVE) {
+                appendPitKiln(tooltip, accessor, kiln, true);
+            }
+            return;
+        }
         switch (accessor.getBlockEntity()) {
             case CampfireBlockEntity campfire -> appendCampfire(tooltip, accessor, campfire);
             case ChoppingBlockEntity chopping -> appendChopping(tooltip, accessor, chopping);
-            case PitKilnBlockEntity kiln -> appendPitKiln(tooltip, accessor, kiln);
+            case PitKilnBlockEntity kiln -> appendPitKiln(tooltip, accessor, kiln, false);
             case BarrelBlockEntity barrel -> appendBarrel(tooltip, accessor, barrel);
             case SoakingPotBlockEntity pot -> appendSoakingPot(tooltip, accessor, pot);
             case TanningRackBlockEntity rack -> appendTanningRack(tooltip, accessor, rack);
@@ -107,14 +116,28 @@ public enum PrimitiveDeviceComponentProvider implements IBlockComponentProvider 
         }
     }
 
-    private static void appendPitKiln(ITooltip tooltip, BlockAccessor accessor, PitKilnBlockEntity kiln) {
-        appendItemProgress(tooltip, kiln.input(), kiln.recipeOutput(),
-                kiln.progressAt(accessor.getLevel().getGameTime()));
-        String stage = accessor.getBlockState().getValue(PitKilnBlock.STAGE).getSerializedName();
-        tooltip.add(Component.translatable("jade.revivalages.pit_kiln.stage", Component.translatable("jade.revivalages.pit_kiln.stage." + stage)));
+    private static void appendPitKiln(ITooltip tooltip, BlockAccessor accessor, PitKilnBlockEntity kiln,
+            boolean fireTarget) {
+        PitKilnStage stage = kiln.getBlockState().getValue(PitKilnBlock.STAGE);
+        if (!kiln.input().isEmpty()) {
+            appendItemProgress(tooltip, kiln.input(), kiln.recipeOutput(),
+                    stage == PitKilnStage.ACTIVE ? kiln.progressAt(accessor.getLevel().getGameTime()) : 0.0D);
+        }
+        if (stage == PitKilnStage.ACTIVE) {
+            if (kiln.isStructureValid()) {
+                tooltip.add(Component.translatable("jade.revivalages.pit_kiln.firing")
+                        .withStyle(ChatFormatting.GREEN));
+            } else if (fireTarget) {
+                tooltip.add(Component.translatable("jade.revivalages.pit_kiln.structure.invalid")
+                        .withStyle(ChatFormatting.RED));
+            }
+        }
+        if (fireTarget) {
+            return;
+        }
         boolean valid = kiln.isStructureValid();
-        appendRule(tooltip, ProcessRuleType.VALID_STRUCTURE, !valid);
-        tooltip.add(Component.translatable("jade.revivalages.pit_kiln.structure." + (valid ? "valid" : "invalid")));
+        tooltip.add(Component.translatable("jade.revivalages.pit_kiln.structure." + (valid ? "valid" : "invalid"))
+                .withStyle(valid ? ChatFormatting.GREEN : ChatFormatting.RED));
         if (!valid && kiln.invalidStructureTicks() > 0) {
             tooltip.add(Component.translatable("jade.revivalages.pit_kiln.invalid_grace",
                     kiln.invalidStructureTicks(), kiln.maximumInvalidStructureTicks()));
@@ -124,15 +147,12 @@ public enum PrimitiveDeviceComponentProvider implements IBlockComponentProvider 
             tooltip.add(Component.translatable("jade.revivalages.pit_kiln.rain", kiln.rainTicks(),
                     PrimitiveTechnologyConfig.PIT_KILN_RAIN_EXTINGUISH_TICKS.get()));
         }
-        tooltip.add(Component.translatable("jade.revivalages.pit_kiln.logs", kiln.logCount(), 3));
-        if (!kiln.input().isEmpty()) {
-            tooltip.add(Component.translatable(
-                    "jade.revivalages.pit_kiln.item_size",
-                    Component.translatable(
-                            "size.revivalages." + SizeApi.getSize(kiln.input()).getSerializedName()
-                    ),
-                    kiln.maximumInputCount(kiln.input())
-            ));
+        if (stage == PitKilnStage.EMPTY && !kiln.input().isEmpty()) {
+            tooltip.add(Component.translatable("jade.revivalages.pit_kiln.add_thatch")
+                    .withStyle(ChatFormatting.RED));
+        } else if (stage == PitKilnStage.THATCH || stage == PitKilnStage.WOOD) {
+            tooltip.add(Component.translatable("jade.revivalages.pit_kiln.add_logs_ignite")
+                    .withStyle(ChatFormatting.RED));
         }
         if (!kiln.displayOutput().isEmpty()) {
             tooltip.add(List.of(IElementHelper.get().item(kiln.displayOutput())));
@@ -141,13 +161,21 @@ public enum PrimitiveDeviceComponentProvider implements IBlockComponentProvider 
 
     private static void appendBarrel(ITooltip tooltip, BlockAccessor accessor, BarrelBlockEntity barrel) {
         FluidStack output = barrel.recipeOutput();
-        appendBarrelProcess(tooltip, barrel, output, accessor.getLevel().getGameTime());
+        ItemStack itemOutput = barrel.recipeItemOutput();
+        appendBarrelProcess(tooltip, barrel, output, itemOutput, accessor.getLevel().getGameTime());
         boolean sealed = accessor.getBlockState().getValue(BarrelBlock.SEALED);
-        if (!output.isEmpty()) {
-            tooltip.add(Component.translatable(sealed
-                    ? "jade.revivalages.barrel.processing"
-                    : ProcessRulePresentation.of(ProcessRuleType.SEALED_MACHINE).statusKey())
-                    .withStyle(sealed ? ChatFormatting.GREEN : ChatFormatting.RED));
+        if (!output.isEmpty() || !itemOutput.isEmpty()) {
+            if (barrel.recipeRequiresSeal() && !sealed) {
+                tooltip.add(Component.translatable(
+                        ProcessRulePresentation.of(ProcessRuleType.SEALED_MACHINE).statusKey())
+                        .withStyle(ChatFormatting.RED));
+            } else if (barrel.isOutputBlocked()) {
+                tooltip.add(Component.translatable("jade.revivalages.barrel.output_blocked")
+                        .withStyle(ChatFormatting.RED));
+            } else {
+                tooltip.add(Component.translatable("jade.revivalages.barrel.processing")
+                        .withStyle(ChatFormatting.GREEN));
+            }
         }
         tooltip.add(Component.translatable("jade.revivalages.barrel.state." + (sealed ? "sealed" : "open"))
                 .withStyle(sealed ? ChatFormatting.GREEN : ChatFormatting.RED));
@@ -164,7 +192,10 @@ public enum PrimitiveDeviceComponentProvider implements IBlockComponentProvider 
                 ));
             }
         }
-        if (output.isEmpty() && sealed) {
+        if (!barrel.output().isEmpty()) {
+            tooltip.add(List.of(IElementHelper.get().item(barrel.output())));
+        }
+        if (output.isEmpty() && itemOutput.isEmpty() && sealed) {
             for (ItemStack item : barrel.itemsForView()) {
                 if (!item.isEmpty()) {
                     tooltip.add(Component.translatable("jade.revivalages.primitive.no_recipe", item.getHoverName()));
@@ -246,17 +277,21 @@ public enum PrimitiveDeviceComponentProvider implements IBlockComponentProvider 
             ITooltip tooltip,
             BarrelBlockEntity barrel,
             FluidStack result,
+            ItemStack itemResult,
             long gameTime
     ) {
-        if (result.isEmpty()) {
-            return;
-        }
         IElementHelper elements = IElementHelper.get();
         List<IElement> line = new ArrayList<>();
         for (ItemStack input : barrel.itemsForView()) {
             if (!input.isEmpty()) {
                 line.add(elements.item(input));
             }
+        }
+        if (result.isEmpty() && itemResult.isEmpty()) {
+            if (!line.isEmpty()) {
+                tooltip.add(line);
+            }
+            return;
         }
         FluidStack fluid = barrel.fluidTank().getFluid();
         if (!fluid.isEmpty()) {
@@ -269,11 +304,12 @@ public enum PrimitiveDeviceComponentProvider implements IBlockComponentProvider 
         line.add(elements.spacer(2, 0));
         line.add(JadeProgressElement.of(elements, barrel.progressAt(gameTime)));
         line.add(elements.spacer(2, 0));
-        line.add(elements.fluid(JadeFluidObject.of(
-                result.getFluid(),
-                result.getAmount(),
-                result.getComponentsPatch()
-        )));
+        if (result.isEmpty()) {
+            line.add(elements.item(itemResult));
+        } else {
+            line.add(elements.fluid(JadeFluidObject.of(
+                    result.getFluid(), result.getAmount(), result.getComponentsPatch())));
+        }
         tooltip.add(line);
     }
 

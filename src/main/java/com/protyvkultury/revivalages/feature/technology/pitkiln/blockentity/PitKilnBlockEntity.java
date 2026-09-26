@@ -189,8 +189,25 @@ public final class PitKilnBlockEntity extends BlockEntity {
         }
         ItemStack current = items.get(INPUT_SLOT);
         return (current.isEmpty() || ItemStack.isSameItemSameComponents(current, stack))
+                && !isOversized(stack)
                 && current.getCount() < maximumInputCount(stack)
                 && findRecipe(stack).isPresent();
+    }
+
+    public boolean isOversized(ItemStack stack) {
+        return !stack.isEmpty() && !SizeApi.getSize(stack)
+                .isEqualOrSmallerThan(PrimitiveTechnologyConfig.PIT_KILN_MAX_INPUT_SIZE.get());
+    }
+
+    public boolean acceptsInput(ItemStack stack) {
+        return findRecipe(stack).isPresent();
+    }
+
+    public boolean isAtCapacity(ItemStack stack) {
+        ItemStack current = items.get(INPUT_SLOT);
+        return !stack.isEmpty() && !current.isEmpty()
+                && ItemStack.isSameItemSameComponents(current, stack)
+                && current.getCount() >= maximumInputCount(stack);
     }
 
     public void insert(ItemStack source, boolean infinite) {

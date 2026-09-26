@@ -38,7 +38,6 @@ public enum ContentKey {
     CHOPPING_BLOCK("chopping_block", PRIMITIVE_TECHNOLOGY),
     PIT_KILN("pit_kiln", PRIMITIVE_TECHNOLOGY),
     BARREL("barrel", PRIMITIVE_TECHNOLOGY),
-    STORAGE_BARREL("storage_barrel", PRIMITIVE_TECHNOLOGY),
     SOAKING_POT("soaking_pot", PRIMITIVE_TECHNOLOGY),
     TANNING_RACK("tanning_rack", PRIMITIVE_TECHNOLOGY),
     STONE_SAWMILL("stone_sawmill", PRIMITIVE_TECHNOLOGY),

@@ -11,6 +11,8 @@ import com.protyvkultury.revivalages.feature.technology.pitkiln.blockentity.PitK
 import com.protyvkultury.revivalages.feature.technology.primitive.PrimitiveMaterialsFeature;
 import com.protyvkultury.revivalages.feature.technology.primitive.PrimitiveTags;
 import javax.annotation.Nullable;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -141,6 +143,15 @@ public final class PitKilnBlock extends BaseEntityBlock implements HeldIgnitable
         if (stage == PitKilnStage.EMPTY && kiln.canInsert(stack)) {
             if (!level.isClientSide) {
                 kiln.insert(stack, player.hasInfiniteMaterials());
+            }
+            return ItemInteractionResult.sidedSuccess(level.isClientSide);
+        }
+        if (stage == PitKilnStage.EMPTY && kiln.acceptsInput(stack)
+                && (kiln.isOversized(stack) || kiln.isAtCapacity(stack))) {
+            if (!level.isClientSide) {
+                player.displayClientMessage(Component.translatable(kiln.isOversized(stack)
+                        ? "message.revivalages.pit_kiln.input_too_large"
+                        : "message.revivalages.pit_kiln.input_full").withStyle(ChatFormatting.RED), true);
             }
             return ItemInteractionResult.sidedSuccess(level.isClientSide);
         }

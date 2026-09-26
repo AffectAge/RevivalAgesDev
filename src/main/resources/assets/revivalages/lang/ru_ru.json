@@ -143,13 +143,20 @@
   "jade.revivalages.pit_kiln.stage.wood": "Топливо",
   "jade.revivalages.pit_kiln.stage.active": "Обжиг",
   "jade.revivalages.pit_kiln.stage.complete": "Готово",
-  "jade.revivalages.pit_kiln.structure.valid": "Конструкция: исправна",
-  "jade.revivalages.pit_kiln.structure.invalid": "Конструкция: неверна",
+  "jade.revivalages.pit_kiln.structure.valid": "Конструкция исправна",
+  "jade.revivalages.pit_kiln.structure.invalid": "Конструкция неверна",
+  "jade.revivalages.pit_kiln.firing": "Идёт обжиг",
+  "jade.revivalages.pit_kiln.add_thatch": "Добавьте солому",
+  "jade.revivalages.pit_kiln.add_logs_ignite": "Добавьте три бревна и подожгите",
+  "jade.revivalages.pit_kiln.item_size.empty": "Размер входа: пусто",
+  "message.revivalages.pit_kiln.input_full": "Ямная печь заполнена",
+  "message.revivalages.pit_kiln.input_too_large": "Этот предмет слишком велик для ямной печи",
   "jade.revivalages.pit_kiln.logs": "Поленья: %s/%s",
   "jade.revivalages.pit_kiln.invalid_grace": "Разрушение конструкции: %s/%s тиков",
   "jade.revivalages.barrel.state.sealed": "Закрыта",
   "jade.revivalages.barrel.state.open": "Открыта",
   "jade.revivalages.barrel.processing": "Обработка",
+  "jade.revivalages.barrel.output_blocked": "Заберите результат",
   "jade.revivalages.barrel.result": "Результат: %s (%s мБ)",
   "jade.revivalages.soaking_pot.no_heat": "Снизу нет горящего костра",
   "jade.revivalages.tanning.sky.clear": "Доступ к небу: открыт",
@@ -347,7 +354,7 @@
   ,"size.revivalages.huge": "Огромный"
   ,"config.jade.plugin_revivalages.item_size": "Размер предмета"
   ,"jade.revivalages.item_size.maximum": "Максимальный размер предмета: %s"
-  ,"jade.revivalages.pit_kiln.item_size": "Размер входа: %s; вместимость: %s"
+  ,"jade.revivalages.pit_kiln.item_size": "Размер входа: %s"
   ,"content.revivalages.carried_weight": "Переносимый вес"
   ,"attribute.name.revivalages.carry_capacity_bonus": "Бонус грузоподъёмности"
   ,"effect.revivalages.overloaded": "Перегрузка"
@@ -372,14 +379,6 @@
   ,"tooltip.revivalages.wood_torch.burns_up.false": "Не сгорает со временем"
   ,"tooltip.revivalages.wood_torch.rain_extinguishes.true": "Гаснет под дождём"
   ,"tooltip.revivalages.wood_torch.rain_extinguishes.false": "Не гаснет под дождём"
-  ,"block.revivalages.storage_barrel": "Бочка для хранения"
-  ,"container.revivalages.storage_barrel": "Бочка для хранения"
-  ,"content.revivalages.storage_barrel": "Бочка для хранения"
-  ,"jade.revivalages.storage_barrel.sealed.true": "Запечатана"
-  ,"jade.revivalages.storage_barrel.sealed.false": "Открыта"
-  ,"jade.revivalages.storage_barrel.capacity": "Вместимость: %s ячеек"
-  ,"jade.revivalages.storage_barrel.preserved": "Сохранение еды активно"
-  ,"config.jade.plugin_revivalages.storage_barrel": "Сведения о бочке для хранения"
   ,"jei.revivalages.category.hand_grinding": "Ручной помол"
   ,"emi.category.revivalages.hand_grinding": "Ручной помол"
 }

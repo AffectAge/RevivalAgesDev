@@ -2,7 +2,6 @@ package com.protyvkultury.revivalages.integration.jade;
 
 import com.protyvkultury.revivalages.feature.technology.dryingrack.block.AbstractDryingRackBlock;
 import com.protyvkultury.revivalages.feature.technology.barrel.block.BarrelBlock;
-import com.protyvkultury.revivalages.feature.technology.barrel.storage.StorageBarrelBlock;
 import com.protyvkultury.revivalages.feature.technology.campfire.block.CampfireBlock;
 import com.protyvkultury.revivalages.feature.technology.choppingblock.block.ChoppingBlock;
 import com.protyvkultury.revivalages.feature.technology.pitkiln.block.PitKilnBlock;
@@ -16,6 +15,7 @@ import com.protyvkultury.revivalages.feature.technology.ignition.block.WoodTorch
 import com.protyvkultury.revivalages.feature.technology.animalpower.block.HandGrindstoneBlock;
 import com.protyvkultury.revivalages.feature.technology.constructionframe.block.ConstructionFrameBlock;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.FireBlock;
 import snownee.jade.api.BlockAccessor;
 import snownee.jade.api.JadeIds;
 import snownee.jade.api.IWailaClientRegistration;
@@ -32,8 +32,8 @@ public final class RevivalAgesJadePlugin implements IWailaPlugin {
         registration.registerBlockComponent(PrimitiveDeviceComponentProvider.INSTANCE, CampfireBlock.class);
         registration.registerBlockComponent(PrimitiveDeviceComponentProvider.INSTANCE, ChoppingBlock.class);
         registration.registerBlockComponent(PrimitiveDeviceComponentProvider.INSTANCE, PitKilnBlock.class);
+        registration.registerBlockComponent(PrimitiveDeviceComponentProvider.INSTANCE, FireBlock.class);
         registration.registerBlockComponent(PrimitiveDeviceComponentProvider.INSTANCE, BarrelBlock.class);
-        registration.registerBlockComponent(StorageBarrelComponentProvider.INSTANCE, StorageBarrelBlock.class);
         registration.registerBlockComponent(PrimitiveDeviceComponentProvider.INSTANCE, SoakingPotBlock.class);
         registration.registerBlockComponent(PrimitiveDeviceComponentProvider.INSTANCE, TanningRackBlock.class);
         registration.registerBlockComponent(StoneMachineComponentProvider.INSTANCE, StoneMachineBlock.class);
@@ -52,6 +52,7 @@ public final class RevivalAgesJadePlugin implements IWailaPlugin {
                     && (block.getBlock() instanceof CampfireBlock
                     || block.getBlock() instanceof AnvilBlock
                     || block.getBlock() instanceof ChoppingBlock
+                    || block.getBlock() instanceof BarrelBlock
                     || block.getBlock() instanceof SoakingPotBlock)) {
                 tooltip.getTooltip().remove(JadeIds.UNIVERSAL_ITEM_STORAGE);
             }

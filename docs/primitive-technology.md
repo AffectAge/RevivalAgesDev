@@ -23,14 +23,22 @@ conditions follow [content-availability.md](content-availability.md).
 4. Load a Pit Kiln, cover it with thatch, add three logs, validate its surrounding
    structure, and ignite it. An active kiln maintains a real fire block above it.
    A broken structure receives a 100-tick recovery window before its contents
-   fail. Rain can extinguish it and recipes may define failure products. When
-   Item Size applies an effective input capacity of four items through the
-   configured batchable size and one larger item by default; existing inputs are
-   preserved across reload.
-5. Fill a Barrel with water and leaves, close it with a Barrel Lid, and wait for
+   fail. Rain can extinguish it and recipes may define failure products. Item
+   Size applies a default batch capacity of four small items or one larger
+   item. Inputs larger than
+   the configured maximum size are rejected with an action-bar warning; existing
+   inputs are preserved across reload.
+5. Put counted item stacks into a Barrel's four input slots. Recipes may use a
+   precise fluid amount or no fluid, may require a lid or process while open,
+   and may produce an item or fluid. A finished item stays in a fifth output
+   slot until collected. The original sealed water-and-leaves recipe still makes
    tannin. Open barrels collect rain based on continuous exposure. Breaking an
    open barrel drops its contents separately; breaking a sealed barrel produces
-   one sealed barrel item that preserves its contents, fluid, and lid state.
+   one sealed barrel item that preserves its contents, fluid, lid state, and
+   finished item.
+   The separate Storage Barrel has been removed. Its 27-slot inventory cannot
+   be converted losslessly into the processing Barrel; remove its contents from
+   existing worlds before upgrading.
 6. Scraped hide is washed with water and then soaked in tannin in a Soaking Pot.
    Manual item and fluid interaction is available only from the top face.
    Recipes may require a lit Campfire directly below the pot. Placing the pot
@@ -127,8 +135,9 @@ the configured healing, absorption, exhaustion, food, and experience bonuses.
 Primitive Technology settings are written under `primitiveTechnology` in
 `config/revivalages.toml`. They control automation and progress
 particles, Campfire cooking, fuel, ash, rain, light, floor ignition, burn damage and all five
-effects, Chopping Block tier work/output/durability/exhaustion, Pit Kiln batch and
-rain behavior, Barrel capacity/rain/hot fluids, Soaking Pot batch, duration,
+effects, Chopping Block tier work/output/durability/exhaustion, Pit Kiln batch,
+maximum input size and rain behavior, Barrel capacity, item stack size, rain and
+hot fluids, Soaking Pot batch, duration,
 automation, hot-fluid threshold and hot-fluid retention,
 and Tanning Rack duration/rain failure. Raw-hide drop chance and maximum count are
 also configurable. Values are server-owned and are not saved
@@ -230,12 +239,15 @@ state required for rendering and overlays.
 ## Display integrations
 
 Jade displays progress, inputs and predicted outputs, fuel, ash, block damage,
-wood chips, Pit Kiln stage/structure/logs, Barrel seal and processing state,
-Soaking Pot heat requirement, Tanning Rack sky/day/rain conditions, stone-machine
-airflow, fuel, blade, and output items, and Anvil hits and damage. Jade's fluid
+wood chips, Pit Kiln structure and firing state, Barrel seal and processing
+state, Soaking Pot heat requirement, Tanning Rack sky/day/rain conditions,
+stone-machine airflow, blade requirement and output items, and Anvil hits and
+damage. The Pit Kiln shows its recipe arrow before ignition and while firing;
+the fire block also exposes the live arrow. Barrel input icons appear as soon as
+items are inserted, including before a recipe matches. Jade's fluid
 bar presents tank contents without an additional text line. The Barrel capacity
-defaults to 10,000 mB in new configurations. JEI and
-EMI use separate presentation adapters, enumerate the same gameplay recipe types
+defaults to 10,000 mB in new configurations. JEI and EMI use separate presentation
+adapters, enumerate the same gameplay recipe types
 from `RecipeManager`, and use licensed functional UI textures. Categories include
 item and fluid inputs, outputs, duration,
 failure outcomes, and required environmental conditions. Environmental and
@@ -244,6 +256,16 @@ ordered from left to right, with the same order and tooltip text in both viewers
 Soaking Pot heat uses the fire icon, Barrel sealing uses the lid icon, and Tanning
 Rack uses open-sky and rain icons. All three integrations are optional and
 client-only; a dedicated server and the base mod load without them.
+
+Barrel recipes retain legacy single-item and fluid-only fields. A counted slot
+uses `{"ingredient":{"item":"minecraft:oak_leaves"},"count":8}` in the
+`items` array. `input_fluid` is optional, `result_item` and `result_fluid` are
+mutually exclusive, and `requires_seal` defaults to true for old recipes. Fluid
+inputs require at least the recipe amount; processing replaces or drains the
+whole tank, preserving the Barrel's earlier fluid behavior. JEI and EMI display
+per-slot counts and whichever result type the recipe defines. The built-in open
+compost and sealed mud recipes demonstrate item outputs without and with fluid;
+the original tannin recipe and a larger counted batch produce fluid.
 
 Viewer-only chance outcomes use the same atlas row. They state whether a roll
 is made for an additional output, for every input, or for every Pit Burn stage,

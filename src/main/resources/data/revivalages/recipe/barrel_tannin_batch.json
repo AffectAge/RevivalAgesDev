@@ -1,0 +1,11 @@
+{
+  "neoforge:conditions": [{"type":"revivalages:content_enabled","content":"revivalages:barrel","enabled":true}],
+  "type": "revivalages:barrel",
+  "items": [
+    {"ingredient": {"tag": "revivalages:barrel_leaves"}, "count": 8}
+  ],
+  "input_fluid": {"id": "minecraft:water", "amount": 2000},
+  "result_fluid": {"id": "revivalages:tannin", "amount": 2000},
+  "requires_seal": true,
+  "processing_time": 12000
+}

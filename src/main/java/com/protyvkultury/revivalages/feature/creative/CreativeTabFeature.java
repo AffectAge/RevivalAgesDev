@@ -45,7 +45,7 @@ public final class CreativeTabFeature implements FeatureModule {
             // Primitive workstations.
             "construction_frame", "hand_grindstone", "crude_drying_rack", "drying_rack",
             "chopping_block", "pit_kiln", "log_pile",
-            "barrel", "storage_barrel", "soaking_pot", "tanning_rack",
+            "barrel", "soaking_pot", "tanning_rack",
             // Stone-age workstations.
             "stone_sawmill", "stone_oven", "stone_kiln", "stone_crucible", "anvil"
     );

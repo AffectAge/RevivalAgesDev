@@ -154,10 +154,8 @@ Shared gates, environmental modifiers, and persistent process risks use the
 server-authoritative [Process Rules](process-rules.md) contract; viewers only
 render its common presentation model.
 
-The processing Barrel remains a recipe-and-fluid machine. The Storage Barrel is
-a separate general inventory under the barrel feature, with sealed preservation
-and state-guarded manual and capability access. Timed ignition uses the shared
-held-igniter contracts described in
+The Barrel is a recipe, item, and fluid machine with open and sealed processing.
+Timed ignition uses the shared held-igniter contracts described in
 [Interaction and Parity Checklist](interaction-contracts.md).
 viewer and probe APIs never enter the machine packages.
 

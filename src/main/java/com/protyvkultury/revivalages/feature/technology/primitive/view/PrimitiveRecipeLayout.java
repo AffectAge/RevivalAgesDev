@@ -27,7 +27,7 @@ public record PrimitiveRecipeLayout(
             160,
             64,
             List.of(new Position(16, 8), new Position(40, 8), new Position(16, 32), new Position(40, 32)),
-            List.of(),
+            List.of(new Position(120, 20)),
             new Position(88, 24),
             null
     );

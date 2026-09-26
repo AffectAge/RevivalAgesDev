@@ -1,6 +1,7 @@
 package com.protyvkultury.revivalages.feature.technology.primitive.config;
 
 import com.protyvkultury.revivalages.config.RevivalAgesConfig;
+import com.protyvkultury.revivalages.api.size.Size;
 import net.neoforged.neoforge.common.ModConfigSpec;
 
 /** Server-owned balance settings for the primitive technology feature family. */
@@ -42,18 +43,17 @@ public final class PrimitiveTechnologyConfig {
     public static final ModConfigSpec.BooleanValue CHOPPING_USES_DURABILITY;
 
     public static final ModConfigSpec.IntValue PIT_KILN_MAX_STACK_SIZE;
+    public static final ModConfigSpec.EnumValue<Size> PIT_KILN_MAX_INPUT_SIZE;
     public static final ModConfigSpec.DoubleValue PIT_KILN_DURATION_MULTIPLIER;
     public static final ModConfigSpec.DoubleValue PIT_KILN_VARIABLE_SPEED;
     public static final ModConfigSpec.BooleanValue PIT_KILN_RAIN_EXTINGUISHES;
     public static final ModConfigSpec.IntValue PIT_KILN_RAIN_EXTINGUISH_TICKS;
 
     public static final ModConfigSpec.IntValue BARREL_CAPACITY;
+    public static final ModConfigSpec.IntValue BARREL_MAX_ITEM_STACK_SIZE;
     public static final ModConfigSpec.DoubleValue BARREL_DURATION_MULTIPLIER;
     public static final ModConfigSpec.IntValue BARREL_RAIN_FILL_INTERVAL;
     public static final ModConfigSpec.IntValue BARREL_RAIN_CONVERSION_INTERVAL;
-    public static final ModConfigSpec.IntValue STORAGE_BARREL_SLOTS;
-    public static final ModConfigSpec.BooleanValue STORAGE_BARREL_AUTOMATION;
-    public static final ModConfigSpec.IntValue STORAGE_BARREL_MATERIALIZATION_INTERVAL;
     public static final ModConfigSpec.IntValue HOT_FLUID_TEMPERATURE;
     public static final ModConfigSpec.BooleanValue WOODEN_CONTAINERS_HOLD_HOT_FLUIDS;
 
@@ -185,6 +185,7 @@ public final class PrimitiveTechnologyConfig {
 
         builder.push("pitKiln");
         PIT_KILN_MAX_STACK_SIZE = builder.defineInRange("maxStackSize", 8, 1, 64);
+        PIT_KILN_MAX_INPUT_SIZE = builder.defineEnum("maxInputSize", Size.VERY_LARGE);
         PIT_KILN_DURATION_MULTIPLIER = nonNegative(builder, "durationMultiplier", 1.0D);
         PIT_KILN_VARIABLE_SPEED = builder.defineInRange("variableSpeedModifier", 0.5D, 0.01D, 1.0D);
         PIT_KILN_RAIN_EXTINGUISHES = builder.define("rainExtinguishes", true);
@@ -193,18 +194,12 @@ public final class PrimitiveTechnologyConfig {
 
         builder.push("barrel");
         BARREL_CAPACITY = positive(builder, "capacity", 10000);
+        BARREL_MAX_ITEM_STACK_SIZE = builder.defineInRange("maxItemStackSize", 64, 1, 64);
         BARREL_DURATION_MULTIPLIER = nonNegative(builder, "durationMultiplier", 1.0D);
         BARREL_RAIN_FILL_INTERVAL = nonNegativeInt(builder, "rainFillInterval", 20);
         BARREL_RAIN_CONVERSION_INTERVAL = nonNegativeInt(builder, "rainConversionInterval", 2 * 60 * 20);
         HOT_FLUID_TEMPERATURE = nonNegativeInt(builder, "hotFluidTemperature", 450);
         WOODEN_CONTAINERS_HOLD_HOT_FLUIDS = builder.define("holdsHotFluids", false);
-        builder.pop();
-
-        builder.push("storageBarrel");
-        STORAGE_BARREL_SLOTS = builder.defineInRange("slots", 27, 9, 54);
-        STORAGE_BARREL_AUTOMATION = builder.define("automation", true);
-        STORAGE_BARREL_MATERIALIZATION_INTERVAL =
-                positive(builder, "materializationInterval", 20);
         builder.pop();
 
         builder.push("soakingPot");
