@@ -100,7 +100,7 @@ public enum StoneMachineComponentProvider implements IBlockComponentProvider {
             line.add(elements.item(machine.fuel()));
         }
         line.add(elements.spacer(2, 0));
-        line.add(elements.progress((float) Math.clamp(machine.progress(), 0.0D, 1.0D)));
+        line.add(JadeProgressElement.of(elements, machine.progress()));
         line.add(elements.spacer(2, 0));
         if (machine.kind() == StoneMachineKind.CRUCIBLE) {
             FluidStack result = machine.recipeFluidResult();

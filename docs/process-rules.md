@@ -33,6 +33,11 @@ the same ordered presentation model; Jade evaluates the same machine rule and
 shows its current blocker or state. Presentation integrations do not implement
 recipe validity.
 
+The shared `process_rules.png` atlas is 256x256 pixels. Each rule occupies one
+16x16 cell at the coordinates in `ProcessRulePresentation`; occupied cells are
+solid, distinct placeholder colors, and unused cells remain transparent for
+future icons. JEI and EMI use the same atlas dimensions and cell coordinates.
+
 Recipe viewers render an actual cycling ingredient slot when a recipe requires a
 specific manual tool. Its tooltip describes the recipe-specific interaction;
 the generic `required_manual_tool` icon remains a condition rather than a

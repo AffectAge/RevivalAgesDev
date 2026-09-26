@@ -30,7 +30,7 @@ public enum DryingRackComponentProvider implements IBlockComponentProvider {
             return;
         }
 
-        DryingRackView view = rack.view();
+        DryingRackView view = rack.viewAt(accessor.getLevel().getGameTime());
         tooltip.add(Component.translatable(ProcessRulePresentation.of(ProcessRuleType.DRYING_ENVIRONMENT).tooltipKey()));
         tooltip.add(Component.translatable(
                 "jade.revivalages.drying_rack.speed",
@@ -61,7 +61,7 @@ public enum DryingRackComponentProvider implements IBlockComponentProvider {
                 List<IElement> line = new ArrayList<>();
                 line.add(elements.item(slot.stack()));
                 line.add(elements.spacer(2, 0));
-                line.add(elements.progress((float) slot.progress()));
+                line.add(JadeProgressElement.of(elements, slot.progress()));
                 line.add(elements.spacer(2, 0));
                 line.add(elements.item(slot.recipeOutput()));
                 tooltip.add(line);

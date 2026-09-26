@@ -1,6 +1,7 @@
 package com.protyvkultury.revivalages.feature.technology.barrel.blockentity;
 
 import com.protyvkultury.revivalages.core.interaction.ItemStackInteraction;
+import com.protyvkultury.revivalages.core.process.ProgressProjection;
 import com.protyvkultury.revivalages.api.food.FoodFreshnessApi;
 import com.protyvkultury.revivalages.core.particle.ProgressParticleHelper;
 import com.protyvkultury.revivalages.feature.content.ContentAvailability;
@@ -67,6 +68,9 @@ public final class BarrelBlockEntity extends BlockEntity {
     };
     private int elapsedTicks;
     private int totalTicks;
+    private long clientProgressSnapshotTime = -1L;
+    private int clientProgressDuration;
+    private double clientProgressRate;
     private int rainFillTicks;
     private int rainConversionTicks;
     private BarrelRecipe activeRecipe;
@@ -98,10 +102,19 @@ public final class BarrelBlockEntity extends BlockEntity {
             return;
         }
         barrel.setPreserved(true);
+        BarrelRecipe previousRecipe = barrel.activeRecipe;
         barrel.resolveRecipe();
-        if (barrel.activeRecipe == null) {
+        if (previousRecipe != barrel.activeRecipe) {
             barrel.elapsedTicks = 0;
             barrel.totalTicks = 0;
+            barrel.sync();
+        }
+        if (barrel.activeRecipe == null) {
+            if (barrel.elapsedTicks != 0 || barrel.totalTicks != 0) {
+                barrel.elapsedTicks = 0;
+                barrel.totalTicks = 0;
+                barrel.sync();
+            }
             return;
         }
         barrel.totalTicks = Math.max(1, (int) Math.round(barrel.activeRecipe.processingTime()
@@ -234,6 +247,14 @@ public final class BarrelBlockEntity extends BlockEntity {
         return totalTicks <= 0 ? 0.0D : Math.min(1.0D, elapsedTicks / (double) totalTicks);
     }
 
+    public double progressAt(long gameTime) {
+        if (level == null || !level.isClientSide || clientProgressSnapshotTime < 0L) {
+            return progress();
+        }
+        return ProgressProjection.fraction(elapsedTicks, clientProgressDuration,
+                clientProgressRate, clientProgressSnapshotTime, gameTime);
+    }
+
     public ItemStack[] itemsForView() {
         return items.stream().map(ItemStack::copy).toArray(ItemStack[]::new);
     }
@@ -347,6 +368,9 @@ public final class BarrelBlockEntity extends BlockEntity {
         totalTicks = tag.getInt("TotalTicks");
         rainFillTicks = tag.getInt("RainFillTicks");
         rainConversionTicks = tag.getInt("RainConversionTicks");
+        clientProgressSnapshotTime = tag.contains("ProgressSnapshotTime") ? tag.getLong("ProgressSnapshotTime") : -1L;
+        clientProgressDuration = tag.getInt("ProgressDurationSnapshot");
+        clientProgressRate = tag.getDouble("ProgressRateSnapshot");
         resolveRecipe();
     }
 
@@ -395,7 +419,16 @@ public final class BarrelBlockEntity extends BlockEntity {
 
     @Override
     public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
-        return saveWithoutMetadata(registries);
+        CompoundTag tag = saveWithoutMetadata(registries);
+        if (level != null) {
+            tag.putLong("ProgressSnapshotTime", level.getGameTime());
+            tag.putInt("ProgressDurationSnapshot", activeRecipe == null ? 0 : Math.max(1,
+                    (int) Math.round(activeRecipe.processingTime()
+                            * PrimitiveTechnologyConfig.BARREL_DURATION_MULTIPLIER.get())));
+            tag.putDouble("ProgressRateSnapshot", activeRecipe != null
+                    && getBlockState().getValue(BarrelBlock.SEALED) ? 1.0D : 0.0D);
+        }
+        return tag;
     }
 
     private final class BarrelItemHandler implements IItemHandler {

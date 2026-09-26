@@ -14,8 +14,8 @@ import net.minecraft.resources.ResourceLocation;
 public record ProcessRulePresentation(int u, int v, String tooltipKey, String statusKey) {
 
     public static final ResourceLocation ATLAS = RevivalAges.id("textures/gui/process_rules.png");
-    public static final int ATLAS_WIDTH = 64;
-    public static final int ATLAS_HEIGHT = 48;
+    public static final int ATLAS_WIDTH = 256;
+    public static final int ATLAS_HEIGHT = 256;
     public static final int ICON_SIZE = 16;
 
     private static final Map<ProcessRuleType, ProcessRulePresentation> PRESENTATIONS = createPresentations();

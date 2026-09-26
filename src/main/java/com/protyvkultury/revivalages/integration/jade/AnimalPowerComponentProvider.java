@@ -35,7 +35,7 @@ public enum AnimalPowerComponentProvider implements IBlockComponentProvider {
         tooltip.add(List.of(
                 elements.item(input),
                 elements.spacer(2, 0),
-                elements.progress((float) Math.clamp(progress, 0.0D, 1.0D)),
+                JadeProgressElement.of(elements, progress),
                 elements.spacer(2, 0),
                 result
         ));

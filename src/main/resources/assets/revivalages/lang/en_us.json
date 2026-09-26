@@ -86,23 +86,23 @@
   "gui.revivalages.recipe.rain_failure_tooltip": "Rain may produce: %s",
   "gui.revivalages.process_rule.fuelled_and_lit": "Requires fuel and ignition",
   "gui.revivalages.process_rule.lit_block_below": "Requires a lit campfire directly below",
-  "gui.revivalages.process_rule.lit_block_below.status": "Blocked: no lit campfire below",
+  "gui.revivalages.process_rule.lit_block_below.status": "No lit campfire below",
   "gui.revivalages.process_rule.open_sky": "Requires open sky",
-  "gui.revivalages.process_rule.open_sky.status": "Blocked: sky is obstructed",
+  "gui.revivalages.process_rule.open_sky.status": "Sky is obstructed",
   "gui.revivalages.process_rule.weather_exposure": "Rain exposure can spoil this process",
   "gui.revivalages.process_rule.weather_exposure.status": "Hazard: currently exposed to rain",
   "gui.revivalages.process_rule.weather_exposure.failure": "Rain failure produces: %s",
   "gui.revivalages.process_rule.drying_environment": "Drying speed varies with the environment",
   "gui.revivalages.process_rule.drying_environment.status": "Drying environment is limiting progress",
   "gui.revivalages.process_rule.sealed_machine": "Machine must be sealed",
-  "gui.revivalages.process_rule.sealed_machine.status": "Blocked: machine is not sealed",
+  "gui.revivalages.process_rule.sealed_machine.status": "Machine is not sealed",
   "gui.revivalages.process_rule.installed_tool": "Requires an installed tool",
-  "gui.revivalages.process_rule.installed_tool.status": "Blocked: tool is missing",
-  "gui.revivalages.process_rule.fuelled_and_lit.status": "Blocked: fuel or ignition is missing",
+  "gui.revivalages.process_rule.installed_tool.status": "Tool is missing",
+  "gui.revivalages.process_rule.fuelled_and_lit.status": "Fuel or ignition is missing",
   "gui.revivalages.process_rule.valid_structure": "Requires a valid structure",
-  "gui.revivalages.process_rule.valid_structure.status": "Blocked: structure is invalid",
+  "gui.revivalages.process_rule.valid_structure.status": "Structure is invalid",
   "gui.revivalages.process_rule.required_manual_tool": "Requires the specified manual tool",
-  "gui.revivalages.process_rule.required_manual_tool.status": "Blocked: required manual tool is missing",
+  "gui.revivalages.process_rule.required_manual_tool.status": "Required manual tool is missing",
   "gui.revivalages.process_rule.random_outcome": "This process can produce a random alternative outcome",
   "gui.revivalages.process_rule.random_outcome.status": "Random outcome is being resolved",
   "gui.revivalages.process_rule.random_outcome.chance": "Chance: %s",
@@ -136,8 +136,8 @@
   "jade.revivalages.campfire.state.lit": "State: Lit",
   "jade.revivalages.campfire.state.unlit": "State: Unlit",
   "jade.revivalages.campfire.state.dead": "State: Burned out",
-  "jade.revivalages.campfire.blocked.no_tinder": "Blocked: Tinder required",
-  "jade.revivalages.campfire.blocked.ash": "Blocked: Remove ash",
+  "jade.revivalages.campfire.blocked.no_tinder": "Tinder required",
+  "jade.revivalages.campfire.blocked.ash": "Remove ash",
   "jade.revivalages.campfire.fuel": "Queued logs: %s/%s",
   "jade.revivalages.campfire.ash": "Ash: %s/%s",
   "jade.revivalages.campfire.burn_time": "Fuel time: %s s",
@@ -146,8 +146,8 @@
   "tooltip.revivalages.barrel_lid.seal": "Use on top of a barrel to seal it.",
   "config.revivalages.interaction_outline_color": "Interaction outline color",
   "jade.revivalages.chopping.damage": "Block damage: %s/%s",
-  "jade.revivalages.chopping.remaining_chops": "Chops left before breaking: %s",
-  "jade.revivalages.chopping.unlimited": "Chops left before breaking: Unlimited",
+  "jade.revivalages.chopping.remaining_chops": "Durability left: %s",
+  "jade.revivalages.chopping.unlimited": "Durability left: Unlimited",
   "jade.revivalages.chopping.chips": "Wood chips: %s",
   "jade.revivalages.pit_kiln.stage": "Stage: %s",
   "jade.revivalages.pit_kiln.stage.empty": "Input",
@@ -162,8 +162,7 @@
   "jade.revivalages.barrel.state.sealed": "State: Sealed",
   "jade.revivalages.barrel.state.open": "State: Open",
   "jade.revivalages.barrel.result": "Result: %s (%s mB)",
-  "jade.revivalages.soaking_pot.heat.ready": "Campfire heat: Ready",
-  "jade.revivalages.soaking_pot.heat.required": "Campfire heat: Required",
+  "jade.revivalages.soaking_pot.no_heat": "No lit campfire below",
   "jade.revivalages.tanning.sky.clear": "Sky access: Clear",
   "jade.revivalages.tanning.sky.blocked": "Sky access: Blocked",
   "jade.revivalages.tanning.time.day": "Daylight: Active",
@@ -216,13 +215,13 @@
   ,"jade.revivalages.stone_machine.state.lit": "State: Lit"
   ,"jade.revivalages.stone_machine.state.unlit": "State: Unlit"
   ,"jade.revivalages.stone_machine.fuel": "Fuel: %s (%s ticks)"
-  ,"jade.revivalages.stone_machine.no_fuel": "Blocked: Add fuel and ignite"
-  ,"jade.revivalages.stone_machine.no_blade": "Blocked: Saw blade required"
-  ,"jade.revivalages.stone_machine.output_blocked": "Blocked: Collect output"
+  ,"jade.revivalages.stone_machine.no_fuel": "Add fuel and ignite"
+  ,"jade.revivalages.stone_machine.no_blade": "Saw blade required"
+  ,"jade.revivalages.stone_machine.output_blocked": "Collect output"
   ,"jade.revivalages.stone_machine.airflow": "Airflow bonus: +%s"
   ,"jade.revivalages.anvil.damage": "Anvil damage: %s/4"
   ,"jade.revivalages.anvil.hits": "Progress: %s/%s hits"
-  ,"jade.revivalages.anvil.remaining_hits": "Hits left before breaking: %s"
+  ,"jade.revivalages.anvil.remaining_hits": "Durability left: %s"
   ,"message.revivalages.anvil.not_enough_hunger": "You are too hungry to use the anvil"
   ,"gui.revivalages.recipe.tool.hammer": "Tool: Hammer"
   ,"gui.revivalages.recipe.tool.pickaxe": "Tool: Pickaxe"
@@ -232,7 +231,7 @@
   ,"jade.revivalages.stone_machine.time": "Work time: %s/%s s"
   ,"jade.revivalages.stone_machine.failure": "Failure chance: %s"
   ,"jade.revivalages.stone_machine.wood_chips": "Wood chips: up to %s (%s chance each)"
-  ,"jade.revivalages.anvil.select_tool": "Strike with the recipe's hammer or pickaxe"
+  ,"jade.revivalages.anvil.select_tool": "Strike to process the item"
   ,"subtitles.revivalages.sawmill": "Sawmill operates"
   ,"itemGroup.revivalages": "Revival Ages"
   ,"block.revivalages.log_pile": "Log Pile"

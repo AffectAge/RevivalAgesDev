@@ -108,7 +108,8 @@ public enum PrimitiveDeviceComponentProvider implements IBlockComponentProvider 
     }
 
     private static void appendPitKiln(ITooltip tooltip, BlockAccessor accessor, PitKilnBlockEntity kiln) {
-        appendItemProgress(tooltip, kiln.input(), kiln.recipeOutput(), kiln.progress());
+        appendItemProgress(tooltip, kiln.input(), kiln.recipeOutput(),
+                kiln.progressAt(accessor.getLevel().getGameTime()));
         String stage = accessor.getBlockState().getValue(PitKilnBlock.STAGE).getSerializedName();
         tooltip.add(Component.translatable("jade.revivalages.pit_kiln.stage", Component.translatable("jade.revivalages.pit_kiln.stage." + stage)));
         boolean valid = kiln.isStructureValid();
@@ -140,10 +141,13 @@ public enum PrimitiveDeviceComponentProvider implements IBlockComponentProvider 
 
     private static void appendBarrel(ITooltip tooltip, BlockAccessor accessor, BarrelBlockEntity barrel) {
         FluidStack output = barrel.recipeOutput();
-        appendBarrelProcess(tooltip, barrel, output);
+        appendBarrelProcess(tooltip, barrel, output, accessor.getLevel().getGameTime());
         boolean sealed = accessor.getBlockState().getValue(BarrelBlock.SEALED);
-        appendRule(tooltip, ProcessRuleType.SEALED_MACHINE, !sealed);
-        tooltip.add(Component.translatable("jade.revivalages.barrel.state." + (sealed ? "sealed" : "open")));
+        if (!output.isEmpty()) {
+            appendRule(tooltip, ProcessRuleType.SEALED_MACHINE, !sealed, ChatFormatting.RED);
+        }
+        tooltip.add(Component.translatable("jade.revivalages.barrel.state." + (sealed ? "sealed" : "open"))
+                .withStyle(sealed ? ChatFormatting.GREEN : ChatFormatting.RED));
         if (sealed) {
             long nearest = java.util.Arrays.stream(barrel.itemsForView())
                     .filter(stack -> FoodFreshnessApi.profile(stack).isPresent())
@@ -171,14 +175,12 @@ public enum PrimitiveDeviceComponentProvider implements IBlockComponentProvider 
     }
 
     private static void appendSoakingPot(ITooltip tooltip, BlockAccessor accessor, SoakingPotBlockEntity pot) {
-        appendItemProgress(tooltip, pot.input(), pot.recipeOutput(), pot.progress());
-        appendFluidIfPresent(tooltip, pot.fluidTank().getFluid(), pot.fluidTank().getCapacity());
+        appendItemProgress(tooltip, pot.input(), pot.recipeOutput(),
+                pot.progressAt(accessor.getLevel().getGameTime()));
         if (pot.processRules().stream().anyMatch(rule -> rule.type() == ProcessRuleType.LIT_BLOCK_BELOW)
                 && !pot.isRuleSatisfied(ProcessRuleType.LIT_BLOCK_BELOW)) {
-            appendRule(tooltip, ProcessRuleType.LIT_BLOCK_BELOW, true);
-            tooltip.add(Component.translatable("jade.revivalages.soaking_pot.heat.required"));
-        } else if (pot.processRules().stream().anyMatch(rule -> rule.type() == ProcessRuleType.LIT_BLOCK_BELOW)) {
-            appendRule(tooltip, ProcessRuleType.LIT_BLOCK_BELOW, false);
+            tooltip.add(Component.translatable("jade.revivalages.soaking_pot.no_heat")
+                    .withStyle(ChatFormatting.RED));
         }
         if (!pot.output().isEmpty()) {
             tooltip.add(Component.translatable("jade.revivalages.primitive.ready_item", pot.output().getHoverName()));
@@ -186,10 +188,12 @@ public enum PrimitiveDeviceComponentProvider implements IBlockComponentProvider 
     }
 
     private static void appendTanningRack(ITooltip tooltip, BlockAccessor accessor, TanningRackBlockEntity rack) {
-        appendItemProgress(tooltip, rack.input(), rack.recipeOutput(), rack.progress());
-        tooltip.add(Component.translatable("jade.revivalages.tanning.sky." + (rack.openSky() ? "clear" : "blocked")));
-        appendRule(tooltip, ProcessRuleType.OPEN_SKY, !rack.openSky());
-        tooltip.add(Component.translatable("jade.revivalages.tanning.time." + (rack.daytime() ? "day" : "night")));
+        appendItemProgress(tooltip, rack.input(), rack.recipeOutput(),
+                rack.progressAt(accessor.getLevel().getGameTime()));
+        tooltip.add(Component.translatable("jade.revivalages.tanning.sky." + (rack.openSky() ? "clear" : "blocked"))
+                .withStyle(rack.openSky() ? ChatFormatting.GREEN : ChatFormatting.RED));
+        tooltip.add(Component.translatable("jade.revivalages.tanning.time." + (rack.daytime() ? "day" : "night"))
+                .withStyle(rack.daytime() ? ChatFormatting.GREEN : ChatFormatting.RED));
         if (PrimitiveTechnologyConfig.TANNING_RACK_RAIN_RUIN_TICKS.get() >= 0
                 && (rack.raining() || rack.rainTicks() > 0)) {
             appendRule(tooltip, ProcessRuleType.WEATHER_EXPOSURE, rack.raining());
@@ -217,7 +221,8 @@ public enum PrimitiveDeviceComponentProvider implements IBlockComponentProvider 
                     burn.invalidStructureTicks(), burn.maximumInvalidStructureTicks()));
         }
         tooltip.add(Component.translatable("jade.revivalages.pit_burn.stages", burn.completedStages(), burn.stages()));
-        appendItemProgress(tooltip, new ItemStack(PitBurnFeature.LOG_PILE_ITEM.get()), burn.recipeOutput(), burn.progress());
+        appendItemProgress(tooltip, new ItemStack(PitBurnFeature.LOG_PILE_ITEM.get()), burn.recipeOutput(),
+                burn.progressAt(accessor.getLevel().getGameTime()));
     }
 
     private static void appendWoodTorch(ITooltip tooltip, BlockAccessor accessor, WoodTorchBlockEntity torch) {
@@ -243,10 +248,17 @@ public enum PrimitiveDeviceComponentProvider implements IBlockComponentProvider 
         tooltip.add(Component.translatable(blocked ? presentation.statusKey() : presentation.tooltipKey()));
     }
 
+    private static void appendRule(ITooltip tooltip, ProcessRuleType type, boolean blocked, ChatFormatting color) {
+        ProcessRulePresentation presentation = ProcessRulePresentation.of(type);
+        tooltip.add(Component.translatable(blocked ? presentation.statusKey() : presentation.tooltipKey())
+                .withStyle(color));
+    }
+
     private static void appendBarrelProcess(
             ITooltip tooltip,
             BarrelBlockEntity barrel,
-            FluidStack result
+            FluidStack result,
+            long gameTime
     ) {
         if (result.isEmpty()) {
             return;
@@ -267,7 +279,7 @@ public enum PrimitiveDeviceComponentProvider implements IBlockComponentProvider 
             )));
         }
         line.add(elements.spacer(2, 0));
-        line.add(elements.progress((float) Math.clamp(barrel.progress(), 0.0D, 1.0D)));
+        line.add(JadeProgressElement.of(elements, barrel.progressAt(gameTime)));
         line.add(elements.spacer(2, 0));
         line.add(elements.fluid(JadeFluidObject.of(
                 result.getFluid(),
@@ -289,14 +301,14 @@ public enum PrimitiveDeviceComponentProvider implements IBlockComponentProvider 
         List<IElement> line = new ArrayList<>();
         line.add(elements.item(input));
         line.add(elements.spacer(2, 0));
-        line.add(elements.progress((float) Math.clamp(progress, 0.0D, 1.0D)));
+        line.add(JadeProgressElement.of(elements, progress));
         line.add(elements.spacer(2, 0));
         line.add(elements.item(output));
         tooltip.add(line);
     }
 
     private static void appendProgress(ITooltip tooltip, double progress) {
-        tooltip.add(List.of(IElementHelper.get().progress((float) Math.clamp(progress, 0.0D, 1.0D))));
+        tooltip.add(List.of(JadeProgressElement.of(IElementHelper.get(), progress)));
     }
 
     private static long wholeSeconds(int ticks) {

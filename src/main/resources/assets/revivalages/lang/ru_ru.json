@@ -75,22 +75,22 @@
   "gui.revivalages.process_rule.fuelled_and_lit": "Требуется топливо и розжиг",
   "gui.revivalages.process_rule.installed_tool": "Требуется установленный инструмент",
   "gui.revivalages.process_rule.lit_block_below": "Требуется горящий костёр непосредственно снизу",
-  "gui.revivalages.process_rule.lit_block_below.status": "Остановка: снизу нет горящего костра",
+  "gui.revivalages.process_rule.lit_block_below.status": "Снизу нет горящего костра",
   "gui.revivalages.process_rule.open_sky": "Требуется открытое небо",
-  "gui.revivalages.process_rule.open_sky.status": "Остановка: небо перекрыто",
+  "gui.revivalages.process_rule.open_sky.status": "Небо перекрыто",
   "gui.revivalages.process_rule.weather_exposure": "Дождь может испортить процесс",
   "gui.revivalages.process_rule.weather_exposure.status": "Риск: процесс находится под дождём",
   "gui.revivalages.process_rule.weather_exposure.failure": "При провале из-за дождя получится: %s",
   "gui.revivalages.process_rule.drying_environment": "Скорость сушки зависит от окружения",
   "gui.revivalages.process_rule.drying_environment.status": "Окружение замедляет сушку",
   "gui.revivalages.process_rule.sealed_machine": "Устройство должно быть запечатано",
-  "gui.revivalages.process_rule.sealed_machine.status": "Остановка: устройство не запечатано",
-  "gui.revivalages.process_rule.installed_tool.status": "Остановка: инструмент отсутствует",
-  "gui.revivalages.process_rule.fuelled_and_lit.status": "Остановка: нет топлива или розжига",
+  "gui.revivalages.process_rule.sealed_machine.status": "Устройство не запечатано",
+  "gui.revivalages.process_rule.installed_tool.status": "Инструмент отсутствует",
+  "gui.revivalages.process_rule.fuelled_and_lit.status": "Нет топлива или розжига",
   "gui.revivalages.process_rule.valid_structure": "Требуется правильная структура",
-  "gui.revivalages.process_rule.valid_structure.status": "Остановка: структура неверна",
+  "gui.revivalages.process_rule.valid_structure.status": "Структура неверна",
   "gui.revivalages.process_rule.required_manual_tool": "Требуется указанный ручной инструмент",
-  "gui.revivalages.process_rule.required_manual_tool.status": "Остановка: нужный ручной инструмент отсутствует",
+  "gui.revivalages.process_rule.required_manual_tool.status": "Нужный ручной инструмент отсутствует",
   "gui.revivalages.process_rule.random_outcome": "Процесс может дать случайный альтернативный результат",
   "gui.revivalages.process_rule.random_outcome.status": "Определяется случайный результат",
   "gui.revivalages.process_rule.random_outcome.chance": "Шанс: %s",
@@ -124,8 +124,8 @@
   "jade.revivalages.campfire.state.lit": "Состояние: горит",
   "jade.revivalages.campfire.state.unlit": "Состояние: не горит",
   "jade.revivalages.campfire.state.dead": "Состояние: прогорел",
-  "jade.revivalages.campfire.blocked.no_tinder": "Остановка: требуется трут",
-  "jade.revivalages.campfire.blocked.ash": "Остановка: уберите золу",
+  "jade.revivalages.campfire.blocked.no_tinder": "Требуется трут",
+  "jade.revivalages.campfire.blocked.ash": "Уберите золу",
   "jade.revivalages.campfire.fuel": "Поленья в запасе: %s/%s",
   "jade.revivalages.campfire.ash": "Зола: %s/%s",
   "jade.revivalages.campfire.burn_time": "Время топлива: %s с",
@@ -134,6 +134,8 @@
   "tooltip.revivalages.barrel_lid.seal": "Используйте на верхней стороне бочки, чтобы закрыть её.",
   "config.revivalages.interaction_outline_color": "Цвет рамки взаимодействия",
   "jade.revivalages.chopping.damage": "Повреждение колоды: %s/%s",
+  "jade.revivalages.chopping.remaining_chops": "Прочность: %s",
+  "jade.revivalages.chopping.unlimited": "Прочность: без ограничений",
   "jade.revivalages.chopping.chips": "Щепа: %s",
   "jade.revivalages.pit_kiln.stage": "Стадия: %s",
   "jade.revivalages.pit_kiln.stage.empty": "Загрузка",
@@ -148,8 +150,7 @@
   "jade.revivalages.barrel.state.sealed": "Состояние: закрыта",
   "jade.revivalages.barrel.state.open": "Состояние: открыта",
   "jade.revivalages.barrel.result": "Результат: %s (%s мБ)",
-  "jade.revivalages.soaking_pot.heat.ready": "Нагрев костром: есть",
-  "jade.revivalages.soaking_pot.heat.required": "Нагрев костром: требуется",
+  "jade.revivalages.soaking_pot.no_heat": "Снизу нет горящего костра",
   "jade.revivalages.tanning.sky.clear": "Доступ к небу: открыт",
   "jade.revivalages.tanning.sky.blocked": "Доступ к небу: перекрыт",
   "jade.revivalages.tanning.time.day": "Дневной свет: работает",
@@ -202,12 +203,13 @@
   ,"jade.revivalages.stone_machine.state.lit": "Состояние: горит"
   ,"jade.revivalages.stone_machine.state.unlit": "Состояние: не горит"
   ,"jade.revivalages.stone_machine.fuel": "Топливо: %s (%s тиков)"
-  ,"jade.revivalages.stone_machine.no_fuel": "Остановка: добавьте топливо и подожгите"
-  ,"jade.revivalages.stone_machine.no_blade": "Остановка: требуется пильное полотно"
-  ,"jade.revivalages.stone_machine.output_blocked": "Остановка: заберите результат"
+  ,"jade.revivalages.stone_machine.no_fuel": "Добавьте топливо и подожгите"
+  ,"jade.revivalages.stone_machine.no_blade": "Требуется пильное полотно"
+  ,"jade.revivalages.stone_machine.output_blocked": "Заберите результат"
   ,"jade.revivalages.stone_machine.airflow": "Бонус обдува: +%s"
   ,"jade.revivalages.anvil.damage": "Повреждение наковальни: %s/4"
   ,"jade.revivalages.anvil.hits": "Прогресс: %s/%s ударов"
+  ,"jade.revivalages.anvil.remaining_hits": "Прочность: %s"
   ,"message.revivalages.anvil.not_enough_hunger": "Вы слишком голодны для работы на наковальне"
   ,"gui.revivalages.recipe.tool.hammer": "Инструмент: молот"
   ,"gui.revivalages.recipe.tool.pickaxe": "Инструмент: кирка"
@@ -217,7 +219,7 @@
   ,"jade.revivalages.stone_machine.time": "Время работы: %s/%s с"
   ,"jade.revivalages.stone_machine.failure": "Вероятность неудачи: %s"
   ,"jade.revivalages.stone_machine.wood_chips": "Щепки: до %s (шанс каждой — %s)"
-  ,"jade.revivalages.anvil.select_tool": "Ударьте молотом или киркой, требуемой рецептом"
+  ,"jade.revivalages.anvil.select_tool": "Нанесите удар для обработки предмета"
   ,"subtitles.revivalages.sawmill": "Работает лесопилка"
   ,"itemGroup.revivalages": "Revival Ages"
   ,"block.revivalages.log_pile": "Поленница"

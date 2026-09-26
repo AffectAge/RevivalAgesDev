@@ -260,9 +260,12 @@ predicted result for Active Piles; Ash Piles explain how to collect their stored
 contents. Jade also reports the Wood Torch state and remaining burn time. Flint
 and Tinder and primitive buckets are items rather than inspectable world devices,
 so Jade is not applicable to them.
-For Campfire, the generic Jade item-storage line is hidden in favor of the
-recipe arrow. Ready and burned results have separate colored statuses; legacy
-saves containing Burned Food are recognized without recooking it.
+For Campfire, Chopping Block, Anvil, and Soaking Pot, the generic Jade item-storage
+line is hidden in favor of the recipe arrow. Jade arrows allow progress to reset
+between recipes. Timed machine arrows project their progress from synchronized
+game-time snapshots between block-entity updates.
+Campfire ready and burned results have separate colored statuses; legacy saves
+containing Burned Food are recognized without recooking it.
 
 KubeJS can add or replace these codec-backed recipes through normal custom recipe
 JSON. Biomes O' Plenty logs receive optional, load-conditioned Chopping recipes;

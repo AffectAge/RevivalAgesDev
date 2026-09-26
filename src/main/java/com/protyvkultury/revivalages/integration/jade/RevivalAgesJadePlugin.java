@@ -51,7 +51,8 @@ public final class RevivalAgesJadePlugin implements IWailaPlugin {
             if (accessor instanceof BlockAccessor block
                     && (block.getBlock() instanceof CampfireBlock
                     || block.getBlock() instanceof AnvilBlock
-                    || block.getBlock() instanceof ChoppingBlock)) {
+                    || block.getBlock() instanceof ChoppingBlock
+                    || block.getBlock() instanceof SoakingPotBlock)) {
                 tooltip.getTooltip().remove(JadeIds.UNIVERSAL_ITEM_STORAGE);
             }
         });
