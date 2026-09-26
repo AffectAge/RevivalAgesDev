@@ -133,9 +133,9 @@
   "jade.revivalages.primitive.no_recipe": "No recipe: %s",
   "jade.revivalages.primitive.fluid.empty": "Fluid: Empty (0/%s mB)",
   "jade.revivalages.primitive.fluid": "Fluid: %s (%s/%s mB)",
-  "jade.revivalages.campfire.state.lit": "State: Lit",
-  "jade.revivalages.campfire.state.unlit": "State: Unlit",
-  "jade.revivalages.campfire.state.dead": "State: Burned out",
+  "jade.revivalages.campfire.state.lit": "Lit",
+  "jade.revivalages.campfire.state.unlit": "Unlit",
+  "jade.revivalages.campfire.state.dead": "Burned out",
   "jade.revivalages.campfire.blocked.no_tinder": "Tinder required",
   "jade.revivalages.campfire.blocked.ash": "Remove ash",
   "jade.revivalages.campfire.fuel": "Queued logs: %s/%s",
@@ -159,8 +159,9 @@
   "jade.revivalages.pit_kiln.structure.invalid": "Structure: Invalid",
   "jade.revivalages.pit_kiln.logs": "Logs: %s/%s",
   "jade.revivalages.pit_kiln.invalid_grace": "Structure failure: %s/%s ticks",
-  "jade.revivalages.barrel.state.sealed": "State: Sealed",
-  "jade.revivalages.barrel.state.open": "State: Open",
+  "jade.revivalages.barrel.state.sealed": "Sealed",
+  "jade.revivalages.barrel.state.open": "Open",
+  "jade.revivalages.barrel.processing": "Processing",
   "jade.revivalages.barrel.result": "Result: %s (%s mB)",
   "jade.revivalages.soaking_pot.no_heat": "No lit campfire below",
   "jade.revivalages.tanning.sky.clear": "Sky access: Clear",
@@ -212,8 +213,8 @@
   ,"emi.category.revivalages.anvil": "Anvil"
   ,"config.jade.plugin_revivalages.stone_machines": "Stone Machine Details"
   ,"config.jade.plugin_revivalages.anvil": "Anvil Details"
-  ,"jade.revivalages.stone_machine.state.lit": "State: Lit"
-  ,"jade.revivalages.stone_machine.state.unlit": "State: Unlit"
+  ,"jade.revivalages.stone_machine.state.lit": "Lit"
+  ,"jade.revivalages.stone_machine.state.unlit": "Unlit"
   ,"jade.revivalages.stone_machine.fuel": "Fuel: %s (%s ticks)"
   ,"jade.revivalages.stone_machine.no_fuel": "Add fuel and ignite"
   ,"jade.revivalages.stone_machine.no_blade": "Saw blade required"
@@ -250,9 +251,9 @@
   ,"jade.revivalages.pit_burn.invalid_grace": "Enclosure failure: %s/%s ticks"
   ,"jade.revivalages.pit_burn.stages": "Stages: %s/%s"
   ,"jade.revivalages.pit_burn.ash": "Finished: break the ash pile to collect its contents"
-  ,"jade.revivalages.wood_torch.state.unlit": "State: unlit"
-  ,"jade.revivalages.wood_torch.state.lit": "State: lit"
-  ,"jade.revivalages.wood_torch.state.doused": "State: doused"
+  ,"jade.revivalages.wood_torch.state.unlit": "Unlit"
+  ,"jade.revivalages.wood_torch.state.lit": "Lit"
+  ,"jade.revivalages.wood_torch.state.doused": "Doused"
   ,"jade.revivalages.wood_torch.remaining": "Burn time: %s s"
   ,"jade.revivalages.wood_torch.unlimited": "Burn time: Unlimited"
   ,"tooltip.revivalages.primitive_bucket.fluid": "Contains: %s"

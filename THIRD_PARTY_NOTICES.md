@@ -137,9 +137,10 @@ paths. The generated block model
 `models/block/crafting_workspace.json` is shipped as
 `models/block/construction_frame.json`; `textures/block/horizontal_rope.png` is
 shipped as `textures/block/construction_rope.png`; and only the functional
-40x30 button region of `textures/gui/emi.png` is shipped as
-`textures/gui/frame_assembly_controls.png`. The unused workspace GUI image was
-not copied.
+button region of `textures/gui/emi.png` is adapted into
+`textures/gui/frame_assembly_controls.png`. Its six button states were resized
+from 12x10 pixels to 16x16 pixels and placed in a 256x256 atlas with space for
+future controls. The unused workspace GUI image was not copied.
 
 ## HorsePower
 

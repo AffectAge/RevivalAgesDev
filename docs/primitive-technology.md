@@ -230,9 +230,11 @@ state required for rendering and overlays.
 ## Display integrations
 
 Jade displays progress, inputs and predicted outputs, fuel, ash, block damage,
-wood chips, Pit Kiln stage/structure/logs, Barrel seal/fluid/result, Soaking Pot
-heat requirement, Tanning Rack sky/day/rain conditions, stone-machine airflow,
-fuel, blade, tank and output-blocking state, and Anvil hits and damage. JEI and
+wood chips, Pit Kiln stage/structure/logs, Barrel seal and processing state,
+Soaking Pot heat requirement, Tanning Rack sky/day/rain conditions, stone-machine
+airflow, fuel, blade, and output items, and Anvil hits and damage. Jade's fluid
+bar presents tank contents without an additional text line. The Barrel capacity
+defaults to 10,000 mB in new configurations. JEI and
 EMI use separate presentation adapters, enumerate the same gameplay recipe types
 from `RecipeManager`, and use licensed functional UI textures. Categories include
 item and fluid inputs, outputs, duration,

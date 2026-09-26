@@ -103,7 +103,7 @@ public enum PrimitiveDeviceComponentProvider implements IBlockComponentProvider 
                 : Component.translatable("jade.revivalages.chopping.remaining_chops", remainingChops));
         tooltip.add(Component.translatable("jade.revivalages.chopping.chips", chopping.sawdust()));
         if (!chopping.output().isEmpty()) {
-            tooltip.add(Component.translatable("jade.revivalages.primitive.ready_item", chopping.output().getHoverName()));
+            tooltip.add(List.of(IElementHelper.get().item(chopping.output())));
         }
     }
 
@@ -135,7 +135,7 @@ public enum PrimitiveDeviceComponentProvider implements IBlockComponentProvider 
             ));
         }
         if (!kiln.displayOutput().isEmpty()) {
-            tooltip.add(Component.translatable("jade.revivalages.primitive.ready_item", kiln.displayOutput().getHoverName()));
+            tooltip.add(List.of(IElementHelper.get().item(kiln.displayOutput())));
         }
     }
 
@@ -144,7 +144,10 @@ public enum PrimitiveDeviceComponentProvider implements IBlockComponentProvider 
         appendBarrelProcess(tooltip, barrel, output, accessor.getLevel().getGameTime());
         boolean sealed = accessor.getBlockState().getValue(BarrelBlock.SEALED);
         if (!output.isEmpty()) {
-            appendRule(tooltip, ProcessRuleType.SEALED_MACHINE, !sealed, ChatFormatting.RED);
+            tooltip.add(Component.translatable(sealed
+                    ? "jade.revivalages.barrel.processing"
+                    : ProcessRulePresentation.of(ProcessRuleType.SEALED_MACHINE).statusKey())
+                    .withStyle(sealed ? ChatFormatting.GREEN : ChatFormatting.RED));
         }
         tooltip.add(Component.translatable("jade.revivalages.barrel.state." + (sealed ? "sealed" : "open"))
                 .withStyle(sealed ? ChatFormatting.GREEN : ChatFormatting.RED));
@@ -161,10 +164,7 @@ public enum PrimitiveDeviceComponentProvider implements IBlockComponentProvider 
                 ));
             }
         }
-        appendFluidIfPresent(tooltip, barrel.fluidTank().getFluid(), barrel.fluidTank().getCapacity());
-        if (!output.isEmpty()) {
-            tooltip.add(Component.translatable("jade.revivalages.barrel.result", output.getHoverName(), output.getAmount()));
-        } else if (sealed) {
+        if (output.isEmpty() && sealed) {
             for (ItemStack item : barrel.itemsForView()) {
                 if (!item.isEmpty()) {
                     tooltip.add(Component.translatable("jade.revivalages.primitive.no_recipe", item.getHoverName()));
@@ -183,7 +183,7 @@ public enum PrimitiveDeviceComponentProvider implements IBlockComponentProvider 
                     .withStyle(ChatFormatting.RED));
         }
         if (!pot.output().isEmpty()) {
-            tooltip.add(Component.translatable("jade.revivalages.primitive.ready_item", pot.output().getHoverName()));
+            tooltip.add(List.of(IElementHelper.get().item(pot.output())));
         }
     }
 
@@ -204,7 +204,7 @@ public enum PrimitiveDeviceComponentProvider implements IBlockComponentProvider 
             }
         }
         if (!rack.output().isEmpty()) {
-            tooltip.add(Component.translatable("jade.revivalages.primitive.ready_item", rack.output().getHoverName()));
+            tooltip.add(List.of(IElementHelper.get().item(rack.output())));
         }
     }
 
@@ -237,21 +237,9 @@ public enum PrimitiveDeviceComponentProvider implements IBlockComponentProvider 
         }
     }
 
-    private static void appendFluidIfPresent(ITooltip tooltip, FluidStack fluid, int capacity) {
-        if (!fluid.isEmpty()) {
-            tooltip.add(Component.translatable("jade.revivalages.primitive.fluid", fluid.getHoverName(), fluid.getAmount(), capacity));
-        }
-    }
-
     private static void appendRule(ITooltip tooltip, ProcessRuleType type, boolean blocked) {
         ProcessRulePresentation presentation = ProcessRulePresentation.of(type);
         tooltip.add(Component.translatable(blocked ? presentation.statusKey() : presentation.tooltipKey()));
-    }
-
-    private static void appendRule(ITooltip tooltip, ProcessRuleType type, boolean blocked, ChatFormatting color) {
-        ProcessRulePresentation presentation = ProcessRulePresentation.of(type);
-        tooltip.add(Component.translatable(blocked ? presentation.statusKey() : presentation.tooltipKey())
-                .withStyle(color));
     }
 
     private static void appendBarrelProcess(

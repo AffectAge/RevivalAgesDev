@@ -66,10 +66,7 @@ public enum DryingRackComponentProvider implements IBlockComponentProvider {
                 line.add(elements.item(slot.recipeOutput()));
                 tooltip.add(line);
             } else if (slot.completed()) {
-                tooltip.add(Component.translatable(
-                        "jade.revivalages.drying_rack.complete",
-                        slot.stack().getHoverName()
-                ));
+                tooltip.add(List.of(elements.item(slot.stack())));
             } else {
                 tooltip.add(Component.translatable(
                         "jade.revivalages.drying_rack.no_recipe",

@@ -121,9 +121,9 @@
   "jade.revivalages.primitive.no_recipe": "Нет рецепта: %s",
   "jade.revivalages.primitive.fluid.empty": "Жидкость: пусто (0/%s мБ)",
   "jade.revivalages.primitive.fluid": "Жидкость: %s (%s/%s мБ)",
-  "jade.revivalages.campfire.state.lit": "Состояние: горит",
-  "jade.revivalages.campfire.state.unlit": "Состояние: не горит",
-  "jade.revivalages.campfire.state.dead": "Состояние: прогорел",
+  "jade.revivalages.campfire.state.lit": "Горит",
+  "jade.revivalages.campfire.state.unlit": "Не горит",
+  "jade.revivalages.campfire.state.dead": "Прогорел",
   "jade.revivalages.campfire.blocked.no_tinder": "Требуется трут",
   "jade.revivalages.campfire.blocked.ash": "Уберите золу",
   "jade.revivalages.campfire.fuel": "Поленья в запасе: %s/%s",
@@ -147,8 +147,9 @@
   "jade.revivalages.pit_kiln.structure.invalid": "Конструкция: неверна",
   "jade.revivalages.pit_kiln.logs": "Поленья: %s/%s",
   "jade.revivalages.pit_kiln.invalid_grace": "Разрушение конструкции: %s/%s тиков",
-  "jade.revivalages.barrel.state.sealed": "Состояние: закрыта",
-  "jade.revivalages.barrel.state.open": "Состояние: открыта",
+  "jade.revivalages.barrel.state.sealed": "Закрыта",
+  "jade.revivalages.barrel.state.open": "Открыта",
+  "jade.revivalages.barrel.processing": "Обработка",
   "jade.revivalages.barrel.result": "Результат: %s (%s мБ)",
   "jade.revivalages.soaking_pot.no_heat": "Снизу нет горящего костра",
   "jade.revivalages.tanning.sky.clear": "Доступ к небу: открыт",
@@ -200,8 +201,8 @@
   ,"emi.category.revivalages.anvil": "Наковальня"
   ,"config.jade.plugin_revivalages.stone_machines": "Данные каменных механизмов"
   ,"config.jade.plugin_revivalages.anvil": "Данные наковальни"
-  ,"jade.revivalages.stone_machine.state.lit": "Состояние: горит"
-  ,"jade.revivalages.stone_machine.state.unlit": "Состояние: не горит"
+  ,"jade.revivalages.stone_machine.state.lit": "Горит"
+  ,"jade.revivalages.stone_machine.state.unlit": "Не горит"
   ,"jade.revivalages.stone_machine.fuel": "Топливо: %s (%s тиков)"
   ,"jade.revivalages.stone_machine.no_fuel": "Добавьте топливо и подожгите"
   ,"jade.revivalages.stone_machine.no_blade": "Требуется пильное полотно"
@@ -238,9 +239,9 @@
   ,"jade.revivalages.pit_burn.invalid_grace": "Разрушение конструкции: %s/%s тиков"
   ,"jade.revivalages.pit_burn.stages": "Стадии: %s/%s"
   ,"jade.revivalages.pit_burn.ash": "Готово: сломайте зольную кучу, чтобы забрать содержимое"
-  ,"jade.revivalages.wood_torch.state.unlit": "Состояние: не горит"
-  ,"jade.revivalages.wood_torch.state.lit": "Состояние: горит"
-  ,"jade.revivalages.wood_torch.state.doused": "Состояние: намок"
+  ,"jade.revivalages.wood_torch.state.unlit": "Не горит"
+  ,"jade.revivalages.wood_torch.state.lit": "Горит"
+  ,"jade.revivalages.wood_torch.state.doused": "Намок"
   ,"jade.revivalages.wood_torch.remaining": "Осталось горения: %s с"
   ,"jade.revivalages.wood_torch.unlimited": "Время горения: неограниченно"
   ,"tooltip.revivalages.primitive_bucket.fluid": "Содержит: %s"

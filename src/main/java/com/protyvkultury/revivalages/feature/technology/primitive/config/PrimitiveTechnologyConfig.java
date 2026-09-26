@@ -192,7 +192,7 @@ public final class PrimitiveTechnologyConfig {
         builder.pop();
 
         builder.push("barrel");
-        BARREL_CAPACITY = positive(builder, "capacity", 1000);
+        BARREL_CAPACITY = positive(builder, "capacity", 10000);
         BARREL_DURATION_MULTIPLIER = nonNegative(builder, "durationMultiplier", 1.0D);
         BARREL_RAIN_FILL_INTERVAL = nonNegativeInt(builder, "rainFillInterval", 20);
         BARREL_RAIN_CONVERSION_INTERVAL = nonNegativeInt(builder, "rainConversionInterval", 2 * 60 * 20);

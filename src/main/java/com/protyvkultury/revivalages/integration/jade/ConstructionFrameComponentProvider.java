@@ -34,15 +34,7 @@ public enum ConstructionFrameComponentProvider implements IBlockComponentProvide
         ));
         frame.matchingRecipe().ifPresent(recipe -> {
             IElementHelper elements = IElementHelper.get();
-            IElement result = elements.item(recipe.result());
-            tooltip.add(List.of(
-                    result,
-                    elements.spacer(2, 0),
-                    elements.text(Component.translatable(
-                            "jade.revivalages.construction_frame.result",
-                            recipe.result().getHoverName()
-                    ))
-            ));
+            tooltip.add(List.of(elements.item(recipe.result())));
             ItemStack[] tools = recipe.tool().getItems();
             if (tools.length > 0) {
                 java.util.ArrayList<IElement> toolLine = new java.util.ArrayList<>();

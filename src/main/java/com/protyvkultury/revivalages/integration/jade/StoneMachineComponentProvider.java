@@ -47,9 +47,10 @@ public enum StoneMachineComponentProvider implements IBlockComponentProvider {
             tooltip.add(Component.translatable("jade.revivalages.stone_machine.no_fuel"));
         }
         if (!machine.firstOutput().isEmpty()) {
-            tooltip.add(Component.translatable(machine.input().isEmpty()
-                    ? "jade.revivalages.stone_machine.output_ready"
-                    : "jade.revivalages.stone_machine.output_blocked"));
+            tooltip.add(List.of(IElementHelper.get().item(machine.firstOutput())));
+            if (!machine.input().isEmpty()) {
+                tooltip.add(Component.translatable("jade.revivalages.stone_machine.output_blocked"));
+            }
         }
         if (machine.airflowBonus() > 0.0F) {
             tooltip.add(Component.translatable(
@@ -79,9 +80,6 @@ public enum StoneMachineComponentProvider implements IBlockComponentProvider {
                     machine.recipeWoodChips(),
                     String.format(Locale.ROOT, "%.0f%%",
                             machine.woodChipChanceForView() * 100.0D)));
-        }
-        if (machine.kind() == StoneMachineKind.CRUCIBLE) {
-            appendFluid(tooltip, machine.fluidTank().getFluid(), machine.fluidTank().getCapacity());
         }
     }
 
@@ -118,15 +116,6 @@ public enum StoneMachineComponentProvider implements IBlockComponentProvider {
             }
         }
         tooltip.add(line);
-    }
-
-    private static void appendFluid(ITooltip tooltip, FluidStack fluid, int capacity) {
-        if (fluid.isEmpty()) {
-            tooltip.add(Component.translatable("jade.revivalages.primitive.fluid.empty", capacity));
-        } else {
-            tooltip.add(Component.translatable(
-                    "jade.revivalages.primitive.fluid", fluid.getHoverName(), fluid.getAmount(), capacity));
-        }
     }
 
     @Override
