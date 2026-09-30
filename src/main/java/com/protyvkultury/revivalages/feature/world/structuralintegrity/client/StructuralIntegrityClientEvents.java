@@ -1,15 +1,29 @@
 package com.protyvkultury.revivalages.feature.world.structuralintegrity.client;
 
+import com.protyvkultury.revivalages.config.InteractionOutlineConfig;
 import com.protyvkultury.revivalages.feature.world.structuralintegrity.CollapseShakeEvent;
 import com.protyvkultury.revivalages.feature.world.structuralintegrity.StructuralIntegrityConfig;
 import com.protyvkultury.revivalages.feature.world.structuralintegrity.StructuralIntegrityFeature;
+import com.protyvkultury.revivalages.feature.world.structuralintegrity.block.HorizontalSupportBlock;
+import com.protyvkultury.revivalages.feature.world.structuralintegrity.block.VerticalSupportBlock;
+import com.protyvkultury.revivalages.feature.world.structuralintegrity.item.SupportBeamItem;
+import java.util.List;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.LevelRenderer;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.FallingBlockRenderer;
+import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
+import net.neoforged.neoforge.client.event.RenderHighlightEvent;
 import net.neoforged.neoforge.client.event.ViewportEvent;
 import net.neoforged.neoforge.common.NeoForge;
 
@@ -25,6 +39,7 @@ public final class StructuralIntegrityClientEvents {
         NeoForge.EVENT_BUS.addListener(StructuralIntegrityClientEvents::onShake);
         NeoForge.EVENT_BUS.addListener(StructuralIntegrityClientEvents::onClientTick);
         NeoForge.EVENT_BUS.addListener(StructuralIntegrityClientEvents::onCameraAngles);
+        NeoForge.EVENT_BUS.addListener(StructuralIntegrityClientEvents::renderPlacementHighlight);
     }
 
     private static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
@@ -63,6 +78,53 @@ public final class StructuralIntegrityClientEvents {
 
     private static void onCameraAngles(ViewportEvent.ComputeCameraAngles event) {
         CAMERA_SHAKE.apply(event);
+    }
+
+    private static void renderPlacementHighlight(RenderHighlightEvent.Block event) {
+        Minecraft minecraft = Minecraft.getInstance();
+        if (minecraft.level == null || minecraft.player == null) {
+            return;
+        }
+        InteractionHand hand = InteractionHand.MAIN_HAND;
+        ItemStack stack = minecraft.player.getMainHandItem();
+        if (!(stack.getItem() instanceof SupportBeamItem)) {
+            hand = InteractionHand.OFF_HAND;
+            stack = minecraft.player.getOffhandItem();
+        }
+        if (!(stack.getItem() instanceof SupportBeamItem beamItem)) {
+            return;
+        }
+        BlockHitResult hit = event.getTarget();
+        BlockPlaceContext context = new BlockPlaceContext(minecraft.player, hand, stack, hit);
+        BlockState state = beamItem.previewState(context);
+        if (state == null) {
+            return;
+        }
+        BlockPos origin = context.getClickedPos();
+        List<BlockPos> positions = switch (state.getBlock()) {
+            case VerticalSupportBlock vertical -> vertical.placementPositions(
+                    minecraft.level, origin, minecraft.player, stack);
+            case HorizontalSupportBlock horizontal -> horizontal.placementPositions(minecraft.level, origin, stack);
+            default -> List.of();
+        };
+        if (positions.isEmpty()) {
+            return;
+        }
+        Vec3 camera = event.getCamera().getPosition();
+        int color = InteractionOutlineConfig.rgb();
+        float red = ((color >> 16) & 0xFF) / 255.0F;
+        float green = ((color >> 8) & 0xFF) / 255.0F;
+        float blue = (color & 0xFF) / 255.0F;
+        for (BlockPos pos : positions) {
+            double x = pos.getX() - camera.x;
+            double y = pos.getY() - camera.y;
+            double z = pos.getZ() - camera.z;
+            LevelRenderer.renderLineBox(event.getPoseStack(),
+                    event.getMultiBufferSource().getBuffer(RenderType.lines()),
+                    x, y, z, x + 1.0D, y + 1.0D, z + 1.0D,
+                    red, green, blue, 1.0F);
+        }
+        event.setCanceled(true);
     }
 
     private static final class CameraShakeState {

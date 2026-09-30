@@ -41,8 +41,8 @@ final class FrameAssemblyJeiWidget implements ISlottedRecipeWidget, IJeiGuiEvent
         this.ingredients = ingredients;
         this.helpers = helpers;
         buttons = List.of(
-                new LayerButton(x + 76, y + 2, 0, () -> layer < 3, () -> layer++),
-                new LayerButton(x + 76, y + 18, 16, () -> layer > 0, () -> layer--)
+                new LayerButton(x + 94, y + 2, 0, () -> layer < 3, () -> layer++),
+                new LayerButton(x + 94, y + 18, 16, () -> layer > 0, () -> layer--)
         );
     }
 
@@ -145,7 +145,7 @@ final class FrameAssemblyJeiWidget implements ISlottedRecipeWidget, IJeiGuiEvent
 
     @Override
     public ScreenRectangle getArea() {
-        return new ScreenRectangle(x, y, 94, 97);
+        return new ScreenRectangle(x, y, 116, 97);
     }
 
     private record LayerButton(

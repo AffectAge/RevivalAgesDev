@@ -18,8 +18,10 @@ conditions follow [content-availability.md](content-availability.md).
 3. Hunt animals in the `revivalages:drops_raw_hide` entity-type tag to obtain raw
    hide, then use a Chopping Block with an axe to process logs and scrape it. Tool tier
    changes required chops and output; work consumes exhaustion, tool durability,
-   and can produce removable wood chips. Completed recipe outputs drop above the
-   block.
+   and has one configurable chance per chop to drop one wood chip into the world.
+   The default chance is 5%. Completed recipe outputs
+   drop above the block. Wood chips stored in older saves can still be collected
+   with a shovel or recovered by breaking the block.
 4. Load a Pit Kiln, cover it with thatch, add three logs, validate its surrounding
    structure, and ignite it. An active kiln maintains a real fire block above it.
    A broken structure receives a 100-tick recovery window before its contents
@@ -129,6 +131,16 @@ At configured night hours, an unthreatened player near a lit Campfire receives
 Comfort and Resting. Continued rest can grant Well Rested; eating to fullness can
 grant Well Fed; satisfying both conditions grants Focused. These effects provide
 the configured healing, absorption, exhaustion, food, and experience bonuses.
+
+The five Campfire effect icons use 16x16 cells in the original 256x256 texture
+`assets/revivalages/textures/atlas/campfire_effects.png`. From left to right in
+the first row, the cells are Comfort `(0, 0)`, Resting `(16, 0)`, Well Fed
+`(32, 0)`, Well Rested `(48, 0)`, and Focused `(64, 0)`. Remaining cells are
+transparent and available for future icons. Each cell currently contains a
+distinct solid placeholder color. The additive atlas source at
+`assets/minecraft/atlases/mob_effects.json` unstitches these cells into the standard mob-effect
+atlas under the five Revival Ages effect IDs; it does not replace vanilla
+sprites. Editing this single PNG updates the five icons after a resource reload.
 
 ## Server configuration
 

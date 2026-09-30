@@ -139,10 +139,7 @@ public final class ChoppingBlockEntity extends BlockEntity {
         player.causeFoodExhaustion(PrimitiveTechnologyConfig.CHOPPING_EXHAUSTION_PER_CHOP.get().floatValue());
         axe.hurtAndBreak(1, player, LivingEntity.getSlotForHand(hand));
         durabilityUntilDamage--;
-        if (level.random.nextDouble() < PrimitiveTechnologyConfig.CHOPPING_WOOD_CHIPS_CHANCE.get() * 2.0D) {
-            setSawdust(sawdust + 1);
-        }
-        if (level.random.nextDouble() < PrimitiveTechnologyConfig.CHOPPING_WOOD_CHIPS_CHANCE.get() * 0.5D) {
+        if (level.random.nextDouble() < PrimitiveTechnologyConfig.CHOPPING_WOOD_CHIPS_CHANCE.get()) {
             Direction direction = Direction.Plane.HORIZONTAL.getRandomDirection(level.random);
             BlockPos chipPos = worldPosition.relative(direction).above();
             Block.popResource(level, chipPos, new ItemStack(

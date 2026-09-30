@@ -42,22 +42,12 @@ public final class HorizontalSupportBlock extends AbstractSupportBlock {
         if (level.isClientSide || placer == null || !supportEnabled()) {
             return;
         }
-        Span span = findSpan(level, pos);
-        if (span == null || stack.getCount() < span.positions().size()) {
+        List<BlockPos> positions = placementPositions(level, pos, stack);
+        if (positions.isEmpty()) {
             level.destroyBlock(pos, true);
             return;
         }
-        for (BlockPos target : span.positions()) {
-            if (target.equals(pos)) {
-                continue;
-            }
-            BlockState existing = level.getBlockState(target);
-            if (!canAutoReplace(existing) || !level.getEntities(null, new AABB(target)).isEmpty()) {
-                level.destroyBlock(pos, true);
-                return;
-            }
-        }
-        for (BlockPos target : span.positions()) {
+        for (BlockPos target : positions) {
             boolean waterlogged = level.getFluidState(target).is(Fluids.WATER);
             BlockState placed = connectedState(
                     level,
@@ -66,12 +56,30 @@ public final class HorizontalSupportBlock extends AbstractSupportBlock {
             );
             level.setBlock(target, placed, Block.UPDATE_CLIENTS);
         }
-        for (BlockPos target : span.positions()) {
+        for (BlockPos target : positions) {
             level.updateNeighborsAt(target, this);
         }
         if (!(placer instanceof net.minecraft.world.entity.player.Player player) || !player.isCreative()) {
-            stack.shrink(span.positions().size() - 1);
+            stack.shrink(positions.size() - 1);
         }
+    }
+
+    /** Returns a complete span only when placement can fill every intermediate position. */
+    public List<BlockPos> placementPositions(Level level, BlockPos pos, ItemStack stack) {
+        Span span = findSpan(level, pos);
+        if (span == null || stack.getCount() < span.positions().size()) {
+            return List.of();
+        }
+        for (BlockPos target : span.positions()) {
+            if (target.equals(pos)) {
+                continue;
+            }
+            BlockState existing = level.getBlockState(target);
+            if (!canAutoReplace(existing) || !level.getEntities(null, new AABB(target)).isEmpty()) {
+                return List.of();
+            }
+        }
+        return span.positions();
     }
 
     @Override

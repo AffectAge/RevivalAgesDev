@@ -40,7 +40,7 @@ the shared [content availability contract](content-availability.md).
 JEI and EMI enumerate the same `FrameAssemblyRecipe` holders through
 `FrameAssemblyRecipeCatalog`. Mode 0 renders all 27 ingredients in an isometric
 projection. Modes 1 through 3 render one standard-slot layer at a time. Both
-adapters provide 16x16 layer controls in the upper-right of the recipe display,
+adapters provide 16x16 layer controls centered above the output slot,
 ingredient interaction, tool and output slots, and safe rendering for completely
 empty layers. The controls share a 256x256 texture atlas.
 

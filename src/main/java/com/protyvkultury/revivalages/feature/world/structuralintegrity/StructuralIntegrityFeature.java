@@ -9,6 +9,7 @@ import com.protyvkultury.revivalages.feature.world.structuralintegrity.client.St
 import com.protyvkultury.revivalages.feature.world.structuralintegrity.network.CollapseShakePayload;
 import com.protyvkultury.revivalages.feature.world.structuralintegrity.block.HorizontalSupportBlock;
 import com.protyvkultury.revivalages.feature.world.structuralintegrity.block.VerticalSupportBlock;
+import com.protyvkultury.revivalages.feature.world.structuralintegrity.item.SupportBeamItem;
 import com.protyvkultury.revivalages.feature.world.structuralintegrity.recipe.BlockTransformationRecipe;
 import com.protyvkultury.revivalages.feature.world.structuralintegrity.recipe.BlockTransformationRecipeSerializer;
 import com.protyvkultury.revivalages.feature.world.structuralintegrity.recipe.SupportBeamRecipe;
@@ -17,7 +18,6 @@ import java.util.Collections;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.function.Supplier;
-import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.EntityType;
@@ -129,11 +129,10 @@ public final class StructuralIntegrityFeature implements FeatureModule {
             );
             DeferredItem<StandingAndWallBlockItem> item = ITEMS.register(
                     baseName,
-                    () -> new StandingAndWallBlockItem(
+                    () -> new SupportBeamItem(
                             vertical.get(),
                             horizontal.get(),
-                            new Item.Properties(),
-                            Direction.DOWN
+                            new Item.Properties()
                     )
             );
             VERTICAL_SUPPORTS.put(wood, vertical);

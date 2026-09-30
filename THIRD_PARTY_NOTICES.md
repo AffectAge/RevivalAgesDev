@@ -188,12 +188,10 @@ Revival Ages namespace as `sounds/sawmill/sawmill-idle.ogg`,
 `sawmill-active-short-b.ogg`. Their sound events and playback behavior were
 adapted to the Minecraft 1.21.1 sound registry and server configuration.
 
-The Chopping Block wood-chip accumulation models from
+The previously adapted Chopping Block wood-chip accumulation models from
 `models/block/chopping_block_sawdust_side.json` and
-`models/block/chopping_block_sawdust_top.json` are shipped under the same renamed
-paths in the Revival Ages namespace. They use the existing Revival Ages wood-chip
-texture and reproduce the functional five-stage placement around and above the
-block.
+`models/block/chopping_block_sawdust_top.json` were removed. Chopping now drops
+wood chips directly into the world.
 
 The Anvil model at `assets/revivalages/models/block/anvil.json` is the author's
 Blockbench geometry, with an inset upper slab and a full-width lower slab. Its

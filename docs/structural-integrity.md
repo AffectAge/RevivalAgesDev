@@ -16,6 +16,8 @@ the entire transaction before consuming additional items. Removing the base of
 a vertical post immediately invalidates its unsupported upper segments and any
 dependent horizontal span through ordinary neighbor updates; automatically
 removed segments apply their normal loot tables and drop their support items.
+While holding a Support Beam, the client outlines every block in the planned
+vertical stack or valid horizontal span using the configured interaction color.
 
 The `revivalages:support` block data map is the canonical reloadable source of
 support definitions. It lets data packs and other mods assign upward, downward,

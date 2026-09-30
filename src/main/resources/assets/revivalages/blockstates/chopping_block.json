@@ -47,49 +47,6 @@
       "apply": {
         "model": "revivalages:block/chopping_block_5"
       }
-    },
-    {
-      "when": {
-        "sawdust": "1|2|3|4|5"
-      },
-      "apply": {
-        "model": "revivalages:block/chopping_block_sawdust_side"
-      }
-    },
-    {
-      "when": {
-        "sawdust": "2|3|4|5"
-      },
-      "apply": {
-        "model": "revivalages:block/chopping_block_sawdust_side",
-        "y": 90
-      }
-    },
-    {
-      "when": {
-        "sawdust": "3|4|5"
-      },
-      "apply": {
-        "model": "revivalages:block/chopping_block_sawdust_side",
-        "y": 180
-      }
-    },
-    {
-      "when": {
-        "sawdust": "4|5"
-      },
-      "apply": {
-        "model": "revivalages:block/chopping_block_sawdust_side",
-        "y": 270
-      }
-    },
-    {
-      "when": {
-        "sawdust": "5"
-      },
-      "apply": {
-        "model": "revivalages:block/chopping_block_sawdust_top"
-      }
     }
   ]
 }

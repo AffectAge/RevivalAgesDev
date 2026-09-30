@@ -110,7 +110,9 @@ public enum PrimitiveDeviceComponentProvider implements IBlockComponentProvider 
         tooltip.add(remainingChops < 0
                 ? Component.translatable("jade.revivalages.chopping.unlimited")
                 : Component.translatable("jade.revivalages.chopping.remaining_chops", remainingChops));
-        tooltip.add(Component.translatable("jade.revivalages.chopping.chips", chopping.sawdust()));
+        if (chopping.sawdust() > 0) {
+            tooltip.add(Component.translatable("jade.revivalages.chopping.chips", chopping.sawdust()));
+        }
         if (!chopping.output().isEmpty()) {
             tooltip.add(List.of(IElementHelper.get().item(chopping.output())));
         }

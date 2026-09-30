@@ -23,7 +23,7 @@ final class FrameAssemblyEmiRecipe extends BasicEmiRecipe {
 
     @Override
     public void addWidgets(WidgetHolder widgets) {
-        widgets.add(new FrameAssemblyEmiWidget(0, 0, 94, 97, inputs));
+        widgets.add(new FrameAssemblyEmiWidget(0, 0, 118, 97, inputs));
         widgets.addTexture(dev.emi.emi.api.render.EmiTexture.EMPTY_ARROW, 59, 41);
         var toolSlot = widgets.addSlot(catalysts.getFirst(), 61, 60).catalyst(true);
         toolRequirement.tooltip().forEach(toolSlot::appendTooltip);
