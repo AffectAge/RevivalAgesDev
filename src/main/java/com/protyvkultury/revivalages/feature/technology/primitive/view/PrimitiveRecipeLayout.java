@@ -27,7 +27,7 @@ public record PrimitiveRecipeLayout(
             160,
             64,
             List.of(new Position(16, 8), new Position(40, 8), new Position(16, 32), new Position(40, 32)),
-            List.of(),
+            List.of(new Position(120, 20)),
             new Position(88, 24),
             null
     );
@@ -52,15 +52,6 @@ public record PrimitiveRecipeLayout(
     );
     public static final PrimitiveRecipeLayout ANVIL = single("anvil", false);
     public static final PrimitiveRecipeLayout GRINDING = single("animal_power_grinding", false);
-    public static final PrimitiveRecipeLayout PRESSING = new PrimitiveRecipeLayout(
-            "animal_power_pressing",
-            128,
-            47,
-            List.of(new Position(16, 16)),
-            List.of(new Position(72, 16)),
-            new Position(40, 16),
-            null
-    );
     public static final PrimitiveRecipeLayout DRYING = single("drying_rack", false);
 
     public PrimitiveRecipeLayout {

@@ -77,19 +77,18 @@ public abstract class AbstractSupportBlock extends Block implements SimpleWaterl
     }
 
     protected VoxelShape shape(BlockState state, boolean fullHeight) {
-        double minimumY = fullHeight ? 0D : 10D;
-        VoxelShape result = box(5D, minimumY, 5D, 11D, 16D, 11D);
+        VoxelShape result = fullHeight ? box(5D, 0D, 5D, 11D, 16D, 11D) : Shapes.empty();
         if (state.getValue(NORTH)) {
-            result = Shapes.or(result, box(5D, 10D, 0D, 11D, 16D, 5D));
+            result = Shapes.or(result, box(6D, 11D, 0D, 10D, 15D, 8D));
         }
         if (state.getValue(SOUTH)) {
-            result = Shapes.or(result, box(5D, 10D, 11D, 11D, 16D, 16D));
+            result = Shapes.or(result, box(6D, 11D, 8D, 10D, 15D, 16D));
         }
         if (state.getValue(EAST)) {
-            result = Shapes.or(result, box(11D, 10D, 5D, 16D, 16D, 11D));
+            result = Shapes.or(result, box(8D, 11D, 6D, 16D, 15D, 10D));
         }
         if (state.getValue(WEST)) {
-            result = Shapes.or(result, box(0D, 10D, 5D, 5D, 16D, 11D));
+            result = Shapes.or(result, box(0D, 11D, 6D, 8D, 15D, 10D));
         }
         return result;
     }

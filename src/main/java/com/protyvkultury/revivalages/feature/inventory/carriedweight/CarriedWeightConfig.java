@@ -1,11 +1,10 @@
 package com.protyvkultury.revivalages.feature.inventory.carriedweight;
 
+import com.protyvkultury.revivalages.config.RevivalAgesConfig;
 import net.neoforged.neoforge.common.ModConfigSpec;
 
 public final class CarriedWeightConfig {
 
-    public static final ModConfigSpec SPEC;
-    public static final ModConfigSpec.BooleanValue ENABLED;
     public static final ModConfigSpec.IntValue UPDATE_INTERVAL_TICKS;
     public static final ModConfigSpec.IntValue MAXIMUM_RECURSION_DEPTH;
     public static final ModConfigSpec.DoubleValue BASE_CAPACITY;
@@ -56,14 +55,8 @@ public final class CarriedWeightConfig {
     public static final ModConfigSpec.DoubleValue REALISTIC_JUMP_BONUS;
 
     static {
-        ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
+        ModConfigSpec.Builder builder = RevivalAgesConfig.builder();
         builder.push("carriedWeight");
-        ENABLED = builder
-                .comment(
-                        "Enables carried weight, pockets, HUD, tooltips, and overload penalties.",
-                        "Changing this value requires a server restart."
-                )
-                .define("enabled", true);
         UPDATE_INTERVAL_TICKS = builder
                 .comment("Ticks between authoritative player weight recalculations.")
                 .defineInRange("updateIntervalTicks", 1, 1, 200);
@@ -157,14 +150,12 @@ public final class CarriedWeightConfig {
         );
         REALISTIC_JUMP_BONUS = nonNegative(builder, "penalties.realisticJumpBonus", 0.05D, 10.0D);
         builder.pop();
-        SPEC = builder.build();
     }
 
     private CarriedWeightConfig() {
     }
 
-    public static boolean configuredEnabled() {
-        return SPEC.isLoaded() ? ENABLED.get() : ENABLED.getDefault();
+    public static void bootstrap() {
     }
 
     private static ModConfigSpec.DoubleValue positive(

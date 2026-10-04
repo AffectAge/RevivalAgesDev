@@ -39,13 +39,9 @@ coverage reloadable and permits compatible modded biomes to participate where
 they expose the corresponding existing tags. Existing worlds remain valid;
 deposits appear in newly generated chunks.
 
-`revivalages-surface-deposits-server.toml` provides the
-`surfaceDeposits.enabled` family toggle plus independent `rocksEnabled` and
-`sticksEnabled` toggles. Each biome modifier declares the corresponding content
-key and contributes no placed feature while unavailable. Existing deposits stay
-registered and, when broken while disabled, return their deposit block item
-instead of producing new progression materials. See
-[content-availability.md](content-availability.md).
+Surface rocks and sticks are always available. Each biome modifier declares its
+content key for catalog validation and compatibility, not as a configuration
+switch. See [content-availability.md](content-availability.md).
 
 The adaptation fixes four evident reference-data defects instead of preserving
 them:

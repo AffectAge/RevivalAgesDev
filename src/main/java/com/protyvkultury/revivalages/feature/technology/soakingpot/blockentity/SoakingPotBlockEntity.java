@@ -3,6 +3,7 @@ package com.protyvkultury.revivalages.feature.technology.soakingpot.blockentity;
 import com.protyvkultury.revivalages.api.food.FoodFreshnessApi;
 import com.protyvkultury.revivalages.core.particle.ProgressParticleHelper;
 import com.protyvkultury.revivalages.core.process.ProcessRule;
+import com.protyvkultury.revivalages.core.process.ProgressProjection;
 import com.protyvkultury.revivalages.core.process.ProcessRuleEngine;
 import com.protyvkultury.revivalages.core.process.ProcessRuleEvaluation;
 import com.protyvkultury.revivalages.core.process.ProcessRuleType;
@@ -71,6 +72,9 @@ public final class SoakingPotBlockEntity extends BlockEntity {
     };
     private int elapsedTicks;
     private int totalTicks;
+    private long clientProgressSnapshotTime = -1L;
+    private int clientProgressDuration;
+    private double clientProgressRate;
     /** Server-evaluated rule snapshot for clients and probe integrations. */
     private boolean litBlockBelowSatisfied = true;
     private SoakingPotRecipe activeRecipe;
@@ -93,18 +97,21 @@ public final class SoakingPotBlockEntity extends BlockEntity {
         }
         pot.resolveRecipe();
         if (pot.activeRecipe == null || pot.input.isEmpty() || !pot.output.isEmpty()) {
-            pot.elapsedTicks = 0;
-            pot.totalTicks = 0;
+            if (pot.elapsedTicks != 0 || pot.totalTicks != 0) {
+                pot.elapsedTicks = 0;
+                pot.totalTicks = 0;
+                pot.sync();
+            }
             return;
         }
         int required = pot.activeRecipe.inputFluid().getAmount() * pot.input.getCount();
-        if (pot.tank.getFluidAmount() < required) {
-            return;
-        }
         boolean litBelow = pot.hasLitBlockBelow(level, pos);
         if (pot.litBlockBelowSatisfied != litBelow) {
             pot.litBlockBelowSatisfied = litBelow;
             pot.sync();
+        }
+        if (pot.tank.getFluidAmount() < required) {
+            return;
         }
         ProcessRuleEvaluation rules = ProcessRuleEngine.evaluate(
                 pot.activeRecipe.processRules(),
@@ -112,9 +119,10 @@ public final class SoakingPotBlockEntity extends BlockEntity {
                 ignored -> 1.0D
         );
         if (!rules.canAdvance()) {
-            if (rules.resetProgress()) {
+            if (rules.resetProgress() && (pot.elapsedTicks != 0 || pot.totalTicks != 0)) {
                 pot.elapsedTicks = 0;
                 pot.totalTicks = 0;
+                pot.sync();
             }
             return;
         }
@@ -168,6 +176,14 @@ public final class SoakingPotBlockEntity extends BlockEntity {
 
     public double progress() {
         return totalTicks <= 0 ? 0.0D : Math.min(1.0D, elapsedTicks / (double) totalTicks);
+    }
+
+    public double progressAt(long gameTime) {
+        if (level == null || !level.isClientSide || clientProgressSnapshotTime < 0L) {
+            return progress();
+        }
+        return ProgressProjection.fraction(elapsedTicks, clientProgressDuration,
+                clientProgressRate, clientProgressSnapshotTime, gameTime);
     }
 
     public ItemStack recipeOutput() {
@@ -376,6 +392,9 @@ public final class SoakingPotBlockEntity extends BlockEntity {
         elapsedTicks = tag.getInt("ElapsedTicks");
         totalTicks = tag.getInt("TotalTicks");
         litBlockBelowSatisfied = tag.getBoolean("LitBlockBelowSatisfied");
+        clientProgressSnapshotTime = tag.contains("ProgressSnapshotTime") ? tag.getLong("ProgressSnapshotTime") : -1L;
+        clientProgressDuration = tag.getInt("ProgressDurationSnapshot");
+        clientProgressRate = tag.getDouble("ProgressRateSnapshot");
         resolveRecipe();
     }
 
@@ -402,7 +421,21 @@ public final class SoakingPotBlockEntity extends BlockEntity {
 
     @Override
     public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
-        return saveWithoutMetadata(registries);
+        CompoundTag tag = saveWithoutMetadata(registries);
+        if (level != null) {
+            tag.putLong("ProgressSnapshotTime", level.getGameTime());
+            tag.putInt("ProgressDurationSnapshot", activeRecipe == null ? 0 : Math.max(1,
+                    (int) Math.round(activeRecipe.processingTime()
+                            * PrimitiveTechnologyConfig.SOAKING_POT_DURATION_MULTIPLIER.get())));
+            boolean hasFluid = activeRecipe != null
+                    && tank.getFluidAmount() >= activeRecipe.inputFluid().getAmount() * input.getCount();
+            boolean heatSatisfied = activeRecipe == null || activeRecipe.processRules().stream()
+                    .noneMatch(rule -> rule.type() == ProcessRuleType.LIT_BLOCK_BELOW)
+                    || litBlockBelowSatisfied;
+            tag.putDouble("ProgressRateSnapshot", activeRecipe != null && !input.isEmpty()
+                    && output.isEmpty() && hasFluid && heatSatisfied ? 1.0D : 0.0D);
+        }
+        return tag;
     }
 
     private final class PotItemHandler implements IItemHandler {

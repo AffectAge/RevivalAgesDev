@@ -33,38 +33,40 @@ public final class WoodTorchBlockEntity extends BlockEntity {
         }
         torch.ensureDuration();
         long now = level.getGameTime();
+        if (state.getValue(WoodTorchBlock.STATE) == WoodTorchState.LIT
+                && !PrimitiveTechnologyConfig.WOOD_TORCH_BURNS_UP.get()
+                && torch.lastTimeStamp != 0L) {
+            torch.remainingTicks = torch.remainingTicksAt(now);
+            torch.lastTimeStamp = 0L;
+            torch.sync();
+        }
+        if (state.getValue(WoodTorchBlock.STATE) == WoodTorchState.LIT
+                && PrimitiveTechnologyConfig.WOOD_TORCH_BURNS_UP.get()) {
+            if (torch.lastTimeStamp == 0L) {
+                torch.lastTimeStamp = now;
+                torch.sync();
+            }
+            if (torch.remainingTicksAt(now) <= 0) {
+                level.removeBlock(pos, false);
+                return;
+            }
+        }
         if (torch.nextCheckTime == 0L) {
             torch.scheduleNextCheck(now);
-            torch.sync();
-            return;
+            torch.setChanged();
         }
         if (now < torch.nextCheckTime) {
             return;
         }
         torch.scheduleNextCheck(now);
+        torch.setChanged();
         if (state.getValue(WoodTorchBlock.STATE) != WoodTorchState.LIT) {
-            torch.sync();
             return;
         }
         if (PrimitiveTechnologyConfig.WOOD_TORCH_RAIN_EXTINGUISHES.get()
                 && level.isRainingAt(pos.above())) {
             torch.douseFromRain();
             return;
-        }
-        if (!PrimitiveTechnologyConfig.WOOD_TORCH_BURNS_UP.get()) {
-            torch.sync();
-            return;
-        }
-        if (torch.lastTimeStamp == 0L) {
-            torch.lastTimeStamp = now;
-        } else {
-            torch.remainingTicks -= (int) Math.min(Integer.MAX_VALUE, Math.max(0L, now - torch.lastTimeStamp));
-            torch.lastTimeStamp = now;
-        }
-        if (torch.remainingTicks <= 0) {
-            level.removeBlock(pos, false);
-        } else {
-            torch.sync();
         }
     }
 
@@ -79,29 +81,31 @@ public final class WoodTorchBlockEntity extends BlockEntity {
             return false;
         }
         ensureDuration();
+        lastTimeStamp = PrimitiveTechnologyConfig.WOOD_TORCH_BURNS_UP.get() ? level.getGameTime() : 0L;
         level.setBlock(worldPosition, getBlockState().setValue(WoodTorchBlock.STATE, WoodTorchState.LIT), Block.UPDATE_ALL);
         sync();
         return true;
     }
 
     public void douseManually() {
-        douse(true);
+        douse();
     }
 
     private void douseFromRain() {
-        douse(false);
+        douse();
     }
 
-    private void douse(boolean resetTimeStamp) {
+    private void douse() {
         if (!ContentAvailability.isEnabled(ContentKey.WOOD_TORCH)
                 || level == null
                 || getBlockState().getValue(WoodTorchBlock.STATE) != WoodTorchState.LIT) {
             return;
         }
-        level.setBlock(worldPosition, getBlockState().setValue(WoodTorchBlock.STATE, WoodTorchState.DOUSED), Block.UPDATE_ALL);
-        if (resetTimeStamp) {
-            lastTimeStamp = 0L;
+        if (PrimitiveTechnologyConfig.WOOD_TORCH_BURNS_UP.get()) {
+            remainingTicks = remainingTicksAt(level.getGameTime());
         }
+        lastTimeStamp = 0L;
+        level.setBlock(worldPosition, getBlockState().setValue(WoodTorchBlock.STATE, WoodTorchState.DOUSED), Block.UPDATE_ALL);
         sync();
     }
 
@@ -116,6 +120,14 @@ public final class WoodTorchBlockEntity extends BlockEntity {
 
     public int remainingTicks() {
         return remainingTicks;
+    }
+
+    public int remainingTicksAt(long gameTime) {
+        if (getBlockState().getValue(WoodTorchBlock.STATE) != WoodTorchState.LIT || lastTimeStamp == 0L) {
+            return remainingTicks;
+        }
+        long elapsed = Math.max(0L, gameTime - lastTimeStamp);
+        return (int) Math.max(0L, remainingTicks - elapsed);
     }
 
     private void scheduleNextCheck(long now) {

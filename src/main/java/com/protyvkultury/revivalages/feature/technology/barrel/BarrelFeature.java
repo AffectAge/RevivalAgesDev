@@ -8,15 +8,13 @@ import com.protyvkultury.revivalages.feature.content.ContentPolicy;
 import com.protyvkultury.revivalages.feature.technology.barrel.block.BarrelBlock;
 import com.protyvkultury.revivalages.feature.technology.barrel.blockentity.BarrelBlockEntity;
 import com.protyvkultury.revivalages.feature.technology.barrel.item.BarrelBlockItem;
+import com.protyvkultury.revivalages.feature.technology.barrel.item.BarrelLidItem;
 import com.protyvkultury.revivalages.feature.technology.barrel.recipe.BarrelRecipe;
 import com.protyvkultury.revivalages.feature.technology.barrel.recipe.BarrelRecipeSerializer;
-import com.protyvkultury.revivalages.feature.technology.barrel.storage.StorageBarrelBlock;
-import com.protyvkultury.revivalages.feature.technology.barrel.storage.StorageBarrelBlockEntity;
 import com.protyvkultury.revivalages.feature.technology.primitive.config.PrimitiveTechnologyConfig;
 import java.util.function.Supplier;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -50,26 +48,12 @@ public final class BarrelFeature implements FeatureModule {
             properties -> new BarrelBlockItem(BARREL.get(), properties),
             new Item.Properties()
     );
-    public static final DeferredItem<Item> BARREL_LID = ITEMS.registerSimpleItem("barrel_lid", new Item.Properties().stacksTo(16));
-    public static final DeferredBlock<StorageBarrelBlock> STORAGE_BARREL = BLOCKS.registerBlock(
-            "storage_barrel",
-            StorageBarrelBlock::new,
-            BlockBehaviour.Properties.of().strength(1.5F).sound(SoundType.WOOD).noOcclusion()
-    );
-    public static final DeferredItem<BlockItem> STORAGE_BARREL_ITEM =
-            ITEMS.registerSimpleBlockItem(STORAGE_BARREL, new Item.Properties());
+    public static final DeferredItem<BarrelLidItem> BARREL_LID = ITEMS.registerItem(
+            "barrel_lid", BarrelLidItem::new, new Item.Properties().stacksTo(16));
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<BarrelBlockEntity>> BLOCK_ENTITY = BLOCK_ENTITIES.register(
             "barrel",
             () -> BlockEntityType.Builder.of(BarrelBlockEntity::new, BARREL.get()).build(null)
     );
-    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<StorageBarrelBlockEntity>>
-            STORAGE_BARREL_BLOCK_ENTITY = BLOCK_ENTITIES.register(
-                    "storage_barrel",
-                    () -> BlockEntityType.Builder.of(
-                            StorageBarrelBlockEntity::new,
-                            STORAGE_BARREL.get()
-                    ).build(null)
-            );
     public static final DeferredHolder<RecipeType<?>, RecipeType<BarrelRecipe>> RECIPE_TYPE = RECIPE_TYPES.register(
             "barrel",
             simpleRecipeType("barrel")
@@ -91,16 +75,8 @@ public final class BarrelFeature implements FeatureModule {
     @Override
     public ContentPolicy contentPolicy() {
         return ContentPolicy.gameplay("barrel")
-                .define(
-                        ContentKey.BARREL,
-                        () -> PrimitiveTechnologyConfig.contentEnabled(ContentKey.BARREL)
-                )
-                .define(
-                        ContentKey.STORAGE_BARREL,
-                        () -> PrimitiveTechnologyConfig.contentEnabled(ContentKey.STORAGE_BARREL)
-                )
+                .define(ContentKey.BARREL)
                 .items(ContentKey.BARREL, "barrel", "barrel_lid")
-                .items(ContentKey.STORAGE_BARREL, "storage_barrel")
                 .build();
     }
 
@@ -132,15 +108,6 @@ public final class BarrelFeature implements FeatureModule {
                         && PrimitiveTechnologyConfig.AUTOMATION_ENABLED.get()
                         && !barrel.getBlockState().getValue(BarrelBlock.SEALED)
                         ? barrel.fluidTank()
-                        : null
-        );
-        event.registerBlockEntity(
-                Capabilities.ItemHandler.BLOCK,
-                STORAGE_BARREL_BLOCK_ENTITY.get(),
-                (barrel, side) -> ContentAvailability.isEnabled(ContentKey.STORAGE_BARREL)
-                        && PrimitiveTechnologyConfig.STORAGE_BARREL_AUTOMATION.get()
-                        && !barrel.getBlockState().getValue(StorageBarrelBlock.SEALED)
-                        ? barrel.itemHandler()
                         : null
         );
     }

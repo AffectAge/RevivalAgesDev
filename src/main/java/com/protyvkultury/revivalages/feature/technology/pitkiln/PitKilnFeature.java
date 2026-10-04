@@ -65,10 +65,7 @@ public final class PitKilnFeature implements FeatureModule {
     @Override
     public ContentPolicy contentPolicy() {
         return ContentPolicy.gameplay("pit_kiln")
-                .define(
-                        ContentKey.PIT_KILN,
-                        () -> PrimitiveTechnologyConfig.contentEnabled(ContentKey.PIT_KILN)
-                )
+                .define(ContentKey.PIT_KILN)
                 .items(ContentKey.PIT_KILN, "pit_kiln")
                 .build();
     }

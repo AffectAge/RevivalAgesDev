@@ -57,14 +57,12 @@
   "emi.category.revivalages.drying": "Сушка",
   "jei.revivalages.category.campfire": "Готовка на костре",
   "jei.revivalages.category.chopping_block": "Рубочный блок",
-  "jei.revivalages.category.animal_chopping": "Рубка животной тягой",
   "jei.revivalages.category.pit_kiln": "Ямная печь",
   "jei.revivalages.category.barrel": "Бочка",
   "jei.revivalages.category.soaking_pot": "Замачивание",
   "jei.revivalages.category.tanning_rack": "Дубление",
   "emi.category.revivalages.campfire": "Готовка на костре",
   "emi.category.revivalages.chopping_block": "Рубочный блок",
-  "emi.category.revivalages.animal_chopping": "Рубка животной тягой",
   "emi.category.revivalages.pit_kiln": "Ямная печь",
   "emi.category.revivalages.barrel": "Бочка",
   "emi.category.revivalages.soaking_pot": "Замачивание",
@@ -76,32 +74,23 @@
   "gui.revivalages.recipe.rain_failure_tooltip": "Дождь может привести к результату: %s",
   "gui.revivalages.process_rule.fuelled_and_lit": "Требуется топливо и розжиг",
   "gui.revivalages.process_rule.installed_tool": "Требуется установленный инструмент",
-  "gui.revivalages.process_rule.valid_work_area": "Требуется подходящая рабочая область",
-  "gui.revivalages.process_rule.attached_worker": "Требуется привязанный работник",
   "gui.revivalages.process_rule.lit_block_below": "Требуется горящий костёр непосредственно снизу",
-  "gui.revivalages.process_rule.lit_block_below.status": "Остановка: снизу нет горящего костра",
+  "gui.revivalages.process_rule.lit_block_below.status": "Снизу нет горящего костра",
   "gui.revivalages.process_rule.open_sky": "Требуется открытое небо",
-  "gui.revivalages.process_rule.open_sky.status": "Остановка: небо перекрыто",
+  "gui.revivalages.process_rule.open_sky.status": "Небо перекрыто",
   "gui.revivalages.process_rule.weather_exposure": "Дождь может испортить процесс",
   "gui.revivalages.process_rule.weather_exposure.status": "Риск: процесс находится под дождём",
   "gui.revivalages.process_rule.weather_exposure.failure": "При провале из-за дождя получится: %s",
   "gui.revivalages.process_rule.drying_environment": "Скорость сушки зависит от окружения",
   "gui.revivalages.process_rule.drying_environment.status": "Окружение замедляет сушку",
   "gui.revivalages.process_rule.sealed_machine": "Устройство должно быть запечатано",
-  "gui.revivalages.process_rule.sealed_machine.status": "Остановка: устройство не запечатано",
-  "gui.revivalages.process_rule.installed_tool.status": "Остановка: инструмент отсутствует",
-  "gui.revivalages.process_rule.fuelled_and_lit.status": "Остановка: нет топлива или розжига",
-  "gui.revivalages.process_rule.attached_worker.status": "Остановка: работник не привязан",
-  "gui.revivalages.process_rule.attached_worker.animals": "Подходят: лошадь, осёл, мул, лама или верблюд",
-  "gui.revivalages.process_rule.attached_worker.lead": "Приведите работника к механизму на поводке, чтобы привязать его",
-  "gui.revivalages.process_rule.valid_work_area.status": "Остановка: рабочая область неверна",
-  "gui.revivalages.process_rule.valid_work_area.square": "Нужна свободная область 7×7 с механизмом в центре",
-  "gui.revivalages.process_rule.valid_work_area.floor": "В каждой позиции нужен прочный пол",
-  "gui.revivalages.process_rule.valid_work_area.headroom": "Над каждой позицией маршрута нужно два свободных блока",
+  "gui.revivalages.process_rule.sealed_machine.status": "Устройство не запечатано",
+  "gui.revivalages.process_rule.installed_tool.status": "Инструмент отсутствует",
+  "gui.revivalages.process_rule.fuelled_and_lit.status": "Нет топлива или розжига",
   "gui.revivalages.process_rule.valid_structure": "Требуется правильная структура",
-  "gui.revivalages.process_rule.valid_structure.status": "Остановка: структура неверна",
+  "gui.revivalages.process_rule.valid_structure.status": "Структура неверна",
   "gui.revivalages.process_rule.required_manual_tool": "Требуется указанный ручной инструмент",
-  "gui.revivalages.process_rule.required_manual_tool.status": "Остановка: нужный ручной инструмент отсутствует",
+  "gui.revivalages.process_rule.required_manual_tool.status": "Нужный ручной инструмент отсутствует",
   "gui.revivalages.process_rule.random_outcome": "Процесс может дать случайный альтернативный результат",
   "gui.revivalages.process_rule.random_outcome.status": "Определяется случайный результат",
   "gui.revivalages.process_rule.random_outcome.chance": "Шанс: %s",
@@ -132,15 +121,21 @@
   "jade.revivalages.primitive.no_recipe": "Нет рецепта: %s",
   "jade.revivalages.primitive.fluid.empty": "Жидкость: пусто (0/%s мБ)",
   "jade.revivalages.primitive.fluid": "Жидкость: %s (%s/%s мБ)",
-  "jade.revivalages.campfire.state.lit": "Состояние: горит",
-  "jade.revivalages.campfire.state.unlit": "Состояние: не горит",
-  "jade.revivalages.campfire.state.dead": "Состояние: прогорел",
-  "jade.revivalages.campfire.blocked.no_tinder": "Остановка: требуется трут",
-  "jade.revivalages.campfire.blocked.ash": "Остановка: уберите золу",
-  "jade.revivalages.campfire.fuel": "Поленья: %s/%s",
+  "jade.revivalages.campfire.state.lit": "Горит",
+  "jade.revivalages.campfire.state.unlit": "Не горит",
+  "jade.revivalages.campfire.state.dead": "Прогорел",
+  "jade.revivalages.campfire.blocked.no_tinder": "Требуется трут",
+  "jade.revivalages.campfire.blocked.ash": "Уберите золу",
+  "jade.revivalages.campfire.fuel": "Поленья в запасе: %s/%s",
   "jade.revivalages.campfire.ash": "Зола: %s/%s",
-  "jade.revivalages.campfire.burn_time": "Время топлива: %s",
+  "jade.revivalages.campfire.burn_time": "Время топлива: %s с",
+  "jade.revivalages.campfire.burned": "Сгорело",
+  "tooltip.revivalages.tinder.place": "Разместите на земле, чтобы создать костёр.",
+  "tooltip.revivalages.barrel_lid.seal": "Используйте на верхней стороне бочки, чтобы закрыть её.",
+  "config.revivalages.interaction_outline_color": "Цвет рамки взаимодействия",
   "jade.revivalages.chopping.damage": "Повреждение колоды: %s/%s",
+  "jade.revivalages.chopping.remaining_chops": "Прочность: %s",
+  "jade.revivalages.chopping.unlimited": "Прочность: без ограничений",
   "jade.revivalages.chopping.chips": "Щепа: %s",
   "jade.revivalages.pit_kiln.stage": "Стадия: %s",
   "jade.revivalages.pit_kiln.stage.empty": "Загрузка",
@@ -148,15 +143,22 @@
   "jade.revivalages.pit_kiln.stage.wood": "Топливо",
   "jade.revivalages.pit_kiln.stage.active": "Обжиг",
   "jade.revivalages.pit_kiln.stage.complete": "Готово",
-  "jade.revivalages.pit_kiln.structure.valid": "Конструкция: исправна",
-  "jade.revivalages.pit_kiln.structure.invalid": "Конструкция: неверна",
+  "jade.revivalages.pit_kiln.structure.valid": "Конструкция исправна",
+  "jade.revivalages.pit_kiln.structure.invalid": "Конструкция неверна",
+  "jade.revivalages.pit_kiln.firing": "Идёт обжиг",
+  "jade.revivalages.pit_kiln.add_thatch": "Добавьте солому",
+  "jade.revivalages.pit_kiln.add_logs_ignite": "Добавьте три бревна и подожгите",
+  "jade.revivalages.pit_kiln.item_size.empty": "Размер входа: пусто",
+  "message.revivalages.pit_kiln.input_full": "Ямная печь заполнена",
+  "message.revivalages.pit_kiln.input_too_large": "Этот предмет слишком велик для ямной печи",
   "jade.revivalages.pit_kiln.logs": "Поленья: %s/%s",
   "jade.revivalages.pit_kiln.invalid_grace": "Разрушение конструкции: %s/%s тиков",
-  "jade.revivalages.barrel.state.sealed": "Состояние: закрыта",
-  "jade.revivalages.barrel.state.open": "Состояние: открыта",
+  "jade.revivalages.barrel.state.sealed": "Закрыта",
+  "jade.revivalages.barrel.state.open": "Открыта",
+  "jade.revivalages.barrel.processing": "Обработка",
+  "jade.revivalages.barrel.output_blocked": "Заберите результат",
   "jade.revivalages.barrel.result": "Результат: %s (%s мБ)",
-  "jade.revivalages.soaking_pot.heat.ready": "Нагрев костром: есть",
-  "jade.revivalages.soaking_pot.heat.required": "Нагрев костром: требуется",
+  "jade.revivalages.soaking_pot.no_heat": "Снизу нет горящего костра",
   "jade.revivalages.tanning.sky.clear": "Доступ к небу: открыт",
   "jade.revivalages.tanning.sky.blocked": "Доступ к небу: перекрыт",
   "jade.revivalages.tanning.time.day": "Дневной свет: работает",
@@ -206,15 +208,16 @@
   ,"emi.category.revivalages.anvil": "Наковальня"
   ,"config.jade.plugin_revivalages.stone_machines": "Данные каменных механизмов"
   ,"config.jade.plugin_revivalages.anvil": "Данные наковальни"
-  ,"jade.revivalages.stone_machine.state.lit": "Состояние: горит"
-  ,"jade.revivalages.stone_machine.state.unlit": "Состояние: не горит"
+  ,"jade.revivalages.stone_machine.state.lit": "Горит"
+  ,"jade.revivalages.stone_machine.state.unlit": "Не горит"
   ,"jade.revivalages.stone_machine.fuel": "Топливо: %s (%s тиков)"
-  ,"jade.revivalages.stone_machine.no_fuel": "Остановка: добавьте топливо и подожгите"
-  ,"jade.revivalages.stone_machine.no_blade": "Остановка: требуется пильное полотно"
-  ,"jade.revivalages.stone_machine.output_blocked": "Остановка: заберите результат"
+  ,"jade.revivalages.stone_machine.no_fuel": "Добавьте топливо и подожгите"
+  ,"jade.revivalages.stone_machine.no_blade": "Требуется пильное полотно"
+  ,"jade.revivalages.stone_machine.output_blocked": "Заберите результат"
   ,"jade.revivalages.stone_machine.airflow": "Бонус обдува: +%s"
   ,"jade.revivalages.anvil.damage": "Повреждение наковальни: %s/4"
   ,"jade.revivalages.anvil.hits": "Прогресс: %s/%s ударов"
+  ,"jade.revivalages.anvil.remaining_hits": "Прочность: %s"
   ,"message.revivalages.anvil.not_enough_hunger": "Вы слишком голодны для работы на наковальне"
   ,"gui.revivalages.recipe.tool.hammer": "Инструмент: молот"
   ,"gui.revivalages.recipe.tool.pickaxe": "Инструмент: кирка"
@@ -224,7 +227,7 @@
   ,"jade.revivalages.stone_machine.time": "Время работы: %s/%s с"
   ,"jade.revivalages.stone_machine.failure": "Вероятность неудачи: %s"
   ,"jade.revivalages.stone_machine.wood_chips": "Щепки: до %s (шанс каждой — %s)"
-  ,"jade.revivalages.anvil.select_tool": "Ударьте молотом или киркой, требуемой рецептом"
+  ,"jade.revivalages.anvil.select_tool": "Нанесите удар для обработки предмета"
   ,"subtitles.revivalages.sawmill": "Работает лесопилка"
   ,"itemGroup.revivalages": "Revival Ages"
   ,"block.revivalages.log_pile": "Поленница"
@@ -243,10 +246,11 @@
   ,"jade.revivalages.pit_burn.invalid_grace": "Разрушение конструкции: %s/%s тиков"
   ,"jade.revivalages.pit_burn.stages": "Стадии: %s/%s"
   ,"jade.revivalages.pit_burn.ash": "Готово: сломайте зольную кучу, чтобы забрать содержимое"
-  ,"jade.revivalages.wood_torch.state.unlit": "Состояние: не горит"
-  ,"jade.revivalages.wood_torch.state.lit": "Состояние: горит"
-  ,"jade.revivalages.wood_torch.state.doused": "Состояние: намок"
-  ,"jade.revivalages.wood_torch.remaining": "Осталось горения: %s"
+  ,"jade.revivalages.wood_torch.state.unlit": "Не горит"
+  ,"jade.revivalages.wood_torch.state.lit": "Горит"
+  ,"jade.revivalages.wood_torch.state.doused": "Намок"
+  ,"jade.revivalages.wood_torch.remaining": "Осталось горения: %s с"
+  ,"jade.revivalages.wood_torch.unlimited": "Время горения: неограниченно"
   ,"tooltip.revivalages.primitive_bucket.fluid": "Содержит: %s"
   ,"tooltip.revivalages.primitive_bucket.uses": "Осталось использований: %s/%s"
   ,"tooltip.revivalages.primitive_bucket.uses.full": "Осталось использований: %s"
@@ -307,8 +311,6 @@
   ,"tag.minecraft.item.revivalages.saw_blades": "Пильные полотна"
   ,"tag.minecraft.item.revivalages.support_beams": "Опорные балки"
   ,"tag.minecraft.block.revivalages.support_beams": "Опорные балки"
-  ,"message.revivalages.content.disabled": "Механика «%s» отключена на сервере."
-  ,"jade.revivalages.content.disabled": "Отключено сервером: %s"
   ,"content.revivalages.surface_deposits": "Поверхностные залежи"
   ,"content.revivalages.surface_rocks": "Поверхностные камни"
   ,"content.revivalages.surface_sticks": "Поверхностные ветки"
@@ -339,11 +341,7 @@
   ,"content.revivalages.wood_torch": "Деревянный факел"
   ,"content.revivalages.wooden_bucket": "Деревянное ведро"
   ,"content.revivalages.clay_bucket": "Глиняное ведро"
-  ,"content.revivalages.animal_power": "Животная тяга"
   ,"content.revivalages.hand_grindstone": "Ручной жернов"
-  ,"content.revivalages.horse_grindstone": "Конный жернов"
-  ,"content.revivalages.horse_chopping_block": "Конная рубильная установка"
-  ,"content.revivalages.horse_press": "Конный пресс"
   ,"content.revivalages.item_size": "Размер предмета"
   ,"tooltip.revivalages.item_size": "Размер: %s"
   ,"message.revivalages.item_size.container_rejected": "Нельзя положить %s: предмет слишком велик для этого контейнера"
@@ -356,7 +354,7 @@
   ,"size.revivalages.huge": "Огромный"
   ,"config.jade.plugin_revivalages.item_size": "Размер предмета"
   ,"jade.revivalages.item_size.maximum": "Максимальный размер предмета: %s"
-  ,"jade.revivalages.pit_kiln.item_size": "Размер входа: %s; вместимость: %s"
+  ,"jade.revivalages.pit_kiln.item_size": "Размер входа: %s"
   ,"content.revivalages.carried_weight": "Переносимый вес"
   ,"attribute.name.revivalages.carry_capacity_bonus": "Бонус грузоподъёмности"
   ,"effect.revivalages.overloaded": "Перегрузка"
@@ -375,25 +373,12 @@
   ,"command.revivalages.weight.missing_attribute": "У %s отсутствует атрибут грузоподъёмности"
   ,"command.revivalages.weight.inspect": "%s весит %s г; содержимое весит %s г"
   ,"command.revivalages.weight.inspect_armor": "Броня даёт %s карманов и %s г грузоподъёмности"
-  ,"config.jade.plugin_revivalages.disabled_content": "Состояние отключённого контента"
   ,"config.jade.plugin_revivalages.construction_frame": "Сведения о строительной раме"
-  ,"config.jade.plugin_revivalages.animal_power": "Сведения о механизмах животной тяги"
   ,"config.jade.plugin_revivalages.structural_integrity": "Структурная целостность"
-  ,"message.revivalages.content_disabled": "Этот контент отключён настройками сервера."
   ,"tooltip.revivalages.wood_torch.burns_up.true": "Сгорает со временем"
   ,"tooltip.revivalages.wood_torch.burns_up.false": "Не сгорает со временем"
   ,"tooltip.revivalages.wood_torch.rain_extinguishes.true": "Гаснет под дождём"
   ,"tooltip.revivalages.wood_torch.rain_extinguishes.false": "Не гаснет под дождём"
-  ,"block.revivalages.storage_barrel": "Бочка для хранения"
-  ,"container.revivalages.storage_barrel": "Бочка для хранения"
-  ,"content.revivalages.storage_barrel": "Бочка для хранения"
-  ,"jade.revivalages.storage_barrel.sealed.true": "Запечатана"
-  ,"jade.revivalages.storage_barrel.sealed.false": "Открыта"
-  ,"jade.revivalages.storage_barrel.capacity": "Вместимость: %s ячеек"
-  ,"jade.revivalages.storage_barrel.preserved": "Сохранение еды активно"
-  ,"config.jade.plugin_revivalages.storage_barrel": "Сведения о бочке для хранения"
   ,"jei.revivalages.category.hand_grinding": "Ручной помол"
-  ,"jei.revivalages.category.animal_grinding": "Помол животной тягой"
   ,"emi.category.revivalages.hand_grinding": "Ручной помол"
-  ,"emi.category.revivalages.animal_grinding": "Помол животной тягой"
 }

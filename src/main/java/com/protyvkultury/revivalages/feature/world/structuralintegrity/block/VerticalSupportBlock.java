@@ -2,6 +2,8 @@ package com.protyvkultury.revivalages.feature.world.structuralintegrity.block;
 
 import com.protyvkultury.revivalages.feature.world.structuralintegrity.StructuralIntegrityConfig;
 import com.protyvkultury.revivalages.feature.world.structuralintegrity.StructuralIntegrityTags;
+import java.util.ArrayList;
+import java.util.List;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.LivingEntity;
@@ -42,24 +44,34 @@ public final class VerticalSupportBlock extends AbstractSupportBlock {
         if (level.isClientSide || placer == null || placer.isShiftKeyDown() || !supportEnabled()) {
             return;
         }
+        List<BlockPos> positions = placementPositions(level, pos, placer, stack);
+        for (int offset = 1; offset < positions.size(); offset++) {
+            BlockPos target = positions.get(offset);
+            boolean waterlogged = level.getFluidState(target).is(Fluids.WATER);
+            level.setBlock(target, defaultBlockState().setValue(WATERLOGGED, waterlogged), Block.UPDATE_ALL);
+        }
+        if (!(placer instanceof net.minecraft.world.entity.player.Player player) || !player.isCreative()) {
+            stack.shrink(positions.size() - 1);
+        }
+    }
+
+    /** The same bounded auto-stack plan is used by placement and its client preview. */
+    public List<BlockPos> placementPositions(Level level, BlockPos pos, LivingEntity placer, ItemStack stack) {
+        List<BlockPos> positions = new ArrayList<>();
+        positions.add(pos);
+        if (placer.isShiftKeyDown()) {
+            return List.copyOf(positions);
+        }
         int maximum = Math.min(StructuralIntegrityConfig.VERTICAL_AUTO_STACK.get(), stack.getCount());
-        int placeCount = 1;
         for (int offset = 1; offset < maximum; offset++) {
             BlockPos target = pos.above(offset);
             BlockState replaced = level.getBlockState(target);
             if (!canAutoReplace(replaced) || !level.getEntities(null, new AABB(target)).isEmpty()) {
                 break;
             }
-            placeCount++;
+            positions.add(target);
         }
-        for (int offset = 1; offset < placeCount; offset++) {
-            BlockPos target = pos.above(offset);
-            boolean waterlogged = level.getFluidState(target).is(Fluids.WATER);
-            level.setBlock(target, defaultBlockState().setValue(WATERLOGGED, waterlogged), Block.UPDATE_ALL);
-        }
-        if (!(placer instanceof net.minecraft.world.entity.player.Player player) || !player.isCreative()) {
-            stack.shrink(placeCount - 1);
-        }
+        return List.copyOf(positions);
     }
 
     @Override

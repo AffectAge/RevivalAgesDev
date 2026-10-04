@@ -1,5 +1,6 @@
 package com.protyvkultury.revivalages.feature.inventory.itemsize;
 
+import com.protyvkultury.revivalages.config.RevivalAgesConfig;
 import com.protyvkultury.revivalages.api.size.SizeApi;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -125,7 +126,7 @@ public final class ItemSizeRejectionFeedback {
     }
 
     private static <T> T configValue(net.neoforged.neoforge.common.ModConfigSpec.ConfigValue<T> value) {
-        return ItemSizeConfig.SPEC.isLoaded() ? value.get() : value.getDefault();
+        return RevivalAgesConfig.isLoaded() ? value.get() : value.getDefault();
     }
 
     private record RejectedInsertion(ItemStack stack) {

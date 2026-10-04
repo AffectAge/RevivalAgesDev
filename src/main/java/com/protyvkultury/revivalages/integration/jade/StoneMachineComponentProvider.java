@@ -1,13 +1,12 @@
 package com.protyvkultury.revivalages.integration.jade;
 
 import com.protyvkultury.revivalages.RevivalAges;
-import com.protyvkultury.revivalages.core.process.ProcessRulePresentation;
-import com.protyvkultury.revivalages.core.process.ProcessRuleType;
 import com.protyvkultury.revivalages.feature.technology.stonemachine.StoneMachineKind;
 import com.protyvkultury.revivalages.feature.technology.stonemachine.blockentity.StoneMachineBlockEntity;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -27,32 +26,26 @@ public enum StoneMachineComponentProvider implements IBlockComponentProvider {
 
     @Override
     public void appendTooltip(ITooltip tooltip, BlockAccessor accessor, IPluginConfig config) {
-        if (DisabledContentComponentProvider.isDisabled(accessor)) {
-            return;
-        }
         if (!(accessor.getBlockEntity() instanceof StoneMachineBlockEntity machine)) {
             return;
         }
         appendProcess(tooltip, machine);
         tooltip.add(Component.translatable("jade.revivalages.stone_machine.state."
-                + (machine.isLit() ? "lit" : "unlit")));
-        tooltip.add(Component.translatable(
-                "jade.revivalages.stone_machine.fuel",
-                machine.fuel().isEmpty() ? Component.literal("-") : machine.fuel().getHoverName(),
-                machine.burnTime()
-        ));
+                + (machine.isLit() ? "lit" : "unlit"))
+                .withStyle(machine.isLit() ? ChatFormatting.GREEN : ChatFormatting.RED));
         if (machine.kind() == StoneMachineKind.SAWMILL && machine.blade().isEmpty()) {
-            tooltip.add(Component.translatable(ProcessRulePresentation.of(ProcessRuleType.INSTALLED_TOOL).statusKey()));
-            tooltip.add(Component.translatable("jade.revivalages.stone_machine.no_blade"));
+            tooltip.add(Component.translatable("jade.revivalages.stone_machine.no_blade")
+                    .withStyle(ChatFormatting.RED));
         }
-        if (!machine.isLit() && machine.burnTime() <= 0 && machine.fuel().isEmpty()) {
-            tooltip.add(Component.translatable(ProcessRulePresentation.of(ProcessRuleType.FUELLED_AND_LIT).statusKey()));
-            tooltip.add(Component.translatable("jade.revivalages.stone_machine.no_fuel"));
+        if (!machine.isLit() && !machine.input().isEmpty()) {
+            tooltip.add(Component.translatable("jade.revivalages.stone_machine.no_fuel")
+                    .withStyle(ChatFormatting.RED));
         }
         if (!machine.firstOutput().isEmpty()) {
-            tooltip.add(Component.translatable(machine.input().isEmpty()
-                    ? "jade.revivalages.stone_machine.output_ready"
-                    : "jade.revivalages.stone_machine.output_blocked"));
+            tooltip.add(List.of(IElementHelper.get().item(machine.firstOutput())));
+            if (!machine.input().isEmpty()) {
+                tooltip.add(Component.translatable("jade.revivalages.stone_machine.output_blocked"));
+            }
         }
         if (machine.airflowBonus() > 0.0F) {
             tooltip.add(Component.translatable(
@@ -65,12 +58,6 @@ public enum StoneMachineComponentProvider implements IBlockComponentProvider {
                     "jade.revivalages.stone_machine.speed",
                     String.format(Locale.ROOT, "%.2f", 1.0F + machine.airflowBonus())));
         }
-        if (machine.totalTicks() > 0) {
-            tooltip.add(Component.translatable(
-                    "jade.revivalages.stone_machine.time",
-                    String.format(Locale.ROOT, "%.1f", machine.elapsedTicks() / 20.0D),
-                    String.format(Locale.ROOT, "%.1f", machine.totalTicks() / 20.0D)));
-        }
         if (machine.recipeFailureChance() > 0.0F) {
             tooltip.add(Component.translatable(
                     "jade.revivalages.stone_machine.failure",
@@ -82,9 +69,6 @@ public enum StoneMachineComponentProvider implements IBlockComponentProvider {
                     machine.recipeWoodChips(),
                     String.format(Locale.ROOT, "%.0f%%",
                             machine.woodChipChanceForView() * 100.0D)));
-        }
-        if (machine.kind() == StoneMachineKind.CRUCIBLE) {
-            appendFluid(tooltip, machine.fluidTank().getFluid(), machine.fluidTank().getCapacity());
         }
     }
 
@@ -103,7 +87,7 @@ public enum StoneMachineComponentProvider implements IBlockComponentProvider {
             line.add(elements.item(machine.fuel()));
         }
         line.add(elements.spacer(2, 0));
-        line.add(elements.progress((float) Math.clamp(machine.progress(), 0.0D, 1.0D)));
+        line.add(JadeProgressElement.of(elements, machine.progress()));
         line.add(elements.spacer(2, 0));
         if (machine.kind() == StoneMachineKind.CRUCIBLE) {
             FluidStack result = machine.recipeFluidResult();
@@ -121,15 +105,6 @@ public enum StoneMachineComponentProvider implements IBlockComponentProvider {
             }
         }
         tooltip.add(line);
-    }
-
-    private static void appendFluid(ITooltip tooltip, FluidStack fluid, int capacity) {
-        if (fluid.isEmpty()) {
-            tooltip.add(Component.translatable("jade.revivalages.primitive.fluid.empty", capacity));
-        } else {
-            tooltip.add(Component.translatable(
-                    "jade.revivalages.primitive.fluid", fluid.getHoverName(), fluid.getAmount(), capacity));
-        }
     }
 
     @Override

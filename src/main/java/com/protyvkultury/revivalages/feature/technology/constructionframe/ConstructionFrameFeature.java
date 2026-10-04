@@ -23,7 +23,6 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
-import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.common.conditions.ICondition;
 import net.neoforged.neoforge.registries.DeferredBlock;
@@ -75,7 +74,7 @@ public final class ConstructionFrameFeature implements FeatureModule {
     @Override
     public ContentPolicy contentPolicy() {
         return ContentPolicy.gameplay("construction_frame")
-                .define(ContentKey.CONSTRUCTION_FRAME, ConstructionFrameConfig::configuredEnabled)
+                .define(ContentKey.CONSTRUCTION_FRAME)
                 .items(ContentKey.CONSTRUCTION_FRAME, "construction_frame")
                 .build();
     }
@@ -88,11 +87,6 @@ public final class ConstructionFrameFeature implements FeatureModule {
         RECIPE_TYPES.register(modBus);
         RECIPE_SERIALIZERS.register(modBus);
         CONDITIONS.register(modBus);
-        modContainer.registerConfig(
-                ModConfig.Type.SERVER,
-                ConstructionFrameConfig.SPEC,
-                "revivalages-construction-frame-server.toml"
-        );
         if (FMLEnvironment.dist == Dist.CLIENT) {
             ConstructionFrameClientEvents.register(modBus);
         }

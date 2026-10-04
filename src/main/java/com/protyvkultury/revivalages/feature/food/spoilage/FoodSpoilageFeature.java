@@ -1,5 +1,6 @@
 package com.protyvkultury.revivalages.feature.food.spoilage;
 
+import com.protyvkultury.revivalages.config.RevivalAgesConfig;
 import com.protyvkultury.revivalages.RevivalAges;
 import com.protyvkultury.revivalages.api.food.FoodFreshnessApi;
 import com.protyvkultury.revivalages.api.food.FoodSpoilageDataMaps;
@@ -9,7 +10,6 @@ import com.protyvkultury.revivalages.api.food.FoodOutputPolicy;
 import com.protyvkultury.revivalages.feature.FeatureModule;
 import com.protyvkultury.revivalages.feature.content.ContentKey;
 import com.protyvkultury.revivalages.feature.content.ContentPolicy;
-import com.protyvkultury.revivalages.feature.food.spoilage.client.FoodSpoilageClientConfig;
 import com.protyvkultury.revivalages.feature.food.spoilage.client.FoodSpoilageClientEvents;
 import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponentType;
@@ -24,7 +24,6 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
-import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.config.ModConfigEvent;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.common.NeoForge;
@@ -71,7 +70,7 @@ public final class FoodSpoilageFeature implements FeatureModule {
     @Override
     public ContentPolicy contentPolicy() {
         return ContentPolicy.gameplay("food_spoilage")
-                .define(ContentKey.FOOD_SPOILAGE, FoodSpoilageConfig::configuredEnabled)
+                .define(ContentKey.FOOD_SPOILAGE)
                 .build();
     }
 
@@ -82,16 +81,6 @@ public final class FoodSpoilageFeature implements FeatureModule {
         modBus.addListener(this::registerDataMaps);
         modBus.addListener(this::registerPayloads);
         modBus.addListener(this::onConfigReload);
-        modContainer.registerConfig(
-                ModConfig.Type.SERVER,
-                FoodSpoilageConfig.SPEC,
-                "revivalages-food-spoilage-server.toml"
-        );
-        modContainer.registerConfig(
-                ModConfig.Type.CLIENT,
-                FoodSpoilageClientConfig.SPEC,
-                "revivalages-food-spoilage-client.toml"
-        );
         NeoForge.EVENT_BUS.addListener(this::onServerTick);
         NeoForge.EVENT_BUS.addListener(this::onPlayerTick);
         NeoForge.EVENT_BUS.addListener(this::onEntityTick);
@@ -208,7 +197,7 @@ public final class FoodSpoilageFeature implements FeatureModule {
     }
 
     private void onConfigReload(ModConfigEvent.Reloading event) {
-        if (event.getConfig().getSpec() != FoodSpoilageConfig.SPEC) {
+        if (event.getConfig().getSpec() != RevivalAgesConfig.SPEC) {
             return;
         }
         net.minecraft.server.MinecraftServer server =
@@ -240,18 +229,18 @@ public final class FoodSpoilageFeature implements FeatureModule {
     }
 
     private static boolean value(net.neoforged.neoforge.common.ModConfigSpec.BooleanValue config) {
-        return FoodSpoilageConfig.SPEC.isLoaded() ? config.get() : config.getDefault();
+        return RevivalAgesConfig.isLoaded() ? config.get() : config.getDefault();
     }
 
     private static int integer(net.neoforged.neoforge.common.ModConfigSpec.IntValue config) {
-        return FoodSpoilageConfig.SPEC.isLoaded() ? config.get() : config.getDefault();
+        return RevivalAgesConfig.isLoaded() ? config.get() : config.getDefault();
     }
 
     private static long longValue(net.neoforged.neoforge.common.ModConfigSpec.LongValue config) {
-        return FoodSpoilageConfig.SPEC.isLoaded() ? config.get() : config.getDefault();
+        return RevivalAgesConfig.isLoaded() ? config.get() : config.getDefault();
     }
 
     private static double doubleValue(net.neoforged.neoforge.common.ModConfigSpec.DoubleValue config) {
-        return FoodSpoilageConfig.SPEC.isLoaded() ? config.get() : config.getDefault();
+        return RevivalAgesConfig.isLoaded() ? config.get() : config.getDefault();
     }
 }

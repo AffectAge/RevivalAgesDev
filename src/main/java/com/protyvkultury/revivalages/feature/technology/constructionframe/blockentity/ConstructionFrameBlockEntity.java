@@ -1,6 +1,5 @@
 package com.protyvkultury.revivalages.feature.technology.constructionframe.blockentity;
 
-import com.protyvkultury.revivalages.feature.technology.animalpower.AnimalPowerFeature;
 import com.protyvkultury.revivalages.feature.technology.constructionframe.ConstructionFrameConfig;
 import com.protyvkultury.revivalages.feature.technology.constructionframe.ConstructionFrameFeature;
 import com.protyvkultury.revivalages.feature.technology.constructionframe.recipe.FrameAssemblyInput;
@@ -126,7 +125,6 @@ public final class ConstructionFrameBlockEntity extends BlockEntity {
         }
         FrameAssemblyRecipe recipe = match.get().value();
         ItemStack result = recipe.assemble(input, server.registryAccess());
-        applyWoodVariant(recipe, result);
         if (!(result.getItem() instanceof BlockItem blockItem)) {
             return false;
         }
@@ -215,18 +213,6 @@ public final class ConstructionFrameBlockEntity extends BlockEntity {
                 0.15D
         );
         return true;
-    }
-
-    private void applyWoodVariant(FrameAssemblyRecipe recipe, ItemStack result) {
-        recipe.woodVariantSource().ifPresent(source -> {
-            ItemStack sourceStack = items.get(source.index());
-            if (!sourceStack.isEmpty()) {
-                result.set(
-                        AnimalPowerFeature.WOOD_VARIANT.get(),
-                        BuiltInRegistries.ITEM.getKey(sourceStack.getItem())
-                );
-            }
-        });
     }
 
     private static BlockState displayStateFor(ItemStack stack) {

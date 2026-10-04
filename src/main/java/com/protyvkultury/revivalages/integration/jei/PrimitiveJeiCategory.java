@@ -115,15 +115,6 @@ final class PrimitiveJeiCategory implements IRecipeCategory<PrimitiveRecipeView>
                 addItemInputs(builder, recipe, this.layout.flow.itemInputs());
                 addItemOutputs(builder, recipe, this.layout.flow.itemOutputs());
                 break;
-            case PRESSING:
-                addItemInputs(builder, recipe, this.layout.flow.itemInputs());
-                addItemOutputs(builder, recipe, this.layout.flow.itemOutputs());
-                PrimitiveJeiCategory.addFluid(
-                        builder,
-                        RecipeIngredientRole.OUTPUT,
-                        recipe.fluidOutput(),
-                        PrimitiveFluidSlotGeometry.PRESSING_OUTPUT);
-                break;
             case PIT_KILN, PIT_BURN:
                 {
                     addItemInputs(builder, recipe, this.layout.flow.itemInputs());
@@ -143,6 +134,7 @@ final class PrimitiveJeiCategory implements IRecipeCategory<PrimitiveRecipeView>
                             RecipeIngredientRole.OUTPUT,
                             recipe.fluidOutput(),
                             PrimitiveFluidSlotGeometry.BARREL_OUTPUT);
+                    addItemOutputs(builder, recipe, this.layout.flow.itemOutputs());
                     break;
                 }
             case SOAKING_POT:
@@ -188,9 +180,7 @@ final class PrimitiveJeiCategory implements IRecipeCategory<PrimitiveRecipeView>
     private static void addItemInputs(
             IRecipeLayoutBuilder builder, PrimitiveRecipeView recipe, int[][] positions) {
         for (int index = 0; index < recipe.itemInputs().size() && index < positions.length; ++index) {
-            builder
-                    .addInputSlot(positions[index][0], positions[index][1])
-                    .addIngredients(recipe.itemInputs().get(index));
+            addItemInput(builder, recipe, index, positions[index][0], positions[index][1]);
         }
     }
 
@@ -200,7 +190,19 @@ final class PrimitiveJeiCategory implements IRecipeCategory<PrimitiveRecipeView>
             List<PrimitiveRecipeLayout.Position> positions) {
         for (int index = 0; index < recipe.itemInputs().size() && index < positions.size(); ++index) {
             PrimitiveRecipeLayout.Position position = positions.get(index);
-            builder.addInputSlot(position.x(), position.y()).addIngredients(recipe.itemInputs().get(index));
+            addItemInput(builder, recipe, index, position.x(), position.y());
+        }
+    }
+
+    private static void addItemInput(IRecipeLayoutBuilder builder, PrimitiveRecipeView recipe,
+            int index, int x, int y) {
+        var slot = builder.addInputSlot(x, y);
+        int count = recipe.itemInputCounts().get(index);
+        if (count == 1) {
+            slot.addIngredients(recipe.itemInputs().get(index));
+        } else {
+            slot.addItemStacks(java.util.Arrays.stream(recipe.itemInputs().get(index).getItems())
+                    .map(stack -> stack.copyWithCount(count)).toList());
         }
     }
 
@@ -476,8 +478,7 @@ final class PrimitiveJeiCategory implements IRecipeCategory<PrimitiveRecipeView>
                 StoneMachineRecipeLayout.CRUCIBLE.flame().y()
         ),
         ANVIL(PrimitiveRecipeLayout.ANVIL),
-        GRINDING(PrimitiveRecipeLayout.GRINDING),
-        PRESSING(PrimitiveRecipeLayout.PRESSING);
+        GRINDING(PrimitiveRecipeLayout.GRINDING);
 
         final String texture;
         final int width;

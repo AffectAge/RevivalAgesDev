@@ -82,10 +82,7 @@ public final class PitBurnFeature implements FeatureModule {
     @Override
     public ContentPolicy contentPolicy() {
         return ContentPolicy.gameplay("pit_burn")
-                .define(
-                        ContentKey.PIT_BURN,
-                        () -> PrimitiveTechnologyConfig.contentEnabled(ContentKey.PIT_BURN)
-                )
+                .define(ContentKey.PIT_BURN)
                 .items(ContentKey.PIT_BURN, "log_pile")
                 .blocks(ContentKey.PIT_BURN, "active_pile", "ash_pile")
                 .build();

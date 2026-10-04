@@ -20,7 +20,6 @@ import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
-import net.neoforged.fml.config.ModConfig;
 import net.neoforged.neoforge.common.world.BiomeModifier;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredItem;
@@ -122,18 +121,9 @@ public final class SurfaceDepositFeature implements FeatureModule {
     @Override
     public ContentPolicy contentPolicy() {
         return ContentPolicy.gameplay("surface_deposits")
-                .define(
-                        ContentKey.SURFACE_DEPOSITS,
-                        () -> SurfaceDepositConfig.contentEnabled(ContentKey.SURFACE_DEPOSITS)
-                )
-                .define(
-                        ContentKey.SURFACE_ROCKS,
-                        () -> SurfaceDepositConfig.contentEnabled(ContentKey.SURFACE_ROCKS)
-                )
-                .define(
-                        ContentKey.SURFACE_STICKS,
-                        () -> SurfaceDepositConfig.contentEnabled(ContentKey.SURFACE_STICKS)
-                )
+                .define(ContentKey.SURFACE_DEPOSITS)
+                .define(ContentKey.SURFACE_ROCKS)
+                .define(ContentKey.SURFACE_STICKS)
                 .items(
                         ContentKey.SURFACE_ROCKS,
                         "rock",
@@ -178,10 +168,5 @@ public final class SurfaceDepositFeature implements FeatureModule {
         BLOCKS.register(modBus);
         ITEMS.register(modBus);
         BIOME_MODIFIER_SERIALIZERS.register(modBus);
-        modContainer.registerConfig(
-                ModConfig.Type.SERVER,
-                SurfaceDepositConfig.SPEC,
-                "revivalages-surface-deposits-server.toml"
-        );
     }
 }

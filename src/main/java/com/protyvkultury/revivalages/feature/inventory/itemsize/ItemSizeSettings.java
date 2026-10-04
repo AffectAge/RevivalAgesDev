@@ -1,5 +1,6 @@
 package com.protyvkultury.revivalages.feature.inventory.itemsize;
 
+import com.protyvkultury.revivalages.config.RevivalAgesConfig;
 import com.protyvkultury.revivalages.api.size.Size;
 import com.protyvkultury.revivalages.api.size.SizeApi;
 import com.protyvkultury.revivalages.feature.content.ContentAvailability;
@@ -89,7 +90,7 @@ public final class ItemSizeSettings {
     private static Snapshot fromConfig() {
         Map<ResourceLocation, Size> blockOverrides = new LinkedHashMap<>();
         Map<ResourceLocation, Size> itemOverrides = new LinkedHashMap<>();
-        List<? extends String> configured = ItemSizeConfig.SPEC.isLoaded()
+        List<? extends String> configured = RevivalAgesConfig.isLoaded()
                 ? ItemSizeConfig.CONTAINER_OVERRIDES.get()
                 : ItemSizeConfig.CONTAINER_OVERRIDES.getDefault();
         for (String entry : configured) {
@@ -111,7 +112,7 @@ public final class ItemSizeSettings {
     }
 
     private static <T> T value(ModConfigSpec.ConfigValue<T> value) {
-        return ItemSizeConfig.SPEC.isLoaded() ? value.get() : value.getDefault();
+        return RevivalAgesConfig.isLoaded() ? value.get() : value.getDefault();
     }
 
     public record Snapshot(

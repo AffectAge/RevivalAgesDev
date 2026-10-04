@@ -3,6 +3,7 @@ package com.protyvkultury.revivalages.feature.technology.dryingrack.blockentity;
 import com.protyvkultury.revivalages.api.food.FoodFreshnessApi;
 import com.protyvkultury.revivalages.core.particle.ProgressParticleHelper;
 import com.protyvkultury.revivalages.core.process.ProcessRule;
+import com.protyvkultury.revivalages.core.process.ProgressProjection;
 import com.protyvkultury.revivalages.core.process.ProcessRuleEngine;
 import com.protyvkultury.revivalages.core.process.ProcessRuleType;
 import com.protyvkultury.revivalages.feature.food.spoilage.FoodFreshnessService;
@@ -65,6 +66,7 @@ public final class DryingRackBlockEntity extends BlockEntity {
     private final boolean normalRack;
 
     private double speed;
+    private long clientProgressSnapshotTime = -1L;
     private DryingEnvironmentSnapshot environment = DryingEnvironmentSnapshot.EMPTY;
 
     private DryingRackBlockEntity(
@@ -226,7 +228,22 @@ public final class DryingRackBlockEntity extends BlockEntity {
         return 1.0D - remainingTimes[slot] / totalTimes[slot];
     }
 
+    public double getProgressAt(int slot, long gameTime) {
+        if (!validSlot(slot) || totalTimes[slot] <= 0) {
+            return 0.0D;
+        }
+        if (level == null || !level.isClientSide || clientProgressSnapshotTime < 0L || completed[slot]) {
+            return getProgress(slot);
+        }
+        return ProgressProjection.fraction(totalTimes[slot] - remainingTimes[slot], totalTimes[slot],
+                speed, clientProgressSnapshotTime, gameTime);
+    }
+
     public DryingRackView view() {
+        return viewAt(level == null ? 0L : level.getGameTime());
+    }
+
+    public DryingRackView viewAt(long gameTime) {
         List<DryingSlotView> slots = new ArrayList<>(items.size());
         for (int slot = 0; slot < items.size(); slot++) {
             ItemStack stack = items.get(slot);
@@ -243,7 +260,7 @@ public final class DryingRackBlockEntity extends BlockEntity {
             slots.add(new DryingSlotView(
                     stack,
                     output,
-                    getProgress(slot),
+                    getProgressAt(slot, gameTime),
                     processing,
                     completed[slot] && totalTimes[slot] > 0
             ));
@@ -392,6 +409,7 @@ public final class DryingRackBlockEntity extends BlockEntity {
         items.clear();
         ContainerHelper.loadAllItems(tag, items, registries);
         readClientEnvironment(tag);
+        clientProgressSnapshotTime = tag.contains("ProgressSnapshotTime") ? tag.getLong("ProgressSnapshotTime") : -1L;
         for (int slot = 0; slot < items.size(); slot++) {
             totalTimes[slot] = tag.getInt("Total" + slot);
             remainingTimes[slot] = tag.getDouble("Remaining" + slot);
@@ -425,6 +443,9 @@ public final class DryingRackBlockEntity extends BlockEntity {
     public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
         CompoundTag tag = saveWithoutMetadata(registries);
         writeClientEnvironment(tag);
+        if (level != null) {
+            tag.putLong("ProgressSnapshotTime", level.getGameTime());
+        }
         return tag;
     }
 

@@ -1,5 +1,6 @@
 package com.protyvkultury.revivalages.feature.inventory.carriedweight;
 
+import com.protyvkultury.revivalages.config.RevivalAgesConfig;
 import com.protyvkultury.revivalages.RevivalAges;
 import com.protyvkultury.revivalages.api.weight.ItemWeightDataMaps;
 import com.protyvkultury.revivalages.api.weight.RegisterCarriedWeightProvidersEvent;
@@ -7,7 +8,6 @@ import com.protyvkultury.revivalages.api.weight.WeightApi;
 import com.protyvkultury.revivalages.feature.FeatureModule;
 import com.protyvkultury.revivalages.feature.content.ContentKey;
 import com.protyvkultury.revivalages.feature.content.ContentPolicy;
-import com.protyvkultury.revivalages.feature.inventory.carriedweight.client.CarriedWeightClientConfig;
 import com.protyvkultury.revivalages.feature.inventory.carriedweight.client.CarriedWeightClientEvents;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.server.level.ServerPlayer;
@@ -20,7 +20,6 @@ import net.minecraft.world.entity.player.Player;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.api.distmarker.Dist;
-import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.config.ModConfigEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.fml.loading.FMLEnvironment;
@@ -70,7 +69,7 @@ public final class CarriedWeightFeature implements FeatureModule {
     @Override
     public ContentPolicy contentPolicy() {
         return ContentPolicy.gameplay("carried_weight")
-                .define(ContentKey.CARRIED_WEIGHT, CarriedWeightConfig::configuredEnabled)
+                .define(ContentKey.CARRIED_WEIGHT)
                 .build();
     }
 
@@ -85,16 +84,6 @@ public final class CarriedWeightFeature implements FeatureModule {
         modBus.addListener(this::onCommonSetup);
         modBus.addListener(this::onConfigLoading);
         modBus.addListener(this::onConfigReloading);
-        modContainer.registerConfig(
-                ModConfig.Type.SERVER,
-                CarriedWeightConfig.SPEC,
-                "revivalages-carried-weight-server.toml"
-        );
-        modContainer.registerConfig(
-                ModConfig.Type.CLIENT,
-                CarriedWeightClientConfig.SPEC,
-                "revivalages-carried-weight-client.toml"
-        );
         NeoForge.EVENT_BUS.addListener(this::onPlayerTick);
         NeoForge.EVENT_BUS.addListener(this::onPlayerJump);
         NeoForge.EVENT_BUS.addListener(this::onDatapackSync);
@@ -193,13 +182,13 @@ public final class CarriedWeightFeature implements FeatureModule {
     }
 
     private void onConfigLoading(ModConfigEvent.Loading event) {
-        if (event.getConfig().getSpec() == CarriedWeightConfig.SPEC) {
+        if (event.getConfig().getSpec() == RevivalAgesConfig.SPEC) {
             CarriedWeightSettings.refreshLocal();
         }
     }
 
     private void onConfigReloading(ModConfigEvent.Reloading event) {
-        if (event.getConfig().getSpec() != CarriedWeightConfig.SPEC) {
+        if (event.getConfig().getSpec() != RevivalAgesConfig.SPEC) {
             return;
         }
         MinecraftServer server = ServerLifecycleHooks.getCurrentServer();

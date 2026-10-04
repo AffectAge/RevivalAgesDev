@@ -13,7 +13,14 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "revivalages:anvil"
+          "name": "revivalages:anvil",
+          "functions": [
+            {
+              "function": "minecraft:copy_state",
+              "block": "revivalages:anvil",
+              "properties": ["damage"]
+            }
+          ]
         }
       ]
     }

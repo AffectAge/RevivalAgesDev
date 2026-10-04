@@ -91,14 +91,8 @@ public final class CampfireFeature implements FeatureModule {
     @Override
     public ContentPolicy contentPolicy() {
         return ContentPolicy.gameplay("campfire")
-                .define(
-                        ContentKey.CAMPFIRE,
-                        () -> PrimitiveTechnologyConfig.contentEnabled(ContentKey.CAMPFIRE)
-                )
-                .define(
-                        ContentKey.CAMPFIRE_EFFECTS,
-                        () -> PrimitiveTechnologyConfig.contentEnabled(ContentKey.CAMPFIRE_EFFECTS)
-                )
+                .define(ContentKey.CAMPFIRE)
+                .define(ContentKey.CAMPFIRE_EFFECTS)
                 .items(ContentKey.CAMPFIRE, "tinder")
                 .blocks(ContentKey.CAMPFIRE, "campfire")
                 .build();

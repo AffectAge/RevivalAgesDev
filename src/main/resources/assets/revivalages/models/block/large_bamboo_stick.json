@@ -1,7 +1,7 @@
 {
   "parent": "revivalages:block/large_stick",
   "textures": {
-    "0": "block/bamboo_stalk",
-    "particle": "block/bamboo_stalk"
+    "0": "minecraft:block/bamboo_stalk",
+    "particle": "minecraft:block/bamboo_stalk"
   }
 }

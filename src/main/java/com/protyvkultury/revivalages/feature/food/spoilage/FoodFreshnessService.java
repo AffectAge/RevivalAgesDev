@@ -1,5 +1,6 @@
 package com.protyvkultury.revivalages.feature.food.spoilage;
 
+import com.protyvkultury.revivalages.config.RevivalAgesConfig;
 import com.protyvkultury.revivalages.RevivalAges;
 import com.protyvkultury.revivalages.api.food.FoodFreshnessApi;
 import com.protyvkultury.revivalages.api.food.FreshnessMath;
@@ -104,7 +105,7 @@ public final class FoodFreshnessService implements FoodFreshnessApi.Runtime {
                 && !stack.has(FoodSpoilageFeature.FOOD_STATE.get());
         BundleContents bundle = stack.get(DataComponents.BUNDLE_CONTENTS);
         ItemContainerContents contents = stack.get(DataComponents.CONTAINER);
-        int maximumDepth = FoodSpoilageConfig.SPEC.isLoaded()
+        int maximumDepth = RevivalAgesConfig.isLoaded()
                 ? FoodSpoilageConfig.MAXIMUM_CONTAINER_DEPTH.get()
                 : FoodSpoilageConfig.MAXIMUM_CONTAINER_DEPTH.getDefault();
         boolean hasInspectableContents = depth < maximumDepth && (bundle != null || contents != null);
@@ -211,7 +212,7 @@ public final class FoodFreshnessService implements FoodFreshnessApi.Runtime {
         if (a == null || b == null) {
             return a == b;
         }
-        long window = FoodSpoilageConfig.SPEC.isLoaded()
+        long window = RevivalAgesConfig.isLoaded()
                 ? FoodSpoilageConfig.STACKING_WINDOW_TICKS.get()
                 : FoodSpoilageConfig.STACKING_WINDOW_TICKS.getDefault();
         return FreshnessMath.mayStack(a, b, window);
@@ -273,7 +274,7 @@ public final class FoodFreshnessService implements FoodFreshnessApi.Runtime {
     }
 
     private static double value(net.neoforged.neoforge.common.ModConfigSpec.DoubleValue setting) {
-        return positive(FoodSpoilageConfig.SPEC.isLoaded() ? setting.get() : setting.getDefault());
+        return positive(RevivalAgesConfig.isLoaded() ? setting.get() : setting.getDefault());
     }
 
     private static double positive(double value) {

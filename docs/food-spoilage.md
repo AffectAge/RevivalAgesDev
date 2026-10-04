@@ -3,8 +3,8 @@
 Food Spoilage uses an independent world clock, not Minecraft day time. The
 Overworld `SavedData` value advances once after every processed server tick,
 including ticks on a dedicated server with zero connected players. It stops when
-the server is stopped or the feature is disabled, so real-world downtime never
-ages food. `/time set` cannot modify this clock.
+the server is stopped, so real-world downtime never ages food. `/time set` cannot
+modify this clock.
 
 When `ageThroughSleep` is enabled, one successful Overworld sleep skip adds the
 skipped vanilla ticks once. It is not multiplied by the number of sleepers.

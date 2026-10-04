@@ -4,6 +4,7 @@ import com.protyvkultury.revivalages.api.food.FoodFreshnessApi;
 import com.protyvkultury.revivalages.api.size.SizeApi;
 import com.protyvkultury.revivalages.core.interaction.ItemStackInteraction;
 import com.protyvkultury.revivalages.core.machine.BurnableStructureTracker;
+import com.protyvkultury.revivalages.core.process.ProgressProjection;
 import com.protyvkultury.revivalages.feature.content.ContentAvailability;
 import com.protyvkultury.revivalages.feature.content.ContentKey;
 import com.protyvkultury.revivalages.feature.technology.pitkiln.PitKilnFeature;
@@ -52,6 +53,8 @@ public final class PitKilnBlockEntity extends BlockEntity {
     private final NonNullList<ItemStack> items = NonNullList.withSize(13, ItemStack.EMPTY);
     private int elapsedTicks;
     private int totalTicks;
+    private long clientProgressSnapshotTime = -1L;
+    private double clientProgressRate;
     private int rainTicks;
     private final BurnableStructureTracker structureTracker =
             new BurnableStructureTracker(STRUCTURE_VALIDATION_INTERVAL, MAXIMUM_INVALID_TICKS);
@@ -72,7 +75,11 @@ public final class PitKilnBlockEntity extends BlockEntity {
         if (state.getValue(PitKilnBlock.STAGE) != PitKilnStage.ACTIVE) {
             return;
         }
+        boolean wasInvalid = kiln.structureTracker.invalidTicks() > 0;
         BurnableStructureTracker.Result structure = kiln.structureTracker.tick(kiln::isStructureValid);
+        if (wasInvalid && structure == BurnableStructureTracker.Result.VALID) {
+            kiln.sync();
+        }
         if (structure == BurnableStructureTracker.Result.FAILED) {
             kiln.failAll();
             return;
@@ -164,6 +171,14 @@ public final class PitKilnBlockEntity extends BlockEntity {
         return totalTicks <= 0 ? 0.0D : Math.min(1.0D, elapsedTicks / (double) totalTicks);
     }
 
+    public double progressAt(long gameTime) {
+        if (level == null || !level.isClientSide || clientProgressSnapshotTime < 0L) {
+            return progress();
+        }
+        return ProgressProjection.fraction(elapsedTicks, totalTicks,
+                clientProgressRate, clientProgressSnapshotTime, gameTime);
+    }
+
     public ItemStack recipeOutput() {
         return activeRecipe == null ? ItemStack.EMPTY : activeRecipe.result();
     }
@@ -174,8 +189,25 @@ public final class PitKilnBlockEntity extends BlockEntity {
         }
         ItemStack current = items.get(INPUT_SLOT);
         return (current.isEmpty() || ItemStack.isSameItemSameComponents(current, stack))
+                && !isOversized(stack)
                 && current.getCount() < maximumInputCount(stack)
                 && findRecipe(stack).isPresent();
+    }
+
+    public boolean isOversized(ItemStack stack) {
+        return !stack.isEmpty() && !SizeApi.getSize(stack)
+                .isEqualOrSmallerThan(PrimitiveTechnologyConfig.PIT_KILN_MAX_INPUT_SIZE.get());
+    }
+
+    public boolean acceptsInput(ItemStack stack) {
+        return findRecipe(stack).isPresent();
+    }
+
+    public boolean isAtCapacity(ItemStack stack) {
+        ItemStack current = items.get(INPUT_SLOT);
+        return !stack.isEmpty() && !current.isEmpty()
+                && ItemStack.isSameItemSameComponents(current, stack)
+                && current.getCount() >= maximumInputCount(stack);
     }
 
     public void insert(ItemStack source, boolean infinite) {
@@ -484,6 +516,8 @@ public final class PitKilnBlockEntity extends BlockEntity {
         ContainerHelper.loadAllItems(tag, items, registries);
         elapsedTicks = tag.getInt("ElapsedTicks");
         totalTicks = tag.getInt("TotalTicks");
+        clientProgressSnapshotTime = tag.contains("ProgressSnapshotTime") ? tag.getLong("ProgressSnapshotTime") : -1L;
+        clientProgressRate = tag.getDouble("ProgressRateSnapshot");
         rainTicks = tag.getInt("RainTicks");
         structureTracker.load(tag);
         resolveRecipe();
@@ -506,6 +540,12 @@ public final class PitKilnBlockEntity extends BlockEntity {
 
     @Override
     public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
-        return saveWithoutMetadata(registries);
+        CompoundTag tag = saveWithoutMetadata(registries);
+        if (level != null) {
+            tag.putLong("ProgressSnapshotTime", level.getGameTime());
+            tag.putDouble("ProgressRateSnapshot", getBlockState().getValue(PitKilnBlock.STAGE) == PitKilnStage.ACTIVE
+                    && structureTracker.invalidTicks() == 0 ? 1.0D : 0.0D);
+        }
+        return tag;
     }
 }

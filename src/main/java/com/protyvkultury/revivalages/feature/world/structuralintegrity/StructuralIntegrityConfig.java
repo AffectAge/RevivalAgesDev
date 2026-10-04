@@ -1,5 +1,6 @@
 package com.protyvkultury.revivalages.feature.world.structuralintegrity;
 
+import com.protyvkultury.revivalages.config.RevivalAgesConfig;
 import com.protyvkultury.revivalages.feature.content.ContentAvailability;
 import com.protyvkultury.revivalages.feature.content.ContentKey;
 import net.neoforged.neoforge.common.ModConfigSpec;
@@ -7,13 +8,6 @@ import net.neoforged.neoforge.common.ModConfigSpec;
 /** Server-owned availability, balance, and work-budget settings for structural simulation. */
 public final class StructuralIntegrityConfig {
 
-    public static final ModConfigSpec SPEC;
-    public static final ModConfigSpec CLIENT_SPEC;
-
-    public static final ModConfigSpec.BooleanValue STRUCTURAL_INTEGRITY_ENABLED;
-    public static final ModConfigSpec.BooleanValue SUPPORT_BEAMS_ENABLED;
-    public static final ModConfigSpec.BooleanValue COLLAPSES_ENABLED;
-    public static final ModConfigSpec.BooleanValue LANDSLIDES_ENABLED;
     public static final ModConfigSpec.IntValue VERTICAL_AUTO_STACK;
     public static final ModConfigSpec.IntValue HORIZONTAL_MAX_SPAN;
     public static final ModConfigSpec.IntValue SAW_DAMAGE;
@@ -42,31 +36,16 @@ public final class StructuralIntegrityConfig {
     public static final ModConfigSpec.DoubleValue CAMERA_SHAKE_INTENSITY;
 
     static {
-        ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
+        ModConfigSpec.Builder builder = RevivalAgesConfig.builder();
         builder.push("structuralIntegrity");
-        STRUCTURAL_INTEGRITY_ENABLED = restartBoolean(
-                builder,
-                "enabled",
-                "Enables the complete Structural Integrity feature family."
-        );
 
         builder.push("supportBeams");
-        SUPPORT_BEAMS_ENABLED = restartBoolean(
-                builder,
-                "enabled",
-                "Enables Support Beam acquisition, structural support, and placement."
-        );
         VERTICAL_AUTO_STACK = builder.defineInRange("verticalAutoStack", 3, 1, 16);
         HORIZONTAL_MAX_SPAN = builder.defineInRange("horizontalMaxSpan", 5, 1, 32);
         SAW_DAMAGE = builder.defineInRange("sawDamage", 1, 0, 1024);
         builder.pop();
 
         builder.push("collapses");
-        COLLAPSES_ENABLED = restartBoolean(
-                builder,
-                "enabled",
-                "Enables mining- and explosion-triggered collapses."
-        );
         COLLAPSE_TRIGGER_CHANCE = builder.defineInRange("triggerChance", 0.1D, 0D, 1D);
         COLLAPSE_FAKE_TRIGGER_CHANCE = builder.defineInRange("fakeTriggerChance", 0.35D, 0D, 1D);
         COLLAPSE_PROPAGATE_CHANCE = builder.defineInRange("propagateChance", 0.55D, 0D, 1D);
@@ -79,11 +58,6 @@ public final class StructuralIntegrityConfig {
         builder.pop();
 
         builder.push("landslides");
-        LANDSLIDES_ENABLED = restartBoolean(
-                builder,
-                "enabled",
-                "Enables vertical and sideways landslides."
-        );
         LANDSLIDE_DELAY = builder.defineInRange("delayTicks", 2, 0, 200);
         LANDSLIDE_DAMAGE_PER_BLOCK = builder.defineInRange("damagePerBlock", 0.8D, 0D, 100D);
         LANDSLIDE_MAX_DAMAGE = builder.defineInRange("maximumDamage", 10, 0, 1000);
@@ -105,16 +79,12 @@ public final class StructuralIntegrityConfig {
         builder.pop();
 
         builder.pop();
-        SPEC = builder.build();
 
-        ModConfigSpec.Builder client = new ModConfigSpec.Builder();
-        client.push("structuralIntegrity");
-        client.push("cameraShake");
-        CAMERA_SHAKE_ENABLED = client.define("enabled", true);
-        CAMERA_SHAKE_INTENSITY = client.defineInRange("intensity", 1.0D, 0.0D, 2.0D);
-        client.pop();
-        client.pop();
-        CLIENT_SPEC = client.build();
+        builder.push("structuralIntegrity");
+        builder.push("cameraShake");
+        CAMERA_SHAKE_ENABLED = builder.define("enabled", true);
+        CAMERA_SHAKE_INTENSITY = builder.defineInRange("intensity", 1.0D, 0.0D, 2.0D);
+        builder.pop(2);
     }
 
     private StructuralIntegrityConfig() {
@@ -132,39 +102,18 @@ public final class StructuralIntegrityConfig {
         return ContentAvailability.isEnabled(ContentKey.LANDSLIDES);
     }
 
-    public static boolean configuredEnabled(ContentKey key) {
-        return value(switch (key) {
-            case STRUCTURAL_INTEGRITY -> STRUCTURAL_INTEGRITY_ENABLED;
-            case SUPPORT_BEAMS -> SUPPORT_BEAMS_ENABLED;
-            case COLLAPSES -> COLLAPSES_ENABLED;
-            case LANDSLIDES -> LANDSLIDES_ENABLED;
-            default -> throw new IllegalArgumentException("Not a structural integrity key: " + key);
-        });
-    }
-
     public static boolean cameraShakeEnabled() {
-        return CLIENT_SPEC.isLoaded()
+        return RevivalAgesConfig.isLoaded()
                 ? CAMERA_SHAKE_ENABLED.get()
                 : CAMERA_SHAKE_ENABLED.getDefault();
     }
 
     public static double cameraShakeIntensity() {
-        return CLIENT_SPEC.isLoaded()
+        return RevivalAgesConfig.isLoaded()
                 ? CAMERA_SHAKE_INTENSITY.get()
                 : CAMERA_SHAKE_INTENSITY.getDefault();
     }
 
-    private static ModConfigSpec.BooleanValue restartBoolean(
-            ModConfigSpec.Builder builder,
-            String name,
-            String comment
-    ) {
-        return builder
-                .comment(comment, "Changing this value requires a server restart so data can be rebuilt safely.")
-                .define(name, true);
-    }
-
-    private static boolean value(ModConfigSpec.BooleanValue value) {
-        return SPEC.isLoaded() ? value.get() : value.getDefault();
+    public static void bootstrap() {
     }
 }

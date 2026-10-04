@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.function.BooleanSupplier;
 import net.minecraft.resources.ResourceLocation;
 
 /**
@@ -17,7 +16,7 @@ import net.minecraft.resources.ResourceLocation;
  *
  * @param module stable diagnostic name
  * @param infrastructure whether the module is mandatory infrastructure
- * @param definitions configuration-backed content definitions
+ * @param definitions permanently available content definitions
  * @param itemMemberships public item IDs and the content keys that may expose them
  * @param blockMemberships blocks without a same-ID public item and their content keys
  */
@@ -62,8 +61,8 @@ public record ContentPolicy(
             this.module = Objects.requireNonNull(module, "module");
         }
 
-        public Builder define(ContentKey key, BooleanSupplier configuredEnabled) {
-            definitions.add(new ContentDefinition(key, configuredEnabled));
+        public Builder define(ContentKey key) {
+            definitions.add(new ContentDefinition(key));
             return this;
         }
 

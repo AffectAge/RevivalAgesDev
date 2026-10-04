@@ -34,7 +34,7 @@ public final class GrindingRecipeSerializer implements RecipeSerializer<Grinding
             CHANCE.optionalFieldOf("secondary_chance", 0.0D)
                     .forGetter(Payload::secondaryChance),
             POSITIVE_INT.fieldOf("work_points").forGetter(Payload::workPoints),
-            MACHINES.optionalFieldOf("machines", List.of(GrindingMachine.HAND, GrindingMachine.ANIMAL))
+            MACHINES.optionalFieldOf("machines", List.of(GrindingMachine.HAND))
                     .forGetter(Payload::machines)
             ).apply(instance, Payload::new)
     );

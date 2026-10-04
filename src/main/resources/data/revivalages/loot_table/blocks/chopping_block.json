@@ -18,7 +18,14 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "revivalages:chopping_block"
+          "name": "revivalages:chopping_block",
+          "functions": [
+            {
+              "function": "minecraft:copy_state",
+              "block": "revivalages:chopping_block",
+              "properties": ["damage"]
+            }
+          ]
         }
       ]
     }

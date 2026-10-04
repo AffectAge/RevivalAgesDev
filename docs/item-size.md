@@ -5,11 +5,8 @@ as `tiny`, `very_small`, `small`, `normal`, `large`, `very_large`, or `huge`.
 It does not change stack limits, player carrying capacity, movement, attributes,
 or status effects.
 
-The module is controlled by the default-enabled, restart-required
-`itemSize.enabled` setting in `revivalages-item-size-server.toml`. Registry and
-data-map identities remain available while the module is disabled. Disabling it
-removes the tooltip and makes every built-in adapter accept stacks without a size
-check.
+The module is always active. Its balance, adapter overrides, and rejection
+feedback settings are stored under `itemSize` in `config/revivalages.toml`.
 
 ## Size resolution
 
@@ -82,7 +79,7 @@ recipe-driven.
 
 ## Configuration and synchronization
 
-The server configuration exposes:
+The unified configuration exposes:
 
 - `itemSize.chestMaximumSize`;
 - `itemSize.bundleMaximumSize`;

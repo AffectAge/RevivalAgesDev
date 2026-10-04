@@ -1,5 +1,6 @@
 package com.protyvkultury.revivalages.feature.inventory.itemsize;
 
+import com.protyvkultury.revivalages.config.RevivalAgesConfig;
 import com.protyvkultury.revivalages.api.size.ItemSizeDataMaps;
 import com.protyvkultury.revivalages.api.size.Size;
 import com.protyvkultury.revivalages.api.size.SizeApi;
@@ -16,7 +17,6 @@ import net.minecraft.world.item.Items;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
-import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.config.ModConfigEvent;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.common.NeoForge;
@@ -33,7 +33,7 @@ public final class ItemSizeFeature implements FeatureModule {
     @Override
     public ContentPolicy contentPolicy() {
         return ContentPolicy.gameplay("item_size")
-                .define(ContentKey.ITEM_SIZE, ItemSizeConfig::configuredEnabled)
+                .define(ContentKey.ITEM_SIZE)
                 .build();
     }
 
@@ -43,11 +43,6 @@ public final class ItemSizeFeature implements FeatureModule {
         modBus.addListener(this::registerPayloads);
         modBus.addListener(this::onConfigLoading);
         modBus.addListener(this::onConfigReloading);
-        modContainer.registerConfig(
-                ModConfig.Type.SERVER,
-                ItemSizeConfig.SPEC,
-                "revivalages-item-size-server.toml"
-        );
         NeoForge.EVENT_BUS.addListener(this::onTooltip);
         NeoForge.EVENT_BUS.addListener(this::onItemStacked);
         NeoForge.EVENT_BUS.addListener(this::onDatapackSync);
@@ -109,13 +104,13 @@ public final class ItemSizeFeature implements FeatureModule {
     }
 
     private void onConfigLoading(ModConfigEvent.Loading event) {
-        if (event.getConfig().getSpec() == ItemSizeConfig.SPEC) {
+        if (event.getConfig().getSpec() == RevivalAgesConfig.SPEC) {
             ItemSizeSettings.refreshLocal();
         }
     }
 
     private void onConfigReloading(ModConfigEvent.Reloading event) {
-        if (event.getConfig().getSpec() != ItemSizeConfig.SPEC) {
+        if (event.getConfig().getSpec() != RevivalAgesConfig.SPEC) {
             return;
         }
         ItemSizeSettings.Snapshot serverSnapshot = ItemSizeSettings.refreshLocal();

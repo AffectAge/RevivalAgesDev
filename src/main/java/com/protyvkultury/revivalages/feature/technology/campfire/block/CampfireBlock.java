@@ -58,7 +58,8 @@ public final class CampfireBlock extends BaseEntityBlock implements HeldIgnitabl
     public static final IntegerProperty ASH = IntegerProperty.create("ash", 0, 8);
     public static final IntegerProperty LIGHT = IntegerProperty.create("light", 0, 15);
     private static final VoxelShape LOG_SHAPE = box(0, 0, 0, 16, 6, 16);
-    private static final VoxelShape TINDER_SHAPE = box(4, 0, 4, 12, 5, 12);
+    private static final VoxelShape TINDER_SHAPE = box(5, 0, 5, 11, 5, 11);
+    private static final VoxelShape[] ASH_SHAPES = createAshShapes();
 
     public CampfireBlock(BlockBehaviour.Properties properties) {
         super(properties);
@@ -90,7 +91,16 @@ public final class CampfireBlock extends BaseEntityBlock implements HeldIgnitabl
             return LOG_SHAPE;
         }
         int ash = state.getValue(ASH);
-        return ash > 0 ? box(2, 0, 2, 14, ash, 14) : TINDER_SHAPE;
+        return state.getValue(LIT) || ash < 8 ? ASH_SHAPES[ash] : box(2, 0, 2, 14, 8, 14);
+    }
+
+    private static VoxelShape[] createAshShapes() {
+        VoxelShape[] shapes = new VoxelShape[9];
+        shapes[0] = TINDER_SHAPE;
+        for (int ash = 1; ash < shapes.length; ash++) {
+            shapes[ash] = Shapes.or(TINDER_SHAPE, box(2, 0, 2, 14, ash, 14)).optimize();
+        }
+        return shapes;
     }
 
     @Override

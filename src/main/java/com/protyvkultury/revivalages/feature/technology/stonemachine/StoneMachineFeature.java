@@ -118,22 +118,10 @@ public final class StoneMachineFeature implements FeatureModule {
     @Override
     public ContentPolicy contentPolicy() {
         return ContentPolicy.gameplay("stone_machines")
-                .define(
-                        ContentKey.STONE_SAWMILL,
-                        () -> PrimitiveTechnologyConfig.contentEnabled(ContentKey.STONE_SAWMILL)
-                )
-                .define(
-                        ContentKey.STONE_OVEN,
-                        () -> PrimitiveTechnologyConfig.contentEnabled(ContentKey.STONE_OVEN)
-                )
-                .define(
-                        ContentKey.STONE_KILN,
-                        () -> PrimitiveTechnologyConfig.contentEnabled(ContentKey.STONE_KILN)
-                )
-                .define(
-                        ContentKey.STONE_CRUCIBLE,
-                        () -> PrimitiveTechnologyConfig.contentEnabled(ContentKey.STONE_CRUCIBLE)
-                )
+                .define(ContentKey.STONE_SAWMILL)
+                .define(ContentKey.STONE_OVEN)
+                .define(ContentKey.STONE_KILN)
+                .define(ContentKey.STONE_CRUCIBLE)
                 .items(ContentKey.STONE_SAWMILL, "stone_sawmill")
                 .items(ContentKey.STONE_OVEN, "stone_oven")
                 .items(ContentKey.STONE_KILN, "stone_kiln")

@@ -12,6 +12,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.RenderShape;
@@ -23,12 +24,23 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.neoforge.fluids.FluidUtil;
 
 public final class BarrelBlock extends BaseEntityBlock {
 
     public static final MapCodec<BarrelBlock> CODEC = simpleCodec(BarrelBlock::new);
     public static final BooleanProperty SEALED = BooleanProperty.create("sealed");
+    private static final VoxelShape OPEN_SHAPE = Shapes.or(
+            box(3, 0, 3, 13, 2, 13),
+            box(3, 0, 2, 13, 15, 3),
+            box(3, 0, 13, 13, 15, 14),
+            box(2, 0, 3, 3, 15, 13),
+            box(13, 0, 3, 14, 15, 13)
+    ).optimize();
+    private static final VoxelShape SEALED_SHAPE = Shapes.or(OPEN_SHAPE, box(3, 15, 3, 13, 16, 13)).optimize();
 
     public BarrelBlock(BlockBehaviour.Properties properties) {
         super(properties);
@@ -48,6 +60,11 @@ public final class BarrelBlock extends BaseEntityBlock {
     @Override
     protected RenderShape getRenderShape(BlockState state) {
         return RenderShape.MODEL;
+    }
+
+    @Override
+    protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+        return state.getValue(SEALED) ? SEALED_SHAPE : OPEN_SHAPE;
     }
 
     @Override
@@ -87,12 +104,12 @@ public final class BarrelBlock extends BaseEntityBlock {
             return ItemInteractionResult.sidedSuccess(level.isClientSide);
         }
         int slot = barrel.slotFromHit(hit.getLocation().x - pos.getX(), hit.getLocation().z - pos.getZ());
-        if (!barrel.item(slot).isEmpty()) {
-            return ItemInteractionResult.CONSUME;
-        }
         if (barrel.canInsert(slot, stack)) {
             return ItemStackInteraction.insert(level, true,
                     () -> barrel.insert(slot, stack, player.hasInfiniteMaterials()));
+        }
+        if (!barrel.item(slot).isEmpty()) {
+            return ItemInteractionResult.CONSUME;
         }
         return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
     }
@@ -112,6 +129,9 @@ public final class BarrelBlock extends BaseEntityBlock {
             return InteractionResult.sidedSuccess(level.isClientSide);
         }
         int slot = barrel.slotFromHit(hit.getLocation().x - pos.getX(), hit.getLocation().z - pos.getZ());
+        if (!barrel.output().isEmpty()) {
+            return ItemStackInteraction.extract(level, pos, player, barrel.output(), barrel::extractOutput);
+        }
         if (!barrel.item(slot).isEmpty()) {
             return ItemStackInteraction.extract(level, pos, player, barrel.item(slot), () -> barrel.extract(slot));
         }

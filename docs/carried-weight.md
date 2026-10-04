@@ -8,11 +8,8 @@ Pit Kiln, while Carried Weight reads the player's inventory and applies
 player-only penalties. Chests never reject items because of weight, and this
 module never changes stack limits.
 
-The feature is controlled by `carriedWeight.enabled` in
-`revivalages-carried-weight-server.toml`. Registry identities remain registered
-when it is disabled; current penalties are removed and the HUD and weight
-tooltips are hidden. The setting is restart-required for content-policy
-consistency.
+The feature is always active. Its balance and presentation settings are stored
+under `carriedWeight` in `config/revivalages.toml`.
 
 ## Weight lookup
 
@@ -90,12 +87,11 @@ maximum. Strength and Haste reduce that level. Creative and Spectator players
 receive no penalty.
 
 Jump height is adjusted through NeoForge's player jump event after vanilla jump
-velocity is established. This keeps the change player-only and removes it from
-the call path when the feature is disabled. Optional realistic mode starts
+velocity is established. This keeps the change player-only. Optional realistic mode starts
 gradual penalties at the configured fraction of capacity; it is disabled by
 default.
 
-Client configuration controls weight tooltips, compact or precise Shift
+The client-facing section of the unified configuration controls weight tooltips, compact or precise Shift
 formatting, two HUD styles, sprite/bar dimensions and position, offsets, text,
 color, and shadow. Item Size and Carried Weight always use separate tooltip
 lines.

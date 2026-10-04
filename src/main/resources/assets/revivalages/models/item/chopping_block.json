@@ -1,1 +1,35 @@
-{ "parent": "revivalages:block/chopping_block_0" }
+{
+  "parent": "revivalages:block/chopping_block_0",
+  "overrides": [
+    {
+      "predicate": {
+        "revivalages:damage": 1
+      },
+      "model": "revivalages:item/chopping_block_damage_1"
+    },
+    {
+      "predicate": {
+        "revivalages:damage": 2
+      },
+      "model": "revivalages:item/chopping_block_damage_2"
+    },
+    {
+      "predicate": {
+        "revivalages:damage": 3
+      },
+      "model": "revivalages:item/chopping_block_damage_3"
+    },
+    {
+      "predicate": {
+        "revivalages:damage": 4
+      },
+      "model": "revivalages:item/chopping_block_damage_4"
+    },
+    {
+      "predicate": {
+        "revivalages:damage": 5
+      },
+      "model": "revivalages:item/chopping_block_damage_5"
+    }
+  ]
+}

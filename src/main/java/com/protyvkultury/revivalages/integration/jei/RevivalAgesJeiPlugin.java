@@ -53,8 +53,6 @@ public final class RevivalAgesJeiPlugin implements IModPlugin {
             RevivalAgesJeiPlugin.primitive("campfire");
     public static final RecipeType<PrimitiveRecipeView> CHOPPING_BLOCK =
             RevivalAgesJeiPlugin.primitive("chopping_block");
-    public static final RecipeType<PrimitiveRecipeView> ANIMAL_CHOPPING =
-            RevivalAgesJeiPlugin.primitive("animal_chopping");
     public static final RecipeType<PrimitiveRecipeView> PIT_KILN =
             RevivalAgesJeiPlugin.primitive("pit_kiln");
     public static final RecipeType<PrimitiveRecipeView> PIT_BURN =
@@ -77,10 +75,6 @@ public final class RevivalAgesJeiPlugin implements IModPlugin {
             RevivalAgesJeiPlugin.primitive("anvil");
     public static final RecipeType<PrimitiveRecipeView> HAND_GRINDING =
             RevivalAgesJeiPlugin.primitive("hand_grinding");
-    public static final RecipeType<PrimitiveRecipeView> ANIMAL_GRINDING =
-            RevivalAgesJeiPlugin.primitive("animal_grinding");
-    public static final RecipeType<PrimitiveRecipeView> PRESSING =
-            RevivalAgesJeiPlugin.primitive("pressing");
     public static final RecipeType<FrameAssemblyRecipeView> FRAME_ASSEMBLY =
             RecipeType.create("revivalages", "frame_assembly", FrameAssemblyRecipeView.class);
     public static final RecipeType<KnappingRecipeView> ROCK_KNAPPING =
@@ -174,11 +168,6 @@ public final class RevivalAgesJeiPlugin implements IModPlugin {
                             PrimitiveJeiCategory.Layout.ANVIL,
                             "jei.revivalages.category.anvil",
                             (Item) AnvilFeature.ANVIL_ITEM.get()),
-                    new PrimitiveJeiCategory(
-                            registration.getJeiHelpers().getGuiHelper(), PRESSING,
-                            PrimitiveJeiCategory.Layout.PRESSING,
-                            "jei.revivalages.category.pressing",
-                            (Item) AnimalPowerFeature.HORSE_PRESS_ITEM.get()),
                     new FrameAssemblyJeiCategory(registration.getJeiHelpers(), FRAME_ASSEMBLY),
                     new KnappingJeiCategory(
                             registration.getJeiHelpers().getGuiHelper(),
@@ -206,20 +195,10 @@ public final class RevivalAgesJeiPlugin implements IModPlugin {
                     registration, CHOPPING_BLOCK, PrimitiveJeiCategory.Layout.CHOPPING,
                     "jei.revivalages.category.chopping_block", ChoppingBlockFeature.CHOPPING_BLOCK_ITEM.get()));
         }
-        if (ContentAvailability.isEnabled(ContentKey.HORSE_CHOPPING_BLOCK)) {
-            registration.addRecipeCategories(machineCategory(
-                    registration, ANIMAL_CHOPPING, PrimitiveJeiCategory.Layout.CHOPPING,
-                    "jei.revivalages.category.animal_chopping", AnimalPowerFeature.HORSE_CHOPPING_BLOCK_ITEM.get()));
-        }
         if (ContentAvailability.isEnabled(ContentKey.HAND_GRINDSTONE)) {
             registration.addRecipeCategories(machineCategory(
                     registration, HAND_GRINDING, PrimitiveJeiCategory.Layout.GRINDING,
                     "jei.revivalages.category.hand_grinding", AnimalPowerFeature.HAND_GRINDSTONE_ITEM.get()));
-        }
-        if (ContentAvailability.isEnabled(ContentKey.HORSE_GRINDSTONE)) {
-            registration.addRecipeCategories(machineCategory(
-                    registration, ANIMAL_GRINDING, PrimitiveJeiCategory.Layout.GRINDING,
-                    "jei.revivalages.category.animal_grinding", AnimalPowerFeature.HORSE_GRINDSTONE_ITEM.get()));
         }
     }
 
@@ -248,9 +227,6 @@ public final class RevivalAgesJeiPlugin implements IModPlugin {
         if (ContentAvailability.isEnabled(ContentKey.CHOPPING_BLOCK)) {
             registration.addRecipes(CHOPPING_BLOCK, PrimitiveRecipeCatalog.choppingBlock(recipeManager));
         }
-        if (ContentAvailability.isEnabled(ContentKey.HORSE_CHOPPING_BLOCK)) {
-            registration.addRecipes(ANIMAL_CHOPPING, AnimalPowerRecipeCatalog.animalChopping(recipeManager));
-        }
         registration.addRecipes(PIT_KILN, PrimitiveRecipeCatalog.pitKiln(recipeManager));
         registration.addRecipes(PIT_BURN, PrimitiveRecipeCatalog.pitBurn(recipeManager));
         registration.addRecipes(BARREL, PrimitiveRecipeCatalog.barrel(recipeManager));
@@ -265,10 +241,6 @@ public final class RevivalAgesJeiPlugin implements IModPlugin {
         if (ContentAvailability.isEnabled(ContentKey.HAND_GRINDSTONE)) {
             registration.addRecipes(HAND_GRINDING, AnimalPowerRecipeCatalog.handGrinding(recipeManager));
         }
-        if (ContentAvailability.isEnabled(ContentKey.HORSE_GRINDSTONE)) {
-            registration.addRecipes(ANIMAL_GRINDING, AnimalPowerRecipeCatalog.animalGrinding(recipeManager));
-        }
-        registration.addRecipes(PRESSING, AnimalPowerRecipeCatalog.pressing(recipeManager));
         registration.addRecipes(FRAME_ASSEMBLY, FrameAssemblyRecipeCatalog.recipes(recipeManager));
         java.util.List<KnappingRecipeView> knapping =
                 KnappingRecipeCatalog.recipes(recipeManager, registries);
@@ -315,11 +287,6 @@ public final class RevivalAgesJeiPlugin implements IModPlugin {
         catalyst(registration, ContentKey.ANVIL, AnvilFeature.ANVIL_ITEM.get(), ANVIL);
         catalyst(registration, ContentKey.HAND_GRINDSTONE,
                 AnimalPowerFeature.HAND_GRINDSTONE_ITEM.get(), HAND_GRINDING);
-        catalyst(registration, ContentKey.HORSE_GRINDSTONE,
-                AnimalPowerFeature.HORSE_GRINDSTONE_ITEM.get(), ANIMAL_GRINDING);
-        catalyst(registration, ContentKey.HORSE_CHOPPING_BLOCK,
-                AnimalPowerFeature.HORSE_CHOPPING_BLOCK_ITEM.get(), ANIMAL_CHOPPING);
-        catalyst(registration, ContentKey.HORSE_PRESS, AnimalPowerFeature.HORSE_PRESS_ITEM.get(), PRESSING);
         catalyst(registration, ContentKey.CONSTRUCTION_FRAME,
                 ConstructionFrameFeature.CONSTRUCTION_FRAME_ITEM.get(), FRAME_ASSEMBLY);
     }

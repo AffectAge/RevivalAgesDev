@@ -1,4 +1,9 @@
 {
   "parent": "revivalages:block/chopping_block_core",
-  "textures": { "core-side": "revivalages:block/chopping_block_core_side", "core-end": "minecraft:block/oak_log_top", "particle": "revivalages:block/chopping_block_core_side" }
+  "textures": {
+    "core-side": "minecraft:block/oak_log",
+    "core-end": "minecraft:block/oak_log_top",
+    "particle": "minecraft:block/oak_log",
+    "core-bottom": "minecraft:block/oak_log_top"
+  }
 }

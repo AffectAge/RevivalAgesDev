@@ -1,5 +1,6 @@
 package com.protyvkultury.revivalages.feature.player.diet;
 
+import com.protyvkultury.revivalages.config.RevivalAgesConfig;
 import com.protyvkultury.revivalages.RevivalAges;
 import com.protyvkultury.revivalages.api.diet.DietApi;
 import com.protyvkultury.revivalages.api.diet.DietDataMaps;
@@ -8,7 +9,6 @@ import com.protyvkultury.revivalages.api.diet.DietGroup;
 import com.protyvkultury.revivalages.feature.FeatureModule;
 import com.protyvkultury.revivalages.feature.content.ContentKey;
 import com.protyvkultury.revivalages.feature.content.ContentPolicy;
-import com.protyvkultury.revivalages.feature.player.diet.client.DietClientConfig;
 import com.protyvkultury.revivalages.feature.player.diet.client.DietClientEvents;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
@@ -19,7 +19,6 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
-import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.config.ModConfigEvent;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.attachment.AttachmentType;
@@ -62,7 +61,7 @@ public final class DietFeature implements FeatureModule {
     @Override
     public ContentPolicy contentPolicy() {
         return ContentPolicy.gameplay("diet")
-                .define(ContentKey.DIET, DietConfig::configuredEnabled)
+                .define(ContentKey.DIET)
                 .build();
     }
 
@@ -74,12 +73,6 @@ public final class DietFeature implements FeatureModule {
         modBus.addListener(this::registerDataMaps);
         modBus.addListener(this::registerPayloads);
         modBus.addListener(this::onConfigReload);
-        modContainer.registerConfig(ModConfig.Type.SERVER, DietConfig.SPEC, "revivalages-diet-server.toml");
-        modContainer.registerConfig(
-                ModConfig.Type.CLIENT,
-                DietClientConfig.SPEC,
-                "revivalages-diet-client.toml"
-        );
         NeoForge.EVENT_BUS.addListener(this::onPlayerTick);
         NeoForge.EVENT_BUS.addListener(this::onFoodFinished);
         NeoForge.EVENT_BUS.addListener(this::onClone);
@@ -167,7 +160,7 @@ public final class DietFeature implements FeatureModule {
     }
 
     private void onConfigReload(ModConfigEvent.Reloading event) {
-        if (event.getConfig().getSpec() != DietConfig.SPEC) {
+        if (event.getConfig().getSpec() != RevivalAgesConfig.SPEC) {
             return;
         }
         net.minecraft.server.MinecraftServer server =

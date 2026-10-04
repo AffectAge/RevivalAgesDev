@@ -7,32 +7,39 @@ import java.util.List;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.neoforged.neoforge.fluids.FluidStack;
 
 public final class BarrelRecipeSerializer implements RecipeSerializer<BarrelRecipe> {
 
-    private static final Codec<List<Ingredient>> INGREDIENTS = Ingredient.CODEC_NONEMPTY.listOf().validate(values ->
+    private static final Codec<List<CountedBarrelIngredient>> INGREDIENTS =
+            CountedBarrelIngredient.CODEC.listOf().validate(values ->
             !values.isEmpty() && values.size() <= 4
                     ? com.mojang.serialization.DataResult.success(values)
                     : com.mojang.serialization.DataResult.error(() -> "items must contain one to four ingredients"));
     private static final MapCodec<BarrelRecipe> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            INGREDIENTS.fieldOf("items").forGetter(BarrelRecipe::itemIngredients),
-            FluidStack.CODEC.fieldOf("input_fluid").forGetter(BarrelRecipe::inputFluid),
-            FluidStack.CODEC.fieldOf("result_fluid").forGetter(BarrelRecipe::resultFluid),
+            INGREDIENTS.fieldOf("items").forGetter(BarrelRecipe::countedIngredients),
+            FluidStack.CODEC.optionalFieldOf("input_fluid", FluidStack.EMPTY).forGetter(BarrelRecipe::inputFluid),
+            FluidStack.CODEC.optionalFieldOf("result_fluid", FluidStack.EMPTY).forGetter(BarrelRecipe::resultFluid),
+            ItemStack.STRICT_CODEC.optionalFieldOf("result_item", ItemStack.EMPTY).forGetter(BarrelRecipe::resultItem),
+            Codec.BOOL.optionalFieldOf("requires_seal", true).forGetter(BarrelRecipe::requiresSeal),
             Codec.INT.validate(value -> value > 0
                             ? com.mojang.serialization.DataResult.success(value)
                             : com.mojang.serialization.DataResult.error(() -> "processing_time must be positive"))
                     .fieldOf("processing_time").forGetter(BarrelRecipe::processingTime)
     ).apply(instance, BarrelRecipe::new));
     private static final StreamCodec<RegistryFriendlyByteBuf, BarrelRecipe> STREAM_CODEC = StreamCodec.composite(
-            ByteBufCodecs.collection(java.util.ArrayList::new, Ingredient.CONTENTS_STREAM_CODEC),
-            BarrelRecipe::itemIngredients,
-            FluidStack.STREAM_CODEC,
+            ByteBufCodecs.collection(java.util.ArrayList::new, CountedBarrelIngredient.STREAM_CODEC),
+            BarrelRecipe::countedIngredients,
+            FluidStack.OPTIONAL_STREAM_CODEC,
             BarrelRecipe::inputFluid,
-            FluidStack.STREAM_CODEC,
+            FluidStack.OPTIONAL_STREAM_CODEC,
             BarrelRecipe::resultFluid,
+            ItemStack.OPTIONAL_STREAM_CODEC,
+            BarrelRecipe::resultItem,
+            ByteBufCodecs.BOOL,
+            BarrelRecipe::requiresSeal,
             ByteBufCodecs.VAR_INT,
             BarrelRecipe::processingTime,
             BarrelRecipe::new

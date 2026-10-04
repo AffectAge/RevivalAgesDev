@@ -5,6 +5,8 @@ import com.protyvkultury.revivalages.core.interaction.ItemStackInteraction;
 import com.protyvkultury.revivalages.feature.technology.constructionframe.ConstructionFrameConfig;
 import com.protyvkultury.revivalages.feature.technology.constructionframe.blockentity.ConstructionFrameBlockEntity;
 import com.protyvkultury.revivalages.feature.technology.constructionframe.recipe.FrameGridPosition;
+import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import javax.annotation.Nullable;
@@ -15,6 +17,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -33,12 +36,27 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 public final class ConstructionFrameBlock extends BaseEntityBlock {
 
     public static final MapCodec<ConstructionFrameBlock> CODEC = simpleCodec(ConstructionFrameBlock::new);
-    private static final VoxelShape BASE = box(0, 0, 0, 16, 1, 16);
+    private static final VoxelShape BASE = box(1, 0, 1, 15, 2, 15);
+    private static final VoxelShape FRAME_COLLISION = Shapes.or(
+            box(1, 0, 1, 15, 1, 2),
+            box(1, 0, 14, 15, 1, 15),
+            box(2, 1, 1, 3, 2, 15),
+            box(13, 1, 1, 14, 2, 15)
+    ).optimize();
     private static final VoxelShape[] CELLS = createCells();
     private static final Map<Integer, VoxelShape> SHAPE_CACHE = new ConcurrentHashMap<>();
+    private static final Map<Integer, VoxelShape> COLLISION_CACHE = Collections.synchronizedMap(
+            new LinkedHashMap<>(64, 0.75F, true) {
+                @Override
+                protected boolean removeEldestEntry(Map.Entry<Integer, VoxelShape> eldest) {
+                    return size() > 256;
+                }
+            }
+    );
 
     static {
         SHAPE_CACHE.put(0, BASE);
+        COLLISION_CACHE.put(0, FRAME_COLLISION);
     }
 
     public ConstructionFrameBlock(BlockBehaviour.Properties properties) {
@@ -61,6 +79,20 @@ public final class ConstructionFrameBlock extends BaseEntityBlock {
             return SHAPE_CACHE.computeIfAbsent(frame.occupancyMask(), ConstructionFrameBlock::buildShape);
         }
         return BASE;
+    }
+
+    @Override
+    protected VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+        if (!(level.getBlockEntity(pos) instanceof ConstructionFrameBlockEntity frame)) {
+            return FRAME_COLLISION;
+        }
+        int blockMask = 0;
+        for (int index = 0; index < CELLS.length; index++) {
+            if (frame.item(index).getItem() instanceof BlockItem) {
+                blockMask |= 1 << index;
+            }
+        }
+        return COLLISION_CACHE.computeIfAbsent(blockMask, ConstructionFrameBlock::buildCollisionShape);
     }
 
     @Override
@@ -177,6 +209,16 @@ public final class ConstructionFrameBlock extends BaseEntityBlock {
     private static VoxelShape buildShape(int mask) {
         VoxelShape shape = BASE;
         for (int index = 0; index < 27; index++) {
+            if ((mask & (1 << index)) != 0) {
+                shape = Shapes.or(shape, CELLS[index]);
+            }
+        }
+        return shape.optimize();
+    }
+
+    private static VoxelShape buildCollisionShape(int mask) {
+        VoxelShape shape = FRAME_COLLISION;
+        for (int index = 0; index < CELLS.length; index++) {
             if ((mask & (1 << index)) != 0) {
                 shape = Shapes.or(shape, CELLS[index]);
             }

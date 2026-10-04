@@ -26,10 +26,26 @@ public final class CrudeDryingRackBlock extends AbstractDryingRackBlock {
     public static final MapCodec<CrudeDryingRackBlock> CODEC = simpleCodec(CrudeDryingRackBlock::new);
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
 
-    private static final VoxelShape NORTH_SHAPE = Block.box(0.0D, 11.0D, 0.0D, 16.0D, 16.0D, 5.0D);
-    private static final VoxelShape SOUTH_SHAPE = Block.box(0.0D, 11.0D, 11.0D, 16.0D, 16.0D, 16.0D);
-    private static final VoxelShape EAST_SHAPE = Block.box(11.0D, 11.0D, 0.0D, 16.0D, 16.0D, 16.0D);
-    private static final VoxelShape WEST_SHAPE = Block.box(0.0D, 11.0D, 0.0D, 5.0D, 16.0D, 16.0D);
+    private static final VoxelShape SOUTH_SHAPE = Shapes.or(
+            Block.box(0, 11, 11, 16, 14, 16),
+            Block.box(1, 14, 11, 4, 16, 16),
+            Block.box(12, 14, 11, 15, 16, 16)
+    ).optimize();
+    private static final VoxelShape NORTH_SHAPE = Shapes.or(
+            Block.box(0, 11, 0, 16, 14, 5),
+            Block.box(1, 14, 0, 4, 16, 5),
+            Block.box(12, 14, 0, 15, 16, 5)
+    ).optimize();
+    private static final VoxelShape EAST_SHAPE = Shapes.or(
+            Block.box(11, 11, 0, 16, 14, 16),
+            Block.box(11, 14, 1, 16, 16, 4),
+            Block.box(11, 14, 12, 16, 16, 15)
+    ).optimize();
+    private static final VoxelShape WEST_SHAPE = Shapes.or(
+            Block.box(0, 11, 0, 5, 14, 16),
+            Block.box(0, 14, 1, 5, 16, 4),
+            Block.box(0, 14, 12, 5, 16, 15)
+    ).optimize();
 
     public CrudeDryingRackBlock(BlockBehaviour.Properties properties) {
         super(properties);

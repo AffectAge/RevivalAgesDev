@@ -57,9 +57,6 @@ public final class RevivalAgesEmiPlugin implements EmiPlugin {
     public static final EmiRecipeCategory CHOPPING_BLOCK =
             RevivalAgesEmiPlugin.category(
                     "chopping_block", (ItemLike) ChoppingBlockFeature.CHOPPING_BLOCK_ITEM.get());
-    public static final EmiRecipeCategory ANIMAL_CHOPPING =
-            RevivalAgesEmiPlugin.category(
-                    "animal_chopping", (ItemLike) AnimalPowerFeature.HORSE_CHOPPING_BLOCK_ITEM.get());
     public static final EmiRecipeCategory PIT_KILN =
             RevivalAgesEmiPlugin.category("pit_kiln", (ItemLike) PitKilnFeature.PIT_KILN_ITEM.get());
     public static final EmiRecipeCategory PIT_BURN =
@@ -84,10 +81,6 @@ public final class RevivalAgesEmiPlugin implements EmiPlugin {
             RevivalAgesEmiPlugin.category("anvil", AnvilFeature.ANVIL_ITEM.get());
     public static final EmiRecipeCategory HAND_GRINDING =
             RevivalAgesEmiPlugin.category("hand_grinding", AnimalPowerFeature.HAND_GRINDSTONE_ITEM.get());
-    public static final EmiRecipeCategory ANIMAL_GRINDING =
-            RevivalAgesEmiPlugin.category("animal_grinding", AnimalPowerFeature.HORSE_GRINDSTONE_ITEM.get());
-    public static final EmiRecipeCategory PRESSING =
-            RevivalAgesEmiPlugin.category("pressing", AnimalPowerFeature.HORSE_PRESS_ITEM.get());
     public static final EmiRecipeCategory FRAME_ASSEMBLY =
             RevivalAgesEmiPlugin.category(
                     "frame_assembly",
@@ -119,9 +112,6 @@ public final class RevivalAgesEmiPlugin implements EmiPlugin {
         if (ContentAvailability.isEnabled(ContentKey.CHOPPING_BLOCK)) {
             registry.addCategory(CHOPPING_BLOCK);
         }
-        if (ContentAvailability.isEnabled(ContentKey.HORSE_CHOPPING_BLOCK)) {
-            registry.addCategory(ANIMAL_CHOPPING);
-        }
         registry.addCategory(PIT_KILN);
         registry.addCategory(PIT_BURN);
         registry.addCategory(BARREL);
@@ -135,10 +125,6 @@ public final class RevivalAgesEmiPlugin implements EmiPlugin {
         if (ContentAvailability.isEnabled(ContentKey.HAND_GRINDSTONE)) {
             registry.addCategory(HAND_GRINDING);
         }
-        if (ContentAvailability.isEnabled(ContentKey.HORSE_GRINDSTONE)) {
-            registry.addCategory(ANIMAL_GRINDING);
-        }
-        registry.addCategory(PRESSING);
         registry.addCategory(FRAME_ASSEMBLY);
         registry.addCategory(ROCK_KNAPPING);
         registry.addCategory(CLAY_KNAPPING);
@@ -165,11 +151,6 @@ public final class RevivalAgesEmiPlugin implements EmiPlugin {
                 StoneMachineFeature.STONE_CRUCIBLE_ITEM.get());
         workstation(registry, ContentKey.ANVIL, ANVIL, AnvilFeature.ANVIL_ITEM.get());
         workstation(registry, ContentKey.HAND_GRINDSTONE, HAND_GRINDING, AnimalPowerFeature.HAND_GRINDSTONE_ITEM.get());
-        workstation(registry, ContentKey.HORSE_GRINDSTONE, ANIMAL_GRINDING,
-                AnimalPowerFeature.HORSE_GRINDSTONE_ITEM.get());
-        workstation(registry, ContentKey.HORSE_CHOPPING_BLOCK, ANIMAL_CHOPPING,
-                AnimalPowerFeature.HORSE_CHOPPING_BLOCK_ITEM.get());
-        workstation(registry, ContentKey.HORSE_PRESS, PRESSING, AnimalPowerFeature.HORSE_PRESS_ITEM.get());
         workstation(registry, ContentKey.CONSTRUCTION_FRAME, FRAME_ASSEMBLY,
                 ConstructionFrameFeature.CONSTRUCTION_FRAME_ITEM.get());
         DryingRecipeCatalog.crude(registry.getRecipeManager())
@@ -204,9 +185,6 @@ public final class RevivalAgesEmiPlugin implements EmiPlugin {
                                                         PrimitiveEmiRecipe.Layout.CHOPPING,
                                                         "chopping_block",
                                                         (PrimitiveRecipeView) view)));
-        AnimalPowerRecipeCatalog.animalChopping(manager).forEach(view -> registry.addRecipe(
-                new PrimitiveEmiRecipe(
-                        ANIMAL_CHOPPING, PrimitiveEmiRecipe.Layout.CHOPPING, "animal_chopping", view)));
         PrimitiveRecipeCatalog.pitKiln(manager)
                 .forEach(
                         view ->
@@ -256,11 +234,6 @@ public final class RevivalAgesEmiPlugin implements EmiPlugin {
                 new PrimitiveEmiRecipe(ANVIL, PrimitiveEmiRecipe.Layout.ANVIL, view)));
         AnimalPowerRecipeCatalog.handGrinding(manager).forEach(view -> registry.addRecipe(
                 new PrimitiveEmiRecipe(HAND_GRINDING, PrimitiveEmiRecipe.Layout.GRINDING, "hand_grinding", view)));
-        AnimalPowerRecipeCatalog.animalGrinding(manager).forEach(view -> registry.addRecipe(
-                new PrimitiveEmiRecipe(
-                        ANIMAL_GRINDING, PrimitiveEmiRecipe.Layout.GRINDING, "animal_grinding", view)));
-        AnimalPowerRecipeCatalog.pressing(manager).forEach(view -> registry.addRecipe(
-                new PrimitiveEmiRecipe(PRESSING, PrimitiveEmiRecipe.Layout.PRESSING, view)));
         FrameAssemblyRecipeCatalog.recipes(manager).forEach(view -> registry.addRecipe(
                 new FrameAssemblyEmiRecipe(FRAME_ASSEMBLY, view)));
         KnappingRecipeCatalog.recipes(manager, registries).forEach(view -> {

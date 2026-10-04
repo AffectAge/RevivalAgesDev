@@ -1,13 +1,12 @@
 package com.protyvkultury.revivalages.feature.inventory.itemsize;
 
+import com.protyvkultury.revivalages.config.RevivalAgesConfig;
 import com.protyvkultury.revivalages.api.size.Size;
 import java.util.List;
 import net.neoforged.neoforge.common.ModConfigSpec;
 
 public final class ItemSizeConfig {
 
-    public static final ModConfigSpec SPEC;
-    public static final ModConfigSpec.BooleanValue ENABLED;
     public static final ModConfigSpec.EnumValue<Size> CHEST_MAXIMUM_SIZE;
     public static final ModConfigSpec.EnumValue<Size> BUNDLE_MAXIMUM_SIZE;
     public static final ModConfigSpec.EnumValue<Size> PIT_KILN_BATCHABLE_MAXIMUM_SIZE;
@@ -21,13 +20,7 @@ public final class ItemSizeConfig {
     public static final ModConfigSpec.ConfigValue<List<? extends String>> CONTAINER_OVERRIDES;
 
     static {
-        ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
-        ENABLED = builder
-                .comment(
-                        "Enables Item Size tooltips and storage restrictions.",
-                        "Changing this value requires a server restart."
-                )
-                .define("itemSize.enabled", true);
+        ModConfigSpec.Builder builder = RevivalAgesConfig.builder();
         CHEST_MAXIMUM_SIZE = builder
                 .comment("Largest item size accepted by normal and trapped chests.")
                 .defineEnum("itemSize.chestMaximumSize", Size.LARGE);
@@ -69,14 +62,12 @@ public final class ItemSizeConfig {
                         () -> "block|minecraft:chest=large",
                         ItemSizeConfig::validOverride
                 );
-        SPEC = builder.build();
     }
 
     private ItemSizeConfig() {
     }
 
-    public static boolean configuredEnabled() {
-        return SPEC.isLoaded() ? ENABLED.get() : ENABLED.getDefault();
+    public static void bootstrap() {
     }
 
     private static boolean validOverride(Object value) {
