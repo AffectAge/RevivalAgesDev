@@ -48,7 +48,7 @@ public final class AnimalPowerRenderers {
                 return;
             }
             pose.pushPose();
-            pose.translate(0.5D, 0.65D, 0.5D);
+            pose.translate(0.5D, 0.275D, 0.5D);
             pose.mulPose(Axis.YP.rotationDegrees(grindstone.rotation(partialTick) * 360.0F));
             pose.mulPose(Axis.XP.rotationDegrees(90.0F));
             pose.scale(0.45F, 0.45F, 0.45F);

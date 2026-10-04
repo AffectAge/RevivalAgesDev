@@ -1,4 +1,5 @@
 {
+  "parent": "neoforge:item/default",
   "loader": "neoforge:fluid_container",
   "fluid": "minecraft:empty",
   "flip_gas": true,
