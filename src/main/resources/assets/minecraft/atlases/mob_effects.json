@@ -2,7 +2,7 @@
   "sources": [
     {
       "type": "unstitch",
-      "resource": "revivalages:atlas/campfire_effects",
+      "resource": "revivalages:gui/campfire_effects",
       "divisor_x": 256,
       "divisor_y": 256,
       "regions": [

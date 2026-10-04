@@ -14,13 +14,11 @@ import net.minecraft.world.effect.MobEffects;
 
 final class CarriedWeightHud {
 
-    private static final ResourceLocation EMPTY =
-            RevivalAges.id("textures/gui/carried_weight/empty.png");
-    private static final ResourceLocation OVERLOAD =
-            RevivalAges.id("textures/gui/carried_weight/overload.png");
-    private static final ResourceLocation STRENGTH =
-            RevivalAges.id("textures/gui/carried_weight/strength.png");
-    private static final int TEXTURE_SIZE = 16;
+    private static final ResourceLocation TEXTURE = RevivalAges.id("textures/gui/carried_weight.png");
+    private static final int TEXTURE_SIZE = 256;
+    private static final int SPRITE_SIZE = 16;
+    private static final int OVERLOAD_U = 13 * SPRITE_SIZE;
+    private static final int STRENGTH_U = 14 * SPRITE_SIZE;
     private static final int EDGE_MARGIN = 2;
     private static final int TEXT_GAP = 3;
 
@@ -57,7 +55,7 @@ final class CarriedWeightHud {
             renderSprite(graphics, position.x, position.y, width, height, current, capacity, overloaded);
             if (minecraft.player.hasEffect(MobEffects.DAMAGE_BOOST)
                     || minecraft.player.hasEffect(MobEffects.DIG_SPEED)) {
-                blit(graphics, STRENGTH, position.x, position.y, width, height);
+                blit(graphics, STRENGTH_U, position.x, position.y, width, height);
             }
         } else {
             renderBar(graphics, position.x, position.y, width, height, current, capacity, overloaded);
@@ -85,19 +83,12 @@ final class CarriedWeightHud {
             double capacity,
             boolean overloaded
     ) {
-        blit(graphics, EMPTY, x, y, width, height);
+        blit(graphics, 0, x, y, width, height);
         if (overloaded || current >= capacity) {
-            blit(graphics, OVERLOAD, x, y, width, height);
+            blit(graphics, OVERLOAD_U, x, y, width, height);
         } else if (current > 0.0D) {
             int fill = Mth.clamp((int) Math.ceil(current / capacity * 12.0D), 1, 12);
-            blit(
-                    graphics,
-                    RevivalAges.id("textures/gui/carried_weight/filled_" + fill + ".png"),
-                    x,
-                    y,
-                    width,
-                    height
-            );
+            blit(graphics, fill * SPRITE_SIZE, x, y, width, height);
         }
     }
 
@@ -290,13 +281,14 @@ final class CarriedWeightHud {
 
     private static void blit(
             GuiGraphics graphics,
-            ResourceLocation texture,
+            int u,
             int x,
             int y,
             int width,
             int height
     ) {
-        graphics.blit(texture, x, y, width, height, 0.0F, 0.0F, 16, 16, TEXTURE_SIZE, TEXTURE_SIZE);
+        graphics.blit(TEXTURE, x, y, width, height, (float) u, 0.0F,
+                SPRITE_SIZE, SPRITE_SIZE, TEXTURE_SIZE, TEXTURE_SIZE);
     }
 
     private record Position(int x, int y) {

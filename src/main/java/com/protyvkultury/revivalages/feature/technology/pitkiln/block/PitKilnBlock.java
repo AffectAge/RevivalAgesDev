@@ -70,9 +70,9 @@ public final class PitKilnBlock extends BaseEntityBlock implements HeldIgnitable
     @Override
     protected VoxelShape getShape(BlockState state, net.minecraft.world.level.BlockGetter level, BlockPos pos, CollisionContext context) {
         return switch (state.getValue(STAGE)) {
-            case EMPTY -> EMPTY_SHAPE;
+            case EMPTY, COMPLETE -> EMPTY_SHAPE;
             case THATCH -> THATCH_SHAPE;
-            default -> net.minecraft.world.phys.shapes.Shapes.block();
+            case WOOD, ACTIVE -> net.minecraft.world.phys.shapes.Shapes.block();
         };
     }
 
