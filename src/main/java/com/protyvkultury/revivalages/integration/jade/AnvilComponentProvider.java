@@ -22,12 +22,10 @@ public enum AnvilComponentProvider implements IBlockComponentProvider {
 
     @Override
     public void appendTooltip(ITooltip tooltip, BlockAccessor accessor, IPluginConfig config) {
-        if (DisabledContentComponentProvider.isDisabled(accessor)) {
-            return;
-        }
         if (!(accessor.getBlockEntity() instanceof AnvilBlockEntity anvil)) {
             return;
         }
+        tooltip.add(Component.translatable("jade.revivalages.anvil.remaining_hits", anvil.remainingHits()));
         if (anvil.input().isEmpty()) {
             return;
         }
@@ -35,7 +33,7 @@ public enum AnvilComponentProvider implements IBlockComponentProvider {
         IElementHelper elements = IElementHelper.get();
         line.add(elements.item(anvil.input()));
         line.add(elements.spacer(2, 0));
-        line.add(elements.progress((float) anvil.progress()));
+        line.add(JadeProgressElement.of(elements, anvil.progress()));
         line.add(elements.spacer(2, 0));
         if (!anvil.recipeOutput().isEmpty()) {
             line.add(elements.item(anvil.recipeOutput()));

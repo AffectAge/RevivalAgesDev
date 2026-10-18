@@ -1,6 +1,7 @@
 package com.protyvkultury.revivalages;
 
 import com.mojang.logging.LogUtils;
+import com.protyvkultury.revivalages.config.RevivalAgesConfig;
 import com.protyvkultury.revivalages.data.RevivalAgesDataGenerators;
 import com.protyvkultury.revivalages.core.process.ProcessRulePresentation;
 import com.protyvkultury.revivalages.feature.ModFeatures;
@@ -10,6 +11,7 @@ import com.protyvkultury.revivalages.integration.CarriedWeightIntegrations;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.common.Mod;
 import org.slf4j.Logger;
 
@@ -23,6 +25,7 @@ public final class RevivalAges {
         ProcessRulePresentation.validate();
         modBus.addListener(RevivalAgesDataGenerators::gatherData);
         ModFeatures.register(modBus, modContainer);
+        modContainer.registerConfig(ModConfig.Type.COMMON, RevivalAgesConfig.SPEC, "revivalages.toml");
         DryingRackSeasonService.install(DryingRackSeasonIntegrations.createProvider());
         CarriedWeightIntegrations.register();
     }

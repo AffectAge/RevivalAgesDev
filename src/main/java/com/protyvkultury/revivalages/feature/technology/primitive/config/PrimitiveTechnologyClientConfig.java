@@ -1,16 +1,16 @@
 package com.protyvkultury.revivalages.feature.technology.primitive.config;
 
+import com.protyvkultury.revivalages.config.RevivalAgesConfig;
 import net.neoforged.neoforge.common.ModConfigSpec;
 
 public final class PrimitiveTechnologyClientConfig {
 
-    public static final ModConfigSpec SPEC;
     public static final ModConfigSpec.BooleanValue SHOW_DURABILITY_TOOLTIPS;
     public static final ModConfigSpec.BooleanValue SHOW_INTERACTION_PREVIEWS;
     public static final ModConfigSpec.BooleanValue SHOW_PHYSICAL_ITEM_COUNTS;
 
     static {
-        ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
+        ModConfigSpec.Builder builder = RevivalAgesConfig.builder();
         builder.push("primitiveTechnology");
         SHOW_DURABILITY_TOOLTIPS = builder
                 .comment("Shows exact remaining uses on primitive tools and saw blades.")
@@ -22,9 +22,11 @@ public final class PrimitiveTechnologyClientConfig {
                 .comment("Shows counts next to item stacks rendered in physical machine slots.")
                 .define("showPhysicalItemCounts", true);
         builder.pop();
-        SPEC = builder.build();
     }
 
     private PrimitiveTechnologyClientConfig() {
+    }
+
+    public static void bootstrap() {
     }
 }

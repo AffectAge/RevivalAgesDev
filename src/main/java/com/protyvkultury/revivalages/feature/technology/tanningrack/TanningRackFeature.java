@@ -64,10 +64,7 @@ public final class TanningRackFeature implements FeatureModule {
     @Override
     public ContentPolicy contentPolicy() {
         return ContentPolicy.gameplay("tanning_rack")
-                .define(
-                        ContentKey.TANNING_RACK,
-                        () -> PrimitiveTechnologyConfig.contentEnabled(ContentKey.TANNING_RACK)
-                )
+                .define(ContentKey.TANNING_RACK)
                 .items(ContentKey.TANNING_RACK, "tanning_rack")
                 .build();
     }

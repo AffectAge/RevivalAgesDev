@@ -1,7 +1,0 @@
-{
-  "neoforge:conditions": [{"type":"revivalages:content_enabled","content":"revivalages:horse_press","enabled":true}],
-  "type": "revivalages:pressing",
-  "ingredient": { "tag": "minecraft:leaves" },
-  "input_count": 8,
-  "fluid_result": { "id": "minecraft:water", "amount": 1000 }
-}

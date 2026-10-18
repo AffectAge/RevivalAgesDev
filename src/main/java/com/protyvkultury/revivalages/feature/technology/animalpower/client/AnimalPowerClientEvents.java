@@ -22,17 +22,10 @@ public final class AnimalPowerClientEvents {
                 AnimalPowerFeature.HAND_GRINDSTONE_BLOCK_ENTITY.get(),
                 AnimalPowerRenderers.HandGrindstone::new
         );
-        event.registerBlockEntityRenderer(
-                AnimalPowerFeature.ANIMAL_MACHINE_BLOCK_ENTITY.get(),
-                AnimalPowerRenderers.AnimalMachine::new
-        );
     }
 
     private static void registerAdditionalModels(ModelEvent.RegisterAdditional event) {
         event.register(standaloneModel("hand_grindstone_rotor"));
-        event.register(standaloneModel("horse_grindstone_rotor"));
-        event.register(standaloneModel("horse_chopping_blade"));
-        event.register(standaloneModel("horse_press_platen"));
     }
 
     static ModelResourceLocation standaloneModel(String path) {

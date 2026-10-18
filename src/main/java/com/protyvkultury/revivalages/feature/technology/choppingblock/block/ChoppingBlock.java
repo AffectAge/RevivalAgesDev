@@ -2,6 +2,7 @@ package com.protyvkultury.revivalages.feature.technology.choppingblock.block;
 
 import com.mojang.serialization.MapCodec;
 import com.protyvkultury.revivalages.core.interaction.ItemStackInteraction;
+import com.protyvkultury.revivalages.core.item.RecipeOutputDrops;
 import com.protyvkultury.revivalages.feature.technology.choppingblock.ChoppingBlockFeature;
 import com.protyvkultury.revivalages.feature.technology.choppingblock.blockentity.ChoppingBlockEntity;
 import com.protyvkultury.revivalages.feature.technology.choppingblock.ChoppingToolPolicy;
@@ -122,10 +123,17 @@ public final class ChoppingBlock extends BaseEntityBlock {
 
     @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
-        if (level.getBlockEntity(pos) instanceof ChoppingBlockEntity chopping
-                && (!chopping.output().isEmpty() || !chopping.input().isEmpty())) {
-            ItemStack shown = chopping.output().isEmpty() ? chopping.input() : chopping.output();
-            return ItemStackInteraction.extract(level, pos, player, shown, chopping::extract);
+        if (level.getBlockEntity(pos) instanceof ChoppingBlockEntity chopping) {
+            if (!chopping.output().isEmpty()) {
+                if (!level.isClientSide) {
+                    RecipeOutputDrops.spawnAbove(level, pos, chopping.extract());
+                    ItemStackInteraction.playExtractionSound(level, pos);
+                }
+                return InteractionResult.sidedSuccess(level.isClientSide);
+            }
+            if (!chopping.input().isEmpty()) {
+                return ItemStackInteraction.extract(level, pos, player, chopping.input(), chopping::extract);
+            }
         }
         return InteractionResult.PASS;
     }

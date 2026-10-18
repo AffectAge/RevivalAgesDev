@@ -2,6 +2,7 @@ package com.protyvkultury.revivalages.feature.technology.pitburn.blockentity;
 
 import com.protyvkultury.revivalages.api.food.FoodFreshnessApi;
 import com.protyvkultury.revivalages.core.machine.BurnableStructureTracker;
+import com.protyvkultury.revivalages.core.process.ProgressProjection;
 import com.protyvkultury.revivalages.feature.content.ContentAvailability;
 import com.protyvkultury.revivalages.feature.content.ContentKey;
 import com.protyvkultury.revivalages.feature.technology.pitburn.PitBurnFeature;
@@ -39,6 +40,8 @@ public final class PitBurnBlockEntity extends BlockEntity {
     private PitBurnRecipe activeRecipe;
     private int elapsedTicks;
     private int totalTicks;
+    private long clientProgressSnapshotTime = -1L;
+    private double clientProgressRate;
     private int completedStages;
 
     public PitBurnBlockEntity(BlockPos pos, BlockState state) {
@@ -74,7 +77,11 @@ public final class PitBurnBlockEntity extends BlockEntity {
             level.setBlock(pos, Blocks.FIRE.defaultBlockState(), Block.UPDATE_ALL);
             return;
         }
+        boolean wasInvalid = burn.structureTracker.invalidTicks() > 0;
         BurnableStructureTracker.Result structure = burn.structureTracker.tick(burn::isStructureValid);
+        if (wasInvalid && structure == BurnableStructureTracker.Result.VALID) {
+            burn.sync();
+        }
         if (structure == BurnableStructureTracker.Result.FAILED) {
             level.setBlock(pos, Blocks.FIRE.defaultBlockState(), Block.UPDATE_ALL);
             return;
@@ -185,6 +192,14 @@ public final class PitBurnBlockEntity extends BlockEntity {
         return totalTicks <= 0 ? 0.0D : Math.clamp(elapsedTicks / (double) totalTicks, 0.0D, 1.0D);
     }
 
+    public double progressAt(long gameTime) {
+        if (level == null || !level.isClientSide || clientProgressSnapshotTime < 0L) {
+            return progress();
+        }
+        return ProgressProjection.fraction(elapsedTicks, totalTicks,
+                clientProgressRate, clientProgressSnapshotTime, gameTime);
+    }
+
     public int completedStages() {
         return completedStages;
     }
@@ -234,6 +249,8 @@ public final class PitBurnBlockEntity extends BlockEntity {
         recipeInput = ItemStack.parseOptional(registries, tag.getCompound("RecipeInput"));
         elapsedTicks = tag.getInt("ElapsedTicks");
         totalTicks = tag.getInt("TotalTicks");
+        clientProgressSnapshotTime = tag.contains("ProgressSnapshotTime") ? tag.getLong("ProgressSnapshotTime") : -1L;
+        clientProgressRate = tag.getDouble("ProgressRateSnapshot");
         completedStages = tag.getInt("CompletedStages");
         structureTracker.load(tag);
         resolveRecipe();
@@ -259,6 +276,12 @@ public final class PitBurnBlockEntity extends BlockEntity {
 
     @Override
     public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
-        return saveWithoutMetadata(registries);
+        CompoundTag tag = saveWithoutMetadata(registries);
+        if (level != null) {
+            tag.putLong("ProgressSnapshotTime", level.getGameTime());
+            tag.putDouble("ProgressRateSnapshot", getBlockState().is(PitBurnFeature.ACTIVE_PILE.get())
+                    && structureTracker.invalidTicks() == 0 ? 1.0D : 0.0D);
+        }
+        return tag;
     }
 }

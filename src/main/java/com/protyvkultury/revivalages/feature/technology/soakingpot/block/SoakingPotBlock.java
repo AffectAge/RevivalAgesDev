@@ -2,8 +2,6 @@ package com.protyvkultury.revivalages.feature.technology.soakingpot.block;
 
 import com.mojang.serialization.MapCodec;
 import com.protyvkultury.revivalages.core.interaction.ItemStackInteraction;
-import com.protyvkultury.revivalages.feature.content.ContentAvailability;
-import com.protyvkultury.revivalages.feature.content.ContentKey;
 import com.protyvkultury.revivalages.feature.technology.campfire.CampfireFeature;
 import com.protyvkultury.revivalages.feature.technology.campfire.blockentity.CampfireBlockEntity;
 import com.protyvkultury.revivalages.feature.technology.soakingpot.SoakingPotFeature;
@@ -11,7 +9,6 @@ import com.protyvkultury.revivalages.feature.technology.soakingpot.blockentity.S
 import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
@@ -34,6 +31,7 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.neoforge.fluids.FluidUtil;
 
@@ -41,8 +39,34 @@ public final class SoakingPotBlock extends BaseEntityBlock {
 
     public static final MapCodec<SoakingPotBlock> CODEC = simpleCodec(SoakingPotBlock::new);
     public static final BooleanProperty CAMPFIRE = BooleanProperty.create("campfire");
-    private static final VoxelShape SHAPE = box(2, 0, 2, 14, 9, 14);
-    private static final VoxelShape CAMPFIRE_SHAPE = box(2, 0, 2, 14, 4, 14);
+    private static final VoxelShape SHAPE = Shapes.or(
+            box(3, 0, 3, 13, 1, 13),
+            box(3, 1, 3, 13, 9, 4),
+            box(3, 1, 12, 13, 9, 13),
+            box(3, 1, 4, 4, 9, 12),
+            box(12, 1, 4, 13, 9, 12),
+            box(2, 8, 2, 3, 9, 14),
+            box(13, 8, 2, 14, 9, 14),
+            box(3, 8, 2, 13, 9, 3),
+            box(3, 8, 13, 13, 9, 14),
+            box(1, 5, 6, 3, 6, 10),
+            box(13, 5, 6, 15, 6, 10)
+    ).optimize();
+    private static final VoxelShape CAMPFIRE_SHAPE = Shapes.or(
+            box(3, 0, 3, 13, 4, 4),
+            box(3, 0, 12, 13, 4, 13),
+            box(3, 0, 4, 4, 4, 12),
+            box(12, 0, 4, 13, 4, 12),
+            box(2, 3, 2, 3, 4, 14),
+            box(13, 3, 2, 14, 4, 14),
+            box(3, 3, 2, 13, 4, 3),
+            box(3, 3, 13, 13, 4, 14),
+            box(1, 0, 6, 3, 1, 10),
+            box(13, 0, 6, 15, 1, 10)
+    ).optimize();
+    private static final VoxelShape CAMPFIRE_SELECTION_SHAPE = Shapes.or(
+            CAMPFIRE_SHAPE, box(3, 3, 3, 13, 4, 13)
+    ).optimize();
 
     public SoakingPotBlock(BlockBehaviour.Properties properties) {
         super(properties);
@@ -75,6 +99,13 @@ public final class SoakingPotBlock extends BaseEntityBlock {
 
     @Override
     protected VoxelShape getShape(BlockState state, net.minecraft.world.level.BlockGetter level, BlockPos pos, CollisionContext context) {
+        return state.getValue(CAMPFIRE) ? CAMPFIRE_SELECTION_SHAPE : SHAPE;
+    }
+
+    @Override
+    protected VoxelShape getCollisionShape(
+            BlockState state, BlockGetter level, BlockPos pos, CollisionContext context
+    ) {
         return state.getValue(CAMPFIRE) ? CAMPFIRE_SHAPE : SHAPE;
     }
 
@@ -93,12 +124,6 @@ public final class SoakingPotBlock extends BaseEntityBlock {
             InteractionHand hand,
             BlockHitResult hit
     ) {
-        if (!ContentAvailability.isEnabled(ContentKey.SOAKING_POT)) {
-            if (!level.isClientSide) {
-                player.displayClientMessage(Component.translatable("message.revivalages.content_disabled"), true);
-            }
-            return ItemInteractionResult.CONSUME;
-        }
         if (hit.getDirection() != Direction.UP) {
             return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         }
@@ -130,12 +155,6 @@ public final class SoakingPotBlock extends BaseEntityBlock {
 
     @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
-        if (!ContentAvailability.isEnabled(ContentKey.SOAKING_POT)) {
-            if (!level.isClientSide) {
-                player.displayClientMessage(Component.translatable("message.revivalages.content_disabled"), true);
-            }
-            return InteractionResult.CONSUME;
-        }
         if (hit.getDirection() != Direction.UP) {
             return InteractionResult.PASS;
         }

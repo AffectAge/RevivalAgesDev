@@ -1,5 +1,6 @@
 package com.protyvkultury.revivalages.feature.technology.ignition;
 
+import com.protyvkultury.revivalages.config.RevivalAgesConfig;
 import com.protyvkultury.revivalages.RevivalAges;
 import com.protyvkultury.revivalages.feature.FeatureModule;
 import com.protyvkultury.revivalages.feature.content.ContentKey;
@@ -63,14 +64,8 @@ public final class IgnitionFeature implements FeatureModule {
     @Override
     public ContentPolicy contentPolicy() {
         return ContentPolicy.gameplay("ignition")
-                .define(
-                        ContentKey.FLINT_AND_TINDER,
-                        () -> PrimitiveTechnologyConfig.contentEnabled(ContentKey.FLINT_AND_TINDER)
-                )
-                .define(
-                        ContentKey.WOOD_TORCH,
-                        () -> PrimitiveTechnologyConfig.contentEnabled(ContentKey.WOOD_TORCH)
-                )
+                .define(ContentKey.FLINT_AND_TINDER)
+                .define(ContentKey.WOOD_TORCH)
                 .items(ContentKey.FLINT_AND_TINDER, "flint_and_tinder")
                 .items(ContentKey.WOOD_TORCH, "wood_torch")
                 .build();
@@ -101,7 +96,7 @@ public final class IgnitionFeature implements FeatureModule {
     }
 
     private void onConfigReloading(ModConfigEvent.Reloading event) {
-        if (event.getConfig().getSpec() != PrimitiveTechnologyConfig.SPEC
+        if (event.getConfig().getSpec() != RevivalAgesConfig.SPEC
                 || ServerLifecycleHooks.getCurrentServer() == null) {
             return;
         }

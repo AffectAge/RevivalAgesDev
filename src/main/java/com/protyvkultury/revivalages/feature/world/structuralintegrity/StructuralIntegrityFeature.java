@@ -9,6 +9,7 @@ import com.protyvkultury.revivalages.feature.world.structuralintegrity.client.St
 import com.protyvkultury.revivalages.feature.world.structuralintegrity.network.CollapseShakePayload;
 import com.protyvkultury.revivalages.feature.world.structuralintegrity.block.HorizontalSupportBlock;
 import com.protyvkultury.revivalages.feature.world.structuralintegrity.block.VerticalSupportBlock;
+import com.protyvkultury.revivalages.feature.world.structuralintegrity.item.SupportBeamItem;
 import com.protyvkultury.revivalages.feature.world.structuralintegrity.recipe.BlockTransformationRecipe;
 import com.protyvkultury.revivalages.feature.world.structuralintegrity.recipe.BlockTransformationRecipeSerializer;
 import com.protyvkultury.revivalages.feature.world.structuralintegrity.recipe.SupportBeamRecipe;
@@ -17,7 +18,6 @@ import java.util.Collections;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.function.Supplier;
-import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.EntityType;
@@ -32,7 +32,6 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.loading.FMLEnvironment;
-import net.neoforged.fml.config.ModConfig;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.conditions.ICondition;
 import net.neoforged.neoforge.registries.DeferredBlock;
@@ -130,11 +129,10 @@ public final class StructuralIntegrityFeature implements FeatureModule {
             );
             DeferredItem<StandingAndWallBlockItem> item = ITEMS.register(
                     baseName,
-                    () -> new StandingAndWallBlockItem(
+                    () -> new SupportBeamItem(
                             vertical.get(),
                             horizontal.get(),
-                            new Item.Properties(),
-                            Direction.DOWN
+                            new Item.Properties()
                     )
             );
             VERTICAL_SUPPORTS.put(wood, vertical);
@@ -146,22 +144,10 @@ public final class StructuralIntegrityFeature implements FeatureModule {
     @Override
     public ContentPolicy contentPolicy() {
         ContentPolicy.Builder policy = ContentPolicy.gameplay("structural_integrity")
-                .define(
-                        ContentKey.STRUCTURAL_INTEGRITY,
-                        () -> StructuralIntegrityConfig.configuredEnabled(ContentKey.STRUCTURAL_INTEGRITY)
-                )
-                .define(
-                        ContentKey.SUPPORT_BEAMS,
-                        () -> StructuralIntegrityConfig.configuredEnabled(ContentKey.SUPPORT_BEAMS)
-                )
-                .define(
-                        ContentKey.COLLAPSES,
-                        () -> StructuralIntegrityConfig.configuredEnabled(ContentKey.COLLAPSES)
-                )
-                .define(
-                        ContentKey.LANDSLIDES,
-                        () -> StructuralIntegrityConfig.configuredEnabled(ContentKey.LANDSLIDES)
-                );
+                .define(ContentKey.STRUCTURAL_INTEGRITY)
+                .define(ContentKey.SUPPORT_BEAMS)
+                .define(ContentKey.COLLAPSES)
+                .define(ContentKey.LANDSLIDES);
         for (SupportWood wood : SupportWood.values()) {
             policy.items(ContentKey.SUPPORT_BEAMS, wood.serializedName() + "_support_beam");
             policy.blocks(ContentKey.SUPPORT_BEAMS, wood.serializedName() + "_support_beam_horizontal");
@@ -180,16 +166,6 @@ public final class StructuralIntegrityFeature implements FeatureModule {
         CONDITIONS.register(modBus);
         modBus.addListener(this::registerDataMaps);
         modBus.addListener(this::registerPayloads);
-        modContainer.registerConfig(
-                ModConfig.Type.SERVER,
-                StructuralIntegrityConfig.SPEC,
-                "revivalages-structural-integrity-server.toml"
-        );
-        modContainer.registerConfig(
-                ModConfig.Type.CLIENT,
-                StructuralIntegrityConfig.CLIENT_SPEC,
-                "revivalages-structural-integrity-client.toml"
-        );
         NeoForge.EVENT_BUS.addListener(StructuralSimulation::onBlockBroken);
         NeoForge.EVENT_BUS.addListener(StructuralSimulation::onNeighborUpdate);
         NeoForge.EVENT_BUS.addListener(StructuralSimulation::onExplosion);

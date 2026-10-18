@@ -55,14 +55,8 @@ public final class PrimitiveBucketFeature implements FeatureModule {
     @Override
     public ContentPolicy contentPolicy() {
         return ContentPolicy.gameplay("primitive_buckets")
-                .define(
-                        ContentKey.WOODEN_BUCKET,
-                        () -> PrimitiveTechnologyConfig.contentEnabled(ContentKey.WOODEN_BUCKET)
-                )
-                .define(
-                        ContentKey.CLAY_BUCKET,
-                        () -> PrimitiveTechnologyConfig.contentEnabled(ContentKey.CLAY_BUCKET)
-                )
+                .define(ContentKey.WOODEN_BUCKET)
+                .define(ContentKey.CLAY_BUCKET)
                 .items(ContentKey.WOODEN_BUCKET, "wooden_bucket")
                 .items(ContentKey.CLAY_BUCKET, "unfired_clay_bucket", "clay_bucket")
                 .build();

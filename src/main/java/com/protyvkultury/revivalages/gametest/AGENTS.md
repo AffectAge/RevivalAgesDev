@@ -1,20 +1,13 @@
 # GameTest Rules
 
-- Use GameTests for behavior requiring a level, blocks, entities, inventories,
-  ticking, redstone, recipes, or client/server synchronization boundaries.
-- Keep templates minimal and store them under
-  `data/revivalages/structure/gametest`.
-- Use the `revivalages` namespace explicitly and group tests by feature.
-- Every test must reach success or fail with a diagnostic message. Avoid timing
-  assumptions broader than the mechanic actually requires.
-- Reset or contain state so tests are order-independent and repeatable.
-- Prefer an empty structure for logic that does not need a prepared scene.
-- Pure algorithms and codecs belong in fast unit tests instead.
-- For configurable content, test enabled and disabled server configurations. The
-  disabled case must prove that registry IDs and saved state remain intact while
-  the feature is inert, unavailable through normal acquisition and data, absent
-  from creative and integration displays, and safe to break without item or fluid
-  loss.
-- `runGameTestServer` is the all-enabled contract and
-  `runGameTestServerContentDisabled` is the all-disabled contract. New gameplay
-  content must add coverage to both profiles before it is complete.
+This subtree is reserved for GameTests that the user explicitly requests in the
+current task. Do not add, restore, or modify GameTests, templates, profiles, or
+GameTest run configurations by default.
+
+When explicitly requested, cover only the named critical in-world risk: data loss
+or duplication, world/save corruption, registry identity, server-authoritative
+state, network validation, crashes, or another invariant the user identifies.
+Keep tests deterministic, isolated, and minimal; use the `revivalages` namespace
+and a diagnostic failure message. Do not create coverage for routine gameplay,
+visual presentation, recipe layouts, orientations, configuration matrices, or
+enabled/disabled profiles unless the user expressly includes them.

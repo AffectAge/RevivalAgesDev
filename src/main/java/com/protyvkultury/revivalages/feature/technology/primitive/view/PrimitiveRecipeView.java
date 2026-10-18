@@ -20,7 +20,16 @@ public record PrimitiveRecipeView(
         Component detail,
         RecipeHolder<?> backingRecipe,
         List<ProcessRuleView> processRules,
-        List<ToolRequirementView> toolRequirements) {
+        List<ToolRequirementView> toolRequirements,
+        List<Integer> itemInputCounts) {
+
+    public PrimitiveRecipeView(
+            ResourceLocation id, List<Ingredient> itemInputs, FluidStack fluidInput, List<ItemStack> itemOutputs,
+            FluidStack fluidOutput, int processingTime, Component detail, RecipeHolder<?> backingRecipe,
+            List<ProcessRuleView> processRules, List<ToolRequirementView> toolRequirements) {
+        this(id, itemInputs, fluidInput, itemOutputs, fluidOutput, processingTime, detail, backingRecipe,
+                processRules, toolRequirements, java.util.Collections.nCopies(itemInputs.size(), 1));
+    }
 
     public PrimitiveRecipeView(
             ResourceLocation id,
@@ -61,5 +70,10 @@ public record PrimitiveRecipeView(
         fluidOutput = fluidOutput.copy();
         processRules = List.copyOf(processRules);
         toolRequirements = List.copyOf(toolRequirements);
+        itemInputCounts = List.copyOf(itemInputCounts);
+        if (itemInputCounts.size() != itemInputs.size()
+                || itemInputCounts.stream().anyMatch(count -> count < 1)) {
+            throw new IllegalArgumentException("Every recipe item input requires a positive display count");
+        }
     }
 }

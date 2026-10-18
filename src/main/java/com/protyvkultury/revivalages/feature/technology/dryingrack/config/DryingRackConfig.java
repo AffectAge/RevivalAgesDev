@@ -1,12 +1,11 @@
 package com.protyvkultury.revivalages.feature.technology.dryingrack.config;
 
+import com.protyvkultury.revivalages.config.RevivalAgesConfig;
 import com.protyvkultury.revivalages.feature.technology.dryingrack.environment.SeasonType;
 import com.protyvkultury.revivalages.feature.technology.dryingrack.environment.SeasonalBonuses;
 import net.neoforged.neoforge.common.ModConfigSpec;
 
 public final class DryingRackConfig {
-
-    public static final ModConfigSpec SPEC;
 
     public static final ModConfigSpec.BooleanValue AUTOMATION_ENABLED;
     public static final ModConfigSpec.BooleanValue LADDER_ENABLED;
@@ -34,7 +33,7 @@ public final class DryingRackConfig {
     public static final ModConfigSpec.DoubleValue WINTER_BONUS;
 
     static {
-        ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
+        ModConfigSpec.Builder builder = RevivalAgesConfig.builder();
         builder.push("dryingRack");
         AUTOMATION_ENABLED = builder
                 .comment("Allows item-handler automation. Disabled by default to preserve manual early-game play.")
@@ -80,10 +79,12 @@ public final class DryingRackConfig {
         AUTUMN_BONUS = seasonBonus(builder, "autumnBonus", -0.1D);
         WINTER_BONUS = seasonBonus(builder, "winterBonus", -0.3D);
         builder.pop(2);
-        SPEC = builder.build();
     }
 
     private DryingRackConfig() {
+    }
+
+    public static void bootstrap() {
     }
 
     public static double seasonBonus(SeasonType season) {

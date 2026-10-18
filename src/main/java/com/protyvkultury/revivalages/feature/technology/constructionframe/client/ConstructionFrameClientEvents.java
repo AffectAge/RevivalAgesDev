@@ -1,5 +1,6 @@
 package com.protyvkultury.revivalages.feature.technology.constructionframe.client;
 
+import com.protyvkultury.revivalages.config.InteractionOutlineConfig;
 import com.protyvkultury.revivalages.feature.technology.constructionframe.ConstructionFrameFeature;
 import com.protyvkultury.revivalages.feature.technology.constructionframe.block.ConstructionFrameBlock;
 import com.protyvkultury.revivalages.feature.technology.constructionframe.recipe.FrameGridPosition;
@@ -48,6 +49,7 @@ public final class ConstructionFrameClientEvents {
         double y = hit.getBlockPos().getY() - camera.y + cell.y() / 3.0D;
         double z = hit.getBlockPos().getZ() - camera.z + cell.z() / 3.0D;
         double epsilon = 0.002D;
+        int color = InteractionOutlineConfig.rgb();
         LevelRenderer.renderLineBox(
                 event.getPoseStack(),
                 event.getMultiBufferSource().getBuffer(RenderType.lines()),
@@ -57,9 +59,9 @@ public final class ConstructionFrameClientEvents {
                 x + 1.0D / 3.0D + epsilon,
                 y + 1.0D / 3.0D + epsilon,
                 z + 1.0D / 3.0D + epsilon,
-                0.1F,
-                1.0F,
-                0.1F,
+                ((color >> 16) & 0xFF) / 255.0F,
+                ((color >> 8) & 0xFF) / 255.0F,
+                (color & 0xFF) / 255.0F,
                 1.0F
         );
         event.setCanceled(true);

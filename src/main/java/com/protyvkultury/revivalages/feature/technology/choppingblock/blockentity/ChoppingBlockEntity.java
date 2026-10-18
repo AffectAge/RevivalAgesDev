@@ -1,6 +1,7 @@
 package com.protyvkultury.revivalages.feature.technology.choppingblock.blockentity;
 
 import com.protyvkultury.revivalages.api.food.FoodFreshnessApi;
+import com.protyvkultury.revivalages.core.item.RecipeOutputDrops;
 import com.protyvkultury.revivalages.feature.technology.choppingblock.ChoppingBlockFeature;
 import com.protyvkultury.revivalages.feature.technology.choppingblock.block.ChoppingBlock;
 import com.protyvkultury.revivalages.feature.technology.choppingblock.recipe.ChoppingRecipe;
@@ -59,6 +60,15 @@ public final class ChoppingBlockEntity extends BlockEntity {
 
     public int sawdust() {
         return sawdust;
+    }
+
+    public long remainingChops() {
+        if (!PrimitiveTechnologyConfig.CHOPPING_USES_DURABILITY.get()) {
+            return -1L;
+        }
+        int damage = getBlockState().getValue(ChoppingBlock.DAMAGE);
+        return Math.max(1, durabilityUntilDamage)
+                + (long) (5 - damage) * PrimitiveTechnologyConfig.CHOPPING_CHOPS_PER_DAMAGE.get();
     }
 
     public void removeSawdust() {
@@ -129,10 +139,7 @@ public final class ChoppingBlockEntity extends BlockEntity {
         player.causeFoodExhaustion(PrimitiveTechnologyConfig.CHOPPING_EXHAUSTION_PER_CHOP.get().floatValue());
         axe.hurtAndBreak(1, player, LivingEntity.getSlotForHand(hand));
         durabilityUntilDamage--;
-        if (level.random.nextDouble() < PrimitiveTechnologyConfig.CHOPPING_WOOD_CHIPS_CHANCE.get() * 2.0D) {
-            setSawdust(sawdust + 1);
-        }
-        if (level.random.nextDouble() < PrimitiveTechnologyConfig.CHOPPING_WOOD_CHIPS_CHANCE.get() * 0.5D) {
+        if (level.random.nextDouble() < PrimitiveTechnologyConfig.CHOPPING_WOOD_CHIPS_CHANCE.get()) {
             Direction direction = Direction.Plane.HORIZONTAL.getRandomDirection(level.random);
             BlockPos chipPos = worldPosition.relative(direction).above();
             Block.popResource(level, chipPos, new ItemStack(
@@ -181,13 +188,14 @@ public final class ChoppingBlockEntity extends BlockEntity {
 
         if (chops >= requiredChops) {
             player.causeFoodExhaustion(PrimitiveTechnologyConfig.CHOPPING_EXHAUSTION_PER_CRAFT.get().floatValue());
-            output = activeRecipe.result();
-            output.setCount(ChoppingToolPolicy.outputQuantity(activeRecipe, tier));
-            FoodFreshnessApi.copyOldest(output, java.util.List.of(input.copy()));
+            ItemStack result = activeRecipe.result();
+            result.setCount(ChoppingToolPolicy.outputQuantity(activeRecipe, tier));
+            FoodFreshnessApi.copyOldest(result, java.util.List.of(input.copy()));
             input = ItemStack.EMPTY;
             chops = 0;
             requiredChops = 0;
             activeRecipe = null;
+            RecipeOutputDrops.spawnAbove(level, worldPosition, result);
             level.playSound(null, worldPosition, SoundEvents.WOOD_BREAK, SoundSource.BLOCKS, 1.0F, 1.0F);
         }
         sync();

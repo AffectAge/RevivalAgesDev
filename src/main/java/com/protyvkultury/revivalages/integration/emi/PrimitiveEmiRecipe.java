@@ -47,8 +47,9 @@ final class PrimitiveEmiRecipe implements EmiRecipe {
                 RevivalAges.id(
             "/emi/" + presentationId + "/" + view.id().getNamespace() + "/" + view.id().getPath());
         this.inputs = new ArrayList<EmiIngredient>();
-        view.itemInputs()
-                .forEach(ingredient -> this.inputs.add(EmiIngredient.of((Ingredient) ingredient)));
+        for (int index = 0; index < view.itemInputs().size(); index++) {
+            this.inputs.add(EmiIngredient.of(view.itemInputs().get(index), view.itemInputCounts().get(index)));
+        }
         if (!view.fluidInput().isEmpty()) {
             this.inputs.add(
                     (EmiIngredient)
@@ -139,11 +140,6 @@ final class PrimitiveEmiRecipe implements EmiRecipe {
                 this.addItemInputs(widgets, this.layout.flow.itemInputs());
                 this.addItemOutputs(widgets, this.layout.flow.itemOutputs());
                 break;
-            case PRESSING:
-                this.addItemInputs(widgets, this.layout.flow.itemInputs());
-                this.addItemOutputs(widgets, this.layout.flow.itemOutputs());
-                this.addFluidTank(widgets, this.view.fluidOutput(), PrimitiveFluidSlotGeometry.PRESSING_OUTPUT);
-                break;
             case PIT_KILN, PIT_BURN:
                 {
                     this.addItemInputs(widgets, this.layout.flow.itemInputs());
@@ -155,6 +151,7 @@ final class PrimitiveEmiRecipe implements EmiRecipe {
                     this.addItemInputs(widgets, this.layout.flow.itemInputs());
                     this.addFluidTank(widgets, this.view.fluidInput(), PrimitiveFluidSlotGeometry.BARREL_INPUT);
                     this.addFluidTank(widgets, this.view.fluidOutput(), PrimitiveFluidSlotGeometry.BARREL_OUTPUT);
+                    this.addItemOutputs(widgets, this.layout.flow.itemOutputs());
                     break;
                 }
             case SOAKING_POT:
@@ -272,7 +269,7 @@ final class PrimitiveEmiRecipe implements EmiRecipe {
                 ++index) {
             widgets
                     .addSlot(
-                            EmiIngredient.of(this.view.itemInputs().get(index)),
+                            EmiIngredient.of(this.view.itemInputs().get(index), this.view.itemInputCounts().get(index)),
                             positions[index][0],
                             positions[index][1])
                     .drawBack(false);
@@ -283,7 +280,8 @@ final class PrimitiveEmiRecipe implements EmiRecipe {
         for (int index = 0; index < this.view.itemInputs().size() && index < positions.size(); ++index) {
             PrimitiveRecipeLayout.Position position = positions.get(index);
             widgets
-                    .addSlot(EmiIngredient.of(this.view.itemInputs().get(index)), position.x(), position.y())
+                    .addSlot(EmiIngredient.of(this.view.itemInputs().get(index),
+                            this.view.itemInputCounts().get(index)), position.x(), position.y())
                     .drawBack(false);
         }
     }
@@ -434,8 +432,7 @@ final class PrimitiveEmiRecipe implements EmiRecipe {
                 StoneMachineRecipeLayout.CRUCIBLE.flame().y()
         ),
         ANVIL(PrimitiveRecipeLayout.ANVIL),
-        GRINDING(PrimitiveRecipeLayout.GRINDING),
-        PRESSING(PrimitiveRecipeLayout.PRESSING);
+        GRINDING(PrimitiveRecipeLayout.GRINDING);
 
         final String texture;
         final int width;

@@ -3,6 +3,7 @@ package com.protyvkultury.revivalages.feature.technology.tanningrack.blockentity
 import com.protyvkultury.revivalages.api.food.FoodFreshnessApi;
 import com.protyvkultury.revivalages.core.particle.ProgressParticleHelper;
 import com.protyvkultury.revivalages.core.process.ProcessRule;
+import com.protyvkultury.revivalages.core.process.ProgressProjection;
 import com.protyvkultury.revivalages.core.process.ProcessRuleEngine;
 import com.protyvkultury.revivalages.core.process.ProcessRuleEvaluation;
 import com.protyvkultury.revivalages.core.process.ProcessRuleState;
@@ -40,6 +41,9 @@ public final class TanningRackBlockEntity extends BlockEntity {
     private ItemStack output = ItemStack.EMPTY;
     private int elapsedTicks;
     private int totalTicks;
+    private long clientProgressSnapshotTime = -1L;
+    private int clientProgressDuration;
+    private double clientProgressRate;
     private final ProcessRuleState ruleState = new ProcessRuleState();
     /** Server-evaluated environmental snapshot used by client presentation only. */
     private boolean openSky = true;
@@ -77,7 +81,7 @@ public final class TanningRackBlockEntity extends BlockEntity {
         }
         boolean currentOpenSky = level.canSeeSky(pos);
         boolean currentRaining = level.isRainingAt(pos.above());
-        boolean currentDaytime = level.isDay();
+        boolean currentDaytime = level.getDayTime() % 24000L <= 12000L;
         if (rack.openSky != currentOpenSky || rack.raining != currentRaining || rack.daytime != currentDaytime) {
             rack.openSky = currentOpenSky;
             rack.raining = currentRaining;
@@ -178,6 +182,14 @@ public final class TanningRackBlockEntity extends BlockEntity {
 
     public double progress() {
         return totalTicks <= 0 ? 0.0D : Math.min(1.0D, elapsedTicks / (double) totalTicks);
+    }
+
+    public double progressAt(long gameTime) {
+        if (level == null || !level.isClientSide || clientProgressSnapshotTime < 0L) {
+            return progress();
+        }
+        return ProgressProjection.fraction(elapsedTicks, clientProgressDuration,
+                clientProgressRate, clientProgressSnapshotTime, gameTime);
     }
 
     public int rainTicks() {
@@ -284,6 +296,9 @@ public final class TanningRackBlockEntity extends BlockEntity {
         openSky = tag.getBoolean("OpenSky");
         raining = tag.getBoolean("Raining");
         daytime = tag.getBoolean("Daytime");
+        clientProgressSnapshotTime = tag.contains("ProgressSnapshotTime") ? tag.getLong("ProgressSnapshotTime") : -1L;
+        clientProgressDuration = tag.getInt("ProgressDurationSnapshot");
+        clientProgressRate = tag.getDouble("ProgressRateSnapshot");
         resolveRecipe();
     }
 
@@ -311,7 +326,18 @@ public final class TanningRackBlockEntity extends BlockEntity {
 
     @Override
     public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
-        return saveWithoutMetadata(registries);
+        CompoundTag tag = saveWithoutMetadata(registries);
+        if (level != null) {
+            tag.putLong("ProgressSnapshotTime", level.getGameTime());
+            tag.putInt("ProgressDurationSnapshot", activeRecipe == null ? 0 : Math.max(1,
+                    (int) Math.round(activeRecipe.processingTime()
+                            * PrimitiveTechnologyConfig.TANNING_RACK_DURATION_MULTIPLIER.get())));
+            tag.putDouble("ProgressRateSnapshot", activeRecipe != null && !input.isEmpty() && output.isEmpty()
+                    && openSky && daytime
+                    && (!raining || PrimitiveTechnologyConfig.TANNING_RACK_RAIN_RUIN_TICKS.get() < 0)
+                    ? 1.0D : 0.0D);
+        }
+        return tag;
     }
 
 }

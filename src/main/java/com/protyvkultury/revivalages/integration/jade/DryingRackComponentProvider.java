@@ -26,14 +26,11 @@ public enum DryingRackComponentProvider implements IBlockComponentProvider {
 
     @Override
     public void appendTooltip(ITooltip tooltip, BlockAccessor accessor, IPluginConfig config) {
-        if (DisabledContentComponentProvider.isDisabled(accessor)) {
-            return;
-        }
         if (!(accessor.getBlockEntity() instanceof DryingRackBlockEntity rack)) {
             return;
         }
 
-        DryingRackView view = rack.view();
+        DryingRackView view = rack.viewAt(accessor.getLevel().getGameTime());
         tooltip.add(Component.translatable(ProcessRulePresentation.of(ProcessRuleType.DRYING_ENVIRONMENT).tooltipKey()));
         tooltip.add(Component.translatable(
                 "jade.revivalages.drying_rack.speed",
@@ -64,15 +61,12 @@ public enum DryingRackComponentProvider implements IBlockComponentProvider {
                 List<IElement> line = new ArrayList<>();
                 line.add(elements.item(slot.stack()));
                 line.add(elements.spacer(2, 0));
-                line.add(elements.progress((float) slot.progress()));
+                line.add(JadeProgressElement.of(elements, slot.progress()));
                 line.add(elements.spacer(2, 0));
                 line.add(elements.item(slot.recipeOutput()));
                 tooltip.add(line);
             } else if (slot.completed()) {
-                tooltip.add(Component.translatable(
-                        "jade.revivalages.drying_rack.complete",
-                        slot.stack().getHoverName()
-                ));
+                tooltip.add(List.of(elements.item(slot.stack())));
             } else {
                 tooltip.add(Component.translatable(
                         "jade.revivalages.drying_rack.no_recipe",

@@ -35,6 +35,7 @@ import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.neoforge.fluids.FluidUtil;
 
@@ -42,7 +43,49 @@ public abstract class StoneMachineBlock extends BaseEntityBlock {
 
     public static final EnumProperty<DoubleBlockHalf> HALF = BlockStateProperties.DOUBLE_BLOCK_HALF;
     public static final BooleanProperty LIT = BlockStateProperties.LIT;
-    private static final VoxelShape TOP_SHAPE = Block.box(1.0D, 0.0D, 1.0D, 15.0D, 8.0D, 15.0D);
+    private static final VoxelShape LOWER_SHAPE = Shapes.or(
+            Block.box(0, 0, 0, 16, 4, 16),
+            Block.box(1, 4, 1, 3, 16, 15),
+            Block.box(13, 4, 1, 15, 16, 15),
+            Block.box(3, 4, 13, 13, 16, 15),
+            Block.box(3, 4, 1, 5, 16, 3),
+            Block.box(11, 4, 1, 13, 16, 3),
+            Block.box(5, 11, 1, 11, 16, 3)
+    ).optimize();
+    private static final VoxelShape SAWMILL_UPPER = Shapes.or(
+            Block.box(0, 0, 0, 16, 2, 16),
+            Block.box(0, 2, 0, 2, 10, 16),
+            Block.box(14, 2, 0, 16, 10, 16),
+            Block.box(2, 2, 14, 14, 10, 16)
+    ).optimize();
+    private static final VoxelShape OVEN_UPPER = Shapes.or(
+            Block.box(0, 0, 0, 16, 2, 16),
+            Block.box(2, 2, 2, 4, 8, 14),
+            Block.box(12, 2, 2, 14, 8, 14),
+            Block.box(4, 2, 12, 12, 10, 14),
+            Block.box(4, 8, 2, 12, 12, 14)
+    ).optimize();
+    private static final VoxelShape KILN_UPPER = Shapes.or(
+            Block.box(0, 0, 0, 16, 2, 16),
+            Block.box(2, 2, 2, 14, 3, 14),
+            Block.box(2, 3, 3, 3, 7, 13),
+            Block.box(13, 3, 3, 14, 7, 13),
+            Block.box(3, 3, 2, 13, 7, 3),
+            Block.box(3, 3, 13, 13, 7, 14)
+    ).optimize();
+    private static final VoxelShape CRUCIBLE_UPPER = Shapes.or(
+            Block.box(0, 0, 0, 16, 2, 16),
+            Block.box(2, 2, 2, 14, 4, 14),
+            Block.box(4, 4, 3, 5, 8, 13),
+            Block.box(11, 4, 3, 12, 8, 13),
+            Block.box(5, 4, 3, 11, 8, 4),
+            Block.box(5, 4, 12, 11, 8, 13)
+    ).optimize();
+    private static final VoxelShape[] LOWER_SHAPES = orientations(LOWER_SHAPE);
+    private static final VoxelShape[] SAWMILL_UPPER_SHAPES = orientations(SAWMILL_UPPER);
+    private static final VoxelShape[] OVEN_UPPER_SHAPES = orientations(OVEN_UPPER);
+    private static final VoxelShape[] KILN_UPPER_SHAPES = orientations(KILN_UPPER);
+    private static final VoxelShape[] CRUCIBLE_UPPER_SHAPES = orientations(CRUCIBLE_UPPER);
 
     protected StoneMachineBlock(BlockBehaviour.Properties properties) {
         super(properties);
@@ -66,7 +109,35 @@ public abstract class StoneMachineBlock extends BaseEntityBlock {
 
     @Override
     protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-        return state.getValue(HALF) == DoubleBlockHalf.UPPER ? TOP_SHAPE : super.getShape(state, level, pos, context);
+        int orientation = switch (state.getValue(HorizontalDirectionalBlock.FACING)) {
+            case NORTH -> 0;
+            case EAST -> 1;
+            case SOUTH -> 2;
+            case WEST -> 3;
+            default -> throw new IllegalStateException("Stone machine must face horizontally");
+        };
+        if (state.getValue(HALF) == DoubleBlockHalf.LOWER) {
+            return LOWER_SHAPES[orientation];
+        }
+        return switch (kind()) {
+            case SAWMILL -> SAWMILL_UPPER_SHAPES[orientation];
+            case OVEN -> OVEN_UPPER_SHAPES[orientation];
+            case KILN -> KILN_UPPER_SHAPES[orientation];
+            case CRUCIBLE -> CRUCIBLE_UPPER_SHAPES[orientation];
+        };
+    }
+
+    private static VoxelShape[] orientations(VoxelShape north) {
+        VoxelShape[] shapes = new VoxelShape[4];
+        shapes[0] = north;
+        for (int index = 1; index < shapes.length; index++) {
+            VoxelShape[] rotated = {Shapes.empty()};
+            shapes[index - 1].forAllBoxes((minX, minY, minZ, maxX, maxY, maxZ) ->
+                    rotated[0] = Shapes.or(rotated[0], Shapes.box(
+                            1 - maxZ, minY, minX, 1 - minZ, maxY, maxX)));
+            shapes[index] = rotated[0].optimize();
+        }
+        return shapes;
     }
 
     @Nullable

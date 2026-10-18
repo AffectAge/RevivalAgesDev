@@ -20,13 +20,22 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 public final class HandGrindstoneBlock extends BaseEntityBlock {
 
     public static final MapCodec<HandGrindstoneBlock> CODEC = simpleCodec(HandGrindstoneBlock::new);
-    private static final VoxelShape SELECTION_SHAPE = box(1, 0, 1, 15, 14, 15);
-    private static final VoxelShape COLLISION_SHAPE = box(1, 0, 1, 15, 10, 15);
+    private static final VoxelShape BASE_SHAPE = Shapes.or(
+            box(1, 0, 3, 15, 4, 13),
+            box(3, 0, 1, 13, 4, 15)
+    ).optimize();
+    // The block entity rotates the rotor, so its occupied area is an envelope rather than a fixed orientation.
+    private static final VoxelShape ROTOR_SHAPE = box(1, 4, 1, 15, 8.25, 15);
+    private static final VoxelShape SELECTION_SHAPE = Shapes.or(
+            BASE_SHAPE, ROTOR_SHAPE, box(3, 8.25, 3, 13, 12, 13)
+    ).optimize();
+    private static final VoxelShape COLLISION_SHAPE = SELECTION_SHAPE;
 
     public HandGrindstoneBlock(BlockBehaviour.Properties properties) {
         super(properties);
@@ -102,6 +111,9 @@ public final class HandGrindstoneBlock extends BaseEntityBlock {
                 }
             }
             return InteractionResult.PASS;
+        }
+        if (grindstone.isRotating()) {
+            return InteractionResult.sidedSuccess(level.isClientSide);
         }
         if (!level.isClientSide && grindstone.turn(player)) {
             return InteractionResult.SUCCESS;

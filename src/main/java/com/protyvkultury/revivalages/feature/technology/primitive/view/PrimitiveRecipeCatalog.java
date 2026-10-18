@@ -155,12 +155,16 @@ public final class PrimitiveRecipeCatalog {
                                     holder.id(),
                                     recipe.itemIngredients(),
                                     recipe.inputFluid(),
-                                    List.of(),
+                                    recipe.resultItem().isEmpty() ? List.of() : List.of(recipe.resultItem()),
                                     recipe.resultFluid(),
                                     recipe.processingTime(),
                                     Component.empty(),
                                     holder,
-                                    List.of(new ProcessRuleView(ProcessRule.of(ProcessRuleType.SEALED_MACHINE))));
+                                    recipe.requiresSeal()
+                                            ? List.of(new ProcessRuleView(ProcessRule.of(ProcessRuleType.SEALED_MACHINE)))
+                                            : List.of(),
+                                    List.of(),
+                                    recipe.countedIngredients().stream().map(entry -> entry.count()).toList());
                         })
                 .toList();
     }

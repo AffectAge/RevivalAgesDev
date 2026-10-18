@@ -1,6 +1,7 @@
 package com.protyvkultury.revivalages.feature.technology.anvil.blockentity;
 
 import com.protyvkultury.revivalages.api.food.FoodFreshnessApi;
+import com.protyvkultury.revivalages.core.item.RecipeOutputDrops;
 import com.protyvkultury.revivalages.feature.technology.anvil.AnvilFeature;
 import com.protyvkultury.revivalages.feature.technology.anvil.AnvilToolPolicy;
 import com.protyvkultury.revivalages.feature.technology.anvil.block.AnvilBlock;
@@ -66,6 +67,12 @@ public final class AnvilBlockEntity extends BlockEntity {
 
     public int requiredHits() {
         return requiredHits;
+    }
+
+    public long remainingHits() {
+        int damage = getBlockState().getValue(AnvilBlock.DAMAGE);
+        return Math.max(1, durabilityUntilDamage)
+                + (long) (3 - damage) * PrimitiveTechnologyConfig.ANVIL_HITS_PER_DAMAGE_STAGE.get();
     }
 
     public AnvilTool activeTool() {
@@ -202,9 +209,7 @@ public final class AnvilBlockEntity extends BlockEntity {
             activeRecipe = null;
             activeTool = null;
             player.causeFoodExhaustion(PrimitiveTechnologyConfig.ANVIL_EXHAUSTION_PER_CRAFT.get().floatValue());
-            if (!player.addItem(output)) {
-                Block.popResource(level, worldPosition.above(), output);
-            }
+            RecipeOutputDrops.spawnAbove(level, worldPosition, output);
             level.playSound(null, worldPosition, SoundEvents.STONE_BREAK, SoundSource.BLOCKS, 1.0F,
                     (float) (1.0D + level.random.nextGaussian() * 0.4D));
         }

@@ -30,9 +30,8 @@ cell is disabled. Starting another attempt requires reopening the screen.
 Closing a completed screen returns the result and performs any completion-time
 material consumption exactly once.
 
-When Knapping is disabled, its registry, menu, payload, and recipe serializer
-remain registered. Opening is blocked, the category is hidden, and the affected
-two-dimensional fallback recipes load instead.
+Knapping is always available; its registry, menu, payload, recipe serializer,
+interaction, and recipe-viewer category are registered unconditionally.
 The complete lifecycle follows the shared
 [content availability contract](content-availability.md).
 
@@ -57,7 +56,5 @@ base dedicated GameTest run passed all 15 tests with every optional JAR absent.
 
 ## Configuration
 
-`revivalages-knapping-server.toml` contains `knapping.enabled=true`.
-`revivalages-knapping-client.toml` contains `knapping.screenParticles=true`.
-The server enable setting is restart-required because it selects knapping or
-fallback recipe data.
+`config/revivalages.toml` contains `knapping.screenParticles=true`. Knapping has
+no feature enable setting.

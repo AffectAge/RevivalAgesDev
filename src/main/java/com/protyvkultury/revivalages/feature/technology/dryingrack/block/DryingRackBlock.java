@@ -23,6 +23,7 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 public final class DryingRackBlock extends AbstractDryingRackBlock {
@@ -30,7 +31,22 @@ public final class DryingRackBlock extends AbstractDryingRackBlock {
     public static final MapCodec<DryingRackBlock> CODEC = simpleCodec(DryingRackBlock::new);
     public static final BooleanProperty STACKED = BooleanProperty.create("stacked");
 
-    private static final VoxelShape SHAPE = Block.box(1.0D, 11.0D, 1.0D, 15.0D, 12.0D, 15.0D);
+    private static final VoxelShape SHAPE = Shapes.or(
+            Block.box(1, 0, 1, 2, 13, 2),
+            Block.box(14, 0, 1, 15, 13, 2),
+            Block.box(1, 0, 14, 2, 13, 15),
+            Block.box(14, 0, 14, 15, 13, 15),
+            Block.box(0, 10, 2, 16, 11, 3),
+            Block.box(0, 10, 13, 16, 11, 14),
+            Block.box(2, 11, 0, 14, 12, 16)
+    ).optimize();
+    private static final VoxelShape STACKED_SHAPE = Shapes.or(
+            SHAPE,
+            Block.box(1, 13, 1, 2, 16, 2),
+            Block.box(1, 13, 14, 2, 16, 15),
+            Block.box(14, 13, 1, 15, 16, 2),
+            Block.box(14, 13, 14, 15, 16, 15)
+    ).optimize();
 
     public DryingRackBlock(BlockBehaviour.Properties properties) {
         super(properties);
@@ -82,7 +98,7 @@ public final class DryingRackBlock extends AbstractDryingRackBlock {
 
     @Override
     protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-        return SHAPE;
+        return state.getValue(STACKED) ? STACKED_SHAPE : SHAPE;
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.protyvkultury.revivalages.feature.food.spoilage;
 
+import com.protyvkultury.revivalages.config.RevivalAgesConfig;
 public final class FoodSpoilageSettings {
 
     private static volatile Remote remote;
@@ -33,7 +34,7 @@ public final class FoodSpoilageSettings {
     public static long baseLifetime() {
         Remote value = remote;
         return value == null
-                ? (FoodSpoilageConfig.SPEC.isLoaded()
+                ? (RevivalAgesConfig.isLoaded()
                         ? FoodSpoilageConfig.BASE_LIFETIME_TICKS.get()
                         : FoodSpoilageConfig.BASE_LIFETIME_TICKS.getDefault())
                 : value.baseLifetime();
@@ -42,7 +43,7 @@ public final class FoodSpoilageSettings {
     public static double globalMultiplier() {
         Remote value = remote;
         return value == null
-                ? (FoodSpoilageConfig.SPEC.isLoaded()
+                ? (RevivalAgesConfig.isLoaded()
                         ? FoodSpoilageConfig.GLOBAL_DECAY_MULTIPLIER.get()
                         : FoodSpoilageConfig.GLOBAL_DECAY_MULTIPLIER.getDefault())
                 : value.globalMultiplier();

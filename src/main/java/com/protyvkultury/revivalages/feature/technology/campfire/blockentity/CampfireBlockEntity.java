@@ -45,6 +45,7 @@ public final class CampfireBlockEntity extends BlockEntity {
     private boolean dead;
     private boolean lit;
     private boolean completed;
+    private boolean burned;
     private int ash;
     private int burnTime;
     private int rainTicks;
@@ -53,6 +54,11 @@ public final class CampfireBlockEntity extends BlockEntity {
     private int totalTime;
     private ResourceLocation recipeId;
     private ItemStack recipeOutput = ItemStack.EMPTY;
+    private ItemStack cookingInput = ItemStack.EMPTY;
+    private long clientSnapshotTime = -1L;
+    private int clientFuelTicks;
+    private double clientProgressSpeed;
+    private int clientBurnedFoodTicks;
 
     public CampfireBlockEntity(BlockPos pos, BlockState state) {
         super(CampfireFeature.BLOCK_ENTITY.get(), pos, state);
@@ -69,7 +75,9 @@ public final class CampfireBlockEntity extends BlockEntity {
         if (materialized != cooking) {
             campfire.items.set(COOKING_SLOT, materialized);
             campfire.completed = false;
+            campfire.burned = false;
             campfire.progress = 0.0D;
+            campfire.cookingInput = materialized.copyWithCount(1);
             campfire.resolveRecipe();
             campfire.sync();
         }
@@ -110,6 +118,7 @@ public final class CampfireBlockEntity extends BlockEntity {
             }
         }
         campfire.burnTime--;
+        campfire.setChanged();
         BlockPos below = pos.below();
         BlockState belowState = level.getBlockState(below);
         if (level.random.nextDouble() < PrimitiveTechnologyConfig.CAMPFIRE_FLOOR_IGNITION_CHANCE.get()
@@ -118,10 +127,14 @@ public final class CampfireBlockEntity extends BlockEntity {
             return;
         }
         if (campfire.completed) {
+            if (campfire.burned) {
+                return;
+            }
             campfire.burnOutputTicks++;
             if (campfire.burnOutputTicks >= PrimitiveTechnologyConfig.CAMPFIRE_BURNED_FOOD_TICKS.get()) {
                 campfire.items.set(COOKING_SLOT, new ItemStack(PrimitiveMaterialsFeature.BURNED_FOOD.get()));
                 campfire.burnOutputTicks = 0;
+                campfire.burned = true;
                 campfire.sync();
                 level.playSound(null, pos, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 0.5F, 1.6F);
             } else {
@@ -132,8 +145,7 @@ public final class CampfireBlockEntity extends BlockEntity {
         if (campfire.recipeOutput.isEmpty() || campfire.items.get(COOKING_SLOT).isEmpty()) {
             return;
         }
-        double fuelSpeed = Math.min(2.0D, campfire.fuelLevel()
-                / (double) PrimitiveTechnologyConfig.CAMPFIRE_FULL_SPEED_FUEL_LEVEL.get());
+        double fuelSpeed = campfire.cookingSpeed();
         campfire.progress += fuelSpeed;
         if (campfire.progress >= campfire.totalTime) {
             ItemStack input = campfire.items.get(COOKING_SLOT).copy();
@@ -145,6 +157,7 @@ public final class CampfireBlockEntity extends BlockEntity {
             }
             campfire.items.set(COOKING_SLOT, output);
             campfire.completed = true;
+            campfire.burned = false;
             campfire.progress = campfire.totalTime;
             campfire.burnOutputTicks = 0;
             campfire.sync();
@@ -167,7 +180,6 @@ public final class CampfireBlockEntity extends BlockEntity {
         for (int index = 0; index < 4; index++) {
             double x = centerX + (level.random.nextDouble() * 2.0D - 1.0D) * 0.2D;
             double z = centerZ + (level.random.nextDouble() * 2.0D - 1.0D) * 0.2D;
-            level.addParticle(ParticleTypes.SMOKE, x, centerY, z, 0.0D, 0.0D, 0.0D);
             level.addParticle(ParticleTypes.FLAME, x, centerY, z, 0.0D, 0.0D, 0.0D);
         }
         if (PrimitiveTechnologyConfig.PROGRESS_PARTICLES.get()
@@ -175,7 +187,7 @@ public final class CampfireBlockEntity extends BlockEntity {
                 && level.getGameTime() % ProgressParticleHelper.INTERVAL == 0L) {
             ProgressParticleHelper.spawn(level, centerX, pos.getY() + 0.55D, centerZ, 0.2D, 0.1D, 0.2D);
         }
-        if (campfire.completed) {
+        if (campfire.burned) {
             for (int index = 0; index < 8; index++) {
                 level.addParticle(
                         ParticleTypes.LARGE_SMOKE,
@@ -206,7 +218,6 @@ public final class CampfireBlockEntity extends BlockEntity {
             return;
         }
         lit = true;
-        burnTime = Math.max(1, burnTime);
         updateState();
     }
 
@@ -261,8 +272,13 @@ public final class CampfireBlockEntity extends BlockEntity {
     }
 
     private boolean consumeFuelLog() {
-        ItemStack consumed = removeLog();
-        return !consumed.isEmpty();
+        for (int slot = LAST_LOG_SLOT; slot >= FIRST_LOG_SLOT; slot--) {
+            if (!items.get(slot).isEmpty()) {
+                items.set(slot, ItemStack.EMPTY);
+                return true;
+            }
+        }
+        return false;
     }
 
     public int fuelLevel() {
@@ -273,6 +289,10 @@ public final class CampfireBlockEntity extends BlockEntity {
             }
         }
         return count;
+    }
+
+    public int activeFuelLevel() {
+        return Math.min(8, fuelLevel() + (burnTime > 0 ? 1 : 0));
     }
 
     public ItemStack logStack(int index) {
@@ -304,10 +324,12 @@ public final class CampfireBlockEntity extends BlockEntity {
             return;
         }
         items.set(COOKING_SLOT, source.copyWithCount(1));
+        cookingInput = source.copyWithCount(1);
         if (!infinite) {
             source.shrink(1);
         }
         completed = false;
+        burned = false;
         burnOutputTicks = 0;
         progress = 0.0D;
         recipeId = null;
@@ -319,6 +341,8 @@ public final class CampfireBlockEntity extends BlockEntity {
         ItemStack result = items.get(COOKING_SLOT);
         items.set(COOKING_SLOT, ItemStack.EMPTY);
         completed = false;
+        burned = false;
+        cookingInput = ItemStack.EMPTY;
         burnOutputTicks = 0;
         progress = 0.0D;
         totalTime = 0;
@@ -332,12 +356,57 @@ public final class CampfireBlockEntity extends BlockEntity {
         return totalTime <= 0 ? 0.0D : Math.min(1.0D, progress / totalTime);
     }
 
+    public double progressAt(long gameTime) {
+        if (totalTime <= 0) {
+            return 0.0D;
+        }
+        double predicted = progress;
+        if (level != null && level.isClientSide && clientSnapshotTime >= 0L && isProcessing()) {
+            predicted += Math.max(0L, gameTime - clientSnapshotTime) * clientProgressSpeed;
+        }
+        return Math.clamp(predicted / totalTime, 0.0D, 1.0D);
+    }
+
+    public double burnProgressAt(long gameTime) {
+        if (!completed) {
+            return 0.0D;
+        }
+        if (burned) {
+            return 1.0D;
+        }
+        int duration = level != null && level.isClientSide && clientBurnedFoodTicks > 0
+                ? clientBurnedFoodTicks
+                : PrimitiveTechnologyConfig.CAMPFIRE_BURNED_FOOD_TICKS.get();
+        long elapsed = level != null && level.isClientSide && clientSnapshotTime >= 0L && lit
+                ? Math.max(0L, gameTime - clientSnapshotTime)
+                : 0L;
+        return Math.clamp((burnOutputTicks + elapsed) / (double) Math.max(1, duration), 0.0D, 1.0D);
+    }
+
+    public int remainingFuelTicksAt(long gameTime) {
+        int ticks = level != null && level.isClientSide && clientSnapshotTime >= 0L
+                ? clientFuelTicks
+                : remainingFuelTicks();
+        if (level != null && level.isClientSide && clientSnapshotTime >= 0L && lit) {
+            ticks -= (int) Math.min(Integer.MAX_VALUE, Math.max(0L, gameTime - clientSnapshotTime));
+        }
+        return Math.max(0, ticks);
+    }
+
     public boolean isProcessing() {
         return lit && !completed && !recipeOutput.isEmpty() && ash < 8;
     }
 
     public boolean isCompleted() {
         return completed;
+    }
+
+    public boolean isBurned() {
+        return burned;
+    }
+
+    public ItemStack cookingInput() {
+        return cookingInput.copy();
     }
 
     public boolean isLit() {
@@ -354,6 +423,17 @@ public final class CampfireBlockEntity extends BlockEntity {
 
     public int burnTime() {
         return burnTime;
+    }
+
+    private int remainingFuelTicks() {
+        long total = (long) burnTime
+                + (long) fuelLevel() * PrimitiveTechnologyConfig.CAMPFIRE_BURN_TICKS_PER_LOG.get();
+        return (int) Math.min(Integer.MAX_VALUE, Math.max(0L, total));
+    }
+
+    private double cookingSpeed() {
+        return Math.min(2.0D, activeFuelLevel()
+                / (double) PrimitiveTechnologyConfig.CAMPFIRE_FULL_SPEED_FUEL_LEVEL.get());
     }
 
     public ItemStack recipeOutput() {
@@ -438,7 +518,7 @@ public final class CampfireBlockEntity extends BlockEntity {
         }
         int minimum = PrimitiveTechnologyConfig.CAMPFIRE_MINIMUM_LIGHT.get();
         int maximum = PrimitiveTechnologyConfig.CAMPFIRE_MAXIMUM_LIGHT.get();
-        double fuelRatio = fuelLevel() / 8.0D;
+        double fuelRatio = activeFuelLevel() / 8.0D;
         return Math.clamp((int) Math.round(minimum + (maximum - minimum) * fuelRatio), 0, 15);
     }
 
@@ -458,6 +538,8 @@ public final class CampfireBlockEntity extends BlockEntity {
         dead = tag.getBoolean("Dead");
         lit = tag.getBoolean("Lit");
         completed = tag.getBoolean("Completed");
+        burned = tag.contains("Burned") ? tag.getBoolean("Burned")
+                : completed && items.get(COOKING_SLOT).is(PrimitiveMaterialsFeature.BURNED_FOOD.get());
         ash = tag.getInt("Ash");
         burnTime = tag.getInt("BurnTime");
         rainTicks = tag.getInt("RainTicks");
@@ -467,6 +549,14 @@ public final class CampfireBlockEntity extends BlockEntity {
         String id = tag.getString("Recipe");
         recipeId = id.isEmpty() ? null : ResourceLocation.tryParse(id);
         recipeOutput = ItemStack.parseOptional(registries, tag.getCompound("RecipeOutput"));
+        cookingInput = ItemStack.parseOptional(registries, tag.getCompound("CookingInput"));
+        if (cookingInput.isEmpty() && !completed && !items.get(COOKING_SLOT).isEmpty()) {
+            cookingInput = items.get(COOKING_SLOT).copyWithCount(1);
+        }
+        clientSnapshotTime = tag.contains("SnapshotGameTime") ? tag.getLong("SnapshotGameTime") : -1L;
+        clientFuelTicks = tag.getInt("FuelTicksSnapshot");
+        clientProgressSpeed = tag.getDouble("ProgressSpeedSnapshot");
+        clientBurnedFoodTicks = tag.getInt("BurnedFoodTicksSnapshot");
     }
 
     @Override
@@ -477,6 +567,7 @@ public final class CampfireBlockEntity extends BlockEntity {
         tag.putBoolean("Dead", dead);
         tag.putBoolean("Lit", lit);
         tag.putBoolean("Completed", completed);
+        tag.putBoolean("Burned", burned);
         tag.putInt("Ash", ash);
         tag.putInt("BurnTime", burnTime);
         tag.putInt("RainTicks", rainTicks);
@@ -489,6 +580,9 @@ public final class CampfireBlockEntity extends BlockEntity {
         if (!recipeOutput.isEmpty()) {
             tag.put("RecipeOutput", recipeOutput.save(registries));
         }
+        if (!cookingInput.isEmpty()) {
+            tag.put("CookingInput", cookingInput.save(registries));
+        }
     }
 
     @Override
@@ -498,7 +592,14 @@ public final class CampfireBlockEntity extends BlockEntity {
 
     @Override
     public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
-        return saveWithoutMetadata(registries);
+        CompoundTag tag = saveWithoutMetadata(registries);
+        if (level != null) {
+            tag.putLong("SnapshotGameTime", level.getGameTime());
+            tag.putInt("FuelTicksSnapshot", remainingFuelTicks());
+            tag.putDouble("ProgressSpeedSnapshot", cookingSpeed());
+            tag.putInt("BurnedFoodTicksSnapshot", PrimitiveTechnologyConfig.CAMPFIRE_BURNED_FOOD_TICKS.get());
+        }
+        return tag;
     }
 
     private final class CampfireItemHandler implements IItemHandler {

@@ -14,8 +14,8 @@ import net.minecraft.resources.ResourceLocation;
 public record ProcessRulePresentation(int u, int v, String tooltipKey, String statusKey) {
 
     public static final ResourceLocation ATLAS = RevivalAges.id("textures/gui/process_rules.png");
-    public static final int ATLAS_WIDTH = 64;
-    public static final int ATLAS_HEIGHT = 48;
+    public static final int ATLAS_WIDTH = 256;
+    public static final int ATLAS_HEIGHT = 256;
     public static final int ICON_SIZE = 16;
 
     private static final Map<ProcessRuleType, ProcessRulePresentation> PRESENTATIONS = createPresentations();
@@ -47,19 +47,6 @@ public record ProcessRulePresentation(int u, int v, String tooltipKey, String st
     public static List<Component> viewerTooltip(ProcessRuleView rule) {
         java.util.ArrayList<Component> tooltip = new java.util.ArrayList<>();
         tooltip.add(Component.translatable(of(rule.rule().type()).tooltipKey()));
-        switch (rule.rule().type()) {
-            case ATTACHED_WORKER -> {
-                tooltip.add(Component.translatable("gui.revivalages.process_rule.attached_worker.animals"));
-                tooltip.add(Component.translatable("gui.revivalages.process_rule.attached_worker.lead"));
-            }
-            case VALID_WORK_AREA -> {
-                tooltip.add(Component.translatable("gui.revivalages.process_rule.valid_work_area.square"));
-                tooltip.add(Component.translatable("gui.revivalages.process_rule.valid_work_area.floor"));
-                tooltip.add(Component.translatable("gui.revivalages.process_rule.valid_work_area.headroom"));
-            }
-            default -> {
-            }
-        }
         if (rule.hasHazardFailure()) {
             tooltip.add(Component.translatable("gui.revivalages.process_rule.weather_exposure.failure", outcomeNames(rule)));
         }
@@ -94,8 +81,6 @@ public record ProcessRulePresentation(int u, int v, String tooltipKey, String st
         add(result, ProcessRuleType.SEALED_MACHINE, 0, 16);
         add(result, ProcessRuleType.INSTALLED_TOOL, 16, 16);
         add(result, ProcessRuleType.FUELLED_AND_LIT, 32, 16);
-        add(result, ProcessRuleType.ATTACHED_WORKER, 48, 16);
-        add(result, ProcessRuleType.VALID_WORK_AREA, 0, 32);
         add(result, ProcessRuleType.VALID_STRUCTURE, 16, 32);
         add(result, ProcessRuleType.REQUIRED_MANUAL_TOOL, 32, 32);
         add(result, ProcessRuleType.RANDOM_OUTCOME, 48, 32);

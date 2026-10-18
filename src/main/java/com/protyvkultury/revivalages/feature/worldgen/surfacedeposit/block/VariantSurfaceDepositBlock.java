@@ -24,6 +24,8 @@ import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 
 /** Shared 1.21.1 implementation of variant cycling and the support lifecycle. */
 abstract class VariantSurfaceDepositBlock<T extends Enum<T> & StringRepresentable>
@@ -94,6 +96,21 @@ abstract class VariantSurfaceDepositBlock<T extends Enum<T> & StringRepresentabl
             level.setBlock(pos, state.setValue(variationProperty, next), Block.UPDATE_ALL);
         }
         return true;
+    }
+
+    /** The random blockstate rotation has no saved property, so selection must cover all four orientations. */
+    static VoxelShape randomlyRotatedShape(VoxelShape model) {
+        VoxelShape result = model;
+        VoxelShape current = model;
+        for (int rotation = 1; rotation < 4; rotation++) {
+            VoxelShape[] next = {Shapes.empty()};
+            current.forAllBoxes((minX, minY, minZ, maxX, maxY, maxZ) ->
+                    next[0] = Shapes.or(next[0], Shapes.box(
+                            1 - maxZ, minY, minX, 1 - minZ, maxY, maxX)));
+            current = next[0].optimize();
+            result = Shapes.or(result, current);
+        }
+        return result.optimize();
     }
 
     @Override

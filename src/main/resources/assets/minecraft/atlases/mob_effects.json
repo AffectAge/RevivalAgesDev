@@ -1,0 +1,19 @@
+{
+  "sources": [
+    {
+      "type": "unstitch",
+      "resource": "revivalages:gui/campfire_effects",
+      "divisor_x": 256,
+      "divisor_y": 256,
+      "regions": [
+        {"sprite": "revivalages:comfort", "x": 0, "y": 0, "width": 16, "height": 16},
+        {"sprite": "revivalages:resting", "x": 16, "y": 0, "width": 16, "height": 16},
+        {"sprite": "revivalages:well_fed", "x": 32, "y": 0, "width": 16, "height": 16},
+        {"sprite": "revivalages:well_rested", "x": 48, "y": 0, "width": 16, "height": 16},
+        {"sprite": "revivalages:focused", "x": 64, "y": 0, "width": 16, "height": 16},
+        {"sprite": "revivalages:diet_toughness", "x": 80, "y": 0, "width": 16, "height": 16},
+        {"sprite": "revivalages:overloaded", "x": 96, "y": 0, "width": 16, "height": 16}
+      ]
+    }
+  ]
+}

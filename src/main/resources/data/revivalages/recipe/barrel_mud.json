@@ -1,0 +1,11 @@
+{
+  "neoforge:conditions": [{"type":"revivalages:content_enabled","content":"revivalages:barrel","enabled":true}],
+  "type": "revivalages:barrel",
+  "items": [
+    {"ingredient": {"item": "minecraft:dirt"}, "count": 4}
+  ],
+  "input_fluid": {"id": "minecraft:water", "amount": 1000},
+  "result_item": {"id": "minecraft:mud", "count": 4},
+  "requires_seal": true,
+  "processing_time": 1200
+}

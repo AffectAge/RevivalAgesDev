@@ -68,10 +68,7 @@ public final class SoakingPotFeature implements FeatureModule {
     @Override
     public ContentPolicy contentPolicy() {
         return ContentPolicy.gameplay("soaking_pot")
-                .define(
-                        ContentKey.SOAKING_POT,
-                        () -> PrimitiveTechnologyConfig.contentEnabled(ContentKey.SOAKING_POT)
-                )
+                .define(ContentKey.SOAKING_POT)
                 .items(ContentKey.SOAKING_POT, "soaking_pot")
                 .build();
     }

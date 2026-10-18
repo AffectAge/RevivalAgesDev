@@ -29,7 +29,6 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
-import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.conditions.ICondition;
@@ -83,7 +82,7 @@ public final class KnappingFeature implements FeatureModule {
     @Override
     public ContentPolicy contentPolicy() {
         return ContentPolicy.gameplay("knapping")
-                .define(ContentKey.KNAPPING, KnappingConfig::configuredEnabled)
+                .define(ContentKey.KNAPPING)
                 .build();
     }
 
@@ -97,8 +96,6 @@ public final class KnappingFeature implements FeatureModule {
         modBus.addListener(this::registerDataPackRegistry);
         modBus.addListener(this::registerPayloads);
         NeoForge.EVENT_BUS.addListener(this::onUseItem);
-        modContainer.registerConfig(ModConfig.Type.SERVER, KnappingConfig.SERVER_SPEC, "revivalages-knapping-server.toml");
-        modContainer.registerConfig(ModConfig.Type.CLIENT, KnappingConfig.CLIENT_SPEC, "revivalages-knapping-client.toml");
         if (FMLEnvironment.dist == Dist.CLIENT) {
             KnappingClientEvents.register(modBus);
         }
